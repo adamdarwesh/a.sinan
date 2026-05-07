@@ -1291,7 +1291,7 @@ const popupProjects = [
   { num: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", tags: ["Exhibition", "Cartography"], desc: "Experimental mappings across three spatial typologies." }
 ];
 
-let popupCount = 0;
+let floatingPopupCount = 0;
 let activePopups = [];
 let zIndexCounter = 2000;
 let baseX = 60;
@@ -1683,7 +1683,7 @@ const newProjectsData = [
 ];
 
 let popupCount = 0;
-let zCounter = 2500;
+let popupZCounter = 2500;
 
 function getRandomPosition(width, height) {
   const padding = 20;
