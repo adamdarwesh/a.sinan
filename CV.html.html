@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ad(h)am Sinan — CV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #f5f2eb;
+    --paper: #0a0a0a;
+    --warm-mid: #666666;
+    --accent: #FF3030;
+    --accent-light: #ff5555;
+    --muted: #888888;
+    --rule: #2a2a2a;
+    --grid-line: rgba(255,255,255,0.03);
+    --serif: 'Playfair Display', Georgia, serif;
+    --body-serif: 'Cormorant Garamond', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body-serif);
+    font-size: 18px;
+    line-height: 1.75;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      radial-gradient(circle at 0 0, var(--accent) 1.5px, transparent 1.5px);
+    background-size: 40px 40px, 40px 40px, 40px 40px;
+    background-position: 0 0, 0 0, 0 0;
+    background-repeat: repeat, repeat, repeat;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  .nav-name {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cv-header {
+    margin-bottom: 3rem;
+    border-bottom: 0.5px solid var(--rule);
+    padding-bottom: 2rem;
+  }
+
+  .cv-header h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .cv-header h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .cv-header .subhead {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .cv-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--warm-mid);
+  }
+
+  .cv-contact a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .cv-section {
+    margin-bottom: 3rem;
+  }
+
+  .cv-section-title {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--rule);
+    padding-bottom: 0.5rem;
+  }
+
+  .cv-entry {
+    margin-bottom: 1.8rem;
+  }
+
+  .cv-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    margin-bottom: 0.3rem;
+  }
+
+  .cv-entry-title {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .cv-entry-date {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--accent);
+  }
+
+  .cv-entry-subtitle {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--warm-mid);
+    margin-bottom: 0.5rem;
+  }
+
+  .cv-entry-desc {
+    font-family: var(--body-serif);
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .skill-category {
+    margin-bottom: 1rem;
+  }
+
+  .skill-category-title {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .skill-list {
+    font-family: var(--body-serif);
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    margin-top: 2rem;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 3px;
+  }
+
+  footer {
+    background: var(--paper);
+    border-top: 0.5px solid var(--rule);
+    padding: 1.5rem 3rem;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  footer span {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--warm-mid);
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .container { padding: 6rem 1.5rem 3rem; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .cv-entry-header { flex-direction: column; gap: 0.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-name">Ad(h)am Sinan</a>
+  <ul class="nav-links">
+    <li><a href="index.html#projects">Work</a></li>
+    <li><a href="index.html#research">Research</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+  <div class="cv-header">
+    <h1>Ad(h)am <em>Sinan</em></h1>
+    <div class="subhead">Architect · Artist · Researcher</div>
+    <div class="cv-contact">
+      <span>📅 15 September 1995 · Palestinian</span>
+      <span>📍 Vienna · Bethlehem</span>
+      <span>📧 <a href="mailto:adam95darwesh@gmail.com">adam95darwesh@gmail.com</a></span>
+      <span>🔗 <a href="https://www.linkedin.com/in/aladham/" target="_blank">linkedin.com/in/aladham</a></span>
+      <span>📷 @al_adhambinsinan</span>
+    </div>
+  </div>
+
+  <!-- Profile -->
+  <div class="cv-section">
+    <div class="cv-section-title">Profile</div>
+    <p class="cv-entry-desc" style="max-width: 80ch;">An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches. My work is enriched by interdisciplinary collaboration and strong research foundations, aiming to create architectural visions that cultivate connection and commonality.</p>
+  </div>
+
+  <!-- Education -->
+  <div class="cv-section">
+    <div class="cv-section-title">Education</div>
+    <div class="cv-entry">
+      <div class="cv-entry-header"><span class="cv-entry-title">PhD / DR.TECH</span><span class="cv-entry-date">2024 — present</span></div>
+      <div class="cv-entry-subtitle">University of Applied Arts Vienna (Die Angewandte)</div>
+    </div>
+    <div class="cv-entry">
+      <div class="cv-entry-header"><span class="cv-entry-title">MArch</span><span class="cv-entry-date">2020 — 2024</span></div>
+      <div class="cv-entry-subtitle">University of Applied Arts Vienna — Studio Hani Rashid · Magna cum laude</div>
+    </div>
+    <div class="cv-entry">
+      <div class="cv-entry-header"><span class="cv-entry-title">B.Sc in Architectural Engineering</span><span class="cv-entry-date">2013 — 2020</span></div>
+      <div class="cv-entry-subtitle">AABU (Institute of Islamic Art and Architecture), Jordan</div>
+    </div>
+  </div>
+
+  <!-- Professional Experience -->
+  <div class="cv-section">
+    <div class="cv-section-title">Professional Experience</div>
+    
+    <div class="cv-entry">
+      <div class="cv-entry-header"><span class="cv-entry-title">Faculty Member & Lecturer</span><span class="cv-entry-date">Sep 2025 — present</span></div>
+      <div class="cv-entry-subtitle">Arab American University (AAUP), Faculty of Architecture, Palestine</div>
+    </div>
+    
+    <div class="cv-entry">
+      <div class="cv-entry-header"><span class="cv-entry-title">Researcher/Curator</span><span class="cv-entry-date">Sep 2025 — present</span></div>
+      <div class="cv-entry-subtitle">Conflict Studies Research Center (CSRC) at AAUP, Palestine</div>
+    </div>
+    
+    <div class="cv-entry">
+      <div class="cv-entry-header"><span class="cv-entry-title">Faculty Lecturer</span><span class="cv-entry-date">Feb 2025 — Sep 2025</span></div>
+      <div class="cv-entry-subtitle">Birzeit University, Department of Design, Music, and Arts</div>
+    </div>
+    
+    <div class="cv-entry">
+      <div class="cv-entry-header"><span class="cv-entry-title">Architect</span><span class="cv-entry-date">Feb 2024 — Feb 2025</span></div>
+      <div class="cv-entry-subtitle">LAVA (Laboratory for Visionary Architecture), Berlin — Remote</div>
+      <div class="cv-entry-desc">Urban design, landscape architecture, technical drawings, high-end projects.</div>
+    </div>
+    
+    <div class="cv-entry">
+      <div class="cv-entry-header"><span class="cv-entry-title">Freelance Architect</span><span class="cv-entry-date">June 2022 — present</span></div>
+      <div class="cv-entry-subtitle">Worldwide: Ghana, Kuwait, Aruba, Netherlands, Austria</div>
+      <div class="cv-entry-desc">Consultation, urban, architectural, product, and landscape design.</div>
+    </div>
+    
+    <div class="cv-entry">
+      <div class="cv-entry-header"><span class="cv-entry-title">Architectural Intern</span><span class="cv-entry-date">July 2023 — Oct 2023</span></div>
+      <div class="cv-entry-subtitle">LEVS Architecten, Amsterdam</div>
+      <div class="cv-entry-desc">Computational and parametric design; carbon footprint calculation software for Dutch municipalities.</div>
+    </div>
+    
+    <div class="cv-entry">
+      <div class="cv-entry-header"><span class="cv-entry-title">Architect, Designer</span><span class="cv-entry-date">April 2022 — Sep 2022</span></div>
+      <div class="cv-entry-subtitle">PR Architects / Peter Reindl Architects, Vienna</div>
+      <div class="cv-entry-desc">Residential and interior design, technical work, visualisation, furniture design.</div>
+    </div>
+    
+    <div class="cv-entry">
+      <div class="cv-entry-header"><span class="cv-entry-title">Architect, Designer</span><span class="cv-entry-date">April 2019 — March 2021</span></div>
+      <div class="cv-entry-subtitle">Kayan Studio, Bethlehem</div>
+      <div class="cv-entry-desc">Drafting, modelling, fabrication, visualisation.</div>
+    </div>
+  </div>
+
+  <!-- Skills -->
+  <div class="cv-section">
+    <div class="cv-section-title">Digital Skills</div>
+    <div class="skills-grid">
+      <div class="skill-category"><div class="skill-category-title">3D Modelling (5/5)</div><div class="skill-list">Rhino3D, Archicad, Blender3D, Maya, Sketchup</div></div>
+      <div class="skill-category"><div class="skill-category-title">Visualisation (4/5)</div><div class="skill-list">Vray, Cycles, D5 Render, Twinmotion, Keyshot, Lumion</div></div>
+      <div class="skill-category"><div class="skill-category-title">Visual Scripting (3.5/5)</div><div class="skill-list">Grasshopper, Dynamo, Geometry Nodes (Blender)</div></div>
+      <div class="skill-category"><div class="skill-category-title">Presentation (4/5)</div><div class="skill-list">Hand Drafting, Adobe Suite, Sketching, AutoCAD, Qgis</div></div>
+      <div class="skill-category"><div class="skill-category-title">Languages</div><div class="skill-list">Arabic (mother tongue), English (fluent), Dutch (intermediate), German (beginner)</div></div>
+    </div>
+  </div>
+
+  <!-- Research/Workshops + Residencies -->
+  <div class="cv-section">
+    <div class="cv-section-title">Research / Workshops + Residencies</div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">TPFF Film Residency</span><span class="cv-entry-date">Feb-Aug 2026</span></div><div class="cv-entry-subtitle">Toronto, Canada — Film: "Another Sea behind another wall"</div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Residency @ Wonder Cabinet</span><span class="cv-entry-date">Oct-Jan 2025</span></div><div class="cv-entry-subtitle">Spring Sessions — "Regutting: Remains, Returns"</div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Research Residency @ Dar Jacir</span><span class="cv-entry-date">Aug-Oct 2025</span></div><div class="cv-entry-subtitle">"Agential Cartographies" — mapping workshops on agency in Palestine</div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Applied Foreign Affairs — Tamale, Ghana</span><span class="cv-entry-date">Sep 2022 + Feb 2022</span></div><div class="cv-entry-subtitle">Tamale Old Airfield Project + Tamale Territories-Fictions</div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">GSAPP/Columbia University — Studio X</span><span class="cv-entry-date">Nov 2017</span></div><div class="cv-entry-subtitle">"Frozen Imaginaries" — Citizen mapping/urban research</div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Harvard GSD — The Architectural Imagination</span><span class="cv-entry-date">Aug 2017</span></div><div class="cv-entry-subtitle">Prof. K. Michael Hays</div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">AA Visiting School — Jordan MAARS</span><span class="cv-entry-date">June 2017</span></div></div>
+  </div>
+
+  <!-- Exhibitions / Curation -->
+  <div class="cv-section">
+    <div class="cv-section-title">Exhibitions / Curation</div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Vortex Columns — Climate Biennale Vienna</span><span class="cv-entry-date">March 2026</span></div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Regutting: Returns, Remains — Wonder Cabinet</span><span class="cv-entry-date">Dec 2025</span></div><div class="cv-entry-subtitle">Film, Photography + Installation</div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Tangential Streams Lecture Series — Curator+Moderator</span><span class="cv-entry-date">Dec 2025 + May 2025</span></div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Agential Cartographies Exhibition — Dar Jacir</span><span class="cv-entry-date">Sep 2025</span></div><div class="cv-entry-subtitle">Solo Exhibition, Curator, Moderator</div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Soft Unsealing — IABR11 Rotterdam</span><span class="cv-entry-date">June 2024</span></div><div class="cv-entry-subtitle">[A]FA Collective</div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Braided Realities — Vienna</span><span class="cv-entry-date">June 2024</span></div><div class="cv-entry-subtitle">Afghan Housing and Rituals</div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Chicago Architecture Biennial CAB5</span><span class="cov-entry-date">Nov 2023</span></div><div class="cv-entry-subtitle">"Softened Sealed scapes" — [A]FA Collective</div></div>
+  </div>
+
+  <!-- Awards -->
+  <div class="cv-section">
+    <div class="cv-section-title">Awards</div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Honorable Mention — eVolo Skyscraper Competition</span><span class="cv-entry-date">2020</span></div><div class="cv-entry-subtitle">"Carbonfloss"</div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Scholarship — AA Visiting School MAARS1.0</span><span class="cv-entry-date">2017</span></div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Winner — AABU Canopies Competition</span><span class="cv-entry-date">2017</span></div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Full Scholarship — DesignMorphine VV1.0</span><span class="cv-entry-date">2016</span></div></div>
+  </div>
+
+  <!-- Publications -->
+  <div class="cv-section">
+    <div class="cv-section-title">Publications</div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Re: Action — Urban Resilience</span><span class="cv-entry-date">2023</span></div><div class="cv-entry-subtitle">Birkhäuser — Edited by Hani Rashid</div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">Dazeen School Shows</span><span class="cv-entry-date">2022</span></div><div class="cv-entry-subtitle">Medius paedagogicus + Agropraxis</div></div>
+  </div>
+
+  <!-- Conferences -->
+  <div class="cv-section">
+    <div class="cv-section-title">Conferences</div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">"Dynamic Ruinations" — University of Pretoria</span><span class="cv-entry-date">April 2026</span></div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">"Agential Cartographies" — AUC, Egypt</span><span class="cv-entry-date">April 2026</span></div></div>
+    <div class="cv-entry"><div class="cv-entry-header"><span class="cv-entry-title">"Spatio-territorial Examination" — Birzeit University</span><span class="cv-entry-date">June 2025</span></div></div>
+  </div>
+
+  <a href="index.html" class="back-link">← Back to Portfolio</a>
+</div>
+
+<footer>
+  <span>Ad(h)am Sinan — Architecture, Art & Research</span>
+  <span>© 2025</span>
+</footer>
+
+</body>
+</html>
