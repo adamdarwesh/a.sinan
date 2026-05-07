@@ -37,7 +37,6 @@
     position: relative;
   }
 
-  /* Subtle Grid Background */
   body::before {
     content: "";
     position: fixed;
@@ -54,16 +53,14 @@
     background-repeat: repeat, repeat, repeat;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.5;
+    opacity: 0.4;
   }
 
-  /* All content above grid */
   nav, .hero, section, footer {
     position: relative;
     z-index: 1;
   }
 
-  /* ── NAV ── */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -72,7 +69,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.2rem 3rem;
-    background: rgba(10,10,10,0.95);
+    background: rgba(255,255,255,0.95);
     backdrop-filter: blur(10px);
     border-bottom: 0.5px solid var(--rule);
   }
@@ -104,7 +101,6 @@
 
   .nav-links a:hover { color: var(--accent); }
 
-  /* ── HERO ── */
   .hero {
     min-height: 100vh;
     display: grid;
@@ -215,7 +211,6 @@
     text-transform: uppercase;
   }
 
-  /* ── SECTION HEADERS ── */
   .section-header {
     display: flex;
     align-items: center;
@@ -238,7 +233,6 @@
     background: var(--rule);
   }
 
-  /* ── PROJECTS GRID (Staggered/Offset) ── */
   #projects {
     padding-bottom: 6rem;
   }
@@ -258,22 +252,13 @@
 
   .project-row:last-child { border-bottom: 0.5px solid var(--rule); }
 
-  /* Staggered/Offset Effect */
-  .project-row.stagger-left .project-image {
-    transform: translateX(-5%);
-  }
-  .project-row.stagger-left .project-content {
-    transform: translateX(5%);
-  }
-  .project-row.stagger-right .project-image {
-    transform: translateX(5%);
-  }
-  .project-row.stagger-right .project-content {
-    transform: translateX(-5%);
-  }
+  .project-row.stagger-left .project-image { transform: translateX(-5%); }
+  .project-row.stagger-left .project-content { transform: translateX(5%); }
+  .project-row.stagger-right .project-image { transform: translateX(5%); }
+  .project-row.stagger-right .project-content { transform: translateX(-5%); }
 
   .project-image {
-    background: #1a1a1a;
+    background: #f0f0f0;
     overflow: hidden;
     position: relative;
     min-height: 400px;
@@ -293,22 +278,8 @@
     text-transform: uppercase;
     position: absolute;
     inset: 0;
-    background: #1a1a1a;
+    background: #f5f5f5;
     border: 1px dashed var(--rule);
-  }
-
-  .project-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    filter: grayscale(30%) contrast(1.05);
-    transition: filter 0.3s ease, transform 0.5s ease;
-  }
-
-  .project-image img:hover {
-    filter: grayscale(0%) contrast(1.1);
-    transform: scale(1.02);
   }
 
   .project-content {
@@ -382,8 +353,7 @@
     max-width: 50ch;
   }
 
-  /* ── WRITING / RESEARCH ── */
-  #writing {
+  #research {
     padding-bottom: 6rem;
     border-top: 0.5px solid var(--rule);
   }
@@ -398,7 +368,6 @@
   .writing-item {
     padding: 2.5rem 2.5rem 2.5rem 0;
     border-right: 0.5px solid var(--rule);
-    cursor: pointer;
     transition: background 0.2s;
   }
 
@@ -437,7 +406,6 @@
     margin-top: 1.5rem;
   }
 
-  /* ── ABOUT ── */
   #about {
     padding-bottom: 8rem;
     border-top: 0.5px solid var(--rule);
@@ -499,7 +467,6 @@
     line-height: 1.6;
   }
 
-  /* ── CONTACT ── */
   #contact {
     background: var(--paper);
     border-top: 0.5px solid var(--rule);
@@ -568,7 +535,6 @@
     transition: color 0.2s;
   }
 
-  /* ── FOOTER ── */
   footer {
     background: var(--paper);
     border-top: 0.5px solid var(--rule);
@@ -586,7 +552,6 @@
     text-transform: uppercase;
   }
 
-  /* ── SCROLL ANIMATIONS ── */
   .reveal {
     opacity: 0;
     transform: translateY(24px);
@@ -607,9 +572,7 @@
     .project-row.stagger-left .project-image,
     .project-row.stagger-right .project-image,
     .project-row.stagger-left .project-content,
-    .project-row.stagger-right .project-content {
-      transform: translateX(0);
-    }
+    .project-row.stagger-right .project-content { transform: translateX(0); }
     .project-content { padding: 2rem 1.5rem; }
     .project-image { min-height: 250px; }
     .writing-grid { grid-template-columns: 1fr; }
@@ -627,15 +590,14 @@
 
 <nav>
   <a href="#" class="nav-name">Ad(h)am Sinan</a>
-<ul class="nav-links">
-  <li><a href="#projects">Work</a></li>
-  <li><a href="#research">Research</a></li>
-  <li><a href="#about">About</a></li>
-  <li><a href="#contact">Contact</a></li>
-</ul>
+  <ul class="nav-links">
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="cv.html">About / CV</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
 </nav>
 
-<!-- ── HERO ── -->
 <section class="hero">
   <div class="hero-left">
     <p class="hero-eyebrow">Architecture · Art · Research</p>
@@ -652,12 +614,11 @@
       <li onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})"><span class="idx-num">03</span><span class="idx-title">The New Cairn</span><span class="idx-tag">Ongoing</span></li>
       <li onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})"><span class="idx-num">04</span><span class="idx-title">Carbonfloss</span><span class="idx-tag">2020</span></li>
       <li onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})"><span class="idx-num">05</span><span class="idx-title">OUROBOS</span><span class="idx-tag">2022</span></li>
-      <li onclick="document.getElementById('writing').scrollIntoView({behavior:'smooth'})"><span class="idx-num">06</span><span class="idx-title">Research & Writing</span><span class="idx-tag">Various</span></li>
+      <li onclick="document.getElementById('research').scrollIntoView({behavior:'smooth'})"><span class="idx-num">06</span><span class="idx-title">Research & Writing</span><span class="idx-tag">Various</span></li>
     </ul>
   </div>
 </section>
 
-<!-- ── PROJECTS ── -->
 <section id="projects">
   <div class="section-header">
     <span class="section-label">Selected Work</span>
@@ -665,275 +626,84 @@
   </div>
   <div class="projects-grid">
 
-    <!-- Project 01 - Spiral Spines -->
     <div class="project-row stagger-right reveal">
-      <div class="project-image"><div class="project-image-placeholder">Spiral Spines — Image Placeholder<br>Add to /images/spiral-spines.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">Spiral Spines — Add image to /images/spiral-spines.jpg</div></div>
       <div class="project-content"><div class="project-meta"><span class="project-num">01</span><span class="project-year">2026</span></div><h2 class="project-title">Spiral Spines</h2><p class="project-subtitle">Stable in the Face of Disruption — Climate Biennale Vienna 2026</p><div class="project-tags"><span class="tag">Regenerative Material</span><span class="tag">Vernacular Craft</span><span class="tag">1:1 Prototype</span></div><p class="project-desc">A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing.</p></div>
     </div>
 
-    <!-- Project 02 - Woven Realities -->
     <div class="project-row stagger-left reveal">
       <div class="project-content"><div class="project-meta"><span class="project-num">02</span><span class="project-year">2026</span></div><h2 class="project-title">Woven Realities</h2><p class="project-subtitle">The Diversity of Afghan Homes — Climate Biennale Vienna 2026</p><div class="project-tags"><span class="tag">Circular Architecture</span><span class="tag">Modular Assembly</span><span class="tag">Afghan Heritage</span></div><p class="project-desc">A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice. The structure substitutes traditional earth with reusable by-products.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Woven Realities — Image Placeholder<br>Add to /images/woven-realities.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">Woven Realities — Add image to /images/woven-realities.jpg</div></div>
     </div>
 
-    <!-- Project 03 - The New Cairn -->
     <div class="project-row stagger-right reveal">
-      <div class="project-image"><div class="project-image-placeholder">The New Cairn — Image Placeholder<br>Add to /images/new-cairn.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">The New Cairn — Add image to /images/new-cairn.jpg</div></div>
       <div class="project-content"><div class="project-meta"><span class="project-num">03</span><span class="project-year">Ongoing</span></div><h2 class="project-title">The New Cairn</h2><p class="project-subtitle">Heterogeneous Rubble Stacking for Post-Disaster Contexts</p><div class="project-tags"><span class="tag">Rubble Reuse</span><span class="tag">Compression-Only</span><span class="tag">Post-Conflict</span></div><p class="project-desc">A research and construction project proposing whole, un-crushed demolition rubble as masonry units in compression-only enclosures. Deployable in Palestine and Afghanistan without specialist equipment.</p></div>
     </div>
 
-    <!-- Project 04 - Carbonfloss -->
     <div class="project-row stagger-left reveal">
       <div class="project-content"><div class="project-meta"><span class="project-num">04</span><span class="project-year">2020</span></div><h2 class="project-title">Carbonfloss</h2><p class="project-subtitle">eVolo Skyscraper Competition — Honorable Mention</p><div class="project-tags"><span class="tag">Speculative</span><span class="tag">Ecological</span><span class="tag">Political Statement</span></div><p class="project-desc">Carbonfloss is a political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity amid impending environmental disaster.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Carbonfloss — Image Placeholder<br>Add to /images/carbonfloss.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">Carbonfloss — Add image to /images/carbonfloss.jpg</div></div>
     </div>
 
-    <!-- Project 05 - OUROBOS: Residual Morphogenesis -->
     <div class="project-row stagger-right reveal">
-      <div class="project-image"><div class="project-image-placeholder">OUROBOS — Image Placeholder<br>Add to /images/ourobos.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">OUROBOS — Add image to /images/ourobos.jpg</div></div>
       <div class="project-content"><div class="project-meta"><span class="project-num">05</span><span class="project-year">2022</span></div><h2 class="project-title">OUROBOS: Residual Morphogenesis</h2><p class="project-subtitle">Published in Dazeen</p><div class="project-tags"><span class="tag">AI Strategy</span><span class="tag">Residual Material</span><span class="tag">Morphogenesis</span></div><p class="project-desc">An exploration of residual morphogenesis using AI-driven workflows and material strategies. The project synthesizes urban residue into architectural form.</p></div>
     </div>
 
-    <!-- Project 06 - Agropraxis -->
     <div class="project-row stagger-left reveal">
       <div class="project-content"><div class="project-meta"><span class="project-num">06</span><span class="project-year">2021</span></div><h2 class="project-title">Agropraxis</h2><p class="project-subtitle">Published in Dazeen</p><div class="project-tags"><span class="tag">Academic</span><span class="tag">Agricultural</span><span class="tag">Spatial Practice</span></div><p class="project-desc">Agropraxis explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Agropraxis — Image Placeholder<br>Add to /images/agropraxis.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">Agropraxis — Add image to /images/agropraxis.jpg</div></div>
     </div>
 
-    <!-- Project 07 - Medius paedagogicus -->
     <div class="project-row stagger-right reveal">
-      <div class="project-image"><div class="project-image-placeholder">Medius paedagogicus — Image Placeholder<br>Add to /images/medius.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">Medius paedagogicus — Add image to /images/medius.jpg</div></div>
       <div class="project-content"><div class="project-meta"><span class="project-num">07</span><span class="project-year">2022</span></div><h2 class="project-title">Medius paedagogicus</h2><p class="project-subtitle">Published in Dazeen</p><div class="project-tags"><span class="tag">Pedagogical Space</span><span class="tag">Institutional</span><span class="tag">Flat Hierarchy</span></div><p class="project-desc">A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes connected by circular paths, manifesting equality and flat hierarchy.</p></div>
     </div>
 
-    <!-- Project 08 - Soft Unsealing / IABR11 -->
     <div class="project-row stagger-left reveal">
       <div class="project-content"><div class="project-meta"><span class="project-num">08</span><span class="project-year">2024</span></div><h2 class="project-title">Soft Unsealing</h2><p class="project-subtitle">IABR11 — International Architecture Biennale Rotterdam</p><div class="project-tags"><span class="tag">Collective</span><span class="tag">Installation</span><span class="tag">Spatial Practice</span></div><p class="project-desc">Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Soft Unsealing — Image Placeholder<br>Add to /images/soft-unsealing.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">Soft Unsealing — Add image to /images/soft-unsealing.jpg</div></div>
     </div>
 
-    <!-- Project 09 - Old Airfield Project -->
     <div class="project-row stagger-right reveal">
-      <div class="project-image"><div class="project-image-placeholder">Old Airfield — Image Placeholder<br>Add to /images/old-airfield.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">Old Airfield — Add image to /images/old-airfield.jpg</div></div>
       <div class="project-content"><div class="project-meta"><span class="project-num">09</span><span class="project-year">Ongoing</span></div><h2 class="project-title">Old Airfield Project</h2><p class="project-subtitle">Chicago Architecture Biennial CAB5 — Acoustic Mirror Cultural Gateway</p><div class="project-tags"><span class="tag">Collective</span><span class="tag">Acoustic</span><span class="tag">Landscape</span></div><p class="project-desc">A solo sub-project within the [A]FA Collective ongoing realization at Tamale, Ghana. An acoustic mirror cultural gateway exploring sound and spatial memory.</p></div>
     </div>
 
-    <!-- Project 10 - Enkidu -->
     <div class="project-row stagger-left reveal">
       <div class="project-content"><div class="project-meta"><span class="project-num">10</span><span class="project-year">In Development</span></div><h2 class="project-title">Enkidu</h2><p class="project-subtitle">Vernacular Levantine-Palestinian Architecture Revival</p><div class="project-tags"><span class="tag">Vernacular</span><span class="tag">Ecological</span><span class="tag">Tradition Revival</span></div><p class="project-desc">Enkidu aims to revive elements of vernacular Palestinian architecture — not through aesthetic value alone, but through ecological, economical, and tradition revival. Located in Dier Ghassaneh.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Enkidu — Image Placeholder<br>Add to /images/enkidu.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">Enkidu — Add image to /images/enkidu.jpg</div></div>
     </div>
 
-    <!-- Project 11 - Aura -->
     <div class="project-row stagger-right reveal">
-      <div class="project-image"><div class="project-image-placeholder">Aura — Image Placeholder<br>Add to /images/aura.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">Aura — Add image to /images/aura.jpg</div></div>
       <div class="project-content"><div class="project-meta"><span class="project-num">11</span><span class="project-year">2022</span></div><h2 class="project-title">Aura</h2><p class="project-subtitle">Folly Project — Academic</p><div class="project-tags"><span class="tag">Folly</span><span class="tag">Installation</span><span class="tag">Spatial Experience</span></div><p class="project-desc">A folly project exploring the atmospheric and experiential qualities of architectural space through material and light.</p></div>
     </div>
 
-    <!-- Project 12 - Liberation Fronts -->
     <div class="project-row stagger-left reveal">
       <div class="project-content"><div class="project-meta"><span class="project-num">12</span><span class="project-year">2024</span></div><h2 class="project-title">Liberation Fronts</h2><p class="project-subtitle">Diploma Thesis — Honors</p><div class="project-tags"><span class="tag">Thesis</span><span class="tag">Political</span><span class="tag">Spatial Agency</span></div><p class="project-desc">A diploma thesis exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Liberation Fronts — Image Placeholder<br>Add to /images/liberation-fronts.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">Liberation Fronts — Add image to /images/liberation-fronts.jpg</div></div>
     </div>
 
-    <!-- Project 13 - Regutting: Returns, Remains -->
     <div class="project-row stagger-right reveal">
-      <div class="project-image"><div class="project-image-placeholder">Regutting — Image Placeholder<br>Add to /images/regutting.jpg</div></div>
+      <div class="project-image"><div class="project-image-placeholder">Regutting — Add image to /images/regutting.jpg</div></div>
       <div class="project-content"><div class="project-meta"><span class="project-num">13</span><span class="project-year">2025</span></div><h2 class="project-title">Regutting: Returns, Remains</h2><p class="project-subtitle">Wonder Cabinet — Spring Sessions Residency</p><div class="project-tags"><span class="tag">Residency</span><span class="tag">Installation</span><span class="tag">Film</span></div><p class="project-desc">A residency project exploring returns and remains through film, photography, and installation at Wonder Cabinet, Bethlehem.</p></div>
     </div>
 
-    <!-- Project 14 - Agential Cartographies -->
     <div class="project-row stagger-left reveal">
-     <script>
-// Fix for smooth scrolling
-document.querySelectorAll('.nav-links a, .hero-cta, .hero-index li').forEach(link => {
-  link.addEventListener('click', function(e) {
-    e.preventDefault();
-    const targetId = this.getAttribute('href');
-    if (targetId && targetId !== '#') {
-      const target = document.querySelector(targetId);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else if (this.onclick) {
-      // hero-index items have onclick already
-      return;
-    }
-  });
-});
-</script>
-     <!-- ── RESEARCH SECTION ── -->
+      <div class="project-content"><div class="project-meta"><span class="project-num">14</span><span class="project-year">2025</span></div><h2 class="project-title">Agential Cartographies</h2><p class="project-subtitle">Dar Jacir for Art & Research — Solo Exhibition</p><div class="project-tags"><span class="tag">Exhibition</span><span class="tag">Cartography</span><span class="tag">Agency</span></div><p class="project-desc">An exhibition presenting experimental mappings across three spatial typologies: the camp, the city, and the limbo landscape, exploring agency as a dynamic and malleable force.</p></div>
+      <div class="project-image"><div class="project-image-placeholder">Agential Cartographies — Add image to /images/agential-cartographies.jpg</div></div>
+    </div>
+
+  </div>
+</section>
+
 <section id="research">
   <div class="section-header">
     <span class="section-label">Research & Publications</span>
     <div class="section-rule"></div>
   </div>
   <div class="writing-grid">
-    
-    <div class="writing-item reveal">
-      <p class="writing-type">Conference Paper</p>
-      <h3 class="writing-title">Dynamic Ruinations: Architecture Against Finality</h3>
-      <p class="writing-desc">Presented at "Co-producing Alternative Futures through Experimental Urbanism" Symposium, University of Pretoria, South Africa (April 2026). Explores architecture as a practice of resistance against imposed finality.</p>
-      <p class="writing-date">2026 — Co-produced with Newcastle University</p>
-    </div>
-    
-    <div class="writing-item reveal">
-      <p class="writing-type">Conference Paper</p>
-      <h3 class="writing-title">Agential Cartographies</h3>
-      <p class="writing-desc">Presented at "Spectres of the Undercommons" Conference, The American University in Cairo (April 2026). Examines agency as a metric to countermap hegemonic cartographic representations in occupied Palestine.</p>
-      <p class="writing-date">2026 — Extra-territorial Studio</p>
-    </div>
-    
-    <div class="writing-item reveal">
-      <p class="writing-type">Conference Paper</p>
-      <h3 class="writing-title">Spatio-territorial Examination of the Actively Deterritorialized</h3>
-      <p class="writing-desc">Presented at "Engineering Destruction: Militarization and the War Economy" Conference, Birzeit University (June 2025). Examines occupied Palestine as a participatory field and frontier.</p>
-      <p class="writing-date">2025 — Birzeit University</p>
-    </div>
-    
-    <div class="writing-item reveal">
-      <p class="writing-type">Book Chapter</p>
-      <h3 class="writing-title">Re: Action — Urban Resilience in the post-Information Age</h3>
-      <p class="writing-desc">Published by Birkhäuser (2023). Edited by Hani Rashid. Contributing chapter on urban resilience, sustainable growth, and the vitality of cities and ecosystems.</p>
-      <p class="writing-date">2023 — Birkhäuser</p>
-    </div>
-    
-    <div class="writing-item reveal">
-      <p class="writing-type">Research Proposal</p>
-      <h3 class="writing-title">Rubble Typology: Destruction Mode as a Material Determinant</h3>
-      <p class="writing-desc">A comparative framework for understanding how seismic collapse, conflict bombardment, structural degradation, and administrative demolition each produce materially distinct waste streams.</p>
-      <p class="writing-date">2025 — The New Cairn Project</p>
-    </div>
-    
-    <div class="writing-item reveal">
-      <p class="writing-type">Material Research</p>
-      <h3 class="writing-title">Compression-Only Logic in Heterogeneous Rubble Assemblies</h3>
-      <p class="writing-desc">Applying the Safe Theorem to mixed-material demolition waste for compression-only structural logic in post-disaster contexts.</p>
-      <p class="writing-date">2025 — Fellowship Research</p>
-    </div>
-    
-  </div>
-</section>
-     <!-- ── ABOUT / CV SECTION ── -->
-<section id="about">
-  <div class="section-header">
-    <span class="section-label">About & CV</span>
-    <div class="section-rule"></div>
-  </div>
-  <div class="about-grid">
-    <div class="about-text reveal">
-      <h2>Architecture as a medium for structural resilience and collective memory.</h2>
-      <p>An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches. My work is enriched by interdisciplinary collaboration and strong research foundations, aiming to create architectural visions that cultivate connection and commonality.</p>
-      <p>I am interested in how post-disaster contexts generate their own material logic — the specific geometry of conflict rubble, the knowledge embedded in craft traditions, the structural potential of the circular waste economy. My work tests these hypotheses at 1:1 scale, in real conditions, with real communities.</p>
-      <p>Current research is focused on developing a generalisable, low-tech construction system for compression-only rubble enclosures — deployable in post-disaster contexts without specialist equipment or industrial material inputs.</p>
-    </div>
-    <div class="about-details reveal">
-      <div class="about-row"><span class="about-row-label">Name</span><span class="about-row-val">Ad(h)am Sinan (Adam Darwesh)</span></div>
-      <div class="about-row"><span class="about-row-label">Born</span><span class="about-row-val">15 September 1995 · Palestinian</span></div>
-      <div class="about-row"><span class="about-row-label">Based</span><span class="about-row-val">Vienna, Austria · Bethlehem, Palestine</span></div>
-      <div class="about-row"><span class="about-row-label">Education</span><span class="about-row-val">PhD / Die Angewandte (2024-present)<br>MArch / Die Angewandte (2020-2024)<br>BSc / AABU (2013-2020)</span></div>
-      <div class="about-row"><span class="about-row-label">Current Roles</span><span class="about-row-val">Faculty Member · AAUP<br>Researcher/Curator · CSRC at AAUP</span></div>
-      <div class="about-row"><span class="about-row-label">Focus</span><span class="about-row-val">Regenerative material practice, post-conflict reconstruction, vernacular knowledge systems, rubble reuse</span></div>
-      <div class="about-row"><span class="about-row-label">Exhibitions</span><span class="about-row-val">Climate Biennale Vienna 2026, IABR11 Rotterdam, Chicago Architecture Biennial CAB5, Angewandte Festival</span></div>
-      <div class="about-row"><span class="about-row-label">Residencies</span><span class="about-row-val">TPFF Film Residency Toronto (2026), Wonder Cabinet (2025), Dar Jacir (2025)</span></div>
-      <div class="about-row"><span class="about-row-label">Awards</span><span class="about-row-val">eVolo Honorable Mention (2020), AA Visiting School Scholarship (2017)</span></div>
-    </div>
-  </div>
-</section>
-     <!-- ── ABOUT ── -->
-<section id="about">
-  <div class="section-header">
-    <span class="section-label">About</span>
-    <div class="section-rule"></div>
-  </div>
-  <div class="about-grid">
-    <div class="about-text reveal">
-      <h2>Architecture as a medium for structural resilience and collective memory.</h2>
-      <p>An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches. My work is enriched by interdisciplinary collaboration and strong research foundations, aiming to create architectural visions that cultivate connection and commonality.</p>
-      <p>I am interested in how post-disaster contexts generate their own material logic — the specific geometry of conflict rubble, the knowledge embedded in craft traditions, the structural potential of the circular waste economy. My work tests these hypotheses at 1:1 scale, in real conditions, with real communities.</p>
-    </div>
-    <div class="about-details reveal">
-      <div class="about-row"><span class="about-row-label">Based</span><span class="about-row-val">Vienna, Austria · Bethlehem, Palestine</span></div>
-      <div class="about-row"><span class="about-row-label">Focus</span><span class="about-row-val">Regenerative material practice, post-conflict reconstruction, vernacular knowledge systems</span></div>
-      <div class="about-row"><span class="about-row-label">Education</span><span class="about-row-val">PhD / Die Angewandte — MArch / Die Angewandte — BSc / AABU</span></div>
-      <div class="about-row"><span class="about-row-label">Exhibitions</span><span class="about-row-val">Climate Biennale Vienna 2026, IABR11 Rotterdam, Chicago Architecture Biennial CAB5</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ── CONTACT ── -->
-<section id="contact">
-  <div class="contact-left reveal">
-    <h2>Let's<br><em>work<br>together.</em></h2>
-    <p>Open to research collaborations, fellowship inquiries, exhibition commissions, and conversations about post-conflict material practice.</p>
-  </div>
-  <div class="contact-links reveal">
-    <a href="mailto:adam95darwesh@gmail.com" class="contact-link"><span class="contact-link-label">Email</span><span class="contact-link-val">adam95darwesh@gmail.com</span></a>
-    <a href="https://www.linkedin.com/in/aladham/" class="contact-link" target="_blank"><span class="contact-link-label">LinkedIn</span><span class="contact-link-val">in/aladham</span></a>
-    <a href="#" class="contact-link"><span class="contact-link-label">Instagram</span><span class="contact-link-val">@al_adhambinsinan</span></a>
-  </div>
-</section>
-
-<footer>
-  <span>Ad(h)am Sinan — Architecture, Art & Research</span>
-  <span>© 2025</span>
-</footer>
-
-<script>
- <a href="cv_adham_sinan.pdf" class="contact-link" target="_blank">
-  <span class="contact-link-label">Download CV</span>
-  <span class="contact-link-val">CV / Portfolio PDF →</span>
-</a>
-  // Scroll animation observer
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // Make navigation links work
-  document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const targetId = this.getAttribute('href');
-      if (targetId && targetId !== '#') {
-        const target = document.querySelector(targetId);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    });
-  });
-
-  // Make hero CTA button work
-  const ctaButton = document.querySelector('.hero-cta');
-  if (ctaButton) {
-    ctaButton.addEventListener('click', function(e) {
-      e.preventDefault();
-      const target = document.querySelector('#projects');
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
-    });
-  }
-</script>
-<script>
-  // Make navigation links work smoothly
-  document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const targetId = this.getAttribute('href');
-      if (targetId && targetId !== '#') {
-        const target = document.querySelector(targetId);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    });
-  });
-</script>
-
-</html>
+    <div class="writing-item reveal"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Dynamic Ruinations: Architecture Against Finality</h3><p class="writing-desc">Presented at "Co-producing Alternative Futures through Experimental Urbanism" Symposium, University of Pretoria, South Africa (April 2026).</p><p class="writing-date">2026 — Newcastle University</p></div>
+    <div class="writing-item reveal"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Agential Cartographies
