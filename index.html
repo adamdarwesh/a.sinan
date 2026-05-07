@@ -1510,4 +1510,321 @@ function launchPopups() {
 // Start popups after page loads
 setTimeout(launchPopups, 500);
 </script>
+
+<!-- ========== NEW POPUP SYSTEM ========== -->
+<style>
+  /* Popup Window Styles */
+  .floating-popup {
+    position: fixed;
+    background: #ffffff;
+    border: 2px solid #FF3030;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    z-index: 2000;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    cursor: pointer;
+  }
+  
+  .floating-popup.minimized {
+    width: 160px !important;
+    height: 44px !important;
+    border-radius: 25px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+  }
+  
+  .floating-popup.minimized .popup-body,
+  .floating-popup.minimized .popup-tags,
+  .floating-popup.minimized .popup-desc {
+    display: none;
+  }
+  
+  .floating-popup.minimized .popup-header {
+    border-radius: 25px;
+    padding: 8px 15px;
+  }
+  
+  .floating-popup.expanded {
+    width: 480px !important;
+    height: auto !important;
+    min-height: 320px;
+    z-index: 3000;
+  }
+  
+  .popup-header {
+    background: #FF3030;
+    color: white;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: grab;
+    user-select: none;
+  }
+  
+  .popup-header:active {
+    cursor: grabbing;
+  }
+  
+  .popup-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: bold;
+  }
+  
+  .popup-controls {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .popup-minimize,
+  .popup-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0 5px;
+    border-radius: 4px;
+  }
+  
+  .popup-minimize:hover,
+  .popup-close:hover {
+    background: rgba(255,255,255,0.4);
+  }
+  
+  .popup-body {
+    padding: 15px;
+  }
+  
+  .popup-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 8px 0;
+  }
+  
+  .popup-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    padding: 3px 8px;
+    background: #f0f0f0;
+    border-radius: 12px;
+    color: #FF3030;
+  }
+  
+  .popup-desc {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #666;
+    margin-top: 8px;
+  }
+  
+  .popup-subtitle {
+    font-weight: bold;
+    color: #FF3030;
+    margin: 5px 0;
+    font-size: 0.8rem;
+  }
+  
+  .floating-popup.minimized::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  
+  .floating-popup.minimized:hover::after {
+    opacity: 1;
+  }
+  
+  @media (max-width: 768px) {
+    .floating-popup.expanded {
+      width: 90vw !important;
+      left: 5vw !important;
+      top: 10vh !important;
+    }
+    .floating-popup.minimized {
+      width: 140px !important;
+      height: 40px !important;
+    }
+  }
+</style>
+
+<script>
+// New Popup System Data
+const newProjectsData = [
+  { id: "project-spiral-spines", num: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna 2026", tags: ["Regenerative Material", "Vernacular Craft"], desc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural." },
+  { id: "project-woven-realities", num: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", tags: ["Circular Architecture", "Afghan Heritage"], desc: "A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice." },
+  { id: "project-new-cairn", num: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking for Post-Disaster Contexts", tags: ["Rubble Reuse", "Post-Conflict"], desc: "A research project proposing whole demolition rubble as masonry units in compression-only enclosures." },
+  { id: "project-carbonfloss", num: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Skyscraper Competition", tags: ["Speculative", "Ecological"], desc: "A political statement spurring hope for action as reassurance for humanity." },
+  { id: "project-ourobos", num: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", tags: ["AI Strategy", "Residual Material"], desc: "An exploration of residual morphogenesis using AI-driven workflows." },
+  { id: "project-agropraxis", num: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", tags: ["Agricultural", "Spatial Practice"], desc: "Explores the intersection of agriculture and architectural practice." },
+  { id: "project-medius", num: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", tags: ["Pedagogical Space", "Flat Hierarchy"], desc: "A prototype tracing its character from Diola compounds in Senegal." },
+  { id: "project-soft-unsealing", num: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", tags: ["Collective", "Installation"], desc: "Explores softening boundaries and unsealing latent spatial potentials." },
+  { id: "project-old-airfield", num: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Architecture Biennial", tags: ["Collective", "Acoustic"], desc: "An acoustic mirror cultural gateway exploring sound and spatial memory." },
+  { id: "project-enkidu", num: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", tags: ["Vernacular", "Ecological"], desc: "Reviving elements of vernacular Palestinian architecture." },
+  { id: "project-aura", num: "11", title: "Aura", year: "2022", subtitle: "Folly Project", tags: ["Folly", "Installation"], desc: "Exploring atmospheric qualities of architectural space." },
+  { id: "project-liberation-fronts", num: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", tags: ["Thesis", "Political"], desc: "Exploring liberation fronts as spatial and political constructs." },
+  { id: "project-regutting", num: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", tags: ["Residency", "Installation"], desc: "Exploring returns and remains through film and photography." },
+  { id: "project-agential-cartographies", num: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", tags: ["Exhibition", "Cartography"], desc: "Experimental mappings across three spatial typologies." }
+];
+
+let popupCount = 0;
+let zCounter = 2500;
+
+function getRandomPosition(width, height) {
+  const padding = 20;
+  const maxX = window.innerWidth - width - padding;
+  const maxY = window.innerHeight - height - padding;
+  return {
+    x: Math.max(padding, Math.random() * maxX),
+    y: Math.max(padding, Math.random() * maxY)
+  };
+}
+
+function getRandomSize() {
+  const sizes = [[260, 280], [280, 300], [300, 320], [270, 290], [290, 310]];
+  const s = sizes[Math.floor(Math.random() * sizes.length)];
+  return { width: s[0], height: s[1] };
+}
+
+function createFloatingPopup(project, stackIndex) {
+  const { width, height } = getRandomSize();
+  let { x, y } = getRandomPosition(width, height);
+  
+  // Add stacking offset
+  x += stackIndex * 12;
+  y += stackIndex * 12;
+  
+  // Keep within bounds
+  x = Math.min(x, window.innerWidth - width - 20);
+  y = Math.min(y, window.innerHeight - height - 20);
+  x = Math.max(20, x);
+  y = Math.max(20, y);
+  
+  const popup = document.createElement('div');
+  popup.className = 'floating-popup';
+  popup.setAttribute('data-project-id', project.id);
+  popup.setAttribute('data-tooltip', `${project.num} · ${project.title}`);
+  
+  popup.style.width = `${width}px`;
+  popup.style.height = `${height}px`;
+  popup.style.left = `${x}px`;
+  popup.style.top = `${y}px`;
+  popup.style.zIndex = zCounter++;
+  
+  popup.innerHTML = `
+    <div class="popup-header">
+      <span class="popup-title">📁 ${project.num} · ${project.title}</span>
+      <div class="popup-controls">
+        <button class="popup-minimize">−</button>
+        <button class="popup-close">✕</button>
+      </div>
+    </div>
+    <div class="popup-body">
+      <div style="background: #f5f5f5; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-bottom: 10px;">🏛️ ${project.title}</div>
+      <div class="popup-tags">${project.tags.map(t => `<span class="popup-tag">${t}</span>`).join('')}</div>
+      <div class="popup-subtitle">${project.subtitle} (${project.year})</div>
+      <div class="popup-desc">${project.desc.substring(0, 100)}${project.desc.length > 100 ? '...' : ''}</div>
+    </div>
+  `;
+  
+  document.body.appendChild(popup);
+  
+  // Make draggable
+  let isDragging = false;
+  let startX, startY, startLeft, startTop;
+  const header = popup.querySelector('.popup-header');
+  
+  header.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.popup-minimize') || e.target.closest('.popup-close')) return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = parseFloat(popup.style.left);
+    startTop = parseFloat(popup.style.top);
+    popup.style.zIndex = zCounter++;
+    popup.style.cursor = 'grabbing';
+    e.preventDefault();
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    let newLeft = startLeft + (e.clientX - startX);
+    let newTop = startTop + (e.clientY - startY);
+    newLeft = Math.max(10, Math.min(newLeft, window.innerWidth - popup.offsetWidth - 10));
+    newTop = Math.max(10, Math.min(newTop, window.innerHeight - popup.offsetHeight - 10));
+    popup.style.left = `${newLeft}px`;
+    popup.style.top = `${newTop}px`;
+  });
+  
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+    popup.style.cursor = '';
+  });
+  
+  // Minimize button
+  popup.querySelector('.popup-minimize').addEventListener('click', (e) => {
+    e.stopPropagation();
+    popup.classList.add('minimized');
+    popup.style.width = '160px';
+    popup.style.height = '44px';
+  });
+  
+  // Close button
+  popup.querySelector('.popup-close').addEventListener('click', (e) => {
+    e.stopPropagation();
+    popup.classList.add('minimized');
+    popup.style.width = '160px';
+    popup.style.height = '44px';
+  });
+  
+  // Click to expand and scroll
+  popup.addEventListener('click', (e) => {
+    if (e.target.closest('.popup-minimize') || e.target.closest('.popup-close')) return;
+    
+    if (popup.classList.contains('minimized')) {
+      popup.classList.remove('minimized');
+      const { width, height } = getRandomSize();
+      popup.style.width = `${width}px`;
+      popup.style.height = `${height}px`;
+    } else {
+      popup.classList.add('expanded');
+      popup.style.width = '480px';
+      popup.style.height = 'auto';
+    }
+    
+    // Scroll to project
+    const target = document.getElementById(project.id);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+      target.style.transition = 'background 0.3s';
+      target.style.background = 'rgba(255,48,48,0.1)';
+      setTimeout(() => { target.style.background = ''; }, 1000);
+    }
+  });
+}
+
+// Launch popups!
+newProjectsData.forEach((project, i) => {
+  setTimeout(() => {
+    createFloatingPopup(project, i);
+  }, 100 + i * 60);
+});
+</script>
+<!-- ========== END POPUP SYSTEM ========== -->
+
 </html>
