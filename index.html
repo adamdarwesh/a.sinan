@@ -9,6 +9,128 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 
 <style>
+ /* CV Modal / Popup Window */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: var(--paper, #ffffff);
+  width: 80%;
+  max-width: 800px;
+  height: 80%;
+  max-height: 80vh;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--rule, #eeeeee);
+}
+
+.modal-header h3 {
+  font-family: var(--serif, 'Playfair Display');
+  color: var(--accent, #FF3030);
+  margin: 0;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: var(--muted, #666);
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.close-modal:hover {
+  color: var(--accent, #FF3030);
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+/* Custom scrollbar for modal */
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: var(--rule, #eeeeee);
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: var(--accent, #FF3030);
+  border-radius: 3px;
+}
+
+/* CV content styling inside modal */
+.cv-modal-content {
+  font-family: var(--body-serif, 'Cormorant Garamond');
+}
+
+.cv-modal-content h4 {
+  font-family: var(--mono, 'DM Mono');
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: var(--accent, #FF3030);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--rule, #eeeeee);
+  padding-bottom: 0.3rem;
+}
+
+.cv-modal-content p {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.cv-modal-content .cv-entry {
+  margin-bottom: 1rem;
+}
+
+.cv-modal-content .cv-title {
+  font-weight: bold;
+  font-family: var(--serif, 'Playfair Display');
+}
+
+.cv-modal-content .cv-date {
+  color: var(--accent, #FF3030);
+  font-size: 0.8rem;
+}
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
@@ -720,6 +842,21 @@
 </style>
 </head>
 <body>
+ <!-- CV Modal Popup -->
+<div id="cvModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>CV / Resume</h3>
+      <button class="close-modal" id="closeModalBtn">✕</button>
+    </div>
+    <div class="modal-body" id="cvModalBody">
+      <!-- CV content will be loaded here -->
+      <div class="cv-modal-content">
+        <p style="text-align: center; color: #999;">Loading CV...</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Home/Back to Top Button -->
 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="home-btn" title="Back to Top">↑</button>
@@ -1109,6 +1246,89 @@
 </footer>
 
 <script>
+ // CV Modal functionality
+const modal = document.getElementById('cvModal');
+const openCvBtn = document.getElementById('openCvBtn');
+const closeModalBtn = document.getElementById('closeModalBtn');
+
+// CV HTML content
+const cvContent = `
+<div class="cv-modal-content">
+  <h4>Profile</h4>
+  <p>An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches. My work is enriched by interdisciplinary collaboration and strong research foundations.</p>
+  
+  <h4>Education</h4>
+  <div class="cv-entry"><span class="cv-title">PhD / DR.TECH</span> <span class="cv-date">2024 — present</span><br>University of Applied Arts Vienna (Die Angewandte)</div>
+  <div class="cv-entry"><span class="cv-title">MArch</span> <span class="cv-date">2020 — 2024</span><br>Die Angewandte — Studio Hani Rashid · Magna cum laude</div>
+  <div class="cv-entry"><span class="cv-title">B.Sc Architectural Engineering</span> <span class="cv-date">2013 — 2020</span><br>AABU, Jordan</div>
+  
+  <h4>Professional Experience</h4>
+  <div class="cv-entry"><span class="cv-title">Faculty Member & Lecturer</span> <span class="cv-date">Sep 2025 — present</span><br>Arab American University (AAUP), Palestine</div>
+  <div class="cv-entry"><span class="cv-title">Researcher/Curator</span> <span class="cv-date">Sep 2025 — present</span><br>Conflict Studies Research Center (CSRC) at AAUP</div>
+  <div class="cv-entry"><span class="cv-title">Faculty Lecturer</span> <span class="cv-date">Feb 2025 — Sep 2025</span><br>Birzeit University, Palestine</div>
+  <div class="cv-entry"><span class="cv-title">Architect</span> <span class="cv-date">Feb 2024 — Feb 2025</span><br>LAVA (Laboratory for Visionary Architecture), Berlin</div>
+  <div class="cv-entry"><span class="cv-title">Freelance Architect</span> <span class="cv-date">June 2022 — present</span><br>Worldwide: Ghana, Kuwait, Aruba, Netherlands, Austria</div>
+  <div class="cv-entry"><span class="cv-title">Architectural Intern</span> <span class="cv-date">July 2023 — Oct 2023</span><br>LEVS Architecten, Amsterdam</div>
+  
+  <h4>Skills</h4>
+  <p><strong>3D Modelling (5/5):</strong> Rhino3D, Archicad, Blender3D, Maya, Sketchup</p>
+  <p><strong>Visualisation (4/5):</strong> Vray, Cycles, D5 Render, Twinmotion, Keyshot, Lumion</p>
+  <p><strong>Languages:</strong> Arabic (native), English (fluent), Dutch (intermediate), German (beginner)</p>
+  
+  <h4>Awards</h4>
+  <div class="cv-entry"><span class="cv-title">Honorable Mention — eVolo Skyscraper Competition</span> <span class="cv-date">2020</span><br>"Carbonfloss"</div>
+  <div class="cv-entry"><span class="cv-title">Scholarship — AA Visiting School</span> <span class="cv-date">2017</span></div>
+  <div class="cv-entry"><span class="cv-title">Winner — AABU Canopies Competition</span> <span class="cv-date">2017</span></div>
+  
+  <h4>Exhibitions</h4>
+  <div class="cv-entry"><span class="cv-title">Vortex Columns — Climate Biennale Vienna</span> <span class="cv-date">2026</span></div>
+  <div class="cv-entry"><span class="cv-title">Soft Unsealing — IABR11 Rotterdam</span> <span class="cv-date">2024</span></div>
+  <div class="cv-entry"><span class="cv-title">Chicago Architecture Biennial CAB5</span> <span class="cv-date">2023</span></div>
+  
+  <h4>Publications</h4>
+  <div class="cv-entry"><span class="cv-title">Re: Action — Urban Resilience</span> <span class="cv-date">2023</span><br>Birkhäuser — Edited by Hani Rashid</div>
+  <div class="cv-entry"><span class="cv-title">Dazeen School Shows</span> <span class="cv-date">2022</span><br>Medius paedagogicus + Agropraxis</div>
+  
+  <h4>Contact</h4>
+  <p>📧 <a href="mailto:adam95darwesh@gmail.com" style="color: #FF3030;">adam95darwesh@gmail.com</a><br>
+  🔗 <a href="https://www.linkedin.com/in/aladham/" target="_blank" style="color: #FF3030;">linkedin.com/in/aladham</a><br>
+  📷 @al_adhambinsinan</p>
+</div>
+`;
+
+// Open modal
+if (openCvBtn) {
+  openCvBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('cvModalBody').innerHTML = cvContent;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  });
+}
+
+// Close modal
+if (closeModalBtn) {
+  closeModalBtn.addEventListener('click', function() {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto'; // Restore scrolling
+  });
+}
+
+// Close modal when clicking outside the modal content
+window.addEventListener('click', function(e) {
+  if (e.target === modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+});
+
+// Close with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && modal.style.display === 'flex') {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+});
 // Carousel functions
 function prevSlide(carouselId) {
   const container = document.getElementById(carouselId);
