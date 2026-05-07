@@ -9,6 +9,155 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 
 <style>
+ /* Old School Popup Windows */
+.project-popup {
+  position: fixed;
+  width: 320px;
+  background: #f0f0f0;
+  border: 3px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  z-index: 1500;
+  font-family: 'MS Sans Serif', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 12px;
+}
+
+.popup-header {
+  background: var(--accent, #FF3030);
+  color: white;
+  padding: 6px 10px;
+  font-weight: bold;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  border-bottom: 1px solid #808080;
+}
+
+.popup-header h4 {
+  margin: 0;
+  font-size: 12px;
+}
+
+.popup-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.popup-controls button {
+  background: #c0c0c0;
+  border: 1px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  width: 20px;
+  height: 18px;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-controls button:hover {
+  background: #a0a0a0;
+}
+
+.close-popup {
+  background: #c0c0c0;
+  border: 1px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  width: 20px;
+  height: 18px;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  color: black;
+}
+
+.close-popup:hover {
+  background: #a0a0a0;
+}
+
+.popup-body {
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #808080;
+  margin: 2px;
+}
+
+.popup-body img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  background: #d0d0d0;
+  margin-bottom: 8px;
+}
+
+.popup-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 8px 0;
+}
+
+.popup-tag {
+  background: #e0e0e0;
+  padding: 2px 6px;
+  font-size: 10px;
+  border: 1px solid #808080;
+}
+
+/* Converted text (after X is clicked) */
+.converted-text {
+  position: fixed;
+  background: transparent;
+  z-index: 1500;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--ink);
+  max-width: 250px;
+  pointer-events: none;
+  animation: textFadeIn 0.3s ease;
+  background: rgba(255,255,255,0.9);
+  padding: 5px 10px;
+  border-left: 3px solid var(--accent);
+}
+
+@keyframes textFadeIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Push aside animation */
+.project-popup.push-left {
+  animation: pushLeft 0.3s ease forwards;
+}
+
+.project-popup.push-right {
+  animation: pushRight 0.3s ease forwards;
+}
+
+@keyframes pushLeft {
+  0% { transform: translateX(0) rotate(0deg); }
+  100% { transform: translateX(-200px) rotate(-8deg); }
+}
+
+@keyframes pushRight {
+  0% { transform: translateX(0) rotate(0deg); }
+  100% { transform: translateX(200px) rotate(8deg); }
+}
+
+/* Bring to front animation */
+@keyframes popupAppear {
+  0% { transform: scale(0.8) translateY(-20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.project-popup {
+  animation: popupAppear 0.2s ease;
+}
  /* CV Modal / Popup Window */
 .modal {
   display: none;
@@ -1474,5 +1623,171 @@ function startRedSquareAnimation() {
 
 startRedSquareAnimation();
 </script>
+ // Old School Popup System - Stacking on top of each other
+const projectsData = [
+  { num: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna 2026", tags: ["Regenerative Material", "Vernacular Craft"], desc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural.", img: "📷" },
+  { num: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", tags: ["Circular Architecture", "Afghan Heritage"], desc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice.", img: "📷" },
+  { num: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking for Post-Disaster Contexts", tags: ["Rubble Reuse", "Post-Conflict"], desc: "A research project proposing whole demolition rubble as masonry units in compression-only enclosures.", img: "📷" },
+  { num: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Skyscraper Competition", tags: ["Speculative", "Ecological"], desc: "Carbonfloss is a political statement against absurd reluctance policies, spurring hope for action.", img: "📷" },
+  { num: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", tags: ["AI Strategy", "Residual Material"], desc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies.", img: "📷" },
+  { num: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", tags: ["Agricultural", "Spatial Practice"], desc: "Agropraxis explores the intersection of agriculture and architectural practice.", img: "📷" },
+  { num: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", tags: ["Pedagogical Space", "Flat Hierarchy"], desc: "A prototype tracing its character from Diola compounds in Casamance, Senegal.", img: "📷" },
+  { num: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", tags: ["Collective", "Installation"], desc: "Part of the [A]FA Collective, exploring softening boundaries.", img: "📷" },
+  { num: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Architecture Biennial", tags: ["Collective", "Acoustic"], desc: "An acoustic mirror cultural gateway exploring sound and spatial memory.", img: "📷" },
+  { num: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", tags: ["Vernacular", "Ecological"], desc: "Reviving elements of vernacular Palestinian architecture.", img: "📷" },
+  { num: "11", title: "Aura", year: "2022", subtitle: "Folly Project", tags: ["Folly", "Installation"], desc: "Exploring atmospheric qualities of architectural space.", img: "📷" },
+  { num: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", tags: ["Thesis", "Political"], desc: "Exploring liberation fronts as spatial and political constructs.", img: "📷" },
+  { num: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", tags: ["Residency", "Installation"], desc: "Exploring returns and remains through film and photography.", img: "📷" },
+  { num: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", tags: ["Exhibition", "Cartography"], desc: "Experimental mappings across three spatial typologies.", img: "📷" }
+];
+
+let popupCount = 0;
+let activePopups = [];
+let zIndexCounter = 1500;
+let baseX = 80;
+let baseY = 60;
+let stackOffset = 25; // Each popup is offset by 25px
+
+function createProjectPopup(project, index) {
+  const popup = document.createElement('div');
+  popup.className = 'project-popup';
+  popup.id = `popup-${Date.now()}-${index}`;
+  
+  // Stacking position - each new popup appears slightly offset from previous
+  const offsetIndex = popupCount;
+  const posX = baseX + (offsetIndex * stackOffset);
+  const posY = baseY + (offsetIndex * stackOffset);
+  
+  popup.style.left = `${posX}px`;
+  popup.style.top = `${posY}px`;
+  popup.style.zIndex = zIndexCounter++;
+  
+  popup.innerHTML = `
+    <div class="popup-header">
+      <h4>${project.num} · ${project.title}</h4>
+      <div class="popup-controls">
+        <button class="close-popup" data-id="${index}" title="Close">✕</button>
+      </div>
+    </div>
+    <div class="popup-body">
+      <div style="background: #d0d0d0; height: 80px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; font-size: 24px;">
+        📁 ${project.title.substring(0, 15)}
+      </div>
+      <div class="popup-tags">
+        ${project.tags.map(tag => `<span class="popup-tag">${tag}</span>`).join('')}
+      </div>
+      <p><strong>${project.subtitle}</strong> (${project.year})</p>
+      <p style="font-size: 11px;">${project.desc.substring(0, 100)}${project.desc.length > 100 ? '...' : ''}</p>
+    </div>
+  `;
+  
+  document.body.appendChild(popup);
+  
+  // Make draggable (move around)
+  makeDraggable(popup);
+  
+  // Bring to front on click
+  popup.addEventListener('mousedown', () => {
+    popup.style.zIndex = zIndexCounter++;
+  });
+  
+  // Close button (X) - converts to text at exact position
+  const closeBtn = popup.querySelector('.close-popup');
+  closeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const rect = popup.getBoundingClientRect();
+    const xPos = rect.left + 10;
+    const yPos = rect.top + 30;
+    
+    popup.remove();
+    createConvertedText(project, xPos, yPos);
+  });
+  
+  activePopups.push(popup);
+  popupCount++;
+  return popup;
+}
+
+function makeDraggable(element) {
+  let isDragging = false;
+  let startX, startY, initialLeft, initialTop;
+  
+  const header = element.querySelector('.popup-header');
+  
+  header.addEventListener('mousedown', (e) => {
+    if (e.target.classList.contains('close-popup')) return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    initialLeft = parseFloat(element.style.left);
+    initialTop = parseFloat(element.style.top);
+    element.style.cursor = 'grabbing';
+    element.style.zIndex = zIndexCounter++;
+    e.preventDefault();
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    element.style.left = `${initialLeft + dx}px`;
+    element.style.top = `${initialTop + dy}px`;
+  });
+  
+  document.addEventListener('mouseup', (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    element.style.cursor = 'default';
+    
+    // Check if pushed to side
+    const rect = element.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    
+    if (rect.left < -50) {
+      element.classList.add('push-left');
+      setTimeout(() => {
+        element.style.left = '-200px';
+      }, 300);
+    } else if (rect.right > viewportWidth + 50) {
+      element.classList.add('push-right');
+      setTimeout(() => {
+        element.style.left = `${viewportWidth - 50}px`;
+      }, 300);
+    }
+  });
+}
+
+function createConvertedText(project, x, y) {
+  const textDiv = document.createElement('div');
+  textDiv.className = 'converted-text';
+  textDiv.style.left = `${x}px`;
+  textDiv.style.top = `${y}px`;
+  textDiv.innerHTML = `
+    <strong>${project.num} · ${project.title}</strong><br>
+    <span style="font-size: 0.7rem; color: #FF3030;">${project.subtitle}</span><br>
+    <span style="font-size: 0.65rem;">${project.year}</span>
+  `;
+  document.body.appendChild(textDiv);
+}
+
+// Launch popups in quick succession like old internet popups
+function launchPopupsLikeOldInternet() {
+  projectsData.forEach((project, index) => {
+    // Random delay between 100-300ms for chaotic feel
+    const delay = index * (150 + Math.random() * 100);
+    setTimeout(() => {
+      createProjectPopup(project, index);
+      
+      // Optional: Add "pop" sound effect feel (console log for effect)
+      console.log(`💥 POPUP #${project.num} launched!`);
+    }, delay);
+  });
+}
+
+// Start popups when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  // Small delay then launch all popups chaotically
+  setTimeout(launchPopupsLikeOldInternet, 300);
+});
 
 </html>
