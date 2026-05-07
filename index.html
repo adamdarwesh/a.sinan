@@ -741,3 +741,21 @@
 
     <!-- Project 14 - Agential Cartographies -->
     <div class="project-row stagger-left reveal">
+     <script>
+// Fix for smooth scrolling
+document.querySelectorAll('.nav-links a, .hero-cta, .hero-index li').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const targetId = this.getAttribute('href');
+    if (targetId && targetId !== '#') {
+      const target = document.querySelector(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (this.onclick) {
+      // hero-index items have onclick already
+      return;
+    }
+  });
+});
+</script>
