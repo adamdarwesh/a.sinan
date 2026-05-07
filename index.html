@@ -70,7 +70,7 @@
     z-index: 0;
   }
 
-  /* Mouse-responsive grid overlay */
+  /* Mouse-responsive grid highlight - only brightens grid lines */
   .grid-highlight {
     position: fixed;
     top: 0;
@@ -79,8 +79,9 @@
     height: 100%;
     pointer-events: none;
     z-index: 1;
-    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.15) 0%, transparent 50%);
-    transition: background 0.05s ease;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.12) 0%, transparent 60%);
+    mask-image: linear-gradient(black, black);
+    mix-blend-mode: lighten;
   }
 
   /* Random plus signs - sudden pop */
@@ -238,14 +239,7 @@
     color: var(--accent);
   }
 
-  .tag-filter.active {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: white;
-  }
-
-  /* Tooltip for tags */
-  .tag-filter:hover::after {
+  .tag-filter::after {
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
@@ -259,6 +253,13 @@
     white-space: nowrap;
     z-index: 200;
     margin-bottom: 5px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .tag-filter:hover::after {
+    opacity: 1;
   }
 
   /* Sticky Notes Canvas */
@@ -291,7 +292,6 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   }
 
-  /* Expanded preview on hover */
   .sticky-note.preview-active {
     width: 280px;
     height: auto;
@@ -540,7 +540,27 @@
     border-radius: 10px;
   }
 
-  /* Modal for full project view */
+  /* Split View Modal */
+  .split-view {
+    display: flex;
+    gap: 20px;
+    width: 90%;
+    max-width: 1400px;
+    height: 85%;
+    background: transparent;
+  }
+
+  .split-pane {
+    flex: 1;
+    background: #0a0a0a;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--rule);
+    overflow: hidden;
+  }
+
+  /* Project Modal */
   .project-modal-overlay {
     display: none;
     position: fixed;
@@ -656,7 +676,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin: 10px 0;
   }
 
   .project-modal-tag {
@@ -670,7 +689,7 @@
     color: var(--accent);
     font-style: italic;
     font-size: 0.75rem;
-    margin-bottom: 10px;
+    margin: 10px 0;
   }
 
   .project-modal-desc {
@@ -679,6 +698,7 @@
     color: var(--muted);
   }
 
+  /* CV Modal */
   .cv-modal-overlay {
     display: none;
     position: fixed;
@@ -717,6 +737,14 @@
     font-size: 0.9rem;
   }
 
+  .cv-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--muted);
+  }
+
   .cv-modal-body {
     flex: 1;
     overflow-y: auto;
@@ -749,6 +777,8 @@
     .sticky-canvas { padding: 160px 1rem 1rem; }
     .sidebar-tabs { display: none; }
     .sticky-note.preview-active { width: 240px; }
+    .split-view { flex-direction: column; width: 95%; height: 90%; }
+    .project-modal { width: 95%; height: 90%; }
   }
 </style>
 </head>
@@ -786,6 +816,11 @@
     </div>
     <div class="results-grid" id="resultsGrid"></div>
   </div>
+</div>
+
+<!-- Split Modal -->
+<div id="splitModal" class="results-modal-overlay">
+  <div class="split-view" id="splitView"></div>
 </div>
 
 <!-- Project Modal -->
@@ -840,22 +875,22 @@
 <script>
 // ========== PROJECT DATA ==========
 const allProjects = [
-  { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", tags: ["Regenerative Material", "Vernacular Craft", "Woodcarving"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural." },
-  { id: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", tags: ["Circular Architecture", "Modular Assembly", "Afghan Heritage"], fullDesc: "A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice." },
-  { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", tags: ["Rubble Reuse", "Post-Conflict", "Compression-Only"], fullDesc: "Research project proposing demolition rubble as masonry units in compression-only enclosures." },
-  { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", tags: ["Speculative", "Ecological", "Skyscraper"], fullDesc: "A political statement spurring hope for action as reassurance for humanity." },
-  { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", tags: ["AI Strategy", "Residual Material", "Morphogenesis"], fullDesc: "Exploration of residual morphogenesis using AI-driven workflows." },
-  { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", tags: ["Agricultural", "Spatial Practice", "Ecological"], fullDesc: "Intersection of agriculture and architectural practice." },
-  { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", category: "education", tags: ["Pedagogical Space", "Flat Hierarchy", "Institutional"], fullDesc: "Prototype tracing its character from Diola compounds in Senegal." },
-  { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", tags: ["Collective", "Installation", "Spatial Practice"], fullDesc: "Explores softening boundaries and unsealing latent spatial potentials." },
-  { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", tags: ["Collective", "Acoustic", "Landscape"], fullDesc: "Acoustic mirror cultural gateway exploring sound and spatial memory." },
-  { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", tags: ["Vernacular", "Ecological", "Palestinian"], fullDesc: "Reviving vernacular Palestinian architecture in Dier Ghassaneh." },
-  { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", category: "art", tags: ["Folly", "Installation", "Atmosphere"], fullDesc: "Exploring atmospheric qualities of architectural space." },
-  { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", tags: ["Thesis", "Political", "Spatial Agency"], fullDesc: "Exploring liberation fronts as spatial and political constructs." },
-  { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", tags: ["Residency", "Installation", "Film"], fullDesc: "Residency project exploring returns and remains through film and installation." },
-  { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", tags: ["Exhibition", "Cartography", "Agency"], fullDesc: "Experimental mappings across three spatial typologies." },
-  { id: "15", title: "PhD Research", year: "2024+", subtitle: "Die Angewandte", category: "education", tags: ["Doctoral", "Material Practice", "Research"], fullDesc: "Doctoral research on post-conflict material practice and rubble reuse." },
-  { id: "16", title: "Teaching at AAUP", year: "2025+", subtitle: "Arab American University", category: "education", tags: ["Faculty", "Pedagogy", "Palestine"], fullDesc: "Faculty member at Arab American University, Palestine." }
+  { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", tags: ["Regenerative Material", "Vernacular Craft", "Woodcarving"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing." },
+  { id: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", tags: ["Circular Architecture", "Modular Assembly", "Afghan Heritage"], fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice using reusable by-products." },
+  { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", tags: ["Rubble Reuse", "Post-Conflict", "Compression-Only"], fullDesc: "A research and construction project proposing whole, un-crushed demolition rubble as masonry units in compression-only enclosures, deployable in Palestine and Afghanistan." },
+  { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", tags: ["Speculative", "Ecological", "Skyscraper"], fullDesc: "A political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity." },
+  { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", tags: ["AI Strategy", "Residual Material", "Morphogenesis"], fullDesc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies." },
+  { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", tags: ["Agricultural", "Spatial Practice", "Ecological"], fullDesc: "Explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles." },
+  { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", category: "education", tags: ["Pedagogical Space", "Flat Hierarchy", "Institutional"], fullDesc: "A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes connected by circular paths." },
+  { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", tags: ["Collective", "Installation", "Spatial Practice"], fullDesc: "Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts." },
+  { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", tags: ["Collective", "Acoustic", "Landscape"], fullDesc: "An acoustic mirror cultural gateway exploring sound and spatial memory, published at Chicago Architecture Biennial CAB5." },
+  { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", tags: ["Vernacular", "Ecological", "Palestinian"], fullDesc: "Reviving elements of vernacular Palestinian architecture in Dier Ghassaneh — not through aesthetic value alone, but through ecological, economical, and tradition revival." },
+  { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", category: "art", tags: ["Folly", "Installation", "Atmosphere"], fullDesc: "A folly project exploring the atmospheric and experiential qualities of architectural space through material and light." },
+  { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", tags: ["Thesis", "Political", "Spatial Agency"], fullDesc: "A diploma thesis exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements." },
+  { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", tags: ["Residency", "Installation", "Film"], fullDesc: "A residency project exploring returns and remains through film, photography, and installation at Wonder Cabinet, Bethlehem." },
+  { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", tags: ["Exhibition", "Cartography", "Agency"], fullDesc: "An exhibition presenting experimental mappings across three spatial typologies: the camp, the city, and the limbo landscape, exploring agency as a dynamic and malleable force." },
+  { id: "15", title: "PhD Research", year: "2024+", subtitle: "Die Angewandte", category: "education", tags: ["Doctoral", "Material Practice", "Research"], fullDesc: "Doctoral research at the University of Applied Arts Vienna focusing on post-conflict material practice and rubble reuse." },
+  { id: "16", title: "Teaching at AAUP", year: "2025+", subtitle: "Arab American University", category: "education", tags: ["Faculty", "Pedagogy", "Palestine"], fullDesc: "Faculty member and lecturer at the Faculty of Architecture, Arab American University, Palestine." }
 ];
 
 // Extract all unique tags
@@ -873,7 +908,7 @@ class StickyNoteManager {
     this.notes = [];
     this.tabs = [];
     this.currentCategory = 'all';
-    this.closedProjects = new Map(); // store closed projects to reopen
+    this.closedProjects = new Map();
   }
 
   createNote(project, index, x, y) {
@@ -892,7 +927,7 @@ class StickyNoteManager {
       <div class="sticky-preview">
         <div class="sticky-preview-carousel">
           <div class="sticky-preview-slides" id="preview-${project.id}">
-            ${[1,2,3].map(i => `<div class="sticky-preview-slide"><img src="images/${project.title.toLowerCase().replace(/ /g, '-')}-${i}.jpg" onerror="this.src='https://placehold.co/200x100/2a2a2a/888?text=${project.title}'"></div>`).join('')}
+            ${[1,2,3].map(i => `<div class="sticky-preview-slide"><img src="images/${project.title.toLowerCase().replace(/ /g, '-')}-${i}.jpg" onerror="this.src='https://placehold.co/200x100/2a2a2a/888?text=Preview'"></div>`).join('')}
           </div>
         </div>
         <div class="sticky-preview-tags">
@@ -904,7 +939,6 @@ class StickyNoteManager {
       </div>
     `;
     
-    // Hover to expand preview
     note.addEventListener('mouseenter', () => {
       if (previewTimeout) clearTimeout(previewTimeout);
       note.classList.add('preview-active');
@@ -1004,7 +1038,6 @@ class StickyNoteManager {
     tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
     
     tab.addEventListener('click', () => {
-      // Reopen as sticky note
       tab.remove();
       this.reopenAsStickyNote(project, index);
     });
@@ -1021,7 +1054,7 @@ class StickyNoteManager {
     this.closedProjects.delete(project.id);
   }
   
-  reopenAllClosedForCategory(category) {
+  reopenClosedForCategory(category) {
     this.closedProjects.forEach((value, id) => {
       if (value.project.category === category) {
         this.reopenAsStickyNote(value.project, value.index);
@@ -1029,7 +1062,7 @@ class StickyNoteManager {
     });
   }
   
-   openFullModal(project) {
+  openFullModal(project) {
     const modal = document.getElementById('projectModal');
     const title = document.getElementById('projectModalTitle');
     const body = document.getElementById('projectModalBody');
@@ -1094,7 +1127,7 @@ class StickyNoteManager {
       });
     };
     
-    // ADD COMPARE BUTTON HERE ↓↓↓
+    // Compare button
     const compareBtn = document.getElementById('compareBtn');
     if (compareBtn) {
       compareBtn.addEventListener('click', () => {
@@ -1103,48 +1136,9 @@ class StickyNoteManager {
       });
     }
   }
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    
-    // Setup carousel
-    const slides = document.getElementById('modalCarousel');
-    const dotsContainer = document.getElementById('modalDots');
-    
-    for (let i = 0; i < slideCount; i++) {
-      const dot = document.createElement('div');
-      dot.className = 'project-modal-dot';
-      if (i === 0) dot.classList.add('active');
-      dot.addEventListener('click', () => {
-        currentIndex = i;
-        slides.style.transform = `translateX(-${currentIndex * 100}%)`;
-        document.querySelectorAll('#modalDots .project-modal-dot').forEach((d, idx) => {
-          d.classList.toggle('active', idx === currentIndex);
-        });
-      });
-      dotsContainer.appendChild(dot);
-    }
-    
-    document.getElementById('modalPrev').onclick = () => {
-      currentIndex = Math.max(0, currentIndex - 1);
-      slides.style.transform = `translateX(-${currentIndex * 100}%)`;
-      document.querySelectorAll('#modalDots .project-modal-dot').forEach((d, idx) => {
-        d.classList.toggle('active', idx === currentIndex);
-      });
-    };
-    
-    document.getElementById('modalNext').onclick = () => {
-      currentIndex = Math.min(slideCount - 1, currentIndex + 1);
-      slides.style.transform = `translateX(-${currentIndex * 100}%)`;
-      document.querySelectorAll('#modalDots .project-modal-dot').forEach((d, idx) => {
-        d.classList.toggle('active', idx === currentIndex);
-      });
-    };
-  }
   
   filterByCategory(category) {
     this.currentCategory = category;
-    
-    // Filter sticky notes
     this.notes.forEach((note, idx) => {
       const projectCategory = allProjects[idx].category;
       if (category === 'all' || projectCategory === category) {
@@ -1154,8 +1148,6 @@ class StickyNoteManager {
         note.style.display = 'none';
       }
     });
-    
-    // Filter sidebar tabs
     this.tabs.forEach(tab => {
       const tabCategory = tab.getAttribute('data-category');
       if (category === 'all' || tabCategory === category) {
@@ -1172,8 +1164,6 @@ class StickyNoteManager {
       this.tabs.forEach(tab => tab.classList.remove('highlight'));
       return;
     }
-    
-    // Highlight sticky notes
     this.notes.forEach((note, idx) => {
       const projectCategory = allProjects[idx].category;
       if (projectCategory === category) {
@@ -1184,22 +1174,12 @@ class StickyNoteManager {
         note.classList.remove('highlight');
       }
     });
-    
-    // Highlight sidebar tabs
     this.tabs.forEach(tab => {
       const tabCategory = tab.getAttribute('data-category');
       if (tabCategory === category) {
         tab.classList.add('highlight');
       } else if (this.currentCategory === 'all') {
         tab.classList.remove('highlight');
-      }
-    });
-  }
-  
-  reopenClosedForCategory(category) {
-    this.closedProjects.forEach((value, id) => {
-      if (value.project.category === category) {
-        this.reopenAsStickyNote(value.project, value.index);
       }
     });
   }
@@ -1260,9 +1240,115 @@ function closeResultsModal() {
   document.body.style.overflow = 'auto';
 }
 
-// ========== RANDOM PLUS SIGNS - SUDDEN POP ==========
+// ========== SPLIT VIEW FUNCTIONS ==========
+function openSplitViewForProject(index) {
+  const project = allProjects[index];
+  const splitView = document.getElementById('splitView');
+  
+  splitView.innerHTML = `
+    <div class="split-pane">
+      <div style="background: var(--accent); padding: 0.8rem; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between;">
+        <h3 style="color: white; margin: 0; font-family: var(--mono); font-size: 0.7rem;">${project.id} · ${project.title}</h3>
+        <button onclick="closeSplitModal()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
+      </div>
+      <div style="padding: 1rem; overflow-y: auto; flex: 1;">
+        <div class="project-modal-carousel">
+          <div class="project-modal-slides" id="splitCarousel">
+            ${[1,2,3,4,5,6].map(i => `<div class="project-modal-slide"><img src="images/${project.title.toLowerCase().replace(/ /g, '-')}-${i}.jpg" onerror="this.src='https://placehold.co/800x400/1a1a1a/666?text=${project.title}'"></div>`).join('')}
+          </div>
+          <button class="project-modal-btn project-modal-prev" onclick="splitPrev()">‹</button>
+          <button class="project-modal-btn project-modal-next" onclick="splitNext()">›</button>
+        </div>
+        <div class="project-modal-tags">${project.tags.map(t => `<span class="project-modal-tag">${t}</span>`).join('')}</div>
+        <div class="project-modal-subtitle">${project.subtitle} (${project.year})</div>
+        <div class="project-modal-desc">${project.fullDesc}</div>
+      </div>
+    </div>
+    <div class="split-pane" id="secondPane">
+      <div style="background: #333; padding: 0.8rem; border-radius: 12px 12px 0 0; text-align: center;">
+        <h3 style="color: white; margin: 0; font-family: var(--mono); font-size: 0.7rem;">Select a project to compare</h3>
+      </div>
+      <div style="padding: 1rem; overflow-y: auto; flex: 1;">
+        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+          ${allProjects.filter(p => p.id !== project.id).map(p => `
+            <div class="result-card" onclick="loadCompareProject(${allProjects.findIndex(proj => proj.id === p.id)})">
+              <div class="card-title">${p.id} · ${p.title}</div>
+              <div class="card-subtitle">${p.subtitle} (${p.year})</div>
+              <div class="card-tags">${p.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('splitModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  
+  let splitCurrentIndex = 0;
+  window.splitPrev = () => {
+    const slides = document.getElementById('splitCarousel');
+    if (!slides) return;
+    splitCurrentIndex = Math.max(0, splitCurrentIndex - 1);
+    slides.style.transform = `translateX(-${splitCurrentIndex * 100}%)`;
+  };
+  window.splitNext = () => {
+    const slides = document.getElementById('splitCarousel');
+    if (!slides) return;
+    splitCurrentIndex = Math.min(5, splitCurrentIndex + 1);
+    slides.style.transform = `translateX(-${splitCurrentIndex * 100}%)`;
+  };
+}
+
+function loadCompareProject(index) {
+  const project = allProjects[index];
+  const secondPane = document.getElementById('secondPane');
+  if (secondPane) {
+    secondPane.innerHTML = `
+      <div style="background: var(--accent); padding: 0.8rem; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between;">
+        <h3 style="color: white; margin: 0; font-family: var(--mono); font-size: 0.7rem;">${project.id} · ${project.title}</h3>
+        <button onclick="closeSplitModal()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
+      </div>
+      <div style="padding: 1rem; overflow-y: auto; flex: 1;">
+        <div class="project-modal-carousel">
+          <div class="project-modal-slides" id="compareCarousel">
+            ${[1,2,3,4,5,6].map(i => `<div class="project-modal-slide"><img src="images/${project.title.toLowerCase().replace(/ /g, '-')}-${i}.jpg" onerror="this.src='https://placehold.co/800x400/1a1a1a/666?text=${project.title}'"></div>`).join('')}
+          </div>
+          <button class="project-modal-btn project-modal-prev" onclick="comparePrev()">‹</button>
+          <button class="project-modal-btn project-modal-next" onclick="compareNext()">›</button>
+        </div>
+        <div class="project-modal-tags">${project.tags.map(t => `<span class="project-modal-tag">${t}</span>`).join('')}</div>
+        <div class="project-modal-subtitle">${project.subtitle} (${project.year})</div>
+        <div class="project-modal-desc">${project.fullDesc}</div>
+      </div>
+    `;
+  }
+  let compareIndex = 0;
+  window.comparePrev = () => {
+    const slides = document.getElementById('compareCarousel');
+    if (!slides) return;
+    compareIndex = Math.max(0, compareIndex - 1);
+    slides.style.transform = `translateX(-${compareIndex * 100}%)`;
+  };
+  window.compareNext = () => {
+    const slides = document.getElementById('compareCarousel');
+    if (!slides) return;
+    compareIndex = Math.min(5, compareIndex + 1);
+    slides.style.transform = `translateX(-${compareIndex * 100}%)`;
+  };
+}
+
+function closeSplitModal() {
+  const modal = document.getElementById('splitModal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+}
+
+// ========== RANDOM PLUS SIGNS ==========
 function createRandomPlusPatch() {
-  const patchCount = Math.floor(Math.random() * 8) + 5; // 5-12 plus signs per patch
+  const patchCount = Math.floor(Math.random() * 8) + 5;
   const centerX = Math.random() * window.innerWidth;
   const centerY = Math.random() * window.innerHeight;
   
@@ -1301,7 +1387,6 @@ let manager;
 function initialize() {
   manager = new StickyNoteManager();
   
-  // Create sticky notes
   allProjects.forEach((project, i) => {
     const x = 30 + Math.random() * (window.innerWidth - 350);
     const y = 160 + Math.random() * (window.innerHeight - 500);
@@ -1310,12 +1395,10 @@ function initialize() {
     }, 100 + i * 40);
   });
   
-  // Create tag filters
   setTimeout(() => {
     createTagFilters();
   }, 800);
   
-  // Setup category filters
   const filters = document.querySelectorAll('#categoryFilters li');
   filters.forEach(filter => {
     filter.addEventListener('click', () => {
@@ -1323,7 +1406,6 @@ function initialize() {
       filters.forEach(f => f.classList.remove('active'));
       filter.classList.add('active');
       manager.filterByCategory(category);
-      // Reopen closed tabs for this category when clicked
       manager.reopenClosedForCategory(category);
     });
     
@@ -1373,7 +1455,12 @@ function initialize() {
     if (e.target === document.getElementById('resultsModal')) closeResultsModal();
   });
   
-  // Random plus sign patches
+  // Split Modal close on background click
+  document.getElementById('splitModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('splitModal')) closeSplitModal();
+  });
+  
+  // Random plus signs
   setInterval(() => {
     createRandomPlusPatch();
   }, 3000);
