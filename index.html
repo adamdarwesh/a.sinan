@@ -9,6 +9,104 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 
 <style>
+ /* Image Carousel Styles */
+.project-image {
+  position: relative;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.carousel-slides {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  height: 100%;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.9);
+  color: #111;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  z-index: 10;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.carousel-btn:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.carousel-btn-prev {
+  left: 10px;
+}
+
+.carousel-btn-next {
+  right: 10px;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+  background: var(--accent);
+  width: 20px;
+  border-radius: 4px;
+}
+
+.image-counter {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  z-index: 10;
+}
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
@@ -635,7 +733,22 @@
   <div class="projects-grid">
 
     <div class="project-row stagger-right reveal" id="project-spiral-spines">
-      <div class="project-image"><div class="project-image-placeholder">Spiral Spines — Add image to /images/spiral-spines.jpg</div></div>
+      <div class="project-image">
+    <div class="carousel-container" id="carousel-spiral-spines">
+      <div class="carousel-slides">
+        <div class="carousel-slide"><img src="images/spiral-spines-1.jpg" alt="Spiral Spines 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+        <div class="carousel-slide"><img src="images/spiral-spines-2.jpg" alt="Spiral Spines 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+        <div class="carousel-slide"><img src="images/spiral-spines-3.jpg" alt="Spiral Spines 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+        <div class="carousel-slide"><img src="images/spiral-spines-4.jpg" alt="Spiral Spines 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+        <div class="carousel-slide"><img src="images/spiral-spines-5.jpg" alt="Spiral Spines 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+        <div class="carousel-slide"><img src="images/spiral-spines-6.jpg" alt="Spiral Spines 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+      </div>
+      <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-spiral-spines')">‹</button>
+      <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-spiral-spines')">›</button>
+      <div class="carousel-dots" id="dots-spiral-spines"></div>
+      <div class="image-counter" id="counter-spiral-spines">1 / 6</div>
+    </div>
+  </div>
       <div class="project-content"><div class="project-meta"><span class="project-num">01</span><span class="project-year">2026</span></div><h2 class="project-title">Spiral Spines</h2><p class="project-subtitle">Stable in the Face of Disruption — Climate Biennale Vienna 2026</p><div class="project-tags"><span class="tag">Regenerative Material</span><span class="tag">Vernacular Craft</span><span class="tag">1:1 Prototype</span></div><p class="project-desc">A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing.</p></div>
     </div>
 
@@ -770,6 +883,82 @@
       if (target) target.scrollIntoView({ behavior: 'smooth' });
     });
   }
+</script>
+ <script>
+function prevSlide(carouselId) {
+  const container = document.getElementById(carouselId);
+  if (!container) return;
+  const slides = container.querySelectorAll('.carousel-slide');
+  if (!slides.length) return;
+  
+  let currentIndex = 0;
+  const slidesContainer = container.querySelector('.carousel-slides');
+  const transform = slidesContainer.style.transform;
+  const match = transform.match(/translateX\(-([\d.]+)%/);
+  if (match) {
+    currentIndex = Math.round(parseFloat(match[1]) / 100);
+  }
+  
+  const newIndex = (currentIndex - 1 + slides.length) % slides.length;
+  slidesContainer.style.transform = `translateX(-${newIndex * 100}%)`;
+  
+  const dots = container.querySelectorAll('.carousel-dot');
+  dots.forEach((dot, i) => dot.classList.toggle('active', i === newIndex));
+  
+  const counter = container.querySelector('.image-counter');
+  if (counter) counter.textContent = `${newIndex + 1} / ${slides.length}`;
+}
+
+function nextSlide(carouselId) {
+  const container = document.getElementById(carouselId);
+  if (!container) return;
+  const slides = container.querySelectorAll('.carousel-slide');
+  if (!slides.length) return;
+  
+  let currentIndex = 0;
+  const slidesContainer = container.querySelector('.carousel-slides');
+  const transform = slidesContainer.style.transform;
+  const match = transform.match(/translateX\(-([\d.]+)%/);
+  if (match) {
+    currentIndex = Math.round(parseFloat(match[1]) / 100);
+  }
+  
+  const newIndex = (currentIndex + 1) % slides.length;
+  slidesContainer.style.transform = `translateX(-${newIndex * 100}%)`;
+  
+  const dots = container.querySelectorAll('.carousel-dot');
+  dots.forEach((dot, i) => dot.classList.toggle('active', i === newIndex));
+  
+  const counter = container.querySelector('.image-counter');
+  if (counter) counter.textContent = `${newIndex + 1} / ${slides.length}`;
+}
+
+// Initialize dots and counters when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.carousel-container').forEach(container => {
+    const slides = container.querySelectorAll('.carousel-slide');
+    const dotsContainer = container.querySelector('.carousel-dots');
+    const counter = container.querySelector('.image-counter');
+    
+    if (dotsContainer && slides.length) {
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < slides.length; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('carousel-dot');
+        if (i === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => {
+          const slidesContainer = container.querySelector('.carousel-slides');
+          slidesContainer.style.transform = `translateX(-${i * 100}%)`;
+          dotsContainer.querySelectorAll('.carousel-dot').forEach((d, idx) => {
+            d.classList.toggle('active', idx === i);
+          });
+          if (counter) counter.textContent = `${i + 1} / ${slides.length}`;
+        });
+        dotsContainer.appendChild(dot);
+      }
+    }
+  });
+});
 </script>
 
 </html>
