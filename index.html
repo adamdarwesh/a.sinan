@@ -404,8 +404,219 @@
     transform: translateY(0);
   }
 
-  /* CV Modal Styles */
-  .modal {
+  /* ========== PROJECT MODAL (Large Window) ========== */
+  .project-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 5000;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .project-modal {
+    background: var(--paper);
+    width: 85%;
+    max-width: 900px;
+    height: 85%;
+    max-height: 85vh;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: modalSlideIn 0.3s ease;
+    position: relative;
+  }
+
+  @keyframes modalSlideIn {
+    from { opacity: 0; transform: scale(0.95) translateY(-20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .project-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 1.8rem;
+    border-bottom: 1px solid var(--rule);
+    background: var(--accent);
+    color: white;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .project-modal-header h2 {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    margin: 0;
+  }
+
+  .project-modal-header .modal-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+
+  .project-modal-header .modal-close:hover {
+    background: rgba(255,255,255,0.4);
+  }
+
+  .project-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+  }
+
+  /* Carousel inside modal */
+  .modal-carousel {
+    position: relative;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .modal-carousel-slides {
+    display: flex;
+    transition: transform 0.4s ease;
+    border-radius: 12px;
+  }
+
+  .modal-carousel-slide {
+    min-width: 100%;
+    position: relative;
+  }
+
+  .modal-carousel-slide img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    background: #f0f0f0;
+  }
+
+  .modal-carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background 0.2s;
+    z-index: 10;
+  }
+
+  .modal-carousel-btn:hover {
+    background: var(--accent);
+  }
+
+  .modal-carousel-prev { left: 15px; }
+  .modal-carousel-next { right: 15px; }
+
+  .modal-carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .modal-carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ccc;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-carousel-dot.active {
+    background: var(--accent);
+    width: 20px;
+    border-radius: 4px;
+  }
+
+  .modal-project-info h3 {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-project-info .modal-subtitle {
+    color: var(--accent);
+    font-style: italic;
+    margin-bottom: 1rem;
+  }
+
+  .modal-project-info .modal-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .modal-project-info .modal-tag {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    padding: 4px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 20px;
+  }
+
+  .modal-project-info .modal-full-desc {
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  /* ========== STICKY NOTES (Minimized Popups) ========== */
+  .sticky-note {
+    position: fixed;
+    background: #fffbeb;
+    border-left: 4px solid var(--accent);
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    z-index: 2000;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    max-width: 180px;
+    backdrop-filter: blur(4px);
+  }
+
+  .sticky-note:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    border-left-width: 6px;
+  }
+
+  .sticky-note .sticky-title {
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .sticky-note .sticky-subtitle {
+    font-size: 0.6rem;
+    color: var(--muted);
+    font-family: var(--body-serif);
+  }
+
+  /* ========== CV MODAL ========== */
+  .cv-modal-overlay {
     display: none;
     position: fixed;
     top: 0;
@@ -413,30 +624,26 @@
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.8);
-    z-index: 2000;
+    backdrop-filter: blur(8px);
+    z-index: 10000;
     justify-content: center;
     align-items: center;
   }
 
-  .modal-content {
+  .cv-modal {
     background: var(--paper);
     width: 85%;
     max-width: 800px;
-    height: 80%;
-    max-height: 80vh;
-    border-radius: 8px;
+    height: 85%;
+    max-height: 85vh;
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    animation: modalFadeIn 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: modalSlideIn 0.3s ease;
   }
 
-  @keyframes modalFadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
-  .modal-header {
+  .cv-modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -444,33 +651,29 @@
     border-bottom: 1px solid var(--rule);
   }
 
-  .modal-header h3 {
-    font-family: var(--serif);
+  .cv-modal-header h2 {
     color: var(--accent);
-    margin: 0;
+    font-family: var(--serif);
   }
 
-  .close-modal {
+  .cv-modal-close {
     background: none;
     border: none;
     font-size: 1.8rem;
     cursor: pointer;
     color: var(--muted);
-    transition: color 0.2s;
   }
 
-  .close-modal:hover { color: var(--accent); }
+  .cv-modal-close:hover { color: var(--accent); }
 
-  .modal-body {
+  .cv-modal-body {
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
   }
 
-  .modal-body h4 {
+  .cv-modal-body h4 {
     font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 2px;
     color: var(--accent);
     margin-top: 1.5rem;
     margin-bottom: 0.5rem;
@@ -478,181 +681,26 @@
     padding-bottom: 0.3rem;
   }
 
-  .modal-body p {
-    margin-bottom: 0.5rem;
-    line-height: 1.6;
-  }
-
-  /* Floating Popup Styles */
-  .floating-popup {
-    position: fixed;
-    background: #ffffff;
-    border: 2px solid var(--accent, #FF3030);
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-    z-index: 2000;
-    font-family: var(--body-serif, 'Cormorant Garamond');
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    cursor: pointer;
-  }
-  
-  .floating-popup.minimized {
-    width: 160px !important;
-    height: 44px !important;
-    border-radius: 25px;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(10px);
-  }
-  
-  .floating-popup.minimized .popup-body {
-    display: none;
-  }
-  
-  .floating-popup.minimized .popup-header {
-    border-radius: 25px;
-    padding: 8px 15px;
-  }
-  
-  .floating-popup.expanded {
-    width: 480px !important;
-    height: auto !important;
-    min-height: 320px;
-    z-index: 3000;
-  }
-  
-  .popup-header {
-    background: var(--accent, #FF3030);
-    color: white;
-    padding: 8px 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: grab;
-    user-select: none;
-  }
-  
-  .popup-header:active {
-    cursor: grabbing;
-  }
-  
-  .popup-title {
-    font-family: var(--mono, 'DM Mono');
-    font-size: 0.7rem;
-    font-weight: bold;
-  }
-  
-  .popup-controls {
-    display: flex;
-    gap: 8px;
-  }
-  
-  .popup-minimize,
-  .popup-close {
-    background: rgba(255,255,255,0.2);
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 0.9rem;
-    padding: 0 5px;
-    border-radius: 4px;
-  }
-  
-  .popup-minimize:hover,
-  .popup-close:hover {
-    background: rgba(255,255,255,0.4);
-  }
-  
-  .popup-body {
-    padding: 15px;
-  }
-  
-  .popup-body .popup-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin: 8px 0;
-  }
-  
-  .popup-body .popup-tag {
-    font-family: var(--mono, 'DM Mono');
-    font-size: 0.55rem;
-    padding: 3px 8px;
-    background: #f0f0f0;
-    border-radius: 12px;
-    color: var(--accent, #FF3030);
-  }
-  
-  .popup-body .popup-desc {
-    font-size: 0.8rem;
-    line-height: 1.5;
-    color: var(--muted, #666);
-    margin-top: 8px;
-  }
-  
-  .popup-body .popup-subtitle {
-    font-weight: bold;
-    color: var(--accent, #FF3030);
-    margin: 5px 0;
-    font-size: 0.8rem;
-  }
-  
-  .floating-popup.minimized::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.8);
-    color: white;
-    font-size: 0.7rem;
-    padding: 4px 8px;
-    border-radius: 6px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
-  }
-  
-  .floating-popup.minimized:hover::after {
-    opacity: 1;
-  }
-
-  @media (max-width: 900px) {
-    nav { padding: 1rem 1.5rem; }
+  @media (max-width: 768px) {
+    .project-modal { width: 95%; height: 90%; }
+    .modal-carousel-slide img { height: 200px; }
     .hero { grid-template-columns: 1fr; }
-    .hero-left { padding: 5rem 1.5rem 3rem; border-right: none; border-bottom: 0.5px solid var(--rule); }
-    .hero-right { padding: 2rem 1.5rem 3rem; }
+    .hero-left { border-right: none; border-bottom: 1px solid var(--rule); }
     .writing-grid { grid-template-columns: 1fr; }
-    .writing-item { border-right: none; border-bottom: 0.5px solid var(--rule); padding: 1.5rem 0; }
-    .writing-item:nth-child(2), .writing-item:last-child { padding-left: 0; }
-    #contact { grid-template-columns: 1fr; padding: 3rem 1.5rem; }
-    .section-header { padding: 3rem 1.5rem 1.5rem; }
-    .writing-grid { padding: 0 1.5rem; }
-    footer { padding: 1.2rem 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
-    .home-btn { width: 40px; height: 40px; font-size: 1.2rem; bottom: 20px; right: 20px; }
-    .floating-popup.expanded {
-      width: 90vw !important;
-      left: 5vw !important;
-      top: 10vh !important;
-    }
-    .floating-popup.minimized {
-      width: 140px !important;
-      height: 40px !important;
-    }
+    .writing-item { border-right: none; border-bottom: 1px solid var(--rule); }
   }
 </style>
 </head>
 <body>
 
-<!-- CV MODAL POPUP -->
-<div id="cvModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>CV / Resume</h3>
-      <button class="close-modal" id="closeModalBtn">✕</button>
+<!-- CV MODAL -->
+<div id="cvModal" class="cv-modal-overlay">
+  <div class="cv-modal">
+    <div class="cv-modal-header">
+      <h2>CV / Resume</h2>
+      <button class="cv-modal-close" id="closeCvBtn">✕</button>
     </div>
-    <div class="modal-body" id="cvModalBody">
+    <div class="cv-modal-body">
       <h4>Profile</h4>
       <p>An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches. My work is enriched by interdisciplinary collaboration and strong research foundations.</p>
       
@@ -672,20 +720,34 @@
       <p><strong>Visualisation (4/5):</strong> Vray, Cycles, D5 Render, Twinmotion, Keyshot, Lumion</p>
       <p><strong>Languages:</strong> Arabic (native), English (fluent), Dutch (intermediate), German (beginner)</p>
       
-      <h4>Awards</h4>
-      <p><strong>Honorable Mention — eVolo Skyscraper Competition</strong> (2020)</p>
-      <p><strong>Scholarship — AA Visiting School</strong> (2017)</p>
-      <p><strong>Winner — AABU Canopies Competition</strong> (2017)</p>
-      
-      <h4>Exhibitions</h4>
-      <p><strong>Vortex Columns — Climate Biennale Vienna</strong> (2026)</p>
-      <p><strong>Soft Unsealing — IABR11 Rotterdam</strong> (2024)</p>
-      <p><strong>Chicago Architecture Biennial CAB5</strong> (2023)</p>
-      
       <h4>Contact</h4>
       <p>📧 <a href="mailto:adam95darwesh@gmail.com" style="color:#FF3030;">adam95darwesh@gmail.com</a></p>
       <p>🔗 <a href="https://www.linkedin.com/in/aladham/" target="_blank" style="color:#FF3030;">linkedin.com/in/aladham</a></p>
-      <p>📷 @al_adhambinsinan</p>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECT MODAL (hidden by default, shown when popup clicked) -->
+<div id="projectModal" class="project-modal-overlay">
+  <div class="project-modal">
+    <div class="project-modal-header">
+      <h2 id="modalTitle">Project Title</h2>
+      <button class="modal-close" id="closeModalBtn">✕</button>
+    </div>
+    <div class="project-modal-body">
+      <div class="modal-carousel">
+        <div class="modal-carousel-slides" id="modalCarouselSlides">
+          <!-- Images will be inserted here -->
+        </div>
+        <button class="modal-carousel-btn modal-carousel-prev" id="modalCarouselPrev">‹</button>
+        <button class="modal-carousel-btn modal-carousel-next" id="modalCarouselNext">›</button>
+        <div class="modal-carousel-dots" id="modalCarouselDots"></div>
+      </div>
+      <div class="modal-project-info">
+        <div class="modal-tags" id="modalTags"></div>
+        <div class="modal-subtitle" id="modalSubtitle"></div>
+        <div class="modal-full-desc" id="modalDesc"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -712,20 +774,20 @@
   </div>
   <div class="hero-right">
     <ul class="hero-index">
-      <li onclick="scrollToProject('project-spiral-spines')"><span class="idx-num">01</span><span class="idx-title">Spiral Spines</span><span class="idx-tag">2026</span></li>
-      <li onclick="scrollToProject('project-woven-realities')"><span class="idx-num">02</span><span class="idx-title">Woven Realities</span><span class="idx-tag">2026</span></li>
-      <li onclick="scrollToProject('project-new-cairn')"><span class="idx-num">03</span><span class="idx-title">The New Cairn</span><span class="idx-tag">Ongoing</span></li>
-      <li onclick="scrollToProject('project-carbonfloss')"><span class="idx-num">04</span><span class="idx-title">Carbonfloss</span><span class="idx-tag">2020</span></li>
-      <li onclick="scrollToProject('project-ourobos')"><span class="idx-num">05</span><span class="idx-title">OUROBOS</span><span class="idx-tag">2022</span></li>
-      <li onclick="scrollToProject('project-agropraxis')"><span class="idx-num">06</span><span class="idx-title">Agropraxis</span><span class="idx-tag">2021</span></li>
-      <li onclick="scrollToProject('project-medius')"><span class="idx-num">07</span><span class="idx-title">Medius paedagogicus</span><span class="idx-tag">2022</span></li>
-      <li onclick="scrollToProject('project-soft-unsealing')"><span class="idx-num">08</span><span class="idx-title">Soft Unsealing</span><span class="idx-tag">2024</span></li>
-      <li onclick="scrollToProject('project-old-airfield')"><span class="idx-num">09</span><span class="idx-title">Old Airfield</span><span class="idx-tag">Ongoing</span></li>
-      <li onclick="scrollToProject('project-enkidu')"><span class="idx-num">10</span><span class="idx-title">Enkidu</span><span class="idx-tag">In Dev</span></li>
-      <li onclick="scrollToProject('project-aura')"><span class="idx-num">11</span><span class="idx-title">Aura</span><span class="idx-tag">2022</span></li>
-      <li onclick="scrollToProject('project-liberation-fronts')"><span class="idx-num">12</span><span class="idx-title">Liberation Fronts</span><span class="idx-tag">2024</span></li>
-      <li onclick="scrollToProject('project-regutting')"><span class="idx-num">13</span><span class="idx-title">Regutting</span><span class="idx-tag">2025</span></li>
-      <li onclick="scrollToProject('project-agential-cartographies')"><span class="idx-num">14</span><span class="idx-title">Agential Cartographies</span><span class="idx-tag">2025</span></li>
+      <li><span class="idx-num">01</span><span class="idx-title">Spiral Spines</span><span class="idx-tag">2026</span></li>
+      <li><span class="idx-num">02</span><span class="idx-title">Woven Realities</span><span class="idx-tag">2026</span></li>
+      <li><span class="idx-num">03</span><span class="idx-title">The New Cairn</span><span class="idx-tag">Ongoing</span></li>
+      <li><span class="idx-num">04</span><span class="idx-title">Carbonfloss</span><span class="idx-tag">2020</span></li>
+      <li><span class="idx-num">05</span><span class="idx-title">OUROBOS</span><span class="idx-tag">2022</span></li>
+      <li><span class="idx-num">06</span><span class="idx-title">Agropraxis</span><span class="idx-tag">2021</span></li>
+      <li><span class="idx-num">07</span><span class="idx-title">Medius paedagogicus</span><span class="idx-tag">2022</span></li>
+      <li><span class="idx-num">08</span><span class="idx-title">Soft Unsealing</span><span class="idx-tag">2024</span></li>
+      <li><span class="idx-num">09</span><span class="idx-title">Old Airfield</span><span class="idx-tag">Ongoing</span></li>
+      <li><span class="idx-num">10</span><span class="idx-title">Enkidu</span><span class="idx-tag">In Dev</span></li>
+      <li><span class="idx-num">11</span><span class="idx-title">Aura</span><span class="idx-tag">2022</span></li>
+      <li><span class="idx-num">12</span><span class="idx-title">Liberation Fronts</span><span class="idx-tag">2024</span></li>
+      <li><span class="idx-num">13</span><span class="idx-title">Regutting</span><span class="idx-tag">2025</span></li>
+      <li><span class="idx-num">14</span><span class="idx-title">Agential Cartographies</span><span class="idx-tag">2025</span></li>
     </ul>
   </div>
 </section>
@@ -763,238 +825,202 @@
 </footer>
 
 <script>
-// CV Modal JavaScript
-const modal = document.getElementById('cvModal');
-const openBtn = document.getElementById('openCvBtn');
-const closeBtn = document.getElementById('closeModalBtn');
-
-if (openBtn) {
-  openBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  });
-}
-
-if (closeBtn) {
-  closeBtn.addEventListener('click', function() {
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-  });
-}
-
-window.addEventListener('click', function(e) {
-  if (e.target === modal) {
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-  }
-});
-
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape' && modal.style.display === 'flex') {
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-  }
-});
-
-// Scroll animations
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add('visible'), i * 80);
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-// Scroll to project function (for hero list - projects no longer on page, but popups will appear)
-function scrollToProject(projectId) {
-  // Popups already exist, just highlight the popup
-  const popup = document.querySelector(`.floating-popup[data-project-id="${projectId}"]`);
-  if (popup) {
-    popup.style.transform = 'scale(1.05)';
-    popup.style.borderColor = '#FF3030';
-    popup.style.zIndex = 3000;
-    setTimeout(() => {
-      popup.style.transform = '';
-    }, 500);
-  }
-}
-
-// ========== FLOATING POPUP SYSTEM ==========
-const floatingProjectsData = [
-  { id: "project-spiral-spines", num: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna 2026", tags: ["Regenerative Material", "Vernacular Craft"], desc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing." },
-  { id: "project-woven-realities", num: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", tags: ["Circular Architecture", "Afghan Heritage"], desc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice using reusable by-products." },
-  { id: "project-new-cairn", num: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking for Post-Disaster Contexts", tags: ["Rubble Reuse", "Post-Conflict"], desc: "A research project proposing whole demolition rubble as masonry units in compression-only enclosures, deployable in Palestine and Afghanistan." },
-  { id: "project-carbonfloss", num: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Skyscraper Competition", tags: ["Speculative", "Ecological"], desc: "A political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity." },
-  { id: "project-ourobos", num: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", tags: ["AI Strategy", "Residual Material"], desc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies." },
-  { id: "project-agropraxis", num: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", tags: ["Agricultural", "Spatial Practice"], desc: "Explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles." },
-  { id: "project-medius", num: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", tags: ["Pedagogical Space", "Flat Hierarchy"], desc: "A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes." },
-  { id: "project-soft-unsealing", num: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", tags: ["Collective", "Installation"], desc: "Explores softening boundaries and unsealing latent spatial potentials in urban contexts." },
-  { id: "project-old-airfield", num: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Architecture Biennial", tags: ["Collective", "Acoustic"], desc: "An acoustic mirror cultural gateway exploring sound and spatial memory." },
-  { id: "project-enkidu", num: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", tags: ["Vernacular", "Ecological"], desc: "Reviving elements of vernacular Palestinian architecture in Dier Ghassaneh." },
-  { id: "project-aura", num: "11", title: "Aura", year: "2022", subtitle: "Folly Project", tags: ["Folly", "Installation"], desc: "Exploring atmospheric and experiential qualities of architectural space through material and light." },
-  { id: "project-liberation-fronts", num: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", tags: ["Thesis", "Political"], desc: "Exploring liberation fronts as spatial and political constructs." },
-  { id: "project-regutting", num: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", tags: ["Residency", "Installation"], desc: "Exploring returns and remains through film, photography, and installation." },
-  { id: "project-agential-cartographies", num: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", tags: ["Exhibition", "Cartography"], desc: "Experimental mappings across three spatial typologies exploring agency." }
+// ========== PROJECT DATA (with 6 image placeholders each) ==========
+const allProjects = [
+  { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna 2026", tags: ["Regenerative Material", "Vernacular Craft", "1:1 Prototype"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing, embedding collective narratives into reclaimed structural columns through a universal semiotic language inspired by ancient scripts.", images: [1,2,3,4,5,6] },
+  { id: "02", title: "Woven Realities", year: "2026", subtitle: "The Diversity of Afghan Homes", tags: ["Circular Architecture", "Modular Assembly", "Afghan Heritage"], fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice. The structure substitutes traditional earth with reusable by-products from the construction and consumer waste sectors — Heraklith wood wool panels, chipboard, stones, and textiles — assembled through low-tech modular means.", images: [1,2,3,4,5,6] },
+  { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking for Post-Disaster Contexts", tags: ["Rubble Reuse", "Compression-Only", "Post-Conflict"], fullDesc: "A research and construction project proposing whole, un-crushed demolition rubble — reinforced concrete, non-reinforced concrete, stone cladding — as masonry units in compression-only enclosures. The project develops a destruction-mode typology, a field-legible sorting system, and a practitioner handbook deployable in post-disaster Palestine and Afghanistan without specialist equipment.", images: [1,2,3,4,5,6] },
+  { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Skyscraper Competition — Honorable Mention", tags: ["Speculative", "Ecological", "Political Statement"], fullDesc: "Carbonfloss is a political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity amid impending environmental disaster. There's no room for hope when there is no action. Alarms of demise are ignored.", images: [1,2,3,4,5,6] },
+  { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", tags: ["AI Strategy", "Residual Material", "Morphogenesis"], fullDesc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies. The project synthesizes urban residue into architectural form, exploring parallel park, amorphous composite, and AI generation workflows.", images: [1,2,3,4,5,6] },
+  { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", tags: ["Academic", "Agricultural", "Spatial Practice"], fullDesc: "Agropraxis explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles and regenerative farming principles.", images: [1,2,3,4,5,6] },
+  { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", tags: ["Pedagogical Space", "Institutional", "Flat Hierarchy"], fullDesc: "A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes connected by circular paths around an open shared area. The alternating volumes strategy allows for uninterrupted interconnected passage through classes and facilities alike, as a physical manifestation of equality and flat hierarchy.", images: [1,2,3,4,5,6] },
+  { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", tags: ["Collective", "Installation", "Spatial Practice"], fullDesc: "Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts. Project exhibited at IABR11 and Galerie Göttlicher.", images: [1,2,3,4,5,6] },
+  { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Architecture Biennial", tags: ["Collective", "Acoustic", "Landscape"], fullDesc: "A solo sub-project within the [A]FA Collective ongoing realization at Tamale, Ghana. An acoustic mirror cultural gateway exploring sound and spatial memory, published at Chicago Architecture Biennial CAB5.", images: [1,2,3,4,5,6] },
+  { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", tags: ["Vernacular", "Ecological", "Tradition Revival"], fullDesc: "Enkidu aims to revive elements of vernacular Palestinian architecture — not through aesthetic value alone, but through ecological, economical, and tradition revival. The project is still in the early development stages, located in Dier Ghassaneh.", images: [1,2,3,4,5,6] },
+  { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", tags: ["Folly", "Installation", "Spatial Experience"], fullDesc: "A folly project exploring the atmospheric and experiential qualities of architectural space through material and light, exhibited at various Vienna locations including Rustenschacherallee.", images: [1,2,3,4,5,6] },
+  { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis — Honors", tags: ["Thesis", "Political", "Spatial Agency"], fullDesc: "A diploma thesis exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements and the role of spatial practice in decolonial contexts.", images: [1,2,3,4,5,6] },
+  { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", tags: ["Residency", "Installation", "Film"], fullDesc: "A residency project exploring returns and remains through film, photography, and installation at Wonder Cabinet, Bethlehem. Part of 'All the Wild Places Exhibition' at Spring Sessions.", images: [1,2,3,4,5,6] },
+  { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", tags: ["Exhibition", "Cartography", "Agency"], fullDesc: "An exhibition presenting experimental mappings across three spatial typologies: the camp, the city, and the limbo landscape, exploring agency as a dynamic and malleable force that shapes and redefines cartographic representations in occupied Palestine.", images: [1,2,3,4,5,6] }
 ];
 
-let floatingPopupCount = 0;
-let popupZCounter = 2500;
+// ========== CREATE STICKY NOTES ==========
+let stickyNotes = [];
+let currentModalProject = null;
 
-function getRandomPosition(width, height) {
+function createStickyNote(project, index) {
+  const note = document.createElement('div');
+  note.className = 'sticky-note';
+  note.setAttribute('data-project-id', project.id);
+  
+  // Random position within viewport
   const padding = 20;
-  const maxX = window.innerWidth - width - padding;
-  const maxY = window.innerHeight - height - padding;
-  return {
-    x: Math.max(padding, Math.random() * maxX),
-    y: Math.max(padding, Math.random() * maxY)
-  };
-}
-
-function getRandomSize() {
-  const sizes = [[260, 280], [280, 300], [300, 320], [270, 290], [290, 310]];
-  const s = sizes[Math.floor(Math.random() * sizes.length)];
-  return { width: s[0], height: s[1] };
-}
-
-function createFloatingPopup(project, stackIndex) {
-  const { width, height } = getRandomSize();
-  let { x, y } = getRandomPosition(width, height);
+  const maxX = window.innerWidth - 200;
+  const maxY = window.innerHeight - 80;
+  const x = Math.max(padding, Math.random() * maxX);
+  const y = Math.max(padding + (index * 25), Math.random() * maxY);
   
-  x += stackIndex * 12;
-  y += stackIndex * 12;
+  note.style.left = `${x}px`;
+  note.style.top = `${y}px`;
+  note.style.zIndex = 2000 + index;
   
-  x = Math.min(x, window.innerWidth - width - 20);
-  y = Math.min(y, window.innerHeight - height - 20);
-  x = Math.max(20, x);
-  y = Math.max(20, y);
-  
-  const popup = document.createElement('div');
-  popup.className = 'floating-popup';
-  popup.setAttribute('data-project-id', project.id);
-  popup.setAttribute('data-tooltip', `${project.num} · ${project.title}`);
-  
-  popup.style.width = `${width}px`;
-  popup.style.height = `${height}px`;
-  popup.style.left = `${x}px`;
-  popup.style.top = `${y}px`;
-  popup.style.zIndex = popupZCounter++;
-  
-  popup.innerHTML = `
-    <div class="popup-header">
-      <span class="popup-title">📁 ${project.num} · ${project.title}</span>
-      <div class="popup-controls">
-        <button class="popup-minimize">−</button>
-        <button class="popup-close">✕</button>
-      </div>
-    </div>
-    <div class="popup-body">
-      <div style="background: #f5f5f5; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-bottom: 10px; font-size: 24px;">🏛️ ${project.title.substring(0, 20)}</div>
-      <div class="popup-tags">${project.tags.map(t => `<span class="popup-tag">${t}</span>`).join('')}</div>
-      <div class="popup-subtitle">${project.subtitle} (${project.year})</div>
-      <div class="popup-desc">${project.desc.substring(0, 100)}${project.desc.length > 100 ? '...' : ''}</div>
-    </div>
+  note.innerHTML = `
+    <div class="sticky-title">📌 ${project.id} · ${project.title}</div>
+    <div class="sticky-subtitle">${project.subtitle}</div>
   `;
   
-  document.body.appendChild(popup);
-  
-  // Make draggable
-  let isDragging = false;
-  let startX, startY, startLeft, startTop;
-  const header = popup.querySelector('.popup-header');
-  
-  header.addEventListener('mousedown', (e) => {
-    if (e.target.closest('.popup-minimize') || e.target.closest('.popup-close')) return;
-    isDragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    startLeft = parseFloat(popup.style.left);
-    startTop = parseFloat(popup.style.top);
-    popup.style.zIndex = popupZCounter++;
-    popup.style.cursor = 'grabbing';
-    e.preventDefault();
-  });
-  
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    let newLeft = startLeft + (e.clientX - startX);
-    let newTop = startTop + (e.clientY - startY);
-    newLeft = Math.max(10, Math.min(newLeft, window.innerWidth - popup.offsetWidth - 10));
-    newTop = Math.max(10, Math.min(newTop, window.innerHeight - popup.offsetHeight - 10));
-    popup.style.left = `${newLeft}px`;
-    popup.style.top = `${newTop}px`;
-  });
-  
-  document.addEventListener('mouseup', () => {
-    isDragging = false;
-    popup.style.cursor = '';
-  });
-  
-  // Minimize button
-  const minimizeBtn = popup.querySelector('.popup-minimize');
-  minimizeBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    popup.classList.add('minimized');
-    popup.style.width = '160px';
-    popup.style.height = '44px';
-  });
-  
-  // Close button (minimizes to sticky note)
-  const closeBtnPopup = popup.querySelector('.popup-close');
-  closeBtnPopup.addEventListener('click', (e) => {
-    e.stopPropagation();
-    popup.classList.add('minimized');
-    popup.style.width = '160px';
-    popup.style.height = '44px';
-  });
-  
-  // Click to expand
-  popup.addEventListener('click', (e) => {
-    if (e.target.closest('.popup-minimize') || e.target.closest('.popup-close')) return;
-    
-    if (popup.classList.contains('minimized')) {
-      popup.classList.remove('minimized');
-      const { width, height } = getRandomSize();
-      popup.style.width = `${width}px`;
-      popup.style.height = `${height}px`;
-    } else {
-      popup.classList.add('expanded');
-      popup.style.width = '480px';
-      popup.style.height = 'auto';
-    }
-    
-    popup.style.zIndex = popupZCounter++;
-  });
-  
-  floatingPopupCount++;
-  return popup;
+  note.addEventListener('click', () => openProjectModal(project));
+  document.body.appendChild(note);
+  stickyNotes.push(note);
+  return note;
 }
 
-// Launch all popups
-floatingProjectsData.forEach((project, i) => {
-  setTimeout(() => {
-    createFloatingPopup(project, i);
-  }, 100 + i * 80);
-});
+// ========== OPEN MODAL WITH PROJECT ==========
+let modalCarouselIndex = 0;
+let modalCurrentProject = null;
 
-// Handle window resize
-window.addEventListener('resize', () => {
-  document.querySelectorAll('.floating-popup').forEach(popup => {
-    if (popup.classList.contains('minimized')) return;
-    let left = parseInt(popup.style.left);
-    let top = parseInt(popup.style.top);
-    const width = popup.offsetWidth;
-    const height = popup.offsetHeight;
-    
-    left = Math.max(10, Math.min(left, window.innerWidth - width - 10));
-    top = Math.max(10, Math.min(top, window.innerHeight - height - 10));
-    
-    popup.style.left = `${left}px`;
-    popup.style.top = `${top}px`;
+function openProjectModal(project) {
+  modalCurrentProject = project;
+  modalCarouselIndex = 0;
+  
+  // Update modal content
+  document.getElementById('modalTitle').innerHTML = `${project.id} · ${project.title}`;
+  document.getElementById('modalSubtitle').innerHTML = `${project.subtitle} (${project.year})`;
+  document.getElementById('modalDesc').innerHTML = project.fullDesc;
+  
+  // Update tags
+  const tagsContainer = document.getElementById('modalTags');
+  tagsContainer.innerHTML = project.tags.map(tag => `<span class="modal-tag">${tag}</span>`).join('');
+  
+  // Build carousel slides (6 images - using placeholders with project-specific names)
+  const slidesContainer = document.getElementById('modalCarouselSlides');
+  slidesContainer.innerHTML = '';
+  
+  for (let i = 1; i <= 6; i++) {
+    const slide = document.createElement('div');
+    slide.className = 'modal-carousel-slide';
+    const imgName = `${project.title.toLowerCase().replace(/ /g, '-')}-${i}.jpg`;
+    slide.innerHTML = `<img src="images/${imgName}" alt="${project.title} image ${i}" onerror="this.src='https://placehold.co/800x500/f5f5f5/999?text=${project.title}+${i}'">`;
+    slidesContainer.appendChild(slide);
+  }
+  
+  // Update dots
+  const dotsContainer = document.getElementById('modalCarouselDots');
+  dotsContainer.innerHTML = '';
+  for (let i = 0; i < 6; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'modal-carousel-dot';
+    if (i === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => goToModalSlide(i));
+    dotsContainer.appendChild(dot);
+  }
+  
+  updateModalCarousel();
+  
+  // Show modal
+  document.getElementById('projectModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function updateModalCarousel() {
+  const slidesContainer = document.getElementById('modalCarouselSlides');
+  slidesContainer.style.transform = `translateX(-${modalCarouselIndex * 100}%)`;
+  
+  const dots = document.querySelectorAll('#modalCarouselDots .modal-carousel-dot');
+  dots.forEach((dot, i) => {
+    dot.classList.toggle('active', i === modalCarouselIndex);
   });
-});
+}
+
+function goToModalSlide(index) {
+  modalCarouselIndex = index;
+  updateModalCarousel();
+}
+
+function nextModalSlide() {
+  if (modalCarouselIndex < 5) {
+    modalCarouselIndex++;
+    updateModalCarousel();
+  }
+}
+
+function prevModalSlide() {
+  if (modalCarouselIndex > 0) {
+    modalCarouselIndex--;
+    updateModalCarousel();
+  }
+}
+
+function closeProjectModal() {
+  document.getElementById('projectModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// ========== CV MODAL ==========
+function openCvModal() {
+  document.getElementById('cvModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCvModal() {
+  document.getElementById('cvModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// ========== INITIALIZE POPUPS (Create sticky notes first) ==========
+function initialize() {
+  // Create sticky notes for all projects
+  allProjects.forEach((project, i) => {
+    setTimeout(() => {
+      createStickyNote(project, i);
+    }, 100 + i * 120);
+  });
+  
+  // Modal controls
+  document.getElementById('closeModalBtn').addEventListener('click', closeProjectModal);
+  document.getElementById('modalCarouselPrev').addEventListener('click', prevModalSlide);
+  document.getElementById('modalCarouselNext').addEventListener('click', nextModalSlide);
+  
+  // Close modal when clicking outside
+  document.getElementById('projectModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('projectModal')) closeProjectModal();
+  });
+  
+  // CV Modal controls
+  document.getElementById('openCvBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    openCvModal();
+  });
+  document.getElementById('closeCvBtn').addEventListener('click', closeCvModal);
+  document.getElementById('cvModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('cvModal')) closeCvModal();
+  });
+  
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  
+  // Handle window resize to keep sticky notes in bounds
+  window.addEventListener('resize', () => {
+    stickyNotes.forEach(note => {
+      let left = parseInt(note.style.left);
+      let top = parseInt(note.style.top);
+      left = Math.max(10, Math.min(left, window.innerWidth - 200));
+      top = Math.max(10, Math.min(top, window.innerHeight - 80));
+      note.style.left = `${left}px`;
+      note.style.top = `${top}px`;
+    });
+  });
+}
+
+// Start everything
+initialize();
 </script>
 
 </body>
