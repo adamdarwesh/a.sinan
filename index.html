@@ -9,104 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 
 <style>
- /* Image Carousel Styles */
-.project-image {
-  position: relative;
-}
-
-.carousel-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.carousel-slides {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-  height: 100%;
-}
-
-.carousel-slide {
-  min-width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.carousel-slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255,255,255,0.9);
-  color: #111;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 1.2rem;
-  font-weight: bold;
-  z-index: 10;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.carousel-btn:hover {
-  background: var(--accent);
-  color: white;
-}
-
-.carousel-btn-prev {
-  left: 10px;
-}
-
-.carousel-btn-next {
-  right: 10px;
-}
-
-.carousel-dots {
-  position: absolute;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  z-index: 10;
-}
-
-.carousel-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.5);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.carousel-dot.active {
-  background: var(--accent);
-  width: 20px;
-  border-radius: 4px;
-}
-
-.image-counter {
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-  background: rgba(0,0,0,0.6);
-  color: white;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  padding: 4px 8px;
-  border-radius: 4px;
-  z-index: 10;
-}
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
@@ -363,21 +265,99 @@
     transition: transform 0.5s ease;
   }
 
-  .project-image-placeholder {
+  /* Carousel Styles */
+  .carousel-container {
+    position: relative;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+  }
+
+  .carousel-slides {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-    text-transform: uppercase;
+    transition: transform 0.5s ease-in-out;
+    height: 100%;
+  }
+
+  .carousel-slide {
+    min-width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .carousel-btn {
     position: absolute;
-    inset: 0;
-    background: #f5f5f5;
-    border: 1px dashed var(--rule);
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.9);
+    color: #111;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    z-index: 10;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  .carousel-btn:hover {
+    background: var(--accent);
+    color: white;
+  }
+
+  .carousel-btn-prev {
+    left: 10px;
+  }
+
+  .carousel-btn-next {
+    right: 10px;
+  }
+
+  .carousel-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  }
+
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .carousel-dot.active {
+    background: var(--accent);
+    width: 20px;
+    border-radius: 4px;
+  }
+
+  .image-counter {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    z-index: 10;
   }
 
   .project-content {
@@ -504,67 +484,6 @@
     margin-top: 1.5rem;
   }
 
-  #about {
-    padding-bottom: 8rem;
-    border-top: 0.5px solid var(--rule);
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 3rem;
-    gap: 5rem;
-    align-items: start;
-  }
-
-  .about-text h2 {
-    font-family: var(--serif);
-    font-size: clamp(2rem, 3vw, 3rem);
-    font-weight: 900;
-    font-style: italic;
-    line-height: 1.1;
-    margin-bottom: 2rem;
-    letter-spacing: -0.02em;
-  }
-
-  .about-text p {
-    font-family: var(--body-serif);
-    font-size: 1.05rem;
-    line-height: 1.85;
-    color: var(--muted);
-    margin-bottom: 1.5rem;
-  }
-
-  .about-details {
-    padding-top: 2rem;
-  }
-
-  .about-row {
-    display: flex;
-    gap: 2rem;
-    padding: 1.2rem 0;
-    border-top: 0.5px solid var(--rule);
-    align-items: baseline;
-  }
-
-  .about-row:last-child { border-bottom: 0.5px solid var(--rule); }
-
-  .about-row-label {
-    font-family: var(--mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--warm-mid);
-    min-width: 7rem;
-  }
-
-  .about-row-val {
-    font-family: var(--body-serif);
-    font-size: 1rem;
-    color: var(--ink);
-    line-height: 1.6;
-  }
-
   #contact {
     background: var(--paper);
     border-top: 0.5px solid var(--rule);
@@ -672,27 +591,28 @@
     .project-row.stagger-left .project-content,
     .project-row.stagger-right .project-content { transform: translateX(0); }
     .project-content { padding: 2rem 1.5rem; }
-    .project-image { min-height: 250px; }
+    .project-image { min-height: 300px; }
     .writing-grid { grid-template-columns: 1fr; }
     .writing-item { border-right: none; border-bottom: 0.5px solid var(--rule); padding: 1.5rem 0; }
     .writing-item:nth-child(2), .writing-item:last-child { padding-left: 0; }
-    .about-grid { grid-template-columns: 1fr; gap: 2rem; padding: 0 1.5rem; }
     #contact { grid-template-columns: 1fr; padding: 3rem 1.5rem; }
     .section-header { padding: 3rem 1.5rem 1.5rem; }
     .writing-grid { padding: 0 1.5rem; }
     footer { padding: 1.2rem 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    .carousel-btn { width: 30px; height: 30px; font-size: 1rem; }
   }
 </style>
 </head>
 <body>
 
 <nav>
-<ul class="nav-links">
-  <li><a href="#projects">Work</a></li>
-  <li><a href="#research">Research</a></li>
-  <li><a href="cv.html">About / CV</a></li>
-  <li><a href="#contact">Contact</a></li>
-</ul>
+  <a href="#" class="nav-name">Ad(h)am Sinan</a>
+  <ul class="nav-links">
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="cv.html">CV</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
 </nav>
 
 <section class="hero">
@@ -732,89 +652,298 @@
   </div>
   <div class="projects-grid">
 
+    <!-- Project 01 - Spiral Spines -->
     <div class="project-row stagger-right reveal" id="project-spiral-spines">
       <div class="project-image">
-    <div class="carousel-container" id="carousel-spiral-spines">
-      <div class="carousel-slides">
-        <div class="carousel-slide"><img src="images/spiral-spines-1.jpg" alt="Spiral Spines 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
-        <div class="carousel-slide"><img src="images/spiral-spines-2.jpg" alt="Spiral Spines 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
-        <div class="carousel-slide"><img src="images/spiral-spines-3.jpg" alt="Spiral Spines 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
-        <div class="carousel-slide"><img src="images/spiral-spines-4.jpg" alt="Spiral Spines 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
-        <div class="carousel-slide"><img src="images/spiral-spines-5.jpg" alt="Spiral Spines 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
-        <div class="carousel-slide"><img src="images/spiral-spines-6.jpg" alt="Spiral Spines 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+        <div class="carousel-container" id="carousel-spiral-spines">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/spiral-spines-1.jpg" alt="Spiral Spines 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/spiral-spines-2.jpg" alt="Spiral Spines 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/spiral-spines-3.jpg" alt="Spiral Spines 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/spiral-spines-4.jpg" alt="Spiral Spines 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/spiral-spines-5.jpg" alt="Spiral Spines 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/spiral-spines-6.jpg" alt="Spiral Spines 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-spiral-spines')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-spiral-spines')">›</button>
+          <div class="carousel-dots" id="dots-spiral-spines"></div>
+          <div class="image-counter" id="counter-spiral-spines">1 / 6</div>
+        </div>
       </div>
-      <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-spiral-spines')">‹</button>
-      <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-spiral-spines')">›</button>
-      <div class="carousel-dots" id="dots-spiral-spines"></div>
-      <div class="image-counter" id="counter-spiral-spines">1 / 6</div>
-    </div>
-  </div>
       <div class="project-content"><div class="project-meta"><span class="project-num">01</span><span class="project-year">2026</span></div><h2 class="project-title">Spiral Spines</h2><p class="project-subtitle">Stable in the Face of Disruption — Climate Biennale Vienna 2026</p><div class="project-tags"><span class="tag">Regenerative Material</span><span class="tag">Vernacular Craft</span><span class="tag">1:1 Prototype</span></div><p class="project-desc">A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing.</p></div>
     </div>
 
+    <!-- Project 02 - Woven Realities -->
     <div class="project-row stagger-left reveal" id="project-woven-realities">
       <div class="project-content"><div class="project-meta"><span class="project-num">02</span><span class="project-year">2026</span></div><h2 class="project-title">Woven Realities</h2><p class="project-subtitle">The Diversity of Afghan Homes — Climate Biennale Vienna 2026</p><div class="project-tags"><span class="tag">Circular Architecture</span><span class="tag">Modular Assembly</span><span class="tag">Afghan Heritage</span></div><p class="project-desc">A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice. The structure substitutes traditional earth with reusable by-products.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Woven Realities — Add image to /images/woven-realities.jpg</div></div>
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-woven-realities">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/woven-realities-1.jpg" alt="Woven Realities 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/woven-realities-2.jpg" alt="Woven Realities 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/woven-realities-3.jpg" alt="Woven Realities 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/woven-realities-4.jpg" alt="Woven Realities 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/woven-realities-5.jpg" alt="Woven Realities 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/woven-realities-6.jpg" alt="Woven Realities 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-woven-realities')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-woven-realities')">›</button>
+          <div class="carousel-dots" id="dots-woven-realities"></div>
+          <div class="image-counter" id="counter-woven-realities">1 / 6</div>
+        </div>
+      </div>
     </div>
 
+    <!-- Project 03 - The New Cairn -->
     <div class="project-row stagger-right reveal" id="project-new-cairn">
-      <div class="project-image"><div class="project-image-placeholder">The New Cairn — Add image to /images/new-cairn.jpg</div></div>
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-new-cairn">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/new-cairn-1.jpg" alt="New Cairn 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/new-cairn-2.jpg" alt="New Cairn 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/new-cairn-3.jpg" alt="New Cairn 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/new-cairn-4.jpg" alt="New Cairn 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/new-cairn-5.jpg" alt="New Cairn 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/new-cairn-6.jpg" alt="New Cairn 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-new-cairn')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-new-cairn')">›</button>
+          <div class="carousel-dots" id="dots-new-cairn"></div>
+          <div class="image-counter" id="counter-new-cairn">1 / 6</div>
+        </div>
+      </div>
       <div class="project-content"><div class="project-meta"><span class="project-num">03</span><span class="project-year">Ongoing</span></div><h2 class="project-title">The New Cairn</h2><p class="project-subtitle">Heterogeneous Rubble Stacking for Post-Disaster Contexts</p><div class="project-tags"><span class="tag">Rubble Reuse</span><span class="tag">Compression-Only</span><span class="tag">Post-Conflict</span></div><p class="project-desc">A research and construction project proposing whole, un-crushed demolition rubble as masonry units in compression-only enclosures. Deployable in Palestine and Afghanistan without specialist equipment.</p></div>
     </div>
 
+    <!-- Project 04 - Carbonfloss -->
     <div class="project-row stagger-left reveal" id="project-carbonfloss">
       <div class="project-content"><div class="project-meta"><span class="project-num">04</span><span class="project-year">2020</span></div><h2 class="project-title">Carbonfloss</h2><p class="project-subtitle">eVolo Skyscraper Competition — Honorable Mention</p><div class="project-tags"><span class="tag">Speculative</span><span class="tag">Ecological</span><span class="tag">Political Statement</span></div><p class="project-desc">Carbonfloss is a political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity amid impending environmental disaster.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Carbonfloss — Add image to /images/carbonfloss.jpg</div></div>
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-carbonfloss">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/carbonfloss-1.jpg" alt="Carbonfloss 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/carbonfloss-2.jpg" alt="Carbonfloss 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/carbonfloss-3.jpg" alt="Carbonfloss 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/carbonfloss-4.jpg" alt="Carbonfloss 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/carbonfloss-5.jpg" alt="Carbonfloss 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/carbonfloss-6.jpg" alt="Carbonfloss 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-carbonfloss')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-carbonfloss')">›</button>
+          <div class="carousel-dots" id="dots-carbonfloss"></div>
+          <div class="image-counter" id="counter-carbonfloss">1 / 6</div>
+        </div>
+      </div>
     </div>
 
-    <div class="project-row stagger-right reveal" id="project-Agropraxis">
-      <div class="project-image"><div class="project-image-placeholder">OUROBOS — Add image to /images/ourobos.jpg</div></div>
+    <!-- Project 05 - OUROBOS -->
+    <div class="project-row stagger-right reveal" id="project-ourobos">
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-ourobos">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/ourobos-1.jpg" alt="OUROBOS 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/ourobos-2.jpg" alt="OUROBOS 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/ourobos-3.jpg" alt="OUROBOS 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/ourobos-4.jpg" alt="OUROBOS 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/ourobos-5.jpg" alt="OUROBOS 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/ourobos-6.jpg" alt="OUROBOS 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-ourobos')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-ourobos')">›</button>
+          <div class="carousel-dots" id="dots-ourobos"></div>
+          <div class="image-counter" id="counter-ourobos">1 / 6</div>
+        </div>
+      </div>
       <div class="project-content"><div class="project-meta"><span class="project-num">05</span><span class="project-year">2022</span></div><h2 class="project-title">OUROBOS: Residual Morphogenesis</h2><p class="project-subtitle">Published in Dazeen</p><div class="project-tags"><span class="tag">AI Strategy</span><span class="tag">Residual Material</span><span class="tag">Morphogenesis</span></div><p class="project-desc">An exploration of residual morphogenesis using AI-driven workflows and material strategies. The project synthesizes urban residue into architectural form.</p></div>
     </div>
 
-    <div class="project-row stagger-left reveal" id="Agropraxis">
+    <!-- Project 06 - Agropraxis -->
+    <div class="project-row stagger-left reveal" id="project-agropraxis">
       <div class="project-content"><div class="project-meta"><span class="project-num">06</span><span class="project-year">2021</span></div><h2 class="project-title">Agropraxis</h2><p class="project-subtitle">Published in Dazeen</p><div class="project-tags"><span class="tag">Academic</span><span class="tag">Agricultural</span><span class="tag">Spatial Practice</span></div><p class="project-desc">Agropraxis explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Agropraxis — Add image to /images/agropraxis.jpg</div></div>
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-agropraxis">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/agropraxis-1.jpg" alt="Agropraxis 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/agropraxis-2.jpg" alt="Agropraxis 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/agropraxis-3.jpg" alt="Agropraxis 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/agropraxis-4.jpg" alt="Agropraxis 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/agropraxis-5.jpg" alt="Agropraxis 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/agropraxis-6.jpg" alt="Agropraxis 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-agropraxis')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-agropraxis')">›</button>
+          <div class="carousel-dots" id="dots-agropraxis"></div>
+          <div class="image-counter" id="counter-agropraxis">1 / 6</div>
+        </div>
+      </div>
     </div>
 
-    <div class="project-row stagger-right reveal" id="Medius paedagogicus">
-      <div class="project-image"><div class="project-image-placeholder">Medius paedagogicus — Add image to /images/medius.jpg</div></div>
+    <!-- Project 07 - Medius paedagogicus -->
+    <div class="project-row stagger-right reveal" id="project-medius">
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-medius">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/medius-1.jpg" alt="Medius 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/medius-2.jpg" alt="Medius 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/medius-3.jpg" alt="Medius 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/medius-4.jpg" alt="Medius 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/medius-5.jpg" alt="Medius 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/medius-6.jpg" alt="Medius 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-medius')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-medius')">›</button>
+          <div class="carousel-dots" id="dots-medius"></div>
+          <div class="image-counter" id="counter-medius">1 / 6</div>
+        </div>
+      </div>
       <div class="project-content"><div class="project-meta"><span class="project-num">07</span><span class="project-year">2022</span></div><h2 class="project-title">Medius paedagogicus</h2><p class="project-subtitle">Published in Dazeen</p><div class="project-tags"><span class="tag">Pedagogical Space</span><span class="tag">Institutional</span><span class="tag">Flat Hierarchy</span></div><p class="project-desc">A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes connected by circular paths, manifesting equality and flat hierarchy.</p></div>
     </div>
 
-    <div class="project-row stagger-left reveal" id="Soft Unsealing">
+    <!-- Project 08 - Soft Unsealing -->
+    <div class="project-row stagger-left reveal" id="project-soft-unsealing">
       <div class="project-content"><div class="project-meta"><span class="project-num">08</span><span class="project-year">2024</span></div><h2 class="project-title">Soft Unsealing</h2><p class="project-subtitle">IABR11 — International Architecture Biennale Rotterdam</p><div class="project-tags"><span class="tag">Collective</span><span class="tag">Installation</span><span class="tag">Spatial Practice</span></div><p class="project-desc">Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Soft Unsealing — Add image to /images/soft-unsealing.jpg</div></div>
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-soft-unsealing">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/soft-unsealing-1.jpg" alt="Soft Unsealing 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/soft-unsealing-2.jpg" alt="Soft Unsealing 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/soft-unsealing-3.jpg" alt="Soft Unsealing 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/soft-unsealing-4.jpg" alt="Soft Unsealing 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/soft-unsealing-5.jpg" alt="Soft Unsealing 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/soft-unsealing-6.jpg" alt="Soft Unsealing 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-soft-unsealing')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-soft-unsealing')">›</button>
+          <div class="carousel-dots" id="dots-soft-unsealing"></div>
+          <div class="image-counter" id="counter-soft-unsealing">1 / 6</div>
+        </div>
+      </div>
     </div>
 
-    <div class="project-row stagger-right reveal" id="Old Airfield">
-      <div class="project-image"><div class="project-image-placeholder">Old Airfield — Add image to /images/old-airfield.jpg</div></div>
+    <!-- Project 09 - Old Airfield -->
+    <div class="project-row stagger-right reveal" id="project-old-airfield">
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-old-airfield">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/old-airfield-1.jpg" alt="Old Airfield 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/old-airfield-2.jpg" alt="Old Airfield 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/old-airfield-3.jpg" alt="Old Airfield 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/old-airfield-4.jpg" alt="Old Airfield 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/old-airfield-5.jpg" alt="Old Airfield 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/old-airfield-6.jpg" alt="Old Airfield 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-old-airfield')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-old-airfield')">›</button>
+          <div class="carousel-dots" id="dots-old-airfield"></div>
+          <div class="image-counter" id="counter-old-airfield">1 / 6</div>
+        </div>
+      </div>
       <div class="project-content"><div class="project-meta"><span class="project-num">09</span><span class="project-year">Ongoing</span></div><h2 class="project-title">Old Airfield Project</h2><p class="project-subtitle">Chicago Architecture Biennial CAB5 — Acoustic Mirror Cultural Gateway</p><div class="project-tags"><span class="tag">Collective</span><span class="tag">Acoustic</span><span class="tag">Landscape</span></div><p class="project-desc">A solo sub-project within the [A]FA Collective ongoing realization at Tamale, Ghana. An acoustic mirror cultural gateway exploring sound and spatial memory.</p></div>
     </div>
 
-    <div class="project-row stagger-left reveal" id="Enkidu">
+    <!-- Project 10 - Enkidu -->
+    <div class="project-row stagger-left reveal" id="project-enkidu">
       <div class="project-content"><div class="project-meta"><span class="project-num">10</span><span class="project-year">In Development</span></div><h2 class="project-title">Enkidu</h2><p class="project-subtitle">Vernacular Levantine-Palestinian Architecture Revival</p><div class="project-tags"><span class="tag">Vernacular</span><span class="tag">Ecological</span><span class="tag">Tradition Revival</span></div><p class="project-desc">Enkidu aims to revive elements of vernacular Palestinian architecture — not through aesthetic value alone, but through ecological, economical, and tradition revival. Located in Dier Ghassaneh.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Enkidu — Add image to /images/enkidu.jpg</div></div>
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-enkidu">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/enkidu-1.jpg" alt="Enkidu 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/enkidu-2.jpg" alt="Enkidu 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/enkidu-3.jpg" alt="Enkidu 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/enkidu-4.jpg" alt="Enkidu 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/enkidu-5.jpg" alt="Enkidu 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/enkidu-6.jpg" alt="Enkidu 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-enkidu')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-enkidu')">›</button>
+          <div class="carousel-dots" id="dots-enkidu"></div>
+          <div class="image-counter" id="counter-enkidu">1 / 6</div>
+        </div>
+      </div>
     </div>
 
-    <div class="project-row stagger-right reveal" id="Aura">
-      <div class="project-image"><div class="project-image-placeholder">Aura — Add image to /images/aura.jpg</div></div>
+    <!-- Project 11 - Aura -->
+    <div class="project-row stagger-right reveal" id="project-aura">
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-aura">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/aura-1.jpg" alt="Aura 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/aura-2.jpg" alt="Aura 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/aura-3.jpg" alt="Aura 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/aura-4.jpg" alt="Aura 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/aura-5.jpg" alt="Aura 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/aura-6.jpg" alt="Aura 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-aura')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-aura')">›</button>
+          <div class="carousel-dots" id="dots-aura"></div>
+          <div class="image-counter" id="counter-aura">1 / 6</div>
+        </div>
+      </div>
       <div class="project-content"><div class="project-meta"><span class="project-num">11</span><span class="project-year">2022</span></div><h2 class="project-title">Aura</h2><p class="project-subtitle">Folly Project — Academic</p><div class="project-tags"><span class="tag">Folly</span><span class="tag">Installation</span><span class="tag">Spatial Experience</span></div><p class="project-desc">A folly project exploring the atmospheric and experiential qualities of architectural space through material and light.</p></div>
     </div>
 
-    <div class="project-row stagger-left reveal" id="Liberation Fronts">
+    <!-- Project 12 - Liberation Fronts -->
+    <div class="project-row stagger-left reveal" id="project-liberation-fronts">
       <div class="project-content"><div class="project-meta"><span class="project-num">12</span><span class="project-year">2024</span></div><h2 class="project-title">Liberation Fronts</h2><p class="project-subtitle">Diploma Thesis — Honors</p><div class="project-tags"><span class="tag">Thesis</span><span class="tag">Political</span><span class="tag">Spatial Agency</span></div><p class="project-desc">A diploma thesis exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Liberation Fronts — Add image to /images/liberation-fronts.jpg</div></div>
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-liberation-fronts">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/liberation-fronts-1.jpg" alt="Liberation Fronts 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/liberation-fronts-2.jpg" alt="Liberation Fronts 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/liberation-fronts-3.jpg" alt="Liberation Fronts 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/liberation-fronts-4.jpg" alt="Liberation Fronts 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/liberation-fronts-5.jpg" alt="Liberation Fronts 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/liberation-fronts-6.jpg" alt="Liberation Fronts 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-liberation-fronts')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-liberation-fronts')">›</button>
+          <div class="carousel-dots" id="dots-liberation-fronts"></div>
+          <div class="image-counter" id="counter-liberation-fronts">1 / 6</div>
+        </div>
+      </div>
     </div>
 
-    <div class="project-row stagger-right reveal" id="Regutting">
-      <div class="project-image"><div class="project-image-placeholder">Regutting — Add image to /images/regutting.jpg</div></div>
+    <!-- Project 13 - Regutting -->
+    <div class="project-row stagger-right reveal" id="project-regutting">
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-regutting">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/regutting-1.jpg" alt="Regutting 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/regutting-2.jpg" alt="Regutting 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/regutting-3.jpg" alt="Regutting 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/regutting-4.jpg" alt="Regutting 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/regutting-5.jpg" alt="Regutting 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/regutting-6.jpg" alt="Regutting 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-regutting')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-regutting')">›</button>
+          <div class="carousel-dots" id="dots-regutting"></div>
+          <div class="image-counter" id="counter-regutting">1 / 6</div>
+        </div>
+      </div>
       <div class="project-content"><div class="project-meta"><span class="project-num">13</span><span class="project-year">2025</span></div><h2 class="project-title">Regutting: Returns, Remains</h2><p class="project-subtitle">Wonder Cabinet — Spring Sessions Residency</p><div class="project-tags"><span class="tag">Residency</span><span class="tag">Installation</span><span class="tag">Film</span></div><p class="project-desc">A residency project exploring returns and remains through film, photography, and installation at Wonder Cabinet, Bethlehem.</p></div>
     </div>
 
-    <div class="project-row stagger-left reveal" id="Agential Cartographies">
+    <!-- Project 14 - Agential Cartographies -->
+    <div class="project-row stagger-left reveal" id="project-agential-cartographies">
       <div class="project-content"><div class="project-meta"><span class="project-num">14</span><span class="project-year">2025</span></div><h2 class="project-title">Agential Cartographies</h2><p class="project-subtitle">Dar Jacir for Art & Research — Solo Exhibition</p><div class="project-tags"><span class="tag">Exhibition</span><span class="tag">Cartography</span><span class="tag">Agency</span></div><p class="project-desc">An exhibition presenting experimental mappings across three spatial typologies: the camp, the city, and the limbo landscape, exploring agency as a dynamic and malleable force.</p></div>
-      <div class="project-image"><div class="project-image-placeholder">Agential Cartographies — Add image to /images/agential-cartographies.jpg</div></div>
+      <div class="project-image">
+        <div class="carousel-container" id="carousel-agential-cartographies">
+          <div class="carousel-slides">
+            <div class="carousel-slide"><img src="images/agential-cartographies-1.jpg" alt="Agential Cartographies 1" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+1'"></div>
+            <div class="carousel-slide"><img src="images/agential-cartographies-2.jpg" alt="Agential Cartographies 2" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+2'"></div>
+            <div class="carousel-slide"><img src="images/agential-cartographies-3.jpg" alt="Agential Cartographies 3" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+3'"></div>
+            <div class="carousel-slide"><img src="images/agential-cartographies-4.jpg" alt="Agential Cartographies 4" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+4'"></div>
+            <div class="carousel-slide"><img src="images/agential-cartographies-5.jpg" alt="Agential Cartographies 5" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+5'"></div>
+            <div class="carousel-slide"><img src="images/agential-cartographies-6.jpg" alt="Agential Cartographies 6" onerror="this.src='https://placehold.co/800x600/f5f5f5/999?text=Image+6'"></div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" onclick="prevSlide('carousel-agential-cartographies')">‹</button>
+          <button class="carousel-btn carousel-btn-next" onclick="nextSlide('carousel-agential-cartographies')">›</button>
+          <div class="carousel-dots" id="dots-agential-cartographies"></div>
+          <div class="image-counter" id="counter-agential-cartographies">1 / 6</div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -844,7 +973,7 @@
     <a href="mailto:adam95darwesh@gmail.com" class="contact-link"><span class="contact-link-label">Email</span><span class="contact-link-val">adam95darwesh@gmail.com</span></a>
     <a href="https://www.linkedin.com/in/aladham/" class="contact-link" target="_blank"><span class="contact-link-label">LinkedIn</span><span class="contact-link-val">in/aladham</span></a>
     <a href="#" class="contact-link"><span class="contact-link-label">Instagram</span><span class="contact-link-val">@al_adhambinsinan</span></a>
-    <a href="cv.html" class="contact-link"><span class="contact-link-label">CV / Resume</span><span class="contact-link-val">Full CV & Portfolio →</span></a>
+    <a href="cv.html" class="contact-link"><span class="contact-link-label">CV / Resume</span><span class="contact-link-val">Full CV →</span></a>
   </div>
 </section>
 
@@ -854,37 +983,6 @@
 </footer>
 
 <script>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', function(e) {
-      const href = this.getAttribute('href');
-      if (href && href.startsWith('#')) {
-        e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) target.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  });
-
-  const ctaButton = document.querySelector('.hero-cta');
-  if (ctaButton) {
-    ctaButton.addEventListener('click', function(e) {
-      e.preventDefault();
-      const target = document.querySelector('#projects');
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
-    });
-  }
-</script>
- <script>
 function prevSlide(carouselId) {
   const container = document.getElementById(carouselId);
   if (!container) return;
@@ -933,7 +1031,6 @@ function nextSlide(carouselId) {
   if (counter) counter.textContent = `${newIndex + 1} / ${slides.length}`;
 }
 
-// Initialize dots and counters when page loads
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.carousel-container').forEach(container => {
     const slides = container.querySelectorAll('.carousel-slide');
@@ -958,6 +1055,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 });
 </script>
 
