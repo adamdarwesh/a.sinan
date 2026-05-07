@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adham Sinan — Architecture & Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0e0d0b;
+    --paper: #f5f2eb;
+    --warm-mid: #c8b89a;
+    --accent: #8b3a1a;
+    --accent-light: #d4724a;
+    --muted: #6b6558;
+    --rule: #d4cec2;
+    --serif: 'Playfair Display', Georgia, serif;
+    --body-serif: 'Cormorant Garamond', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body-serif);
+    font-size: 18px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: var(--paper);
+    border-bottom: 0.5px solid var(--rule);
+    mix-blend-mode: normal;
+  }
+
+  .nav-name {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 5rem;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 6rem 4rem 5rem 3rem;
+    border-right: 0.5px solid var(--rule);
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+  }
+
+  .hero-name {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 6vw, 6rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-name em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-bio {
+    font-family: var(--body-serif);
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 42ch;
+    margin-bottom: 3rem;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 3px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .hero-cta:hover { color: var(--accent); border-color: var(--accent); }
+
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 6rem 3rem 5rem 4rem;
+  }
+
+  .hero-index {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .hero-index li {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding: 1.2rem 0;
+    border-top: 0.5px solid var(--rule);
+    cursor: pointer;
+    transition: padding-left 0.3s;
+  }
+
+  .hero-index li:hover { padding-left: 0.5rem; }
+
+  .hero-index .idx-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--warm-mid);
+    min-width: 2rem;
+  }
+
+  .hero-index .idx-title {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    flex: 1;
+  }
+
+  .hero-index .idx-tag {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 4rem 3rem 2rem;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .section-rule {
+    flex: 1;
+    height: 0.5px;
+    background: var(--rule);
+  }
+
+  /* ── PROJECTS ── */
+  #projects {
+    padding-bottom: 6rem;
+  }
+
+  .project-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 0.5px solid var(--rule);
+    min-height: 60vh;
+  }
+
+  .project-card:last-child { border-bottom: 0.5px solid var(--rule); }
+
+  .project-card.reverse { direction: rtl; }
+  .project-card.reverse > * { direction: ltr; }
+
+  .project-image {
+    background: #d4cec2;
+    overflow: hidden;
+    position: relative;
+    min-height: 480px;
+  }
+
+  .project-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    position: absolute;
+    inset: 0;
+  }
+
+  .project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: sepia(15%) contrast(1.05);
+  }
+
+  .project-content {
+    padding: 4rem 4rem 4rem 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-left: 0.5px solid var(--rule);
+  }
+
+  .project-card.reverse .project-content {
+    border-left: none;
+    border-right: 0.5px solid var(--rule);
+    padding: 4rem 5rem 4rem 4rem;
+  }
+
+  .project-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--warm-mid);
+  }
+
+  .project-year {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .project-title {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.6rem;
+  }
+
+  .project-subtitle {
+    font-family: var(--body-serif);
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--accent);
+    margin-bottom: 1.8rem;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 0.5px solid var(--rule);
+    color: var(--muted);
+  }
+
+  .project-desc {
+    font-family: var(--body-serif);
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 50ch;
+  }
+
+  .project-specs {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 0.5px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 2rem;
+  }
+
+  .spec-item { display: flex; flex-direction: column; gap: 2px; }
+
+  .spec-label {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--warm-mid);
+  }
+
+  .spec-value {
+    font-family: var(--body-serif);
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+
+  /* ── WRITING ── */
+  #writing {
+    padding-bottom: 6rem;
+    border-top: 0.5px solid var(--rule);
+  }
+
+  .writing-grid {
+    padding: 0 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+
+  .writing-item {
+    padding: 2.5rem 2.5rem 2.5rem 0;
+    border-right: 0.5px solid var(--rule);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .writing-item:hover { background: rgba(139,58,26,0.03); }
+  .writing-item:last-child { border-right: none; padding-left: 2.5rem; padding-right: 0; }
+  .writing-item:nth-child(2) { padding-left: 2.5rem; }
+
+  .writing-type {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .writing-title {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+  }
+
+  .writing-desc {
+    font-family: var(--body-serif);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .writing-date {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--warm-mid);
+    margin-top: 1.5rem;
+  }
+
+  /* ── ABOUT ── */
+  #about {
+    padding-bottom: 8rem;
+    border-top: 0.5px solid var(--rule);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 3rem;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .about-text h2 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 3vw, 3rem);
+    font-weight: 900;
+    font-style: italic;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+  }
+
+  .about-text p {
+    font-family: var(--body-serif);
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .about-details {
+    padding-top: 2rem;
+  }
+
+  .about-row {
+    display: flex;
+    gap: 2rem;
+    padding: 1.2rem 0;
+    border-top: 0.5px solid var(--rule);
+    align-items: baseline;
+  }
+
+  .about-row:last-child { border-bottom: 0.5px solid var(--rule); }
+
+  .about-row-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--warm-mid);
+    min-width: 7rem;
+  }
+
+  .about-row-val {
+    font-family: var(--body-serif);
+    font-size: 1rem;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 6rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: end;
+  }
+
+  .contact-left h2 {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-left h2 em {
+    font-style: italic;
+    color: var(--accent-light);
+  }
+
+  .contact-left p {
+    font-family: var(--body-serif);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: rgba(245,242,235,0.6);
+    max-width: 40ch;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .contact-link {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-decoration: none;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid rgba(245,242,235,0.15);
+    transition: border-color 0.2s;
+  }
+
+  .contact-link:hover { border-color: var(--accent-light); }
+
+  .contact-link-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,242,235,0.4);
+  }
+
+  .contact-link-val {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    color: var(--paper);
+    font-weight: 700;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    border-top: 0.5px solid rgba(245,242,235,0.1);
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer span {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: rgba(245,242,235,0.3);
+    text-transform: uppercase;
+  }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 5rem 1.5rem 3rem; border-right: none; border-bottom: 0.5px solid var(--rule); }
+    .hero-right { padding: 2rem 1.5rem 3rem; }
+    .project-card, .project-card.reverse { grid-template-columns: 1fr; direction: ltr; }
+    .project-content, .project-card.reverse .project-content { border-left: none; border-right: none; padding: 2.5rem 1.5rem; }
+    .project-image { min-height: 300px; }
+    .writing-grid { grid-template-columns: 1fr; }
+    .writing-item { border-right: none; border-bottom: 0.5px solid var(--rule); padding: 2rem 0; }
+    .writing-item:nth-child(2), .writing-item:last-child { padding-left: 0; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; padding: 0 1.5rem; }
+    #contact { grid-template-columns: 1fr; padding: 4rem 1.5rem; }
+    .section-header { padding: 3rem 1.5rem 1.5rem; }
+    .writing-grid { padding: 0 1.5rem; }
+    footer { padding: 1.2rem 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-name">Adham Sinan</a>
+  <ul class="nav-links">
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#writing">Writing</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Architecture · Research · Material Practice</p>
+    <h1 class="hero-name">Adham<br><em>Sinan</em></h1>
+    <p class="hero-bio">
+      Working at the intersection of architecture, material research, and post-conflict reconstruction.
+      My practice investigates how destruction conditions shape the structural properties of rubble —
+      and how vernacular knowledge can be recovered as a live building methodology.
+    </p>
+    <a href="#projects" class="hero-cta">View Selected Work</a>
+  </div>
+  <div class="hero-right">
+    <ul class="hero-index">
+      <li onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">
+        <span class="idx-num">01</span>
+        <span class="idx-title">Spiral Spines</span>
+        <span class="idx-tag">2026</span>
+      </li>
+      <li onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">
+        <span class="idx-num">02</span>
+        <span class="idx-title">Woven Realities</span>
+        <span class="idx-tag">2024</span>
+      </li>
+      <li onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">
+        <span class="idx-num">03</span>
+        <span class="idx-title">The New Cairn</span>
+        <span class="idx-tag">Ongoing</span>
+      </li>
+      <li onclick="document.getElementById('writing').scrollIntoView({behavior:'smooth'})">
+        <span class="idx-num">04</span>
+        <span class="idx-title">Research & Writing</span>
+        <span class="idx-tag">Various</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <div class="section-header">
+    <span class="section-label">Selected Work</span>
+    <div class="section-rule"></div>
+  </div>
+
+  <!-- Project 01 -->
+  <article class="project-card reveal">
+    <div class="project-image">
+      <div class="project-image-placeholder">Spiral Spines — Image</div>
+    </div>
+    <div class="project-content">
+      <div class="project-meta">
+        <span class="project-num">01</span>
+        <span class="project-year">2026</span>
+      </div>
+      <h2 class="project-title">Spiral Spines</h2>
+      <p class="project-subtitle">Stable in the Face of Disruption — Climate Biennale Vienna 2026</p>
+      <div class="project-tags">
+        <span class="tag">Regenerative Material</span>
+        <span class="tag">Vernacular Craft</span>
+        <span class="tag">1:1 Prototype</span>
+        <span class="tag">Reclaimed Timber</span>
+      </div>
+      <p class="project-desc">
+        A regenerative material practice that transforms uprooted and discarded timber —
+        ecological disruption made structural. Traditional Afghan woodcarving techniques are
+        adapted as a contemporary method for material processing, embedding collective
+        narratives into reclaimed structural columns through a universal semiotic language
+        inspired by ancient scripts.
+      </p>
+      <div class="project-specs">
+        <div class="spec-item">
+          <span class="spec-label">Scale</span>
+          <span class="spec-value">1:1 / 2.5m high, 4 columns</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Platform</span>
+          <span class="spec-value">5-metre radius</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Materials</span>
+          <span class="spec-value">Basswood, Rammed Earth, Forged Iron</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Venue</span>
+          <span class="spec-value">Brunnenpassage, Vienna</span>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- Project 02 -->
+  <article class="project-card reverse reveal">
+    <div class="project-image">
+      <div class="project-image-placeholder">Woven Realities — Image</div>
+    </div>
+    <div class="project-content">
+      <div class="project-meta">
+        <span class="project-num">02</span>
+        <span class="project-year">2024</span>
+      </div>
+      <h2 class="project-title">Woven Realities</h2>
+      <p class="project-subtitle">The Diversity of Afghan Homes</p>
+      <div class="project-tags">
+        <span class="tag">Circular Architecture</span>
+        <span class="tag">Modular Assembly</span>
+        <span class="tag">Socio-Spatial</span>
+        <span class="tag">Afghan Heritage</span>
+      </div>
+      <p class="project-desc">
+        A 1:1-scale architectural prototype translating the intimate dimensions of Afghan
+        dwelling into circular material practice. Drawing on the spatial memory of clay and
+        mud-brick vernacular, the structure substitutes traditional earth with reusable
+        by-products from the construction and consumer waste sectors — Heraklith wood wool
+        panels, chipboard, stones, and textiles — assembled through low-tech modular means.
+      </p>
+      <div class="project-specs">
+        <div class="spec-item">
+          <span class="spec-label">Dimensions</span>
+          <span class="spec-value">666.5 × 322.5 × 263 cm</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Capacity</span>
+          <span class="spec-value">Up to 10 people</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Materials</span>
+          <span class="spec-value">Wood, Cement, Stone, Fabric</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Technique</span>
+          <span class="spec-value">Low-Tech Modular, Kinetic Base</span>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- Project 03 -->
+  <article class="project-card reveal">
+    <div class="project-image">
+      <div class="project-image-placeholder">The New Cairn — Image</div>
+    </div>
+    <div class="project-content">
+      <div class="project-meta">
+        <span class="project-num">03</span>
+        <span class="project-year">Ongoing</span>
+      </div>
+      <h2 class="project-title">The New Cairn</h2>
+      <p class="project-subtitle">Heterogeneous Rubble Stacking for Post-Disaster Contexts</p>
+      <div class="project-tags">
+        <span class="tag">Rubble Reuse</span>
+        <span class="tag">Compression-Only</span>
+        <span class="tag">Post-Conflict</span>
+        <span class="tag">Low-Tech Protocol</span>
+      </div>
+      <p class="project-desc">
+        A research and construction project proposing whole, un-crushed demolition rubble —
+        reinforced concrete, non-reinforced concrete, stone cladding — as masonry units in
+        compression-only enclosures. The project develops a destruction-mode typology,
+        a field-legible sorting system, and a practitioner handbook deployable in post-disaster
+        Palestine and Afghanistan without specialist equipment.
+      </p>
+      <div class="project-specs">
+        <div class="spec-item">
+          <span class="spec-label">Contexts</span>
+          <span class="spec-value">Palestine · Afghanistan</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Phase</span>
+          <span class="spec-value">Research / Phase 1</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Structural Logic</span>
+          <span class="spec-value">Compression-Only / Safe Theorem</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Collaborators</span>
+          <span class="spec-value">Riwaq · SAWE · EPFL</span>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ── WRITING ── -->
+<section id="writing">
+  <div class="section-header">
+    <span class="section-label">Writing &amp; Research</span>
+    <div class="section-rule"></div>
+  </div>
+  <div class="writing-grid">
+    <div class="writing-item reveal">
+      <p class="writing-type">Research Proposal</p>
+      <h3 class="writing-title">Rubble Typology: Destruction Mode as a Material Determinant</h3>
+      <p class="writing-desc">
+        A comparative framework for understanding how seismic collapse, conflict bombardment,
+        structural degradation, and administrative demolition each produce materially distinct
+        waste streams — requiring differentiated sorting systems and structural roles.
+      </p>
+      <p class="writing-date">2025 — The New Cairn Project</p>
+    </div>
+    <div class="writing-item reveal">
+      <p class="writing-type">Material Research</p>
+      <h3 class="writing-title">Compression-Only Logic in Heterogeneous Rubble Assemblies</h3>
+      <p class="writing-desc">
+        Applying the Safe Theorem to mixed-material demolition waste: why the irregular bearing
+        surfaces, embedded rebar, and mixed densities of real rubble can sustain vault geometry
+        when approached through compression-only structural logic.
+      </p>
+      <p class="writing-date">2025 — Fellowship Research</p>
+    </div>
+    <div class="writing-item reveal">
+      <p class="writing-type">Critical Essay</p>
+      <h3 class="writing-title">Against Recycling Triumphalism: Whole Rubble as a Structural Category</h3>
+      <p class="writing-desc">
+        A critique of RCA as the dominant response to demolition waste, and an argument for
+        treating whole rubble as a distinct material category governed by structural logic
+        rather than aggregate replacement ratios.
+      </p>
+      <p class="writing-date">2024 — Ongoing</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="section-header">
+    <span class="section-label">About</span>
+    <div class="section-rule"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <h2>Architecture as a medium for structural resilience and collective memory.</h2>
+      <p>
+        My practice operates at the boundary between research and construction — where
+        material science meets vernacular tradition, and where the political conditions
+        of destruction become the starting point for design.
+      </p>
+      <p>
+        I am interested in how post-disaster contexts generate their own material logic:
+        the specific geometry of conflict rubble, the knowledge embedded in Afghan woodcarving,
+        the structural potential of the circular waste economy. My work tests these hypotheses
+        at 1:1 scale, in real conditions, with real communities.
+      </p>
+      <p>
+        Current research is focused on developing a generalisable, low-tech construction
+        system for compression-only rubble enclosures — deployable in the Palestinian
+        territories and post-earthquake Afghanistan without specialist equipment or
+        industrial material inputs.
+      </p>
+    </div>
+    <div class="about-details reveal">
+      <div class="about-row">
+        <span class="about-row-label">Based</span>
+        <span class="about-row-val">Nablus, West Bank · Vienna</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">Focus</span>
+        <span class="about-row-val">Regenerative material practice, post-conflict reconstruction, vernacular knowledge systems</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">Collaborators</span>
+        <span class="about-row-val">Riwaq (Ramallah) · SAWE / Engr. Sahar Mahmood · Dr. Tayebeh Nazarian · EPFL SXL</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">Exhibitions</span>
+        <span class="about-row-val">Climate Biennale Vienna 2026 — Brunnenpassage</span>
+      </div>
+      <div class="about-row">
+        <span class="about-row-label">Approach</span>
+        <span class="about-row-val">Technology-informed, low-tech deployment. Research phase uses 3D scanning and structural analysis; deployment requires only hand tools and visual sorting.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="contact-left reveal">
+    <h2>Let's<br><em>work<br>together.</em></h2>
+    <p>
+      Open to research collaborations, fellowship inquiries,
+      exhibition commissions, and conversations about
+      post-conflict material practice.
+    </p>
+  </div>
+  <div class="contact-links reveal">
+    <a href="mailto:adham.sinan@email.com" class="contact-link">
+      <span class="contact-link-label">Email</span>
+      <span class="contact-link-val">adham.sinan@email.com</span>
+    </a>
+    <a href="#" class="contact-link">
+      <span class="contact-link-label">Instagram</span>
+      <span class="contact-link-val">@adhamsinan</span>
+    </a>
+    <a href="#" class="contact-link">
+      <span class="contact-link-label">LinkedIn</span>
+      <span class="contact-link-val">Adham Sinan</span>
+    </a>
+    <a href="#" class="contact-link">
+      <span class="contact-link-label">CV / Download</span>
+      <span class="contact-link-val">Portfolio PDF →</span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <span>Adham Sinan — Architecture &amp; Research</span>
+  <span>© 2026</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
