@@ -404,7 +404,42 @@
     transform: translateY(0);
   }
 
-  /* ========== PROJECT MODAL (Large Window) ========== */
+  /* ========== STICKY NOTES ========== */
+  .sticky-note {
+    position: fixed;
+    background: #fffbeb;
+    border-left: 4px solid var(--accent);
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    z-index: 2000;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    max-width: 180px;
+    backdrop-filter: blur(4px);
+  }
+
+  .sticky-note:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    border-left-width: 6px;
+  }
+
+  .sticky-note .sticky-title {
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .sticky-note .sticky-subtitle {
+    font-size: 0.6rem;
+    color: var(--muted);
+    font-family: var(--body-serif);
+  }
+
+  /* ========== RESIZABLE MODAL ========== */
   .project-modal-overlay {
     display: none;
     position: fixed;
@@ -421,16 +456,23 @@
 
   .project-modal {
     background: var(--paper);
-    width: 85%;
-    max-width: 900px;
-    height: 85%;
-    max-height: 85vh;
+    min-width: 400px;
+    min-height: 300px;
     border-radius: 16px;
     display: flex;
     flex-direction: column;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     animation: modalSlideIn 0.3s ease;
     position: relative;
+    resize: both;
+    overflow: auto;
+  }
+
+  .project-modal::-webkit-resizer {
+    border-width: 10px;
+    border-style: solid;
+    border-color: var(--accent) transparent transparent var(--accent);
+    background: transparent;
   }
 
   @keyframes modalSlideIn {
@@ -447,11 +489,12 @@
     background: var(--accent);
     color: white;
     border-radius: 16px 16px 0 0;
+    cursor: move;
   }
 
   .project-modal-header h2 {
     font-family: var(--serif);
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin: 0;
   }
 
@@ -498,7 +541,7 @@
 
   .modal-carousel-slide img {
     width: 100%;
-    height: 350px;
+    height: 300px;
     object-fit: cover;
     background: #f0f0f0;
   }
@@ -580,41 +623,6 @@
     color: var(--muted);
   }
 
-  /* ========== STICKY NOTES (Minimized Popups) ========== */
-  .sticky-note {
-    position: fixed;
-    background: #fffbeb;
-    border-left: 4px solid var(--accent);
-    padding: 10px 15px;
-    border-radius: 8px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    cursor: pointer;
-    z-index: 2000;
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    max-width: 180px;
-    backdrop-filter: blur(4px);
-  }
-
-  .sticky-note:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    border-left-width: 6px;
-  }
-
-  .sticky-note .sticky-title {
-    color: var(--accent);
-    margin-bottom: 4px;
-  }
-
-  .sticky-note .sticky-subtitle {
-    font-size: 0.6rem;
-    color: var(--muted);
-    font-family: var(--body-serif);
-  }
-
   /* ========== CV MODAL ========== */
   .cv-modal-overlay {
     display: none;
@@ -681,8 +689,18 @@
     padding-bottom: 0.3rem;
   }
 
+  .resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    cursor: nw-resize;
+    z-index: 100;
+  }
+
   @media (max-width: 768px) {
-    .project-modal { width: 95%; height: 90%; }
+    .project-modal { min-width: 90vw; width: 90vw !important; }
     .modal-carousel-slide img { height: 200px; }
     .hero { grid-template-columns: 1fr; }
     .hero-left { border-right: none; border-bottom: 1px solid var(--rule); }
@@ -727,10 +745,10 @@
   </div>
 </div>
 
-<!-- PROJECT MODAL (hidden by default, shown when popup clicked) -->
+<!-- PROJECT MODAL (resizable) -->
 <div id="projectModal" class="project-modal-overlay">
-  <div class="project-modal">
-    <div class="project-modal-header">
+  <div class="project-modal" id="resizableModal" style="width: 700px; height: 600px;">
+    <div class="project-modal-header" id="modalHeader">
       <h2 id="modalTitle">Project Title</h2>
       <button class="modal-close" id="closeModalBtn">✕</button>
     </div>
@@ -749,6 +767,7 @@
         <div class="modal-full-desc" id="modalDesc"></div>
       </div>
     </div>
+    <div class="resize-handle"></div>
   </div>
 </div>
 
@@ -773,21 +792,21 @@
     <a href="#research" class="hero-cta">View Research</a>
   </div>
   <div class="hero-right">
-    <ul class="hero-index">
-      <li><span class="idx-num">01</span><span class="idx-title">Spiral Spines</span><span class="idx-tag">2026</span></li>
-      <li><span class="idx-num">02</span><span class="idx-title">Woven Realities</span><span class="idx-tag">2026</span></li>
-      <li><span class="idx-num">03</span><span class="idx-title">The New Cairn</span><span class="idx-tag">Ongoing</span></li>
-      <li><span class="idx-num">04</span><span class="idx-title">Carbonfloss</span><span class="idx-tag">2020</span></li>
-      <li><span class="idx-num">05</span><span class="idx-title">OUROBOS</span><span class="idx-tag">2022</span></li>
-      <li><span class="idx-num">06</span><span class="idx-title">Agropraxis</span><span class="idx-tag">2021</span></li>
-      <li><span class="idx-num">07</span><span class="idx-title">Medius paedagogicus</span><span class="idx-tag">2022</span></li>
-      <li><span class="idx-num">08</span><span class="idx-title">Soft Unsealing</span><span class="idx-tag">2024</span></li>
-      <li><span class="idx-num">09</span><span class="idx-title">Old Airfield</span><span class="idx-tag">Ongoing</span></li>
-      <li><span class="idx-num">10</span><span class="idx-title">Enkidu</span><span class="idx-tag">In Dev</span></li>
-      <li><span class="idx-num">11</span><span class="idx-title">Aura</span><span class="idx-tag">2022</span></li>
-      <li><span class="idx-num">12</span><span class="idx-title">Liberation Fronts</span><span class="idx-tag">2024</span></li>
-      <li><span class="idx-num">13</span><span class="idx-title">Regutting</span><span class="idx-tag">2025</span></li>
-      <li><span class="idx-num">14</span><span class="idx-title">Agential Cartographies</span><span class="idx-tag">2025</span></li>
+    <ul class="hero-index" id="heroIndexList">
+      <li data-project-idx="0"><span class="idx-num">01</span><span class="idx-title">Spiral Spines</span><span class="idx-tag">2026</span></li>
+      <li data-project-idx="1"><span class="idx-num">02</span><span class="idx-title">Woven Realities</span><span class="idx-tag">2026</span></li>
+      <li data-project-idx="2"><span class="idx-num">03</span><span class="idx-title">The New Cairn</span><span class="idx-tag">Ongoing</span></li>
+      <li data-project-idx="3"><span class="idx-num">04</span><span class="idx-title">Carbonfloss</span><span class="idx-tag">2020</span></li>
+      <li data-project-idx="4"><span class="idx-num">05</span><span class="idx-title">OUROBOS</span><span class="idx-tag">2022</span></li>
+      <li data-project-idx="5"><span class="idx-num">06</span><span class="idx-title">Agropraxis</span><span class="idx-tag">2021</span></li>
+      <li data-project-idx="6"><span class="idx-num">07</span><span class="idx-title">Medius paedagogicus</span><span class="idx-tag">2022</span></li>
+      <li data-project-idx="7"><span class="idx-num">08</span><span class="idx-title">Soft Unsealing</span><span class="idx-tag">2024</span></li>
+      <li data-project-idx="8"><span class="idx-num">09</span><span class="idx-title">Old Airfield</span><span class="idx-tag">Ongoing</span></li>
+      <li data-project-idx="9"><span class="idx-num">10</span><span class="idx-title">Enkidu</span><span class="idx-tag">In Dev</span></li>
+      <li data-project-idx="10"><span class="idx-num">11</span><span class="idx-title">Aura</span><span class="idx-tag">2022</span></li>
+      <li data-project-idx="11"><span class="idx-num">12</span><span class="idx-title">Liberation Fronts</span><span class="idx-tag">2024</span></li>
+      <li data-project-idx="12"><span class="idx-num">13</span><span class="idx-title">Regutting</span><span class="idx-tag">2025</span></li>
+      <li data-project-idx="13"><span class="idx-num">14</span><span class="idx-title">Agential Cartographies</span><span class="idx-tag">2025</span></li>
     </ul>
   </div>
 </section>
@@ -825,7 +844,7 @@
 </footer>
 
 <script>
-// ========== PROJECT DATA (with 6 image placeholders each) ==========
+// ========== PROJECT DATA ==========
 const allProjects = [
   { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna 2026", tags: ["Regenerative Material", "Vernacular Craft", "1:1 Prototype"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing, embedding collective narratives into reclaimed structural columns through a universal semiotic language inspired by ancient scripts.", images: [1,2,3,4,5,6] },
   { id: "02", title: "Woven Realities", year: "2026", subtitle: "The Diversity of Afghan Homes", tags: ["Circular Architecture", "Modular Assembly", "Afghan Heritage"], fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice. The structure substitutes traditional earth with reusable by-products from the construction and consumer waste sectors — Heraklith wood wool panels, chipboard, stones, and textiles — assembled through low-tech modular means.", images: [1,2,3,4,5,6] },
@@ -843,21 +862,19 @@ const allProjects = [
   { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", tags: ["Exhibition", "Cartography", "Agency"], fullDesc: "An exhibition presenting experimental mappings across three spatial typologies: the camp, the city, and the limbo landscape, exploring agency as a dynamic and malleable force that shapes and redefines cartographic representations in occupied Palestine.", images: [1,2,3,4,5,6] }
 ];
 
-// ========== CREATE STICKY NOTES ==========
+// ========== STICKY NOTES ==========
 let stickyNotes = [];
-let currentModalProject = null;
 
 function createStickyNote(project, index) {
   const note = document.createElement('div');
   note.className = 'sticky-note';
-  note.setAttribute('data-project-id', project.id);
+  note.setAttribute('data-project-idx', index);
   
-  // Random position within viewport
   const padding = 20;
   const maxX = window.innerWidth - 200;
   const maxY = window.innerHeight - 80;
   const x = Math.max(padding, Math.random() * maxX);
-  const y = Math.max(padding + (index * 25), Math.random() * maxY);
+  const y = Math.max(padding + (index * 15), Math.random() * maxY);
   
   note.style.left = `${x}px`;
   note.style.top = `${y}px`;
@@ -868,30 +885,97 @@ function createStickyNote(project, index) {
     <div class="sticky-subtitle">${project.subtitle}</div>
   `;
   
-  note.addEventListener('click', () => openProjectModal(project));
+  note.addEventListener('click', () => openProjectModal(index));
   document.body.appendChild(note);
   stickyNotes.push(note);
   return note;
 }
 
-// ========== OPEN MODAL WITH PROJECT ==========
-let modalCarouselIndex = 0;
-let modalCurrentProject = null;
+// ========== MODAL RESIZING ==========
+function makeResizable() {
+  const modal = document.getElementById('resizableModal');
+  const resizeHandle = document.querySelector('.resize-handle');
+  let isResizing = false;
+  let startX, startY, startWidth, startHeight;
+  
+  resizeHandle.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startWidth = parseInt(window.getComputedStyle(modal).width);
+    startHeight = parseInt(window.getComputedStyle(modal).height);
+    e.preventDefault();
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    const newWidth = startWidth + (e.clientX - startX);
+    const newHeight = startHeight + (e.clientY - startY);
+    if (newWidth > 360) modal.style.width = `${newWidth}px`;
+    if (newHeight > 300) modal.style.height = `${newHeight}px`;
+  });
+  
+  document.addEventListener('mouseup', () => {
+    isResizing = false;
+  });
+}
 
-function openProjectModal(project) {
-  modalCurrentProject = project;
+// ========== MODAL DRAGGING ==========
+function makeDraggable() {
+  const modal = document.getElementById('resizableModal');
+  const header = document.getElementById('modalHeader');
+  let isDragging = false;
+  let startX, startY, startLeft, startTop;
+  
+  header.addEventListener('mousedown', (e) => {
+    if (e.target.tagName === 'BUTTON') return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    const rect = modal.getBoundingClientRect();
+    startLeft = rect.left;
+    startTop = rect.top;
+    modal.style.position = 'fixed';
+    e.preventDefault();
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const newLeft = startLeft + (e.clientX - startX);
+    const newTop = startTop + (e.clientY - startY);
+    modal.style.left = `${newLeft}px`;
+    modal.style.top = `${newTop}px`;
+    modal.style.bottom = 'auto';
+    modal.style.right = 'auto';
+  });
+  
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+}
+
+// ========== OPEN MODAL ==========
+let modalCarouselIndex = 0;
+let modalCurrentProjectIndex = null;
+
+function openProjectModal(projectIndex) {
+  const project = allProjects[projectIndex];
+  modalCurrentProjectIndex = projectIndex;
   modalCarouselIndex = 0;
   
-  // Update modal content
+  const modal = document.getElementById('resizableModal');
+  modal.style.left = 'auto';
+  modal.style.top = 'auto';
+  modal.style.right = 'auto';
+  modal.style.bottom = 'auto';
+  
   document.getElementById('modalTitle').innerHTML = `${project.id} · ${project.title}`;
   document.getElementById('modalSubtitle').innerHTML = `${project.subtitle} (${project.year})`;
   document.getElementById('modalDesc').innerHTML = project.fullDesc;
   
-  // Update tags
   const tagsContainer = document.getElementById('modalTags');
   tagsContainer.innerHTML = project.tags.map(tag => `<span class="modal-tag">${tag}</span>`).join('');
   
-  // Build carousel slides (6 images - using placeholders with project-specific names)
   const slidesContainer = document.getElementById('modalCarouselSlides');
   slidesContainer.innerHTML = '';
   
@@ -903,7 +987,6 @@ function openProjectModal(project) {
     slidesContainer.appendChild(slide);
   }
   
-  // Update dots
   const dotsContainer = document.getElementById('modalCarouselDots');
   dotsContainer.innerHTML = '';
   for (let i = 0; i < 6; i++) {
@@ -915,8 +998,6 @@ function openProjectModal(project) {
   }
   
   updateModalCarousel();
-  
-  // Show modal
   document.getElementById('projectModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
@@ -924,11 +1005,8 @@ function openProjectModal(project) {
 function updateModalCarousel() {
   const slidesContainer = document.getElementById('modalCarouselSlides');
   slidesContainer.style.transform = `translateX(-${modalCarouselIndex * 100}%)`;
-  
   const dots = document.querySelectorAll('#modalCarouselDots .modal-carousel-dot');
-  dots.forEach((dot, i) => {
-    dot.classList.toggle('active', i === modalCarouselIndex);
-  });
+  dots.forEach((dot, i) => dot.classList.toggle('active', i === modalCarouselIndex));
 }
 
 function goToModalSlide(index) {
@@ -955,6 +1033,28 @@ function closeProjectModal() {
   document.body.style.overflow = 'auto';
 }
 
+// ========== HERO LIST CLICK ==========
+function setupHeroList() {
+  const heroItems = document.querySelectorAll('#heroIndexList li');
+  heroItems.forEach((item, idx) => {
+    item.addEventListener('click', () => {
+      // First, highlight the corresponding sticky note
+      const sticky = stickyNotes[idx];
+      if (sticky) {
+        sticky.style.transform = 'scale(1.05)';
+        sticky.style.borderLeftWidth = '8px';
+        setTimeout(() => {
+          sticky.style.transform = '';
+          sticky.style.borderLeftWidth = '4px';
+        }, 500);
+        sticky.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      // Then open the modal for that project
+      openProjectModal(idx);
+    });
+  });
+}
+
 // ========== CV MODAL ==========
 function openCvModal() {
   document.getElementById('cvModal').style.display = 'flex';
@@ -966,26 +1066,26 @@ function closeCvModal() {
   document.body.style.overflow = 'auto';
 }
 
-// ========== INITIALIZE POPUPS (Create sticky notes first) ==========
+// ========== INITIALIZE ==========
 function initialize() {
-  // Create sticky notes for all projects
   allProjects.forEach((project, i) => {
     setTimeout(() => {
       createStickyNote(project, i);
-    }, 100 + i * 120);
+    }, 100 + i * 100);
   });
   
-  // Modal controls
+  setTimeout(() => {
+    setupHeroList();
+  }, 2000);
+  
   document.getElementById('closeModalBtn').addEventListener('click', closeProjectModal);
   document.getElementById('modalCarouselPrev').addEventListener('click', prevModalSlide);
   document.getElementById('modalCarouselNext').addEventListener('click', nextModalSlide);
   
-  // Close modal when clicking outside
   document.getElementById('projectModal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('projectModal')) closeProjectModal();
   });
   
-  // CV Modal controls
   document.getElementById('openCvBtn').addEventListener('click', (e) => {
     e.preventDefault();
     openCvModal();
@@ -995,7 +1095,9 @@ function initialize() {
     if (e.target === document.getElementById('cvModal')) closeCvModal();
   });
   
-  // Scroll animations
+  makeResizable();
+  makeDraggable();
+  
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
@@ -1006,7 +1108,6 @@ function initialize() {
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   
-  // Handle window resize to keep sticky notes in bounds
   window.addEventListener('resize', () => {
     stickyNotes.forEach(note => {
       let left = parseInt(note.style.left);
@@ -1019,7 +1120,6 @@ function initialize() {
   });
 }
 
-// Start everything
 initialize();
 </script>
 
