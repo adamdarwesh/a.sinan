@@ -706,4 +706,62 @@
   </div>
   <div class="writing-grid">
     <div class="writing-item reveal"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Dynamic Ruinations: Architecture Against Finality</h3><p class="writing-desc">Presented at "Co-producing Alternative Futures through Experimental Urbanism" Symposium, University of Pretoria, South Africa (April 2026).</p><p class="writing-date">2026 — Newcastle University</p></div>
-    <div class="writing-item reveal"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Agential Cartographies
+    <div class="writing-item reveal"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Agential Cartographies</h3><p class="writing-desc">Presented at "Spectres of the Undercommons" Conference, The American University in Cairo (April 2026).</p><p class="writing-date">2026 — Extra-territorial Studio</p></div>
+    <div class="writing-item reveal"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Spatio-territorial Examination of the Actively Deterritorialized</h3><p class="writing-desc">Presented at "Engineering Destruction" Conference, Birzeit University (June 2025).</p><p class="writing-date">2025 — Birzeit University</p></div>
+    <div class="writing-item reveal"><p class="writing-type">Book Chapter</p><h3 class="writing-title">Re: Action — Urban Resilience in the post-Information Age</h3><p class="writing-desc">Published by Birkhäuser (2023). Edited by Hani Rashid.</p><p class="writing-date">2023 — Birkhäuser</p></div>
+    <div class="writing-item reveal"><p class="writing-type">Research Proposal</p><h3 class="writing-title">Rubble Typology: Destruction Mode as a Material Determinant</h3><p class="writing-desc">A comparative framework for understanding how different destruction modes produce materially distinct waste streams.</p><p class="writing-date">2025 — The New Cairn Project</p></div>
+    <div class="writing-item reveal"><p class="writing-type">Material Research</p><h3 class="writing-title">Compression-Only Logic in Heterogeneous Rubble Assemblies</h3><p class="writing-desc">Applying the Safe Theorem to mixed-material demolition waste for compression-only structural logic.</p><p class="writing-date">2025 — Fellowship Research</p></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-left reveal">
+    <h2>Let's<br><em>work<br>together.</em></h2>
+    <p>Open to research collaborations, fellowship inquiries, exhibition commissions, and conversations about post-conflict material practice.</p>
+  </div>
+  <div class="contact-links reveal">
+    <a href="mailto:adam95darwesh@gmail.com" class="contact-link"><span class="contact-link-label">Email</span><span class="contact-link-val">adam95darwesh@gmail.com</span></a>
+    <a href="https://www.linkedin.com/in/aladham/" class="contact-link" target="_blank"><span class="contact-link-label">LinkedIn</span><span class="contact-link-val">in/aladham</span></a>
+    <a href="#" class="contact-link"><span class="contact-link-label">Instagram</span><span class="contact-link-val">@al_adhambinsinan</span></a>
+    <a href="cv.html" class="contact-link"><span class="contact-link-label">CV / Resume</span><span class="contact-link-val">Full CV & Portfolio →</span></a>
+  </div>
+</section>
+
+<footer>
+  <span>Ad(h)am Sinan — Architecture, Art & Research</span>
+  <span>© 2025</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+  const ctaButton = document.querySelector('.hero-cta');
+  if (ctaButton) {
+    ctaButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector('#projects');
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+</script>
+
+</html>
