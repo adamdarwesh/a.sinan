@@ -890,5 +890,20 @@ document.querySelectorAll('.nav-links a, .hero-cta, .hero-index li').forEach(lin
     });
   }
 </script>
+<script>
+  // Make navigation links work smoothly
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href');
+      if (targetId && targetId !== '#') {
+        const target = document.querySelector(targetId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  });
+</script>
 
 </html>
