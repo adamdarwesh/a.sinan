@@ -38,7 +38,6 @@
     min-height: 100vh;
   }
 
-  /* Animated grid background with larger random red plus signs */
   body::before {
     content: "";
     position: fixed;
@@ -54,7 +53,6 @@
     z-index: 0;
   }
 
-  /* Random red plus signs animation */
   .random-plus {
     position: fixed;
     color: var(--accent);
@@ -67,29 +65,14 @@
   }
 
   @keyframes plusFloat {
-    0% {
-      opacity: 0;
-      transform: scale(0.5) rotate(0deg);
-    }
-    20% {
-      opacity: 0.8;
-      transform: scale(1.2) rotate(90deg);
-    }
-    50% {
-      opacity: 0.6;
-      transform: scale(1) rotate(180deg);
-    }
-    80% {
-      opacity: 0.3;
-      transform: scale(0.8) rotate(270deg);
-    }
-    100% {
-      opacity: 0;
-      transform: scale(0.3) rotate(360deg);
-    }
+    0% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+    20% { opacity: 0.8; transform: scale(1.2) rotate(90deg); }
+    50% { opacity: 0.6; transform: scale(1) rotate(180deg); }
+    80% { opacity: 0.3; transform: scale(0.8) rotate(270deg); }
+    100% { opacity: 0; transform: scale(0.3) rotate(360deg); }
   }
 
-  nav, .categories, footer {
+  nav, .categories, .tags-bar, footer {
     position: relative;
     z-index: 100;
   }
@@ -101,7 +84,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: 0.8rem 2rem;
     background: rgba(255,255,255,0.95);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--rule);
@@ -156,15 +139,15 @@
     transform: scale(1.05);
   }
 
-  /* Categories Section - animated entrance */
+  /* Categories Section */
   .categories {
     position: fixed;
-    top: 70px;
+    top: 65px;
     left: 0;
     right: 0;
     z-index: 90;
     text-align: center;
-    padding: 0.8rem;
+    padding: 0.6rem;
     background: rgba(255,255,255,0.95);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--rule);
@@ -173,15 +156,13 @@
   .category-filters {
     display: flex;
     justify-content: center;
-    gap: 2.5rem;
+    gap: 2rem;
     list-style: none;
-    opacity: 0;
-    animation: fadeInUp 0.5s ease forwards;
   }
 
   .category-filters li {
     font-family: var(--mono);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     cursor: pointer;
@@ -192,40 +173,95 @@
     animation: slideInLeft 0.4s ease forwards;
   }
 
-  @keyframes fadeInUp {
-    to { opacity: 1; }
-  }
-
   @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
   }
 
-  .category-filters li:nth-child(1) { animation-delay: 0.1s; }
-  .category-filters li:nth-child(2) { animation-delay: 0.2s; }
-  .category-filters li:nth-child(3) { animation-delay: 0.3s; }
-  .category-filters li:nth-child(4) { animation-delay: 0.4s; }
+  .category-filters li:nth-child(1) { animation-delay: 0.05s; }
+  .category-filters li:nth-child(2) { animation-delay: 0.1s; }
+  .category-filters li:nth-child(3) { animation-delay: 0.15s; }
+  .category-filters li:nth-child(4) { animation-delay: 0.2s; }
+  .category-filters li:nth-child(5) { animation-delay: 0.25s; }
 
-  .category-filters li:hover {
-    color: var(--accent);
+  .category-filters li:hover { color: var(--accent); }
+  .category-filters li.active { color: var(--accent); border-bottom: 1.5px solid var(--accent); }
+
+  /* Tags Bar */
+  .tags-bar {
+    position: fixed;
+    top: 115px;
+    left: 0;
+    right: 0;
+    z-index: 85;
+    text-align: center;
+    padding: 0.5rem 1rem;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
   }
 
-  .category-filters li.active {
+  .tag-filter {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--rule);
+    border-radius: 20px;
+    color: var(--muted);
+    transition: all 0.2s ease;
+    background: var(--paper);
+    opacity: 0;
+    animation: fadeInUp 0.3s ease forwards;
+    position: relative;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tag-filter:hover {
+    border-color: var(--accent);
     color: var(--accent);
-    border-bottom: 1.5px solid var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .tag-filter.active {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: white;
+  }
+
+  /* Tooltip for tags */
+  .tag-filter:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: white;
+    font-size: 0.55rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 200;
+    margin-bottom: 5px;
+    font-family: var(--mono);
   }
 
   /* Sticky Notes Canvas */
   .sticky-canvas {
     position: relative;
     min-height: 100vh;
-    padding: 130px 2rem 2rem;
+    padding: 170px 2rem 2rem;
     z-index: 1;
   }
 
@@ -233,90 +269,76 @@
     position: absolute;
     background: var(--paper);
     border: 1px solid var(--rule);
-    padding: 12px 15px;
+    padding: 10px 12px;
     border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     cursor: grab;
     font-family: var(--mono);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     transition: all 0.2s ease;
-    width: 180px;
+    width: 170px;
     z-index: 10;
     animation: noteAppear 0.4s ease forwards;
   }
 
-  .sticky-note:active {
-    cursor: grabbing;
-  }
+  .sticky-note:active { cursor: grabbing; }
 
   @keyframes noteAppear {
-    from {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
   }
 
   .sticky-note:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transform: translateY(-2px);
   }
 
   .sticky-note.blurred {
     filter: blur(3px);
-    opacity: 0.5;
+    opacity: 0.4;
   }
 
   .sticky-note.highlight {
     filter: none;
     opacity: 1;
-    box-shadow: 0 0 0 1.5px var(--accent), 0 4px 12px rgba(0,0,0,0.1);
-    background: var(--paper);
+    box-shadow: 0 0 0 1.5px var(--accent), 0 4px 10px rgba(0,0,0,0.1);
   }
 
   .sticky-note .sticky-title {
     color: var(--accent);
-    margin-bottom: 6px;
-    font-size: 0.75rem;
+    margin-bottom: 4px;
+    font-size: 0.7rem;
     font-weight: bold;
   }
 
   .sticky-note .sticky-subtitle {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     color: var(--muted);
     font-family: var(--body-serif);
-    margin-bottom: 4px;
   }
 
   .sticky-note-controls {
     position: absolute;
-    top: 5px;
-    right: 8px;
+    top: 3px;
+    right: 6px;
     display: flex;
-    gap: 8px;
+    gap: 6px;
     opacity: 0;
     transition: opacity 0.2s;
   }
 
-  .sticky-note:hover .sticky-note-controls {
-    opacity: 1;
-  }
+  .sticky-note:hover .sticky-note-controls { opacity: 1; }
 
   .sticky-note-controls button {
     background: none;
     border: none;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     cursor: pointer;
     color: var(--muted);
-    padding: 0 3px;
+    padding: 0 2px;
   }
 
-  .sticky-note-controls button:hover {
-    color: var(--accent);
-  }
+  .sticky-note-controls button:hover { color: var(--accent); }
 
   /* Sidebar Tabs */
   .sidebar-tabs {
@@ -332,24 +354,22 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
-    max-height: 80vh;
+    max-height: 70vh;
     overflow-y: auto;
-    box-shadow: -2px 2px 8px rgba(0,0,0,0.05);
   }
 
   .sidebar-tab {
     writing-mode: vertical-rl;
     text-orientation: mixed;
-    padding: 8px 4px;
+    padding: 6px 3px;
     font-family: var(--mono);
-    font-size: 0.55rem;
-    letter-spacing: 2px;
+    font-size: 0.5rem;
+    letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
     background: var(--paper);
     border: 1px solid var(--rule);
     border-radius: 4px;
-    transition: all 0.2s;
     color: var(--muted);
   }
 
@@ -358,24 +378,112 @@
     color: var(--accent);
   }
 
-  /* Modal Styles */
-  .project-modal-overlay {
+  /* Results Grid Modal */
+  .results-modal-overlay {
     display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.7);
     backdrop-filter: blur(5px);
     z-index: 5000;
     justify-content: center;
     align-items: center;
   }
 
+  .results-modal {
+    background: var(--paper);
+    width: 90%;
+    max-width: 1200px;
+    height: 85%;
+    max-height: 85vh;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  }
+
+  .results-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .results-modal-header h2 {
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .results-close {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--muted);
+  }
+
+  .results-grid {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .result-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .result-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .result-card .card-title {
+    font-family: var(--serif);
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--accent);
+  }
+
+  .result-card .card-subtitle {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin: 4px 0;
+  }
+
+  .result-card .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+  }
+
+  .result-card .card-tag {
+    font-family: var(--mono);
+    font-size: 0.5rem;
+    padding: 2px 6px;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+  }
+
+  /* Split View Modal */
   .split-view {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     width: 90%;
     max-width: 1400px;
     height: 85%;
@@ -395,7 +503,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.8rem 1.2rem;
+    padding: 0.7rem 1rem;
     border-bottom: 1px solid var(--rule);
     background: var(--accent);
     color: white;
@@ -405,13 +513,12 @@
 
   .modal-header h3 {
     font-family: var(--mono);
-    font-size: 0.8rem;
-    margin: 0;
+    font-size: 0.7rem;
   }
 
   .modal-controls {
     display: flex;
-    gap: 12px;
+    gap: 10px;
   }
 
   .modal-controls button {
@@ -419,24 +526,20 @@
     border: none;
     color: white;
     cursor: pointer;
-    font-size: 0.8rem;
-    padding: 2px 6px;
+    font-size: 0.7rem;
+    padding: 2px 5px;
     border-radius: 4px;
-  }
-
-  .modal-controls button:hover {
-    background: rgba(255,255,255,0.4);
   }
 
   .modal-body {
     flex: 1;
     overflow-y: auto;
-    padding: 1rem;
+    padding: 0.8rem;
   }
 
   .modal-carousel {
     position: relative;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
   }
 
   .modal-carousel-slides {
@@ -450,7 +553,7 @@
 
   .modal-carousel-slide img {
     width: 100%;
-    height: 200px;
+    height: 180px;
     object-fit: cover;
     background: #f5f5f5;
   }
@@ -462,8 +565,8 @@
     background: rgba(0,0,0,0.5);
     color: white;
     border: none;
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     cursor: pointer;
   }
@@ -474,13 +577,13 @@
   .modal-carousel-dots {
     display: flex;
     justify-content: center;
-    gap: 6px;
-    margin-top: 8px;
+    gap: 5px;
+    margin-top: 6px;
   }
 
   .modal-carousel-dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background: #ccc;
     cursor: pointer;
@@ -488,52 +591,38 @@
 
   .modal-carousel-dot.active {
     background: var(--accent);
-    width: 16px;
+    width: 14px;
     border-radius: 3px;
   }
 
   .modal-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
-    margin: 10px 0;
+    gap: 4px;
+    margin: 8px 0;
   }
 
   .modal-tag {
     font-family: var(--mono);
-    font-size: 0.55rem;
-    padding: 2px 8px;
+    font-size: 0.5rem;
+    padding: 2px 6px;
     border: 1px solid var(--rule);
-    border-radius: 12px;
+    border-radius: 10px;
   }
 
   .modal-subtitle {
     color: var(--accent);
     font-style: italic;
-    font-size: 0.8rem;
-    margin-bottom: 10px;
+    font-size: 0.75rem;
+    margin-bottom: 8px;
   }
 
   .modal-full-desc {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     line-height: 1.5;
     color: var(--muted);
   }
 
-  .split-btn {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background: var(--ink);
-    color: white;
-    border: none;
-    padding: 4px 8px;
-    font-size: 0.6rem;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-
-  /* CV Modal */
   .cv-modal-overlay {
     display: none;
     position: fixed;
@@ -551,9 +640,8 @@
   .cv-modal {
     background: var(--paper);
     width: 85%;
-    max-width: 700px;
-    height: 80%;
-    max-height: 80vh;
+    max-width: 650px;
+    height: 75%;
     border-radius: 12px;
     display: flex;
     flex-direction: column;
@@ -563,48 +651,46 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 0.8rem;
     border-bottom: 1px solid var(--rule);
   }
 
   .cv-modal-header h2 {
     color: var(--accent);
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 
   .cv-modal-body {
     flex: 1;
     overflow-y: auto;
-    padding: 1rem;
+    padding: 0.8rem;
   }
 
   .cv-modal-body h4 {
     font-family: var(--mono);
     color: var(--accent);
-    margin-top: 1rem;
-    margin-bottom: 0.3rem;
-    font-size: 0.65rem;
+    margin-top: 0.8rem;
+    font-size: 0.6rem;
   }
 
   footer {
-    position: relative;
     background: var(--paper);
     border-top: 1px solid var(--rule);
-    padding: 0.8rem;
+    padding: 0.6rem;
     text-align: center;
   }
 
   footer span {
     font-family: var(--mono);
-    font-size: 0.55rem;
+    font-size: 0.5rem;
     color: var(--warm-mid);
   }
 
   @media (max-width: 768px) {
-    .categories { top: 65px; }
-    .category-filters { gap: 0.8rem; }
-    .category-filters li { font-size: 0.55rem; }
-    .sticky-canvas { padding: 120px 1rem 1rem; }
+    .categories { top: 60px; }
+    .tags-bar { top: 108px; gap: 0.3rem; }
+    .tag-filter { font-size: 0.45rem; }
+    .sticky-canvas { padding: 160px 1rem 1rem; }
     .split-view { flex-direction: column; width: 95%; height: 90%; }
     .sidebar-tabs { display: none; }
   }
@@ -617,7 +703,7 @@
   <div class="cv-modal">
     <div class="cv-modal-header">
       <h2>CV / Resume</h2>
-      <button class="cv-modal-close" id="closeCvBtn" style="background:none; border:none; font-size:1.3rem; cursor:pointer;">✕</button>
+      <button class="cv-modal-close" id="closeCvBtn" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">✕</button>
     </div>
     <div class="cv-modal-body">
       <h4>Profile</h4>
@@ -632,8 +718,19 @@
   </div>
 </div>
 
+<!-- Results Modal (for tag filtering) -->
+<div id="resultsModal" class="results-modal-overlay">
+  <div class="results-modal">
+    <div class="results-modal-header">
+      <h2 id="resultsTitle">Projects</h2>
+      <button class="results-close" id="closeResultsBtn">✕</button>
+    </div>
+    <div class="results-grid" id="resultsGrid"></div>
+  </div>
+</div>
+
 <!-- Split View Modal -->
-<div id="splitModal" class="project-modal-overlay">
+<div id="splitModal" class="results-modal-overlay">
   <div class="split-view" id="splitView"></div>
 </div>
 
@@ -658,14 +755,17 @@
   </ul>
 </div>
 
+<!-- Tags Bar -->
+<div class="tags-bar" id="tagsBar"></div>
+
 <!-- Sticky Note Canvas -->
 <div class="sticky-canvas" id="stickyCanvas"></div>
 
 <!-- Sidebar Tabs -->
 <div class="sidebar-tabs" id="sidebarTabs"></div>
 
-<section id="contact" style="padding: 2rem; border-top: 1px solid #eee;">
-  <p style="text-align: center;">📧 <a href="mailto:adam95darwesh@gmail.com" style="color:#FF3030;">adam95darwesh@gmail.com</a> | 🔗 <a href="https://www.linkedin.com/in/aladham/" target="_blank" style="color:#FF3030;">LinkedIn</a></p>
+<section id="contact" style="padding: 1.5rem; text-align: center; border-top: 1px solid #eee;">
+  <p style="font-size: 0.8rem;">📧 <a href="mailto:adam95darwesh@gmail.com" style="color:#FF3030;">adam95darwesh@gmail.com</a> | 🔗 <a href="https://www.linkedin.com/in/aladham/" target="_blank" style="color:#FF3030;">LinkedIn</a></p>
 </section>
 
 <footer>
@@ -675,33 +775,34 @@
 <script>
 // ========== PROJECT DATA ==========
 const allProjects = [
-  { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", tags: ["Regenerative Material", "Vernacular Craft"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing." },
-  { id: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", tags: ["Circular Architecture", "Afghan Heritage"], fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice using reusable by-products." },
-  { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", tags: ["Rubble Reuse", "Post-Conflict"], fullDesc: "A research project proposing whole demolition rubble as masonry units in compression-only enclosures, deployable in Palestine and Afghanistan." },
-  { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", tags: ["Speculative", "Ecological"], fullDesc: "A political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity." },
-  { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", tags: ["AI Strategy", "Residual Material"], fullDesc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies." },
-  { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", tags: ["Agricultural", "Spatial Practice"], fullDesc: "Explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles." },
-  { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", category: "education", tags: ["Pedagogical Space", "Flat Hierarchy"], fullDesc: "A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes." },
-  { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", tags: ["Collective", "Installation"], fullDesc: "Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts." },
-  { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", tags: ["Collective", "Acoustic"], fullDesc: "An acoustic mirror cultural gateway exploring sound and spatial memory." },
-  { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", tags: ["Vernacular", "Ecological"], fullDesc: "Reviving elements of vernacular Palestinian architecture in Dier Ghassaneh." },
-  { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", category: "art", tags: ["Folly", "Installation"], fullDesc: "Exploring atmospheric and experiential qualities of architectural space through material and light." },
-  { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", tags: ["Thesis", "Political"], fullDesc: "Exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements." },
-  { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", tags: ["Residency", "Installation"], fullDesc: "A residency project exploring returns and remains through film, photography, and installation." },
-  { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", tags: ["Exhibition", "Cartography"], fullDesc: "Experimental mappings across three spatial typologies exploring agency in Palestine." },
-  { id: "15", title: "PhD Research", year: "2024+", subtitle: "Die Angewandte", category: "education", tags: ["Doctoral", "Material Practice"], fullDesc: "Doctoral research at the University of Applied Arts Vienna focusing on post-conflict material practice and rubble reuse." },
-  { id: "16", title: "Teaching at AAUP", year: "2025+", subtitle: "Arab American University", category: "education", tags: ["Faculty", "Pedagogy"], fullDesc: "Faculty member and lecturer at the Faculty of Architecture, Arab American University, Palestine." }
+  { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", tags: ["Regenerative Material", "Vernacular Craft", "Woodcarving"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing." },
+  { id: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", tags: ["Circular Architecture", "Modular Assembly", "Afghan Heritage"], fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice using reusable by-products." },
+  { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", tags: ["Rubble Reuse", "Post-Conflict", "Compression-Only"], fullDesc: "A research project proposing whole demolition rubble as masonry units in compression-only enclosures, deployable in Palestine and Afghanistan." },
+  { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", tags: ["Speculative", "Ecological", "Skyscraper"], fullDesc: "A political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity." },
+  { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", tags: ["AI Strategy", "Residual Material", "Morphogenesis"], fullDesc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies." },
+  { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", tags: ["Agricultural", "Spatial Practice", "Ecological"], fullDesc: "Explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles." },
+  { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", category: "education", tags: ["Pedagogical Space", "Flat Hierarchy", "Institutional"], fullDesc: "A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes." },
+  { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", tags: ["Collective", "Installation", "Spatial Practice"], fullDesc: "Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts." },
+  { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", tags: ["Collective", "Acoustic", "Landscape"], fullDesc: "An acoustic mirror cultural gateway exploring sound and spatial memory." },
+  { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", tags: ["Vernacular", "Ecological", "Palestinian"], fullDesc: "Reviving elements of vernacular Palestinian architecture in Dier Ghassaneh." },
+  { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", category: "art", tags: ["Folly", "Installation", "Atmosphere"], fullDesc: "Exploring atmospheric and experiential qualities of architectural space through material and light." },
+  { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", tags: ["Thesis", "Political", "Spatial Agency"], fullDesc: "Exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements." },
+  { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", tags: ["Residency", "Installation", "Film"], fullDesc: "A residency project exploring returns and remains through film, photography, and installation." },
+  { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", tags: ["Exhibition", "Cartography", "Agency"], fullDesc: "Experimental mappings across three spatial typologies exploring agency in Palestine." },
+  { id: "15", title: "PhD Research", year: "2024+", subtitle: "Die Angewandte", category: "education", tags: ["Doctoral", "Material Practice", "Research"], fullDesc: "Doctoral research at the University of Applied Arts Vienna focusing on post-conflict material practice and rubble reuse." },
+  { id: "16", title: "Teaching at AAUP", year: "2025+", subtitle: "Arab American University", category: "education", tags: ["Faculty", "Pedagogy", "Palestine"], fullDesc: "Faculty member and lecturer at the Faculty of Architecture, Arab American University, Palestine." }
 ];
+
+// Extract all unique tags
+const allTags = [...new Set(allProjects.flatMap(p => p.tags))].sort();
 
 // ========== STICKY NOTES MANAGEMENT ==========
 let stickyNotes = [];
-let closedNotes = []; // Store minimized notes as tabs
 let noteZIndex = 100;
 
 class StickyNoteManager {
   constructor() {
     this.notes = [];
-    this.tabs = [];
     this.currentCategory = 'all';
   }
 
@@ -718,33 +819,27 @@ class StickyNoteManager {
       <div class="sticky-title">${project.id} · ${project.title}</div>
       <div class="sticky-subtitle">${project.subtitle} (${project.year})</div>
       <div class="sticky-note-controls">
-        <button class="minimize-note" title="Minimize to sticky note">−</button>
-        <button class="close-note" title="Send to sidebar">✕</button>
+        <button class="minimize-note">−</button>
+        <button class="close-note">✕</button>
       </div>
     `;
     
-    // Make draggable
     this.makeDraggable(note);
     
-    // Click to open modal
     note.addEventListener('click', (e) => {
       if (e.target.closest('.sticky-note-controls')) return;
       this.openModal(project, index);
     });
     
-    // Minimize button (keeps as sticky note but resets position)
     const minimizeBtn = note.querySelector('.minimize-note');
     minimizeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       const newX = 50 + Math.random() * (window.innerWidth - 250);
-      const newY = 100 + Math.random() * (window.innerHeight - 200);
+      const newY = 100 + Math.random() * (window.innerHeight - 300);
       note.style.left = `${newX}px`;
       note.style.top = `${newY}px`;
-      note.style.opacity = '1';
-      note.style.display = 'block';
     });
     
-    // Close button (send to sidebar)
     const closeBtn = note.querySelector('.close-note');
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -799,8 +894,7 @@ class StickyNoteManager {
     const tab = document.createElement('div');
     tab.className = 'sidebar-tab';
     tab.id = `tab-${project.id}`;
-    tab.textContent = `${project.id} · ${project.title.substring(0, 12)}`;
-    tab.title = project.title;
+    tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
     
     tab.addEventListener('click', () => {
       this.openModal(project, index);
@@ -808,27 +902,28 @@ class StickyNoteManager {
     });
     
     sidebar.appendChild(tab);
-    this.tabs.push(tab);
   }
   
   openModal(project, index) {
-    const modalHtml = `
-      <div class="split-pane" id="modalPane-${project.id}">
+    const modalId = `modal-${Date.now()}`;
+    const splitView = document.getElementById('splitView');
+    splitView.innerHTML = `
+      <div class="split-pane" id="${modalId}">
         <div class="modal-header">
           <h3>${project.id} · ${project.title}</h3>
           <div class="modal-controls">
-            <button class="modal-split" onclick="openSplitView(${index})">⎚</button>
-            <button class="modal-close-single" onclick="closeSingleModal()">✕</button>
+            <button class="modal-split" onclick="openSplitViewForProject(${index})">⎚</button>
+            <button class="modal-close-single" onclick="closeSplitModal()">✕</button>
           </div>
         </div>
         <div class="modal-body">
           <div class="modal-carousel">
-            <div class="modal-carousel-slides" id="modalCarousel-${project.id}">
+            <div class="modal-carousel-slides" id="carousel-${modalId}">
               ${[1,2,3,4,5,6].map(i => `<div class="modal-carousel-slide"><img src="images/${project.title.toLowerCase().replace(/ /g, '-')}-${i}.jpg" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}+${i}'"></div>`).join('')}
             </div>
-            <button class="modal-carousel-btn modal-carousel-prev" onclick="carouselPrev('${project.id}')">‹</button>
-            <button class="modal-carousel-btn modal-carousel-next" onclick="carouselNext('${project.id}')">›</button>
-            <div class="modal-carousel-dots" id="modalDots-${project.id}"></div>
+            <button class="modal-carousel-btn modal-carousel-prev" onclick="carouselPrev('${modalId}')">‹</button>
+            <button class="modal-carousel-btn modal-carousel-next" onclick="carouselNext('${modalId}')">›</button>
+            <div class="modal-carousel-dots" id="dots-${modalId}"></div>
           </div>
           <div class="modal-tags">${project.tags.map(t => `<span class="modal-tag">${t}</span>`).join('')}</div>
           <div class="modal-subtitle">${project.subtitle} (${project.year})</div>
@@ -836,19 +931,14 @@ class StickyNoteManager {
         </div>
       </div>
     `;
-    
-    const splitView = document.getElementById('splitView');
-    splitView.innerHTML = modalHtml;
     document.getElementById('splitModal').style.display = 'flex';
     document.body.style.overflow = 'hidden';
-    
-    // Initialize carousel dots
-    this.initCarousel(project.id);
+    this.initCarousel(modalId);
   }
   
-  initCarousel(projectId) {
-    const slidesContainer = document.getElementById(`modalCarousel-${projectId}`);
-    const dotsContainer = document.getElementById(`modalDots-${projectId}`);
+  initCarousel(modalId) {
+    const slidesContainer = document.getElementById(`carousel-${modalId}`);
+    const dotsContainer = document.getElementById(`dots-${modalId}`);
     if (!slidesContainer || !dotsContainer) return;
     
     const slideCount = slidesContainer.children.length;
@@ -861,25 +951,25 @@ class StickyNoteManager {
       dot.addEventListener('click', () => {
         currentIndex = i;
         slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
-        document.querySelectorAll(`#modalDots-${projectId} .modal-carousel-dot`).forEach((d, idx) => {
+        dotsContainer.querySelectorAll('.modal-carousel-dot').forEach((d, idx) => {
           d.classList.toggle('active', idx === currentIndex);
         });
       });
       dotsContainer.appendChild(dot);
     }
     
-    window[`carouselPrev_${projectId}`] = () => {
+    window[`carouselPrev_${modalId}`] = () => {
       currentIndex = Math.max(0, currentIndex - 1);
       slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
-      document.querySelectorAll(`#modalDots-${projectId} .modal-carousel-dot`).forEach((d, idx) => {
+      dotsContainer.querySelectorAll('.modal-carousel-dot').forEach((d, idx) => {
         d.classList.toggle('active', idx === currentIndex);
       });
     };
     
-    window[`carouselNext_${projectId}`] = () => {
+    window[`carouselNext_${modalId}`] = () => {
       currentIndex = Math.min(slideCount - 1, currentIndex + 1);
       slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
-      document.querySelectorAll(`#modalDots-${projectId} .modal-carousel-dot`).forEach((d, idx) => {
+      dotsContainer.querySelectorAll('.modal-carousel-dot').forEach((d, idx) => {
         d.classList.toggle('active', idx === currentIndex);
       });
     };
@@ -900,9 +990,7 @@ class StickyNoteManager {
   
   highlightByCategory(category) {
     if (category === 'all') {
-      this.notes.forEach(note => {
-        note.classList.remove('blurred', 'highlight');
-      });
+      this.notes.forEach(note => note.classList.remove('blurred', 'highlight'));
       return;
     }
     this.notes.forEach((note, idx) => {
@@ -918,34 +1006,160 @@ class StickyNoteManager {
   }
 }
 
-// ========== GLOBAL FUNCTIONS ==========
-let manager;
-
-function openSplitView(index) {
-  // Already in split view mode
+// ========== TAG FUNCTIONS ==========
+function createTagFilters() {
+  const tagsBar = document.getElementById('tagsBar');
+  tagsBar.innerHTML = '';
+  
+  allTags.forEach((tag, index) => {
+    const tagEl = document.createElement('div');
+    tagEl.className = 'tag-filter';
+    tagEl.textContent = tag;
+    tagEl.setAttribute('data-tag', tag);
+    
+    // tooltip with project titles
+    const projectsWithTag = allProjects.filter(p => p.tags.includes(tag));
+    const projectTitles = projectsWithTag.map(p => `${p.id}. ${p.title}`).join(' · ');
+    tagEl.setAttribute('data-tooltip', projectTitles);
+    
+    // animation delay
+    tagEl.style.animationDelay = `${0.3 + index * 0.03}s`;
+    
+    // hover effect - already handled by CSS tooltip
+    
+    // click to show projects
+    tagEl.addEventListener('click', () => {
+      showProjectsByTag(tag);
+    });
+    
+    tagsBar.appendChild(tagEl);
+  });
 }
 
-function closeSingleModal() {
-  document.getElementById('splitModal').style.display = 'none';
+function showProjectsByTag(tag) {
+  const projects = allProjects.filter(p => p.tags.includes(tag));
+  const resultsGrid = document.getElementById('resultsGrid');
+  const resultsTitle = document.getElementById('resultsTitle');
+  resultsTitle.textContent = `📌 Projects tagged: "${tag}" (${projects.length})`;
+  
+  resultsGrid.innerHTML = '';
+  
+  projects.forEach(project => {
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = `
+      <div class="card-title">${project.id} · ${project.title}</div>
+      <div class="card-subtitle">${project.subtitle} (${project.year})</div>
+      <div class="card-tags">${project.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}</div>
+    `;
+    card.addEventListener('click', () => {
+      closeResultsModal();
+      openProjectModalDirect(project);
+    });
+    resultsGrid.appendChild(card);
+  });
+  
+  document.getElementById('resultsModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeResultsModal() {
+  document.getElementById('resultsModal').style.display = 'none';
   document.body.style.overflow = 'auto';
 }
 
-function carouselPrev(projectId) {
-  const fn = window[`carouselPrev_${projectId}`];
+function openProjectModalDirect(project) {
+  const index = allProjects.findIndex(p => p.id === project.id);
+  if (manager) manager.openModal(project, index);
+}
+
+// ========== SPLIT SCREEN FUNCTIONS ==========
+let currentSplitProject = null;
+
+function openSplitViewForProject(index) {
+  const project = allProjects[index];
+  currentSplitProject = project;
+  // Add second pane
+  const splitView = document.getElementById('splitView');
+  const secondPane = document.createElement('div');
+  secondPane.className = 'split-pane';
+  secondPane.id = `split-pane-${Date.now()}`;
+  secondPane.innerHTML = `
+    <div class="modal-header">
+      <h3>Select a project to compare</h3>
+      <div class="modal-controls">
+        <button class="modal-close-split" onclick="closeSplitModal()">✕</button>
+      </div>
+    </div>
+    <div class="modal-body" style="overflow-y: auto;">
+      <div class="results-grid" style="grid-template-columns: 1fr; max-height: 100%;">
+        ${allProjects.filter(p => p.id !== project.id).map(p => `
+          <div class="result-card" onclick="loadSecondPane(${allProjects.findIndex(proj => proj.id === p.id)})">
+            <div class="card-title">${p.id} · ${p.title}</div>
+            <div class="card-subtitle">${p.subtitle} (${p.year})</div>
+            <div class="card-tags">${p.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  splitView.appendChild(secondPane);
+}
+
+function loadSecondPane(index) {
+  const project = allProjects[index];
+  const splitView = document.getElementById('splitView');
+  const secondPane = splitView.children[1];
+  if (secondPane) {
+    const modalId = `compare-${Date.now()}`;
+    secondPane.innerHTML = `
+      <div class="modal-header">
+        <h3>${project.id} · ${project.title}</h3>
+        <div class="modal-controls">
+          <button class="modal-close-split" onclick="closeSplitModal()">✕</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-carousel">
+          <div class="modal-carousel-slides" id="carousel-${modalId}">
+            ${[1,2,3,4,5,6].map(i => `<div class="modal-carousel-slide"><img src="images/${project.title.toLowerCase().replace(/ /g, '-')}-${i}.jpg" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}+${i}'"></div>`).join('')}
+          </div>
+          <button class="modal-carousel-btn modal-carousel-prev" onclick="carouselPrev('${modalId}')">‹</button>
+          <button class="modal-carousel-btn modal-carousel-next" onclick="carouselNext('${modalId}')">›</button>
+          <div class="modal-carousel-dots" id="dots-${modalId}"></div>
+        </div>
+        <div class="modal-tags">${project.tags.map(t => `<span class="modal-tag">${t}</span>`).join('')}</div>
+        <div class="modal-subtitle">${project.subtitle} (${project.year})</div>
+        <div class="modal-full-desc">${project.fullDesc}</div>
+      </div>
+    `;
+    if (manager) manager.initCarousel(modalId);
+  }
+}
+
+function closeSplitModal() {
+  document.getElementById('splitModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+  document.getElementById('splitView').innerHTML = '';
+}
+
+// ========== GLOBAL CAROUSEL FUNCTIONS ==========
+function carouselPrev(modalId) {
+  const fn = window[`carouselPrev_${modalId}`];
   if (fn) fn();
 }
 
-function carouselNext(projectId) {
-  const fn = window[`carouselNext_${projectId}`];
+function carouselNext(modalId) {
+  const fn = window[`carouselNext_${modalId}`];
   if (fn) fn();
 }
 
-// Random plus signs
+// ========== RANDOM PLUS SIGNS ==========
 function createRandomPlus() {
   const plus = document.createElement('div');
   plus.className = 'random-plus';
   plus.textContent = '+';
-  const size = Math.random() * 20 + 16;
+  const size = Math.random() * 18 + 14;
   plus.style.fontSize = `${size}px`;
   plus.style.left = `${Math.random() * window.innerWidth}px`;
   plus.style.top = `${Math.random() * window.innerHeight}px`;
@@ -954,17 +1168,24 @@ function createRandomPlus() {
 }
 
 // ========== INITIALIZE ==========
+let manager;
+
 function initialize() {
   manager = new StickyNoteManager();
   
   // Create sticky notes at random positions
   allProjects.forEach((project, i) => {
     const x = 30 + Math.random() * (window.innerWidth - 350);
-    const y = 90 + Math.random() * (window.innerHeight - 400);
+    const y = 160 + Math.random() * (window.innerHeight - 500);
     setTimeout(() => {
       manager.createNote(project, i, x, y);
-    }, 100 + i * 60);
+    }, 100 + i * 50);
   });
+  
+  // Create tag filters with succession
+  setTimeout(() => {
+    createTagFilters();
+  }, 800);
   
   // Setup category filters
   const filters = document.querySelectorAll('#categoryFilters li');
@@ -1004,13 +1225,20 @@ function initialize() {
     }
   });
   
-  // Random plus signs animation
+  // Results Modal close
+  document.getElementById('closeResultsBtn').addEventListener('click', closeResultsModal);
+  document.getElementById('resultsModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('resultsModal')) closeResultsModal();
+  });
+  
+  // Random plus signs
   setInterval(() => {
-    if (Math.random() > 0.85) createRandomPlus();
-  }, 1500);
+    if (Math.random() > 0.9) createRandomPlus();
+  }, 1200);
 }
 
 initialize();
 </script>
+
 </body>
 </html>
