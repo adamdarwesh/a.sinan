@@ -1060,17 +1060,61 @@ let previewTimeout = null;
     document.addEventListener('touchend', onTouchEnd);
   }
   
-  updateConnectorLineForNote(note) {
+ updateConnectorLineForNote(note) {
     const projectId = note.getAttribute('data-project-id');
     const tab = document.getElementById(`tab-${projectId}`);
-    if (tab && this.noteTabConnections.has(projectId)) {
+    
+    // If tab exists, draw connector line
+    if (tab) {
       const noteRect = note.getBoundingClientRect();
-      const value = this.noteTabConnections.get(projectId);
-      value.noteRect = noteRect;
-      this.noteTabConnections.set(projectId, value);
+      
+      // Store or update the connection data
+      if (this.noteTabConnections.has(projectId)) {
+        const value = this.noteTabConnections.get(projectId);
+        value.noteRect = noteRect;
+        this.noteTabConnections.set(projectId, value);
+      } else {
+        this.noteTabConnections.set(projectId, { tab, noteRect });
+      }
+      
       this.drawLightConnectorLineFromNoteToTab(projectId, noteRect, tab);
     }
   }
+    // Connect floating window to its tab
+  updateConnectorLineForWindow(win, projectId, tab) {
+    if (!tab) {
+      tab = document.getElementById(`tab-${projectId}`);
+    }
+    if (tab) {
+      const winRect = win.getBoundingClientRect();
+      const tabRect = tab.getBoundingClientRect();
+      
+      const svg = document.getElementById('connectorSvg');
+      const existingLine = document.getElementById(`connector-window-${projectId}`);
+      if (existingLine) existingLine.remove();
+      
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.id = `connector-window-${projectId}`;
+      path.setAttribute('class', 'connector-line-tab');
+      
+      const startX = winRect.right;
+      const startY = winRect.top + winRect.height / 2;
+      const endX = tabRect.left;
+      const endY = tabRect.top + tabRect.height / 2;
+      
+      const midX = startX + (endX - startX) * 0.3;
+      const d = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
+      path.setAttribute('d', d);
+      svg.appendChild(path);
+    }
+  }
+  
+  // Remove window connector
+  removeWindowConnector(projectId) {
+    const line = document.getElementById(`connector-window-${projectId}`);
+    if (line) line.remove();
+  }
+  
 
   drawLightConnectorLineFromNoteToTab(projectId, noteRect, tab) {
     const svg = document.getElementById('connectorSvg');
@@ -1130,6 +1174,12 @@ let previewTimeout = null;
     
     document.body.appendChild(win);
     activeFloatingWindows.push(win);
+        // Connect window to its tab
+    const projectId = project.id;
+    const tab = document.getElementById(`tab-${projectId}`);
+    if (tab) {
+      this.updateConnectorLineForWindow(win, projectId, tab);
+    }
     
     // RESIZE HANDLES - ADD TO WINDOW
     const handles = ['top', 'right', 'bottom', 'left', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
@@ -1237,6 +1287,8 @@ const onWinMouseMove = (e) => {
       if (!isDragging) return;
       win.style.left = (startLeft + (e.clientX - dragStartX)) + 'px';
       win.style.top = (startTop + (e.clientY - dragStartY)) + 'px';
+      // Update connector line when window moves
+      this.updateConnectorLineForWindow(win, project.id);
     };
     
     const onWinTouchMove = (e) => {
@@ -1245,10 +1297,8 @@ const onWinMouseMove = (e) => {
       const touch = e.touches[0];
       win.style.left = (startLeft + (touch.clientX - dragStartX)) + 'px';
       win.style.top = (startTop + (touch.clientY - dragStartY)) + 'px';
-    };
-    
-    const onWinMouseUp = () => {
-      isDragging = false;
+      // Update connector line when window moves
+      this.updateConnectorLineForWindow(win, project.id);
     };
     
     document.addEventListener('mousemove', onWinMouseMove);
@@ -1281,7 +1331,8 @@ const onWinMouseMove = (e) => {
     });
     
     // CLOSE BUTTON
-    win.querySelector('.window-close').addEventListener('click', () => {
+     win.querySelector('.window-close').addEventListener('click', () => {
+      this.removeWindowConnector(project.id);
       win.remove();
       activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
     });
@@ -1308,6 +1359,9 @@ const onWinMouseMove = (e) => {
     this.drawLightConnectorLineFromNoteToTab(project.id, noteRect, tab);
     
     tab.addEventListener('click', () => {
+      // Remove window connector if exists
+      this.removeWindowConnector(project.id);
+      
       if (noteElement && noteElement.parentNode) {
         this.unfreezeNote(noteElement, project, index);
         const connectorLine = document.getElementById(`connector-${project.id}`);
