@@ -978,13 +978,13 @@ class StickyNoteManager {
     
     win.addEventListener('mousedown', startDrag);
     
-const dragMove = (e) => {
-  if (!isDragging) return;
-  win.style.left = `${startLeft + (e.clientX - dragStartX)}px`;
-  win.style.top = `${startTop + (e.clientY - dragStartY)}px`;
-  win.style.right = 'auto';  // ADD THIS LINE
-  win.style.bottom = 'auto'; // ADD THIS LINE
-};
+    const dragMove = (e) => {
+      if (!isDragging) return;
+      win.style.left = `${startLeft + (e.clientX - dragStartX)}px`;
+      win.style.top = `${startTop + (e.clientY - dragStartY)}px`;
+      win.style.right = 'auto';
+      win.style.bottom = 'auto';
+    };
     
     const dragEnd = () => { isDragging = false; };
     
@@ -1014,7 +1014,7 @@ const dragMove = (e) => {
       }
     });
     
-    // Close button - just close window, note remains (sticky note stays as is)
+    // Close button - just close window, note remains
     win.querySelector('.window-close').addEventListener('click', () => {
       win.remove();
       activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
@@ -1026,6 +1026,7 @@ const dragMove = (e) => {
     }, 10);
   }
 
+  makeWindowResizableFromAnywhere(win) {
     let isResizing = false;
     let resizeDirection = '';
     let startX, startY, startWidth, startHeight, startLeft, startTop;
@@ -1064,6 +1065,30 @@ const dragMove = (e) => {
       win.style.cursor = direction ? `${direction}-resize` : '';
     });
     
+    win.addEventListener('mousedown', (e) => {
+      const rect = win.getBoundingClientRect();
+      const edgeThreshold = 15;
+      let direction = '';
+      if (e.clientX - rect.left < edgeThreshold) direction += 'w';
+      if (rect.right - e.clientX < edgeThreshold) direction += 'e';
+      if (e.clientY - rect.top < edgeThreshold) direction += 'n';
+      if (rect.bottom - e.clientY < edgeThreshold) direction += 's';
+      
+      if (direction) {
+        isResizing = true;
+        resizeDirection = direction;
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = win.offsetWidth;
+        startHeight = win.offsetHeight;
+        startLeft = win.offsetLeft;
+        startTop = win.offsetTop;
+        e.preventDefault();
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+      }
+    });
+  }
     win.addEventListener('mousedown', (e) => {
       const rect = win.getBoundingClientRect();
       const edgeThreshold = 15;
