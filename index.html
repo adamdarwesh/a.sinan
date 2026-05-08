@@ -870,10 +870,6 @@ class StickyNoteManager {
       if (!isDragging) return;
       let newLeft = startLeft + (e.clientX - startX);
       let newTop = startTop + (e.clientY - startY);
-      const maxX = window.innerWidth - element.offsetWidth - 20;
-      const maxY = window.innerHeight - element.offsetHeight - 100;
-      newLeft = Math.max(10, Math.min(newLeft, maxX));
-      newTop = Math.max(60, Math.min(newTop, maxY));
       element.style.left = `${newLeft}px`;
       element.style.top = `${newTop}px`;
       
@@ -1030,7 +1026,6 @@ const dragMove = (e) => {
     }, 10);
   }
 
-  .floating-window {   left: auto !important;
     let isResizing = false;
     let resizeDirection = '';
     let startX, startY, startWidth, startHeight, startLeft, startTop;
