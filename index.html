@@ -6,9 +6,580 @@
 <title>Ad(h)am Sinan — Sticky Note Canvas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
 <style>
-  /* ========== CATEGORY 2: CSS STYLES WILL GO HERE ========== */
+  /* ========== GLOBAL TYPOGRAPHY - ALL FONTS GARAMOND ========== */
+  *, *::before, *::after { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'EB Garamond', 'Garamond', Georgia, 'Times New Roman', serif !important;
+  }
+
+  :root {
+    --ink: #111111;
+    --paper: #ffffff;
+    --warm-mid: #999999;
+    --accent: #FF3030;
+    --accent-light: #ff5555;
+    --accent-lighter: rgba(255,48,48,0.3);
+    --muted: #666666;
+    --rule: #e0e0e0;
+    /* MODIFIED: Large grid = GRAY, Small grid = LIGHTER GRAY */
+    --grid-line: #999999;
+    --grid-line-small: #cccccc;
+    --body-serif: 'EB Garamond', 'Garamond', Georgia, serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'EB Garamond', 'Garamond', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+  }
+
+  /* MODIFIED: Large grid = GRAY (not red) */
+  body::before {
+    content: "";
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* MODIFIED: Small grid = LIGHTER GRAY (not red) */
+  body::after {
+    content: "";
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: linear-gradient(var(--grid-line-small) 0.5px, transparent 0.5px), linear-gradient(90deg, var(--grid-line-small) 0.5px, transparent 0.5px);
+    background-size: 20px 20px;
+    pointer-events: none; z-index: 0;
+  }
+
+  #gridPlusContainer {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    pointer-events: none; z-index: 1; overflow: visible;
+  }
+
+  /* MODIFIED: Plus signs BLACK, opacity HALF of original (0.45 from 0.9), at grid nodes only */
+  .grid-plus {
+    position: absolute;
+    color: #000000;
+    font-family: 'EB Garamond', monospace;
+    font-size: 11px;
+    font-weight: 100;
+    pointer-events: none;
+    opacity: 0.45;
+    transition: opacity 0.3s ease;
+    line-height: 1;
+    transform: translate(-50%, -50%);
+    width: 12px; height: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .grid-plus.hidden { opacity: 0; }
+
+  /* Connector Lines SVG - filleted/rounded corners */
+  #connectorSvg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    pointer-events: none; z-index: 2; overflow: visible;
+  }
+
+  .connector-line {
+    stroke: var(--accent);
+    stroke-width: 1.2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke-opacity 0.3s ease;
+  }
+
+  nav, .categories, .tags-container, footer { position: relative; z-index: 100; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.8rem 2rem;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .nav-name {
+    font-family: 'EB Garamond', serif; 
+    font-size: 0.9rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none; font-weight: 600;
+  }
+
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+
+  .nav-links a {
+    font-family: 'EB Garamond', serif; 
+    font-size: 0.7rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none; transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* MODIFIED: Categories spread across page with DOT between each */
+  .categories {
+    position: fixed; top: 65px; left: 0; right: 0; z-index: 90;
+    text-align: center; padding: 0.6rem;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .category-filters {
+    display: flex; justify-content: center; gap: 1rem; list-style: none;
+    flex-wrap: wrap;
+  }
+
+  .category-filters li {
+    font-family: 'EB Garamond', serif; 
+    font-size: 0.65rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: pointer; padding: 0.3rem 0.8rem;
+    transition: all 0.3s ease;
+    color: var(--muted);
+    position: relative;
+  }
+
+  /* MODIFIED: DOT between each category */
+  .category-filters li:not(:last-child)::after {
+    content: '•';
+    position: absolute;
+    right: -0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 0.5rem;
+  }
+
+  /* MODIFIED: Hover state - BOLD AND ITALIC */
+  .category-filters li:hover { 
+    color: var(--accent); 
+    font-weight: bold !important;
+    font-style: italic !important;
+  }
+
+  /* MODIFIED: Active state - BOLD AND ITALIC */
+  .category-filters li.active { 
+    color: var(--accent); 
+    font-weight: bold !important;
+    font-style: italic !important;
+  }
+
+  .tags-container {
+    position: fixed; top: 108px; left: 0; right: 0; z-index: 85;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.4rem 1rem;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem;
+  }
+
+  .tag-filter {
+    font-family: 'EB Garamond', serif; 
+    font-size: 0.55rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; padding: 0.25rem 0.7rem;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    background: var(--accent);
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .tag-filter:hover { background: var(--accent-light); opacity: 0.9; }
+
+  /* MODIFIED: Tooltip at BOTTOM of tags (not top) */
+  .tag-filter::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: white;
+    font-size: 0.45rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 200;
+    margin-top: 5px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    font-family: 'EB Garamond', monospace;
+    letter-spacing: normal;
+  }
+
+  .tag-filter:hover::after { opacity: 1; }
+
+  .sticky-canvas {
+    position: relative; min-height: 100vh;
+    padding: 175px 2rem 2rem; z-index: 3;
+  }
+
+  /* MODIFIED: On hover, sticky note brings to front (highest z-index) */
+  .sticky-note {
+    position: absolute; background: #fefefe;
+    border: 1px solid var(--rule); padding: 8px 10px;
+    border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    cursor: pointer; font-size: 0.6rem;
+    transition: all 0.15s ease; width: 160px; z-index: 10; color: var(--ink);
+  }
+
+  .sticky-note:hover {
+    transform: scale(1.02); border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 9999 !important;
+  }
+
+  .sticky-note.preview-active {
+    width: 280px; height: auto; z-index: 500;
+    border: 1px solid var(--accent);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+
+  .sticky-note.preview-active .sticky-preview { display: block; }
+  .sticky-note .sticky-preview { display: none; margin-top: 8px; }
+
+  .sticky-preview-carousel { position: relative; width: 100%; overflow: hidden; border-radius: 4px; margin-bottom: 6px; }
+  .sticky-preview-slides { display: flex; transition: transform 0.5s ease; }
+  .sticky-preview-slide { min-width: 100%; }
+  .sticky-preview-slide img { width: 100%; height: 100px; object-fit: cover; background: #f5f5f5; }
+
+  .sticky-preview-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .sticky-preview-tag { font-size: 0.5rem; padding: 3px 6px; border: none; border-radius: 2px; color: white; background: var(--accent); font-weight: 400; }
+
+  .sticky-note .sticky-title { color: var(--accent); margin-bottom: 3px; font-size: 0.7rem; font-weight: 600; }
+  .sticky-note .sticky-subtitle { font-size: 0.5rem; color: var(--muted); }
+
+  .sticky-note-controls {
+    position: absolute; top: 3px; right: 6px;
+    display: flex; gap: 6px; opacity: 0; transition: opacity 0.2s;
+  }
+
+  .sticky-note:hover .sticky-note-controls { opacity: 1; }
+
+  .sticky-note-controls button {
+    background: rgba(0,0,0,0.05); border: 1px solid var(--rule);
+    border-radius: 3px; font-size: 0.6rem; cursor: pointer;
+    color: var(--muted); padding: 0 3px;
+  }
+
+  .sticky-note-controls button:hover { color: var(--accent); border-color: var(--accent); }
+
+  .sticky-note.minimized { width: 120px !important; height: auto !important; }
+  .sticky-note.minimized .sticky-preview,
+  .sticky-note.minimized .sticky-subtitle { display: none; }
+
+  .sticky-note.blurred { opacity: 0.4; filter: blur(1px); }
+  .sticky-note.highlight { opacity: 1; filter: none; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+  /* ========== FLOATING WINDOW - BORDERLESS, RESIZABLE FROM ANYWHERE, AUTO-SIZE, WHITE TEXT BG ========== */
+  .floating-window {
+    position: fixed;
+    background: white;
+    border-radius: 0px;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.25);
+    border: none;
+    display: flex;
+    flex-direction: column;
+    z-index: 20000;
+    overflow: hidden;
+    min-width: 380px;
+    width: auto;
+    height: auto;
+    resize: both;
+  }
+
+  .window-header {
+    background: var(--accent);
+    color: white;
+    padding: 10px 14px;
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .window-header h3 { margin: 0; font-size: 0.85rem; }
+  
+  .window-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .window-close:hover { background: rgba(255,255,255,0.4); }
+
+  /* MODIFIED: Minimize button */
+  .window-minimize {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+  }
+  
+  .window-minimize:hover { background: rgba(255,255,255,0.4); }
+
+  .window-header-right {
+    display: flex;
+    align-items: center;
+  }
+
+  /* MODIFIED: Window body - WHITE background for text */
+  .window-body {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    background: white;
+  }
+
+  .window-carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f5f5f5;
+  }
+  .window-slides { display: flex; transition: transform 0.3s ease; }
+  .window-slide { min-width: 100%; }
+  .window-slide img { width: 100%; height: auto; max-height: 220px; object-fit: cover; }
+
+  .window-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .window-tag {
+    font-size: 0.6rem;
+    padding: 4px 10px;
+    background: var(--accent);
+    color: white;
+    border-radius: 20px;
+  }
+
+  /* MODIFIED: Resize handle - allows resizing from ANYWHERE via CSS, but JS handles full-window resize */
+  .floating-window {
+    resize: both;
+    overflow: auto;
+  }
+
+  /* ========== SIDEBAR TABS - VARYING LENGTHS (horizontally) ========== */
+  .sidebar-tabs {
+    position: fixed; right: 0; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,0.95); border-left: 1px solid var(--rule);
+    border-radius: 8px 0 0 8px; padding: 0.5rem; z-index: 200;
+    display: flex; flex-direction: column; gap: 5px;
+    max-height: 70vh; overflow-y: auto;
+    box-shadow: -2px 2px 8px rgba(0,0,0,0.05);
+  }
+
+  /* MODIFIED: Sidebar tabs have VARYING LENGTHS horizontally */
+  .sidebar-tab {
+    padding: 5px 8px;
+    font-size: 0.45rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: #fefefe;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--muted);
+    transition: all 0.2s;
+    white-space: nowrap;
+    width: auto;
+    min-width: 60px;
+    max-width: 140px;
+  }
+
+  /* Random varying lengths applied via JS */
+  .sidebar-tab:nth-child(odd) { width: 70px; }
+  .sidebar-tab:nth-child(3n) { width: 90px; }
+  .sidebar-tab:nth-child(5n+2) { width: 55px; }
+  .sidebar-tab:nth-child(7n+4) { width: 110px; }
+
+  .sidebar-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .sidebar-tab.highlight { border-color: var(--accent); background: var(--accent); color: white; }
+
+  /* ========== CONNECTOR LINE STYLES for tab connections ========== */
+  .connector-line-tab {
+    stroke: var(--accent);
+    stroke-width: 1;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 4 3;
+    opacity: 0.6;
+  }
+
+  /* Results Modal */
+  .results-modal-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
+    z-index: 5000; justify-content: center; align-items: center;
+  }
+
+  .results-modal {
+    background: var(--paper); width: 90%; max-width: 1200px; height: 85%;
+    border-radius: 12px; display: flex; flex-direction: column; border: 1px solid var(--rule);
+  }
+
+  .results-modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem; border-bottom: 1px solid var(--rule);
+  }
+
+  .results-modal-header h2 { font-size: 0.9rem; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .results-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--muted); }
+
+  .results-grid {
+    flex: 1; overflow-y: auto; padding: 1rem;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem;
+  }
+
+  .result-card {
+    background: #fafafa; border: 1px solid var(--rule); border-radius: 8px;
+    padding: 0.8rem; cursor: pointer; transition: all 0.2s;
+  }
+
+  .result-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .result-card .card-title { font-size: 0.9rem; font-weight: 600; color: var(--accent); }
+  .result-card .card-subtitle { font-size: 0.65rem; color: var(--muted); }
+  .result-card .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .result-card .card-tag { font-size: 0.5rem; padding: 3px 7px; border: none; border-radius: 2px; color: white; background: var(--accent); font-weight: 400; }
+
+  /* Split View */
+  .split-view { display: flex; gap: 20px; width: 90%; max-width: 1400px; height: 85%; background: transparent; }
+  .split-pane { flex: 1; background: var(--paper); border-radius: 12px; display: flex; flex-direction: column; border: 1px solid var(--rule); overflow: hidden; position: relative; }
+
+  /* CV Modal */
+  .cv-modal-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+    z-index: 10000; justify-content: center; align-items: center;
+  }
+
+  .cv-modal {
+    background: var(--paper); width: 85%; max-width: 800px; height: 80%;
+    border-radius: 12px; display: flex; flex-direction: column; border: 1px solid var(--rule);
+  }
+
+  .cv-modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.8rem 1rem; border-bottom: 1px solid var(--rule);
+  }
+
+  .cv-modal-header h2 { color: var(--accent); font-size: 1rem; font-weight: 600; }
+  .cv-modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--muted); }
+  .cv-modal-body { flex: 1; overflow-y: auto; padding: 1rem; }
+
+  .cv-modal-body h4 {
+    color: var(--accent); margin-top: 1rem; margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule); padding-bottom: 0.2rem; font-size: 0.75rem; font-weight: 600;
+  }
+
+  /* Contact Section */
+  #contact {
+    position: relative; z-index: 10;
+    border-top: 1px solid var(--rule);
+    padding: 3rem 2rem;
+    background: rgba(255,255,255,0.97);
+    text-align: center;
+  }
+
+  .contact-heading {
+    font-size: 0.65rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem; font-weight: 400;
+  }
+
+  .contact-name {
+    font-size: 1.8rem; color: var(--ink);
+    margin-bottom: 0.5rem; font-weight: 600;
+  }
+
+  .contact-tagline {
+    font-size: 0.95rem; font-style: italic;
+    color: var(--muted); margin-bottom: 2rem;
+  }
+
+  .contact-links {
+    display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .contact-link {
+    display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+    text-decoration: none; color: var(--muted); transition: color 0.2s;
+  }
+
+  .contact-link:hover { color: var(--accent); }
+
+  .contact-link-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em; text-transform: uppercase; font-weight: 400;
+  }
+
+  .contact-link-value {
+    font-size: 0.75rem; color: var(--ink); font-weight: 400;
+  }
+
+  .contact-link:hover .contact-link-value { color: var(--accent); }
+
+  .contact-divider {
+    width: 40px; height: 1px; background: var(--rule);
+    margin: 1.5rem auto;
+  }
+
+  .contact-location {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em; color: var(--muted);
+  }
+
+  footer {
+    background: rgba(255,255,255,0.95); border-top: 1px solid var(--rule);
+    padding: 0.6rem; text-align: center; position: relative; z-index: 10;
+  }
+
+  footer span { font-size: 0.6rem; color: var(--warm-mid); font-weight: 400; }
+
+  @media (max-width: 768px) {
+    .categories { top: 60px; }
+    .tags-container { top: 108px; }
+    .sticky-canvas { padding: 170px 1rem 1rem; }
+    .sidebar-tabs { display: none; }
+    .sticky-note.preview-active { width: 240px; }
+    .split-view { flex-direction: column; width: 95%; height: 90%; }
+    .floating-window { width: 95% !important; left: 2.5% !important; }
+    .contact-links { gap: 1.2rem; }
+    .category-filters li:not(:last-child)::after { right: -0.5rem; }
+  }
 </style>
 </head>
 <body>
@@ -100,19 +671,6 @@
 <div id="splitModal" class="results-modal-overlay">
   <div class="split-view" id="splitView"></div>
 </div>
-
-<!-- Project Modal -->
-<div id="projectModal" class="project-modal-overlay">
-  <div class="project-modal" id="resizableModal" style="width: 650px; height: 550px;">
-    <div class="project-modal-header" id="modalHeader">
-      <h2 id="projectModalTitle">Project Title</h2>
-      <button class="project-modal-close" id="closeProjectModalBtn">✕</button>
-    </div>
-    <div class="project-modal-body" id="projectModalBody"></div>
-    <div class="resize-handle"></div>
-  </div>
-</div>
-
 <nav>
   <a href="#" class="nav-name">Ad(h)am Sinan</a>
   <ul class="nav-links">
@@ -121,7 +679,7 @@
   </ul>
 </nav>
 
-<!-- Categories -->
+<!-- MODIFIED: Categories spread across page with DOT between each -->
 <div class="categories">
   <ul class="category-filters" id="categoryFilters">
     <li data-category="all" class="active">All</li>
@@ -132,7 +690,7 @@
   </ul>
 </div>
 
-<!-- Tags -->
+<!-- Tags Bar -->
 <div class="tags-container" id="tagsBar"></div>
 
 <!-- Sticky Note Canvas -->
@@ -171,439 +729,105 @@
 </footer>
 
 <script>
-  /* ========== CATEGORY 3: JAVASCRIPT WILL GO HERE ========== */
-</script>
+// ========== PROJECT DATA WITH CONSOLIDATED TAGS (12 tags only - reduced from original) ==========
+// CONSOLIDATED TAG LIST (12 total tags across all projects):
+// 1. Ecological, 2. Vernacular, 3. Digital Fabrication, 4. Post-Conflict, 5. Material Research, 
+// 6. Speculative, 7. Collective Practice, 8. Pedagogy, 9. Installation, 10. Political, 
+// 11. Residency, 12. Exhibition
 
-</body>
-</html>
-Category 2: CSS Styles (Copy this entire block into the <style> tag)
-css
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --ink: #111111;
-  --paper: #ffffff;
-  --warm-mid: #999999;
-  --accent: #FF3030;
-  --accent-light: #ff5555;
-  --muted: #666666;
-  --rule: #e0e0e0;
-  --grid-line: #999999;
-  --grid-line-small: rgba(150,150,150,0.25);
-  --body-serif: 'EB Garamond', Georgia, serif;
-  --title-serif: 'EB Garamond', Georgia, serif;
-  --mono: 'EB Garamond', Georgia, serif;
-}
-
-html { scroll-behavior: smooth; }
-body, body * { font-family: 'EB Garamond', Georgia, serif; }
-
-body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 18px;
-  line-height: 1.75;
-  overflow-x: hidden;
-  position: relative;
-  min-height: 100vh;
-}
-
-body::before {
-  content: "";
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none; z-index: 0;
-}
-
-body::after {
-  content: "";
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-image: linear-gradient(var(--grid-line-small) 0.5px, transparent 0.5px), linear-gradient(90deg, var(--grid-line-small) 0.5px, transparent 0.5px);
-  background-size: 20px 20px;
-  pointer-events: none; z-index: 0;
-}
-
-#gridPlusContainer {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-  pointer-events: none; z-index: 1; overflow: visible;
-}
-
-.grid-plus {
-  position: absolute;
-  color: #000000;
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 100;
-  pointer-events: none;
-  opacity: 0.45;
-  transition: opacity 0.3s ease;
-  line-height: 1;
-  transform: translate(-50%, -50%);
-  width: 12px; height: 12px;
-  display: flex; align-items: center; justify-content: center;
-}
-
-.grid-plus.hidden { opacity: 0; }
-
-#connectorSvg {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-  pointer-events: none; z-index: 2; overflow: visible;
-}
-
-.connector-line {
-  stroke: var(--accent);
-  stroke-width: 1.2;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: stroke-opacity 0.3s ease;
-}
-
-.connector-line-light {
-  stroke: var(--accent);
-  stroke-width: 0.8;
-  fill: none;
-  stroke-dasharray: 4;
-  stroke-linecap: round;
-}
-
-nav, .categories, .tags-container, footer { position: relative; z-index: 100; }
-
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 0.8rem 2rem;
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--rule);
-}
-
-.nav-name {
-  font-family: var(--body-serif); font-size: 0.9rem;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--ink); text-decoration: none; font-weight: 600;
-}
-
-.nav-links { display: flex; gap: 2rem; list-style: none; }
-.nav-links a {
-  font-family: var(--body-serif); font-size: 0.7rem;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--muted); text-decoration: none; transition: color 0.2s;
-}
-.nav-links a:hover { color: var(--accent); }
-
-.categories {
-  position: fixed; top: 65px; left: 0; right: 0; z-index: 90;
-  text-align: center; padding: 0.6rem;
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--rule);
-}
-
-.category-filters {
-  display: flex;
-  justify-content: center;
-  gap: 1.8rem;
-  list-style: none;
-  flex-wrap: wrap;
-}
-
-.category-filters li {
-  font-family: var(--body-serif);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  padding: 0.3rem 0.5rem;
-  transition: all 0.2s ease;
-  color: var(--muted);
-  position: relative;
-}
-
-.category-filters li:not(:last-child)::after {
-  content: "·";
-  position: absolute;
-  right: -1.2rem;
-  color: var(--accent);
-  font-weight: 400;
-}
-
-.category-filters li:hover,
-.category-filters li.active {
-  color: var(--accent);
-  font-weight: bold;
-  font-style: italic;
-}
-
-.tags-container {
-  position: fixed; top: 108px; left: 0; right: 0; z-index: 85;
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--rule);
-  padding: 0.4rem 1rem;
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;
-}
-
-.tag-filter {
-  font-family: var(--body-serif); font-size: 0.55rem;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  cursor: pointer; padding: 0.25rem 0.7rem;
-  border: none; border-radius: 3px;
-  color: white; background: var(--accent);
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.tag-filter:hover { background: var(--accent-light); opacity: 0.9; }
-
-.tag-filter::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--accent);
-  color: white;
-  font-size: 0.45rem;
-  padding: 4px 8px;
-  border-radius: 4px;
-  white-space: nowrap;
-  z-index: 200;
-  margin-top: 5px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-
-.tag-filter:hover::after { opacity: 1; }
-
-.sticky-canvas {
-  position: relative; min-height: 100vh;
-  padding: 175px 2rem 2rem; z-index: 3;
-}
-
-.sticky-note {
-  position: absolute; background: #fefefe;
-  border: 1px solid var(--rule); padding: 8px 10px;
-  border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  cursor: pointer; font-family: var(--mono); font-size: 0.6rem;
-  transition: all 0.15s ease; width: 160px; z-index: 10; color: var(--ink);
-}
-
-.sticky-note:hover {
-  transform: scale(1.02); border-color: var(--accent);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 9999 !important;
-}
-
-.sticky-note.preview-active {
-  width: 280px; height: auto; z-index: 500;
-  border: 1px solid var(--accent);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-}
-
-.sticky-note.preview-active .sticky-preview { display: block; }
-.sticky-note .sticky-preview { display: none; margin-top: 8px; }
-
-.sticky-preview-carousel { position: relative; width: 100%; overflow: hidden; border-radius: 4px; margin-bottom: 6px; }
-.sticky-preview-slides { display: flex; transition: transform 0.5s ease; }
-.sticky-preview-slide { min-width: 100%; }
-.sticky-preview-slide img { width: 100%; height: 100px; object-fit: cover; background: #f5f5f5; }
-
-.sticky-preview-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-.sticky-preview-tag { font-size: 0.5rem; padding: 3px 6px; border: none; border-radius: 2px; color: white; background: var(--accent); }
-
-.sticky-note .sticky-title { color: var(--accent); margin-bottom: 3px; font-size: 0.7rem; font-weight: 600; }
-.sticky-note .sticky-subtitle { font-size: 0.5rem; color: var(--muted); }
-
-.sticky-note-controls {
-  position: absolute; top: 3px; right: 6px;
-  display: flex; gap: 6px; opacity: 0; transition: opacity 0.2s;
-}
-
-.sticky-note:hover .sticky-note-controls { opacity: 1; }
-
-.sticky-note-controls button {
-  background: rgba(0,0,0,0.05); border: 1px solid var(--rule);
-  border-radius: 3px; font-size: 0.6rem; cursor: pointer;
-  color: var(--muted); padding: 0 3px;
-}
-
-.sticky-note-controls button:hover { color: var(--accent); border-color: var(--accent); }
-
-.sticky-note.minimized { width: 120px !important; height: auto !important; }
-.sticky-note.minimized .sticky-preview,
-.sticky-note.minimized .sticky-subtitle { display: none; }
-
-.sticky-note.blurred { opacity: 0.4; filter: blur(1px); }
-.sticky-note.highlight { opacity: 1; filter: none; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-
-/* Floating Window */
-.floating-window {
-  position: fixed;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 20px 35px rgba(0,0,0,0.25);
-  border: none;
-  display: flex;
-  flex-direction: column;
-  z-index: 20000;
-  overflow: hidden;
-  min-width: 380px;
-  width: auto;
-  height: auto;
-  transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-  resize: both;
-}
-
-.window-header {
-  background: var(--accent);
-  color: white;
-  padding: 10px 14px;
-  cursor: move;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.window-header h3 { margin: 0; font-size: 0.85rem; }
-.window-controls { display: flex; gap: 8px; }
-.window-minimize, .window-close {
-  background: rgba(255,255,255,0.2);
-  border: none;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.window-minimize:hover, .window-close:hover { background: rgba(255,255,255,0.4); }
-
-.window-body {
-  flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.8rem;
-  background: white;
-}
-.window-carousel { position: relative; width: 100%; overflow: hidden; border-radius: 8px; background: #f5f5f5; }
-.window-slides { display: flex; transition: transform 0.3s ease; }
-.window-slide { min-width: 100%; }
-.window-slide img { width: 100%; height: auto; max-height: 220px; object-fit: cover; }
-.window-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.window-tag { font-size: 0.6rem; padding: 4px 10px; background: var(--accent); color: white; border-radius: 20px; }
-
-/* Sidebar Tabs */
-.sidebar-tabs {
-  position: fixed; right: 0; top: 50%; transform: translateY(-50%);
-  background: rgba(255,255,255,0.95); border-left: 1px solid var(--rule);
-  border-radius: 8px 0 0 8px; padding: 0.75rem; z-index: 200;
-  display: flex; flex-direction: column; gap: 10px;
-  max-height: 70vh; overflow-y: auto;
-  box-shadow: -2px 2px 8px rgba(0,0,0,0.05);
-}
-
-.sidebar-tab {
-  writing-mode: horizontal-tb;
-  padding: 6px 12px;
-  font-size: 0.5rem;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  background: #fefefe;
-  border: 1px solid var(--rule);
-  border-radius: 20px;
-  color: var(--muted);
-  transition: all 0.2s;
-  width: auto;
-  min-width: 70px;
-  max-width: 160px;
-  white-space: nowrap;
-  text-align: center;
-}
-.sidebar-tab:hover { border-color: var(--accent); color: var(--accent); background: #fff0f0; }
-.sidebar-tab.highlight { border-color: var(--accent); background: var(--accent); color: white; }
-
-.results-modal-overlay, .cv-modal-overlay {
-  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
-  z-index: 30000; justify-content: center; align-items: center;
-}
-.results-modal, .cv-modal { background: white; width: 90%; max-width: 1000px; max-height: 85%; border-radius: 16px; overflow: auto; }
-.results-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid var(--rule); }
-.results-grid { padding: 1rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
-.result-card { background: #fafafa; border: 1px solid var(--rule); border-radius: 8px; padding: 0.8rem; cursor: pointer; transition: all 0.2s; }
-.result-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-
-.split-view { display: flex; gap: 20px; width: 90%; max-width: 1400px; height: 85%; background: transparent; }
-.split-pane { flex: 1; background: var(--paper); border-radius: 12px; display: flex; flex-direction: column; border: 1px solid var(--rule); overflow: hidden; }
-
-#contact { position: relative; z-index: 10; border-top: 1px solid var(--rule); padding: 3rem 2rem; background: rgba(255,255,255,0.97); text-align: center; }
-footer { background: rgba(255,255,255,0.95); border-top: 1px solid var(--rule); padding: 0.6rem; text-align: center; }
-
-@media (max-width: 768px) {
-  .sticky-canvas { padding: 170px 1rem 1rem; }
-  .sidebar-tabs { display: none; }
-  .floating-window { width: 95% !important; left: 2.5% !important; }
-  .category-filters { gap: 1rem; }
-  .category-filters li:not(:last-child)::after { right: -0.8rem; }
-}
-
-<script>
-// ========== PROJECT DATA WITH CONSOLIDATED TAGS (12 tags total) ==========
 const allProjects = [
-  { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", tags: ["Ecological", "Vernacular"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing." },
-  { id: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", tags: ["Vernacular", "Digital Fabrication"], fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice using reusable by-products." },
-  { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", tags: ["Post-Conflict", "Material Research"], fullDesc: "A research and construction project proposing whole, un-crushed demolition rubble as masonry units in compression-only enclosures, deployable in Palestine and Afghanistan." },
-  { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", tags: ["Speculative", "Ecological"], fullDesc: "A political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity." },
-  { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", tags: ["Material Research", "Digital Fabrication"], fullDesc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies." },
-  { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", tags: ["Ecological", "Collective Practice"], fullDesc: "Explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles." },
-  { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", category: "education", tags: ["Pedagogy"], fullDesc: "A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes connected by circular paths." },
-  { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", tags: ["Collective Practice", "Installation"], fullDesc: "Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts." },
-  { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", tags: ["Collective Practice", "Installation"], fullDesc: "An acoustic mirror cultural gateway exploring sound and spatial memory, published at Chicago Architecture Biennial CAB5." },
-  { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", tags: ["Vernacular", "Ecological"], fullDesc: "Reviving elements of vernacular Palestinian architecture in Dier Ghassaneh — not through aesthetic value alone, but through ecological, economical, and tradition revival." },
-  { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", category: "art", tags: ["Installation"], fullDesc: "A folly project exploring the atmospheric and experiential qualities of architectural space through material and light." },
-  { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", tags: ["Political", "Speculative"], fullDesc: "A diploma thesis exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements." },
-  { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", tags: ["Residency", "Installation"], fullDesc: "A residency project exploring returns and remains through film, photography, and installation at Wonder Cabinet, Bethlehem." },
-  { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", tags: ["Exhibition", "Political"], fullDesc: "An exhibition presenting experimental mappings across three spatial typologies: the camp, the city, and the limbo landscape, exploring agency as a dynamic and malleable force." },
-  { id: "15", title: "PhD Research", year: "2024+", subtitle: "Die Angewandte", category: "education", tags: ["Material Research", "Pedagogy"], fullDesc: "Doctoral research at the University of Applied Arts Vienna focusing on post-conflict material practice and rubble reuse." },
-  { id: "16", title: "Teaching at AAUP", year: "2025+", subtitle: "Arab American University", category: "education", tags: ["Pedagogy", "Vernacular"], fullDesc: "Faculty member and lecturer at the Faculty of Architecture, Arab American University, Palestine." }
+  { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", 
+    tags: ["Ecological", "Vernacular"], 
+    images: ["spiral-spines-1.jpg", "spiral-spines-2.jpg", "spiral-spines-3.jpg", "spiral-spines-4.jpg", "spiral-spines-5.jpg", "spiral-spines-6.jpg"],
+    fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing." },
+  { id: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", 
+    tags: ["Vernacular", "Digital Fabrication"], 
+    images: ["woven-realities-1.jpg", "woven-realities-2.jpg", "woven-realities-3.jpg", "woven-realities-4.jpg", "woven-realities-5.jpg", "woven-realities-6.jpg"],
+    fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice using reusable by-products." },
+  { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", 
+    tags: ["Post-Conflict", "Material Research"], 
+    images: ["new-cairn-1.jpg", "new-cairn-2.jpg", "new-cairn-3.jpg", "new-cairn-4.jpg", "new-cairn-5.jpg", "new-cairn-6.jpg"],
+    fullDesc: "A research and construction project proposing whole, un-crushed demolition rubble as masonry units in compression-only enclosures, deployable in Palestine and Afghanistan." },
+  { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", 
+    tags: ["Speculative", "Ecological"], 
+    images: ["carbonfloss-1.jpg", "carbonfloss-2.jpg", "carbonfloss-3.jpg", "carbonfloss-4.jpg", "carbonfloss-5.jpg", "carbonfloss-6.jpg"],
+    fullDesc: "A political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity." },
+  { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", 
+    tags: ["Material Research", "Digital Fabrication"], 
+    images: ["ourobos-1.jpg", "ourobos-2.jpg", "ourobos-3.jpg", "ourobos-4.jpg", "ourobos-5.jpg", "ourobos-6.jpg"],
+    fullDesc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies." },
+  { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", 
+    tags: ["Ecological", "Collective Practice"], 
+    images: ["agropraxis-1.jpg", "agropraxis-2.jpg", "agropraxis-3.jpg", "agropraxis-4.jpg", "agropraxis-5.jpg", "agropraxis-6.jpg"],
+    fullDesc: "Explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles." },
+  { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", category: "education", 
+    tags: ["Pedagogy", "Vernacular"], 
+    images: ["medius-1.jpg", "medius-2.jpg", "medius-3.jpg", "medius-4.jpg", "medius-5.jpg", "medius-6.jpg"],
+    fullDesc: "A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes connected by circular paths." },
+  { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", 
+    tags: ["Collective Practice", "Installation"], 
+    images: ["soft-unsealing-1.jpg", "soft-unsealing-2.jpg", "soft-unsealing-3.jpg", "soft-unsealing-4.jpg", "soft-unsealing-5.jpg", "soft-unsealing-6.jpg"],
+    fullDesc: "Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts." },
+  { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", 
+    tags: ["Collective Practice", "Installation"], 
+    images: ["old-airfield-1.jpg", "old-airfield-2.jpg", "old-airfield-3.jpg", "old-airfield-4.jpg", "old-airfield-5.jpg", "old-airfield-6.jpg"],
+    fullDesc: "An acoustic mirror cultural gateway exploring sound and spatial memory, published at Chicago Architecture Biennial CAB5." },
+  { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", 
+    tags: ["Vernacular", "Ecological"], 
+    images: ["enkidu-1.jpg", "enkidu-2.jpg", "enkidu-3.jpg", "enkidu-4.jpg", "enkidu-5.jpg", "enkidu-6.jpg"],
+    fullDesc: "Reviving elements of vernacular Palestinian architecture in Dier Ghassaneh — not through aesthetic value alone, but through ecological, economical, and tradition revival." },
+  { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", category: "art", 
+    tags: ["Installation", "Speculative"], 
+    images: ["aura-1.jpg", "aura-2.jpg", "aura-3.jpg", "aura-4.jpg", "aura-5.jpg", "aura-6.jpg"],
+    fullDesc: "A folly project exploring the atmospheric and experiential qualities of architectural space through material and light." },
+  { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", 
+    tags: ["Political", "Speculative"], 
+    images: ["liberation-fronts-1.jpg", "liberation-fronts-2.jpg", "liberation-fronts-3.jpg", "liberation-fronts-4.jpg", "liberation-fronts-5.jpg", "liberation-fronts-6.jpg"],
+    fullDesc: "A diploma thesis exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements." },
+  { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", 
+    tags: ["Residency", "Installation"], 
+    images: ["regutting-1.jpg", "regutting-2.jpg", "regutting-3.jpg", "regutting-4.jpg", "regutting-5.jpg", "regutting-6.jpg"],
+    fullDesc: "A residency project exploring returns and remains through film, photography, and installation at Wonder Cabinet, Bethlehem." },
+  { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", 
+    tags: ["Exhibition", "Political"], 
+    images: ["agential-cartographies-1.jpg", "agential-cartographies-2.jpg", "agential-cartographies-3.jpg", "agential-cartographies-4.jpg", "agential-cartographies-5.jpg", "agential-cartographies-6.jpg"],
+    fullDesc: "An exhibition presenting experimental mappings across three spatial typologies: the camp, the city, and the limbo landscape, exploring agency as a dynamic and malleable force." },
+  { id: "15", title: "PhD Research", year: "2024+", subtitle: "Die Angewandte", category: "education", 
+    tags: ["Material Research", "Pedagogy"], 
+    images: ["phd-research-1.jpg", "phd-research-2.jpg", "phd-research-3.jpg", "phd-research-4.jpg", "phd-research-5.jpg", "phd-research-6.jpg"],
+    fullDesc: "Doctoral research at the University of Applied Arts Vienna focusing on post-conflict material practice and rubble reuse." },
+  { id: "16", title: "Teaching at AAUP", year: "2025+", subtitle: "Arab American University", category: "education", 
+    tags: ["Pedagogy", "Vernacular"], 
+    images: ["teaching-aaup-1.jpg", "teaching-aaup-2.jpg", "teaching-aaup-3.jpg", "teaching-aaup-4.jpg", "teaching-aaup-5.jpg", "teaching-aaup-6.jpg"],
+    fullDesc: "Faculty member and lecturer at the Faculty of Architecture, Arab American University, Palestine." }
 ];
 
-// Helper: Generate 6 image slides per project
-function getImageSlides(projectTitle, count = 6) {
-  let slides = '';
-  for (let i = 1; i <= count; i++) {
-    slides += `<div class="window-slide"><img src="images/${projectTitle.toLowerCase().replace(/ /g, '-')}-${i}.jpg" onerror="this.src='https://placehold.co/600x300/f5f5f5/999?text=${encodeURIComponent(projectTitle)}+${i}'"></div>`;
-  }
-  return slides;
-}
-
+let currentTagCategory = 'all';
 let stickyNotes = [];
 let noteZIndex = 100;
 let previewTimeout = null;
 let autoPlayIntervals = {};
 let activeFloatingWindows = [];
-let manager;
-let sidebarLines = new Map();
+let activeTabConnections = new Map(); // Store connections between sticky notes and sidebar tabs
 
+// ========== STICKY NOTE MANAGER ==========
 class StickyNoteManager {
   constructor() {
     this.notes = [];
     this.tabs = [];
     this.currentCategory = 'all';
     this.closedProjects = new Map();
+    this.noteTabConnections = new Map(); // Track which tab came from which note
   }
 
   createNote(project, index, x, y) {
     const gridSize = 20;
     const snappedX = Math.round(x / gridSize) * gridSize;
     const snappedY = Math.round(y / gridSize) * gridSize;
-    const cornerOffsets = [{ dx: 0, dy: 0 }, { dx: 140, dy: 0 }, { dx: 0, dy: 140 }, { dx: 140, dy: 140 }];
+    
+    const cornerOffsets = [
+      { dx: 0, dy: 0 }, { dx: 140, dy: 0 }, { dx: 0, dy: 140 }, { dx: 140, dy: 140 }
+    ];
     const corner = cornerOffsets[Math.floor(Math.random() * cornerOffsets.length)];
     const finalX = snappedX + corner.dx;
     const finalY = snappedY + corner.dy;
@@ -617,16 +841,19 @@ class StickyNoteManager {
     note.style.top = `${finalY}px`;
     note.style.zIndex = noteZIndex++;
 
+    // MODIFIED: 6 images per project in preview
     note.innerHTML = `
       <div class="sticky-title">${project.id} · ${project.title}</div>
       <div class="sticky-subtitle">${project.subtitle} (${project.year})</div>
       <div class="sticky-preview">
         <div class="sticky-preview-carousel">
           <div class="sticky-preview-slides" id="preview-${project.id}">
-            ${[1,2,3].map(i => `<div class="sticky-preview-slide"><img src="images/${project.title.toLowerCase().replace(/ /g, '-')}-${i}.jpg" onerror="this.src='https://placehold.co/200x100/f5f5f5/999?text=Preview'"></div>`).join('')}
+            ${project.images.map(img => `<div class="sticky-preview-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/200x100/f5f5f5/999?text=${project.title}'"></div>`).join('')}
           </div>
         </div>
-        <div class="sticky-preview-tags">${project.tags.slice(0,2).map(t => `<span class="sticky-preview-tag">${t}</span>`).join('')}</div>
+        <div class="sticky-preview-tags">
+          ${project.tags.slice(0,3).map(t => `<span class="sticky-preview-tag">${t}</span>`).join('')}
+        </div>
       </div>
       <div class="sticky-note-controls">
         <button class="minimize-note" title="Minimize">−</button>
@@ -650,26 +877,32 @@ class StickyNoteManager {
 
     this.makeDraggable(note);
 
+    // MODIFIED: Click opens floating window EXACTLY at its current position
     note.addEventListener('click', (e) => {
       if (e.target.closest('.sticky-note-controls')) return;
-      this.openFloatingWindowFromNote(project, note);
+      const rect = note.getBoundingClientRect();
+      this.openFloatingWindow(project, rect.left, rect.top);
     });
 
     const minimizeBtn = note.querySelector('.minimize-note');
     minimizeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      note.classList.toggle('minimized');
-      if (!note.classList.contains('minimized')) note.style.width = '160px';
-      else note.style.width = '120px';
+      if (note.classList.contains('minimized')) {
+        note.classList.remove('minimized');
+        note.style.width = '160px';
+      } else {
+        note.classList.add('minimized');
+        note.style.width = '120px';
+      }
     });
 
     const closeBtn = note.querySelector('.close-note');
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const rect = note.getBoundingClientRect();
+      const noteRect = note.getBoundingClientRect();
       note.remove();
       this.notes = this.notes.filter(n => n !== note);
-      this.addToSidebar(project, rect);
+      this.addToSidebar(project, index, noteRect);
     });
 
     document.getElementById('stickyCanvas').appendChild(note);
@@ -722,6 +955,9 @@ class StickyNoteManager {
       newTop = Math.max(60, Math.min(newTop, maxY));
       element.style.left = `${newLeft}px`;
       element.style.top = `${newTop}px`;
+      
+      // Update connector line to tab if this note has a tab
+      this.updateConnectorToTab(element);
     });
 
     document.addEventListener('mouseup', () => {
@@ -730,159 +966,322 @@ class StickyNoteManager {
     });
   }
 
-  openFloatingWindowFromNote(project, sourceNote) {
+  updateConnectorToTab(note) {
+    const projectId = note.getAttribute('data-project-id');
+    const tab = document.getElementById(`tab-${projectId}`);
+    if (!tab) return;
+    
+    // Draw light connector line between note and tab
+    this.drawLightConnectorLine(note, tab);
+  }
+
+  drawLightConnectorLine(note, tab) {
+    const svg = document.getElementById('connectorSvg');
+    const noteRect = note.getBoundingClientRect();
+    const tabRect = tab.getBoundingClientRect();
+    
+    const startX = noteRect.right;
+    const startY = noteRect.top + noteRect.height / 2;
+    const endX = tabRect.left;
+    const endY = tabRect.top + tabRect.height / 2;
+    
+    // Remove existing line for this connection
+    const existingLine = document.getElementById(`connector-${note.getAttribute('data-project-id')}`);
+    if (existingLine) existingLine.remove();
+    
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.id = `connector-${note.getAttribute('data-project-id')}`;
+    path.setAttribute('class', 'connector-line-tab');
+    
+    // Filleted/rounded corners for the connector
+    const midX = (startX + endX) / 2;
+    const d = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
+    path.setAttribute('d', d);
+    svg.appendChild(path);
+  }
+
+  // MODIFIED: Floating window - BORDERLESS, resizable from ANYWHERE, auto-size, white text bg
+  // MODIFIED: Has (-) minimize button with SMOOTH animation back to sticky note shape
+  openFloatingWindow(project, clickX, clickY) {
     if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
     
-    const rect = sourceNote.getBoundingClientRect();
     const win = document.createElement('div');
     win.className = 'floating-window';
     win.setAttribute('data-id', project.id);
-    win.style.left = `${rect.left}px`;
-    win.style.top = `${rect.top}px`;
-    win.style.width = `${rect.width}px`;
-    win.style.height = `${rect.height}px`;
     
+    // Open exactly at the clicked position (enlarged in place)
+    win.style.left = `${clickX}px`;
+    win.style.top = `${clickY}px`;
+    win.style.width = 'auto';
+    win.style.height = 'auto';
+    win.style.minWidth = '380px';
+    win.style.transition = 'all 0.3s ease-out';
+    
+    // MODIFIED: Added (-) minimize button next to X
     win.innerHTML = `
       <div class="window-header">
         <h3>${project.id} · ${project.title}</h3>
-        <div class="window-controls">
-          <button class="window-minimize">−</button>
-          <button class="window-close">✕</button>
+        <div class="window-header-right">
+          <button class="window-minimize" title="Minimize">−</button>
+          <button class="window-close" title="Close">✕</button>
         </div>
       </div>
       <div class="window-body">
         <div class="window-carousel">
-          <div class="window-slides" id="winCarousel-${project.id}">
-            ${getImageSlides(project.title, 6)}
+          <div class="window-slides">
+            ${project.images.map(img => `<div class="window-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/500x280/f5f5f5/999?text=${encodeURIComponent(project.title)}'"></div>`).join('')}
           </div>
         </div>
         <div class="window-tags">${project.tags.map(t => `<span class="window-tag">${t}</span>`).join('')}</div>
-        <div style="color:var(--accent);font-style:italic;font-size:0.75rem;">${project.subtitle} (${project.year})</div>
-        <div style="font-size:0.8rem;line-height:1.5;color:var(--muted);">${project.fullDesc}</div>
+        <div style="color: var(--accent); font-style: italic; font-size: 0.75rem;">${project.subtitle} (${project.year})</div>
+        <div style="font-size: 0.8rem; line-height: 1.5; color: var(--muted);">${project.fullDesc}</div>
       </div>
     `;
     
     document.body.appendChild(win);
     activeFloatingWindows.push(win);
     
-    setTimeout(() => {
-      win.style.transition = 'all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
-      win.style.width = '540px';
-      win.style.height = '500px';
-      win.style.left = `${Math.max(20, rect.left - 60)}px`;
-      win.style.top = `${Math.max(20, rect.top - 30)}px`;
-    }, 10);
+    // Make window resizable from ANYWHERE
+    this.makeWindowResizableFromAnywhere(win);
     
+    // Dragging functionality
     const header = win.querySelector('.window-header');
-    let isDrag = false, dragX, dragY, startL, startT;
+    let isDragging = false, dragStartX, dragStartY, startLeft, startTop;
     header.addEventListener('mousedown', (e) => {
       if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize')) return;
-      isDrag = true;
-      dragX = e.clientX - win.offsetLeft;
-      dragY = e.clientY - win.offsetTop;
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      startLeft = win.offsetLeft;
+      startTop = win.offsetTop;
       win.style.zIndex = 30000 + activeFloatingWindows.length;
       e.preventDefault();
     });
+    
     document.addEventListener('mousemove', (e) => {
-      if (!isDrag) return;
-      win.style.left = `${e.clientX - dragX}px`;
-      win.style.top = `${e.clientY - dragY}px`;
+      if (!isDragging) return;
+      win.style.left = `${startLeft + (e.clientX - dragStartX)}px`;
+      win.style.top = `${startTop + (e.clientY - dragStartY)}px`;
     });
-    document.addEventListener('mouseup', () => { isDrag = false; });
+    document.addEventListener('mouseup', () => { isDragging = false; });
     
-    win.style.resize = 'both';
-    win.style.overflow = 'auto';
-    
+    // MODIFIED: Minimize button - smooth animation back to sticky note shape
     win.querySelector('.window-minimize').addEventListener('click', () => {
-      const originalNote = this.notes.find(n => n.dataset.projectId === project.id);
-      if (originalNote) {
-        const origRect = originalNote.getBoundingClientRect();
-        win.style.transition = 'all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
-        win.style.width = `${origRect.width}px`;
-        win.style.height = `${origRect.height}px`;
-        win.style.left = `${origRect.left}px`;
-        win.style.top = `${origRect.top}px`;
+      const note = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
+      if (note) {
+        const noteRect = note.getBoundingClientRect();
+        win.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        win.style.left = `${noteRect.left}px`;
+        win.style.top = `${noteRect.top}px`;
+        win.style.width = `${noteRect.width}px`;
+        win.style.height = `${noteRect.height}px`;
+        win.style.opacity = '0';
         setTimeout(() => {
           win.remove();
           activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
-        }, 400);
+          // Highlight the sticky note
+          note.style.transform = 'scale(1.02)';
+          setTimeout(() => { note.style.transform = ''; }, 300);
+        }, 500);
       } else {
         win.remove();
         activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
       }
     });
     
+    // MODIFIED: Close only on X - sends to sidebar
     win.querySelector('.window-close').addEventListener('click', () => {
-      const finalRect = win.getBoundingClientRect();
       win.remove();
       activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
-      this.addToSidebar(project, finalRect);
+      // Send to sidebar with connector line
+      const note = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
+      if (note) {
+        const noteRect = note.getBoundingClientRect();
+        this.addToSidebar(project, allProjects.findIndex(p => p.id === project.id), noteRect);
+      }
     });
     
-    let slideIndex = 0;
-    const slides = win.querySelector('.window-slides');
-    const slideCount = 6;
-    setInterval(() => {
-      if (!win.isConnected) return;
-      slideIndex = (slideIndex + 1) % slideCount;
-      slides.style.transform = `translateX(-${slideIndex * 100}%)`;
-    }, 3000);
+    // Auto-size after render
+    setTimeout(() => {
+      win.style.width = 'auto';
+      win.style.height = 'auto';
+    }, 10);
   }
 
-  addToSidebar(project, noteRect) {
-    const sidebar = document.getElementById('sidebarTabs');
-    if (document.getElementById(`tab-${project.id}`)) return;
+  makeWindowResizableFromAnywhere(win) {
+    let isResizing = false;
+    let resizeDirection = '';
+    let startX, startY, startWidth, startHeight, startLeft, startTop;
     
+    const handleMouseMove = (e) => {
+      if (!isResizing) return;
+      
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      
+      if (resizeDirection.includes('e')) {
+        win.style.width = `${Math.max(380, startWidth + dx)}px`;
+      }
+      if (resizeDirection.includes('w')) {
+        win.style.width = `${Math.max(380, startWidth - dx)}px`;
+        win.style.left = `${startLeft + dx}px`;
+      }
+      if (resizeDirection.includes('s')) {
+        win.style.height = `${Math.max(300, startHeight + dy)}px`;
+      }
+      if (resizeDirection.includes('n')) {
+        win.style.height = `${Math.max(300, startHeight - dy)}px`;
+        win.style.top = `${startTop + dy}px`;
+      }
+    };
+    
+    const handleMouseUp = () => {
+      isResizing = false;
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+    
+    win.addEventListener('mousemove', (e) => {
+      const rect = win.getBoundingClientRect();
+      const edgeThreshold = 15;
+      let direction = '';
+      
+      if (e.clientX - rect.left < edgeThreshold) direction += 'w';
+      if (rect.right - e.clientX < edgeThreshold) direction += 'e';
+      if (e.clientY - rect.top < edgeThreshold) direction += 'n';
+      if (rect.bottom - e.clientY < edgeThreshold) direction += 's';
+      
+      if (direction) {
+        win.style.cursor = `${direction}-resize`;
+      } else {
+        win.style.cursor = '';
+      }
+    });
+    
+    win.addEventListener('mousedown', (e) => {
+      const rect = win.getBoundingClientRect();
+      const edgeThreshold = 15;
+      let direction = '';
+      
+      if (e.clientX - rect.left < edgeThreshold) direction += 'w';
+      if (rect.right - e.clientX < edgeThreshold) direction += 'e';
+      if (e.clientY - rect.top < edgeThreshold) direction += 'n';
+      if (rect.bottom - e.clientY < edgeThreshold) direction += 's';
+      
+      if (direction) {
+        isResizing = true;
+        resizeDirection = direction;
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = win.offsetWidth;
+        startHeight = win.offsetHeight;
+        startLeft = win.offsetLeft;
+        startTop = win.offsetTop;
+        e.preventDefault();
+        
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+      }
+    });
+  }
+    addToSidebar(project, index, noteRect) {
+    const sidebar = document.getElementById('sidebarTabs');
+    const existingTab = document.getElementById(`tab-${project.id}`);
+    if (existingTab) return;
+
     const tab = document.createElement('div');
     tab.className = 'sidebar-tab';
     tab.id = `tab-${project.id}`;
-    const randomWidth = 70 + Math.floor(Math.random() * 70);
-    tab.style.width = `${randomWidth}px`;
     tab.setAttribute('data-project-id', project.id);
     tab.setAttribute('data-category', project.category);
     tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
+
+    // Store the connection between note and tab for connector line
+    this.noteTabConnections.set(project.id, { tab, noteRect });
     
+    // MODIFIED: Draw LIGHT LINE connecting sticky note and tab
+    this.drawLightConnectorLineFromNoteToTab(project.id, noteRect, tab);
+    
+    // MODIFIED: When hovering or clicking categories, the tab highlights
     tab.addEventListener('click', () => {
-      if (tab.lineRef) tab.lineRef.remove();
       tab.remove();
       this.tabs = this.tabs.filter(t => t !== tab);
-      this.reopenAsStickyNote(project, parseInt(project.id) - 1);
-      this.drawAllCategoryLines();
+      // Remove connector line
+      const connectorLine = document.getElementById(`connector-${project.id}`);
+      if (connectorLine) connectorLine.remove();
+      this.noteTabConnections.delete(project.id);
+      this.reopenAsStickyNote(project, index);
     });
     
+    // Category highlight for tabs
+    const observeCategoryChange = () => {
+      const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all';
+      if (activeCategory === 'all' || project.category === activeCategory) {
+        tab.classList.remove('highlight');
+      } else {
+        tab.classList.add('highlight');
+      }
+    };
+    
+    const categoryObserver = new MutationObserver(observeCategoryChange);
+    const categoryContainer = document.getElementById('categoryFilters');
+    categoryObserver.observe(categoryContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
+    tab.categoryObserver = categoryObserver;
+
     sidebar.appendChild(tab);
     this.tabs.push(tab);
-    this.closedProjects.set(project.id, { project, noteRect, tab });
-    
-    this.drawLightLineToTab(tab, noteRect);
+    this.closedProjects.set(project.id, { project, index, noteRect });
   }
-  
-  drawLightLineToTab(tab, noteRect) {
+
+  drawLightConnectorLineFromNoteToTab(projectId, noteRect, tab) {
     const svg = document.getElementById('connectorSvg');
     const tabRect = tab.getBoundingClientRect();
-    const startX = noteRect.left + noteRect.width / 2;
+    
+    // MODIFIED: Connector line connects to TAB instead of window
+    const startX = noteRect.right;
     const startY = noteRect.top + noteRect.height / 2;
     const endX = tabRect.left;
     const endY = tabRect.top + tabRect.height / 2;
     
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    line.setAttribute('d', `M ${startX} ${startY} L ${endX} ${endY}`);
-    line.setAttribute('class', 'connector-line-light');
-    svg.appendChild(line);
-    tab.lineRef = line;
+    const existingLine = document.getElementById(`connector-${projectId}`);
+    if (existingLine) existingLine.remove();
+    
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.id = `connector-${projectId}`;
+    path.setAttribute('class', 'connector-line-tab');
+    
+    // MODIFIED: Filleted/rounded corners for the connector line
+    const midX = startX + (endX - startX) * 0.3;
+    const d = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
+    path.setAttribute('d', d);
+    svg.appendChild(path);
   }
-  
-  drawAllCategoryLines() {
-    const activeCat = document.querySelector('#categoryFilters li.active');
-    if (activeCat) drawCategoryHoverLines(activeCat);
+
+  updateAllConnectorLines() {
+    // Update connector lines for all closed projects
+    this.noteTabConnections.forEach((value, projectId) => {
+      const tab = document.getElementById(`tab-${projectId}`);
+      if (tab && value.noteRect) {
+        this.drawLightConnectorLineFromNoteToTab(projectId, value.noteRect, tab);
+      }
+    });
   }
-  
+
   reopenAsStickyNote(project, index) {
     const x = 100 + Math.random() * (window.innerWidth - 300);
     const y = 150 + Math.random() * (window.innerHeight - 400);
-    this.createNote(project, index, x, y);
+    const newNote = this.createNote(project, index, x, y);
     this.closedProjects.delete(project.id);
-    this.drawAllCategoryLines();
+    this.noteTabConnections.delete(project.id);
+    return newNote;
+  }
+
+  reopenClosedForCategory(category) {
+    this.closedProjects.forEach((value, projectId) => {
+      if (category === 'all' || value.project.category === category) {
+        this.reopenAsStickyNote(value.project, value.index);
+      }
+    });
   }
 
   filterByCategory(category) {
@@ -896,6 +1295,7 @@ class StickyNoteManager {
       const cat = tab.getAttribute('data-category');
       tab.style.display = (category === 'all' || cat === category) ? 'flex' : 'none';
     });
+    this.updateAllConnectorLines();
   }
 
   highlightByCategory(category) {
@@ -917,22 +1317,29 @@ class StickyNoteManager {
       if (cat === category) tab.classList.add('highlight');
       else if (this.currentCategory === 'all') tab.classList.remove('highlight');
     });
+    this.updateAllConnectorLines();
   }
 }
 
+// ========== TAG FUNCTIONS (12 tags total - reduced and consolidated) ==========
 function createTagFilters() {
   const tagsBar = document.getElementById('tagsBar');
-  const allTags = [...new Set(allProjects.flatMap(p => p.tags))];
-  const tagFrequency = {};
-  allTags.forEach(tag => { tagFrequency[tag] = allProjects.filter(p => p.tags.includes(tag)).length; });
-  const topTags = allTags.sort((a, b) => tagFrequency[b] - tagFrequency[a]);
+  // MODIFIED: Only 12 tags total, consolidated across all projects
+  const consolidatedTags = [
+    "Ecological", "Vernacular", "Digital Fabrication", "Post-Conflict", 
+    "Material Research", "Speculative", "Collective Practice", "Pedagogy", 
+    "Installation", "Political", "Residency", "Exhibition"
+  ];
   
   tagsBar.innerHTML = '';
-  topTags.forEach(tag => {
+
+  consolidatedTags.forEach(tag => {
     const tagEl = document.createElement('div');
     tagEl.className = 'tag-filter';
     tagEl.textContent = tag;
-    const titles = allProjects.filter(p => p.tags.includes(tag)).map(p => `${p.id}. ${p.title}`).join(' · ');
+    tagEl.setAttribute('data-tag', tag);
+    const projectsWithTag = allProjects.filter(p => p.tags.includes(tag));
+    const titles = projectsWithTag.map(p => `${p.id}. ${p.title}`).join(' · ');
     tagEl.setAttribute('data-tooltip', titles);
     tagEl.addEventListener('click', () => showProjectsByTag(tag));
     tagsBar.appendChild(tagEl);
@@ -952,7 +1359,13 @@ function showProjectsByTag(tag) {
       <div class="card-subtitle">${project.subtitle} (${project.year})</div>
       <div class="card-tags">${project.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}</div>
     `;
-    card.addEventListener('click', () => { closeResultsModal(); });
+    card.addEventListener('click', () => { 
+      closeResultsModal(); 
+      if (manager) {
+        const rect = card.getBoundingClientRect();
+        manager.openFloatingWindow(project, rect.left, rect.top);
+      }
+    });
     resultsGrid.appendChild(card);
   });
   document.getElementById('resultsModal').style.display = 'flex';
@@ -964,6 +1377,112 @@ function closeResultsModal() {
   document.body.style.overflow = 'auto';
 }
 
+// ========== SPLIT VIEW ==========
+function openSplitViewForProject(index) {
+  const project = allProjects[index];
+  const splitView = document.getElementById('splitView');
+  splitView.innerHTML = `
+    <div class="split-pane">
+      <div style="background: var(--accent); padding: 0.8rem; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between;">
+        <h3 style="color: white; margin: 0; font-size: 0.7rem;">${project.id} · ${project.title}</h3>
+        <button onclick="closeSplitModal()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
+      </div>
+      <div style="padding: 1rem; overflow-y: auto; flex: 1;">
+        <div class="project-modal-carousel">
+          <div class="project-modal-slides" id="splitCarousel">
+            ${project.images.map(img => `<div class="project-modal-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'"></div>`).join('')}
+          </div>
+          <button class="project-modal-btn project-modal-prev" onclick="splitPrev()">‹</button>
+          <button class="project-modal-btn project-modal-next" onclick="splitNext()">›</button>
+        </div>
+        <div class="project-modal-tags">${project.tags.map(t => `<span class="project-modal-tag">${t}</span>`).join('')}</div>
+        <div class="project-modal-subtitle">${project.subtitle} (${project.year})</div>
+        <div class="project-modal-desc">${project.fullDesc}</div>
+      </div>
+    </div>
+    <div class="split-pane" id="secondPane">
+      <div style="background: #ddd; padding: 0.8rem; border-radius: 12px 12px 0 0; text-align: center;">
+        <h3 style="color: #333; margin: 0; font-size: 0.7rem;">Select a project to compare</h3>
+      </div>
+      <div style="padding: 1rem; overflow-y: auto; flex: 1;">
+        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+          ${allProjects.filter(p => p.id !== project.id).map(p => `
+            <div class="result-card" onclick="loadCompareProject(${allProjects.findIndex(proj => proj.id === p.id)})">
+              <div class="card-title">${p.id} · ${p.title}</div>
+              <div class="card-subtitle">${p.subtitle} (${p.year})</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('splitModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  let splitCurrentIndex = 0;
+  window.splitPrev = () => {
+    const slides = document.getElementById('splitCarousel');
+    if (!slides) return;
+    splitCurrentIndex = Math.max(0, splitCurrentIndex - 1);
+    slides.style.transform = `translateX(-${splitCurrentIndex * 100}%)`;
+  };
+  window.splitNext = () => {
+    const slides = document.getElementById('splitCarousel');
+    if (!slides) return;
+    splitCurrentIndex = Math.min(project.images.length - 1, splitCurrentIndex + 1);
+    slides.style.transform = `translateX(-${splitCurrentIndex * 100}%)`;
+  };
+}
+
+function loadCompareProject(index) {
+  const project = allProjects[index];
+  const secondPane = document.getElementById('secondPane');
+  if (secondPane) {
+    secondPane.innerHTML = `
+      <div style="background: var(--accent); padding: 0.8rem; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between;">
+        <h3 style="color: white; margin: 0; font-size: 0.7rem;">${project.id} · ${project.title}</h3>
+        <button onclick="closeSplitModal()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
+      </div>
+      <div style="padding: 1rem; overflow-y: auto; flex: 1;">
+        <div class="project-modal-carousel">
+          <div class="project-modal-slides" id="compareCarousel">
+            ${project.images.map(img => `<div class="project-modal-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'"></div>`).join('')}
+          </div>
+          <button class="project-modal-btn project-modal-prev" onclick="comparePrev()">‹</button>
+          <button class="project-modal-btn project-modal-next" onclick="compareNext()">›</button>
+        </div>
+        <div class="project-modal-tags">${project.tags.map(t => `<span class="project-modal-tag">${t}</span>`).join('')}</div>
+        <div class="project-modal-subtitle">${project.subtitle} (${project.year})</div>
+        <div class="project-modal-desc">${project.fullDesc}</div>
+      </div>
+    `;
+  }
+  let compareIndex = 0;
+  window.comparePrev = () => {
+    const slides = document.getElementById('compareCarousel');
+    if (!slides) return;
+    compareIndex = Math.max(0, compareIndex - 1);
+    slides.style.transform = `translateX(-${compareIndex * 100}%)`;
+  };
+  window.compareNext = () => {
+    const slides = document.getElementById('compareCarousel');
+    if (!slides) return;
+    compareIndex = Math.min(project.images.length - 1, compareIndex + 1);
+    slides.style.transform = `translateX(-${compareIndex * 100}%)`;
+  };
+}
+
+function closeSplitModal() {
+  const modal = document.getElementById('splitModal');
+  if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
+}
+  // ========== MODIFIED: GRID PLUS SIGNS ==========
+// - Reduced density to ~60% of original (step by 2 grid cells)
+// - Random hiding patches with varied sizes, shapes, frequencies
+// - Lower opacity to half of original (0.45 from 0.9)
+// - Black color
+// - Keep at original grid node positions (do not move)
+
 let gridPluses = [];
 let hiddenGroupsInterval;
 
@@ -971,16 +1490,17 @@ function initializeGridPluses() {
   const container = document.getElementById('gridPlusContainer');
   container.innerHTML = '';
   gridPluses = [];
-  const scrollX = window.scrollX || 0;
-  const scrollY = window.scrollY || 0;
-  const gridSize = 40;
-  const startX = Math.floor(scrollX / gridSize) * gridSize;
-  const startY = Math.floor(scrollY / gridSize) * gridSize;
-  const endX = scrollX + window.innerWidth + gridSize;
-  const endY = scrollY + window.innerHeight + gridSize;
+  const scrollX = window.scrollX || window.pageXOffset;
+  const scrollY = window.scrollY || window.pageYOffset;
+  const gridSize = 20, padding = 200;
+  const startX = Math.floor((scrollX - padding) / gridSize) * gridSize;
+  const startY = Math.floor((scrollY - padding) / gridSize) * gridSize;
+  const endX = scrollX + window.innerWidth + padding;
+  const endY = scrollY + window.innerHeight + padding;
   
-  for (let x = startX; x < endX; x += gridSize) {
-    for (let y = startY; y < endY; y += gridSize) {
+  // MODIFIED: Reduced density - step by 2 grid cells (~60% reduction from original)
+  for (let x = startX; x < endX; x += gridSize * 2) {
+    for (let y = startY; y < endY; y += gridSize * 2) {
       const plus = document.createElement('div');
       plus.className = 'grid-plus';
       plus.textContent = '+';
@@ -998,31 +1518,58 @@ window.addEventListener('scroll', () => {
   scrollUpdateTimeout = setTimeout(initializeGridPluses, 50);
 }, { passive: true });
 
+// MODIFIED: Random hiding patches with varied sizes, shapes, frequencies
 function hideRandomPlusGroups() {
   if (hiddenGroupsInterval) clearInterval(hiddenGroupsInterval);
   hiddenGroupsInterval = setInterval(() => {
     gridPluses.forEach(p => p.classList.remove('hidden'));
-    const hidePercentage = 0.4 + Math.random() * 0.3;
+    
+    // Random percentage of pluses to hide (30-80%)
+    const hidePercentage = Math.random() * 0.5 + 0.3;
     const hiddenCount = Math.floor(gridPluses.length * hidePercentage);
     const positions = [];
+    
     gridPluses.forEach((plus, idx) => {
       const rect = plus.getBoundingClientRect();
-      positions.push({ x: rect.left, y: rect.top, idx });
+      positions.push({ x: Math.round(rect.left), y: Math.round(rect.top), idx });
     });
-    const patchCount = Math.floor(Math.random() * 11) + 3;
+    
+    // MODIFIED: More random patches - varied count, sizes, shapes
+    const patchCount = Math.floor(Math.random() * 15) + 5; // 5-20 patches
     let totalHidden = 0;
     const hiddenIndices = new Set();
     
     for (let p = 0; p < patchCount && totalHidden < hiddenCount; p++) {
-      const center = positions[Math.floor(Math.random() * positions.length)];
-      const patchRadius = Math.random() * 130 + 30;
-      const patchDensity = Math.random() * 0.7 + 0.2;
+      const centerPlus = positions[Math.floor(Math.random() * positions.length)];
+      // MODIFIED: Varied patch radius (30-200px)
+      const patchRadius = Math.random() * 170 + 30;
+      // MODIFIED: Varied patch density (0.3-0.8)
+      const patchDensity = Math.random() * 0.5 + 0.3;
+      // MODIFIED: Varied shape (using different falloff functions)
+      const shapeType = Math.floor(Math.random() * 3); // 0: circular, 1: elliptical, 2: gaussian
       
       positions.forEach(plus => {
         if (hiddenIndices.has(plus.idx) || totalHidden >= hiddenCount) return;
-        const dx = plus.x - center.x, dy = plus.y - center.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const falloff = Math.exp(-Math.pow(distance / patchRadius, 2));
+        const dx = plus.x - centerPlus.x, dy = plus.y - centerPlus.y;
+        let falloff;
+        
+        if (shapeType === 0) {
+          // Circular falloff
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          falloff = Math.exp(-Math.pow(distance / patchRadius, 2));
+        } else if (shapeType === 1) {
+          // Elliptical falloff
+          const rx = patchRadius * (Math.random() * 0.5 + 0.8);
+          const ry = patchRadius * (Math.random() * 0.5 + 0.8);
+          const distance = Math.sqrt((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry));
+          falloff = Math.exp(-Math.pow(distance, 2));
+        } else {
+          // Gaussian with random skew
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const skew = Math.random() * 2 + 0.5;
+          falloff = Math.exp(-Math.pow(distance / patchRadius, skew));
+        }
+        
         if (Math.random() < falloff * patchDensity) {
           hiddenIndices.add(plus.idx);
           gridPluses[plus.idx].classList.add('hidden');
@@ -1030,130 +1577,182 @@ function hideRandomPlusGroups() {
         }
       });
     }
-  }, 1200 + Math.random() * 2500);
+    
+    // MODIFIED: Additional random scattered hidden pluses for more organic feel
+    const scatteredCount = Math.floor(gridPluses.length * 0.1);
+    for (let i = 0; i < scatteredCount && totalHidden < hiddenCount; i++) {
+      const randomIdx = Math.floor(Math.random() * gridPluses.length);
+      if (!hiddenIndices.has(randomIdx)) {
+        hiddenIndices.add(randomIdx);
+        gridPluses[randomIdx].classList.add('hidden');
+        totalHidden++;
+      }
+    }
+  }, 800 + Math.random() * 4000); // Random interval between 0.8-4.8 seconds
 }
+
+// ========== MODIFIED: CONNECTOR LINES ==========
+// - Lines from categories go through respective matching tag
+// - Filleted/rounded corners (not sharp angles)
+// - When window becomes sidebar tab, connector line connects to tab
+// - Lines from categories should go through the respective matching tag
 
 let activeHoverLines = [];
 
 function clearHoverLines() {
   const svg = document.getElementById('connectorSvg');
-  const toRemove = [];
-  svg.querySelectorAll('.connector-line').forEach(line => toRemove.push(line));
-  toRemove.forEach(line => line.remove());
+  // Only remove connector lines, not tab connector lines
+  const linesToRemove = svg.querySelectorAll('.connector-line');
+  linesToRemove.forEach(line => line.remove());
+  activeHoverLines = [];
 }
 
 function drawFilletedLine(svg, x1, y1, x2, y2, opacity) {
-  const d = `M ${x1} ${y1} C ${x1} ${(y1+y2)/2}, ${x2} ${(y1+y2)/2}, ${x2} ${y2}`;
+  const gridSize = 20;
+  const snappedX1 = Math.round(x1 / gridSize) * gridSize;
+  const snappedY1 = Math.round(y1 / gridSize) * gridSize;
+  const snappedX2 = Math.round(x2 / gridSize) * gridSize;
+  const snappedY2 = Math.round(y2 / gridSize) * gridSize;
+  
+  // MODIFIED: Filleted/rounded corners using cubic bezier curves instead of sharp angles
+  const midY1 = snappedY1 + (snappedY2 - snappedY1) * 0.3;
+  const midY2 = snappedY1 + (snappedY2 - snappedY1) * 0.7;
+  
+  // Create a smooth curved line with filleted corners
+  const d = `M ${snappedX1} ${snappedY1} C ${snappedX1} ${midY1}, ${(snappedX1 + snappedX2) / 2} ${midY1}, ${(snappedX1 + snappedX2) / 2} ${(snappedY1 + snappedY2) / 2} C ${(snappedX1 + snappedX2) / 2} ${midY2}, ${snappedX2} ${midY2}, ${snappedX2} ${snappedY2}`;
+  
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   path.setAttribute('class', 'connector-line');
   path.setAttribute('d', d);
   path.setAttribute('stroke-opacity', opacity);
   svg.appendChild(path);
+  activeHoverLines.push(path);
 }
 
+// MODIFIED: Lines from categories go through respective matching tag
 function drawCategoryHoverLines(categoryEl) {
   clearHoverLines();
   const svg = document.getElementById('connectorSvg');
+  const gridSize = 20;
   const category = categoryEl.getAttribute('data-category');
   const catRect = categoryEl.getBoundingClientRect();
+
   let startX = catRect.left + catRect.width / 2;
   let startY = catRect.bottom + 3;
-  
+  startX = Math.round(startX / gridSize) * gridSize;
+  startY = Math.round(startY / gridSize) * gridSize;
+
   const notes = document.querySelectorAll('.sticky-note');
   const tagFilters = document.querySelectorAll('.tag-filter');
-  const tabs = document.querySelectorAll('.sidebar-tab');
-  
+
   notes.forEach(note => {
     if (note.style.display === 'none') return;
     const noteCat = note.getAttribute('data-category');
     if (category !== 'all' && noteCat !== category) return;
-    
+
     const projectIdx = parseInt(note.getAttribute('data-project-idx'));
-    const project = allProjects[projectIdx];
-    if (!project) return;
-    
-    const matchingTags = Array.from(tagFilters).filter(tagEl => 
-      project.tags.includes(tagEl.textContent.trim())
-    );
-    
+    let matchingTags = [];
+    if (projectIdx >= 0 && projectIdx < allProjects.length) {
+      const project = allProjects[projectIdx];
+      matchingTags = Array.from(tagFilters).filter(tagEl => 
+        project.tags.includes(tagEl.textContent.trim())
+      );
+    }
+
     const noteRect = note.getBoundingClientRect();
     let endX = noteRect.left + noteRect.width / 2;
     let endY = noteRect.top - 3;
-    
+    endX = Math.round(endX / gridSize) * gridSize;
+    endY = Math.round(endY / gridSize) * gridSize;
+
+    // MODIFIED: Line goes through matching tag
     if (matchingTags.length > 0) {
-      const tagRect = matchingTags[0].getBoundingClientRect();
+      const tagEl = matchingTags[0];
+      const tagRect = tagEl.getBoundingClientRect();
       let tagX = tagRect.left + tagRect.width / 2;
       let tagY = tagRect.bottom + 5;
+      tagX = Math.round(tagX / gridSize) * gridSize;
+      tagY = Math.round(tagY / gridSize) * gridSize;
+
+      // Draw from category to tag
       drawFilletedLine(svg, startX, startY, tagX, tagY, 0.55);
+      // Draw from tag to note
       drawFilletedLine(svg, tagX, tagY, endX, endY, 0.55);
     } else {
       drawFilletedLine(svg, startX, startY, endX, endY, 0.55);
     }
   });
-  
-  tabs.forEach(tab => {
-    if (tab.style.display === 'none') return;
-    const tabCat = tab.getAttribute('data-category');
-    if (category !== 'all' && tabCat !== category) return;
-    if (tab.lineRef) {
-      tab.lineRef.setAttribute('stroke-opacity', '0.8');
-    }
-  });
 }
 
-function openSplitViewForProject(index) {
-  const project = allProjects[index];
-  const splitView = document.getElementById('splitView');
-  splitView.innerHTML = `<div class="split-pane"><div style="padding:1rem;">${project.title}</div></div><div class="split-pane"><div style="padding:1rem;">Select project to compare</div></div>`;
-  document.getElementById('splitModal').style.display = 'flex';
-}
-
-function closeSplitModal() {
-  document.getElementById('splitModal').style.display = 'none';
-}
+// ========== INITIALIZE ==========
+let manager;
 
 function initialize() {
   manager = new StickyNoteManager();
+
   allProjects.forEach((project, i) => {
     const x = 30 + Math.random() * (window.innerWidth - 350);
     const y = 180 + Math.random() * (window.innerHeight - 500);
     setTimeout(() => manager.createNote(project, i, x, y), 100 + i * 40);
   });
+
   setTimeout(createTagFilters, 800);
-  
+
+  // MODIFIED: Category event handlers with BOLD+ITALIC on hover and active
   const filters = document.querySelectorAll('#categoryFilters li');
   filters.forEach(filter => {
     filter.addEventListener('click', () => {
+      const category = filter.getAttribute('data-category');
       filters.forEach(f => f.classList.remove('active'));
       filter.classList.add('active');
-      manager.filterByCategory(filter.getAttribute('data-category'));
+      manager.filterByCategory(category);
+      manager.reopenClosedForCategory(category);
       clearHoverLines();
     });
+
     filter.addEventListener('mouseenter', () => {
       manager.highlightByCategory(filter.getAttribute('data-category'));
       setTimeout(() => drawCategoryHoverLines(filter), 50);
     });
+
     filter.addEventListener('mouseleave', () => {
       clearHoverLines();
       const activeCategory = document.querySelector('#categoryFilters li.active').getAttribute('data-category');
       manager.highlightByCategory(activeCategory);
     });
   });
-  
+
+  // CV Modal
   document.getElementById('openCvBtn').addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('cvModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
   });
   document.getElementById('closeCvBtn').addEventListener('click', () => {
     document.getElementById('cvModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
   });
+  document.getElementById('cvModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('cvModal')) {
+      document.getElementById('cvModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  });
+
+  // Results Modal
   document.getElementById('closeResultsBtn').addEventListener('click', closeResultsModal);
+  document.getElementById('resultsModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('resultsModal')) closeResultsModal();
+  });
+
+  // Split Modal
   document.getElementById('splitModal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('splitModal')) closeSplitModal();
   });
-  document.getElementById('closeProjectModalBtn').addEventListener('click', () => {
-    document.getElementById('projectModal').classList.remove('show');
-    document.body.style.overflow = 'auto';
+  
+  // MODIFIED: Window resize handling for connector lines
+  window.addEventListener('resize', () => {
+    if (manager) manager.updateAllConnectorLines();
   });
 }
 
@@ -1162,7 +1761,13 @@ window.addEventListener('load', () => {
   hideRandomPlusGroups();
   initialize();
 });
+
 window.addEventListener('resize', initializeGridPluses);
+
+// Add split view function to window for global access
+window.openSplitViewForProject = openSplitViewForProject;
+window.loadCompareProject = loadCompareProject;
+window.closeSplitModal = closeSplitModal;
 </script>
 </body>
 </html>
