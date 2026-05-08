@@ -38,8 +38,8 @@
     --accent-light: #ff5555;
     --muted: #666666;
     --rule: #e0e0e0;
-    --grid-line: #999999;
-    --grid-line-small: #cccccc;
+    --grid-line: #777777;        /* WAS #999999 → DARKER (more contrast) */
+    --grid-line-small: #eeeeee;  /* WAS #cccccc → LIGHTER (more contrast) */
   }
 
   body {
@@ -53,19 +53,21 @@
     min-height: 100vh;
   }
 
+  /* LARGE GRID - GRAY (darker for higher contrast) */
   body::before {
     content: "";
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-    background-size: 60px 60px;
+    background-size: 80px 80px;  /* WAS 60px → NOW 80px */
     pointer-events: none; z-index: 0;
   }
 
+  /* SMALL GRID - LIGHTER GRAY (much lighter for higher contrast) */
   body::after {
     content: "";
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-image: linear-gradient(var(--grid-line-small) 0.5px, transparent 0.5px), linear-gradient(90deg, var(--grid-line-small) 0.5px, transparent 0.5px);
-    background-size: 20px 20px;
+    background-size: 20px 20px;  /* STAYS 20px */
     pointer-events: none; z-index: 0;
   }
 
