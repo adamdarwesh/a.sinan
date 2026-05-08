@@ -1863,40 +1863,66 @@ window.addEventListener('scroll', () => {
 
 function hideRandomPlusGroups() {
   if (hiddenGroupsInterval) clearInterval(hiddenGroupsInterval);
+  // Speed increased by 250%: was 800-4800ms, now 200-1200ms
   hiddenGroupsInterval = setInterval(() => {
     gridPluses.forEach(p => p.classList.remove('hidden'));
-    const hidePercentage = Math.random() * 0.5 + 0.3;
+    
+    // More extreme hiding percentage: 40% to 85% (was 30%-80%)
+    const hidePercentage = Math.random() * 0.45 + 0.4;
     const hiddenCount = Math.floor(gridPluses.length * hidePercentage);
     const positions = [];
+    
     gridPluses.forEach((plus, idx) => {
       const rect = plus.getBoundingClientRect();
       positions.push({ x: Math.round(rect.left), y: Math.round(rect.top), idx });
     });
-    const patchCount = Math.floor(Math.random() * 15) + 5;
+    
+    // More patches: 8-25 patches (was 5-20)
+    const patchCount = Math.floor(Math.random() * 18) + 8;
     let totalHidden = 0;
     const hiddenIndices = new Set();
+    
     for (let p = 0; p < patchCount && totalHidden < hiddenCount; p++) {
       const centerPlus = positions[Math.floor(Math.random() * positions.length)];
-      const patchRadius = Math.random() * 170 + 30;
-      const patchDensity = Math.random() * 0.5 + 0.3;
-      const shapeType = Math.floor(Math.random() * 3);
+      // Wider patch radius range: 20-250px (was 30-200)
+      const patchRadius = Math.random() * 230 + 20;
+      // Higher density variation: 0.2-0.9 (was 0.3-0.8)
+      const patchDensity = Math.random() * 0.7 + 0.2;
+      // More shape types: 0-4 (was 0-2)
+      const shapeType = Math.floor(Math.random() * 5);
+      
       positions.forEach(plus => {
         if (hiddenIndices.has(plus.idx) || totalHidden >= hiddenCount) return;
         const dx = plus.x - centerPlus.x, dy = plus.y - centerPlus.y;
         let falloff;
+        
         if (shapeType === 0) {
+          // Circular falloff
           const distance = Math.sqrt(dx * dx + dy * dy);
           falloff = Math.exp(-Math.pow(distance / patchRadius, 2));
         } else if (shapeType === 1) {
-          const rx = patchRadius * (Math.random() * 0.5 + 0.8);
-          const ry = patchRadius * (Math.random() * 0.5 + 0.8);
+          // Elliptical falloff
+          const rx = patchRadius * (Math.random() * 0.6 + 0.7);
+          const ry = patchRadius * (Math.random() * 0.6 + 0.7);
           const distance = Math.sqrt((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry));
           falloff = Math.exp(-Math.pow(distance, 2));
-        } else {
+        } else if (shapeType === 2) {
+          // Square/rectangular influence
+          const distance = Math.max(Math.abs(dx), Math.abs(dy));
+          falloff = Math.exp(-Math.pow(distance / patchRadius, 2));
+        } else if (shapeType === 3) {
+          // Star-like / cross pattern
           const distance = Math.sqrt(dx * dx + dy * dy);
-          const skew = Math.random() * 2 + 0.5;
+          const angle = Math.atan2(dy, dx);
+          const modulation = 0.5 + 0.5 * Math.cos(4 * angle);
+          falloff = Math.exp(-Math.pow(distance / (patchRadius * (0.6 + 0.4 * modulation)), 2));
+        } else {
+          // Gaussian with random high skew
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const skew = Math.random() * 3 + 0.8;
           falloff = Math.exp(-Math.pow(distance / patchRadius, skew));
         }
+        
         if (Math.random() < falloff * patchDensity) {
           hiddenIndices.add(plus.idx);
           gridPluses[plus.idx].classList.add('hidden');
@@ -1904,7 +1930,9 @@ function hideRandomPlusGroups() {
         }
       });
     }
-    const scatteredCount = Math.floor(gridPluses.length * 0.1);
+    
+    // More scattered individual pluses: up to 15% (was 10%)
+    const scatteredCount = Math.floor(gridPluses.length * 0.15);
     for (let i = 0; i < scatteredCount && totalHidden < hiddenCount; i++) {
       const randomIdx = Math.floor(Math.random() * gridPluses.length);
       if (!hiddenIndices.has(randomIdx)) {
@@ -1913,9 +1941,26 @@ function hideRandomPlusGroups() {
         totalHidden++;
       }
     }
-  }, 800 + Math.random() * 4000);
+    
+    // Add occasional large area clearing (extra randomness)
+    if (Math.random() < 0.3) {
+      const largeRadius = Math.random() * 300 + 100;
+      const largeCenter = positions[Math.floor(Math.random() * positions.length)];
+      positions.forEach(plus => {
+        if (hiddenIndices.has(plus.idx) || totalHidden >= hiddenCount) return;
+        const dx = plus.x - largeCenter.x, dy = plus.y - largeCenter.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < largeRadius && Math.random() < 0.7) {
+          hiddenIndices.add(plus.idx);
+          gridPluses[plus.idx].classList.add('hidden');
+          totalHidden++;
+        }
+      });
+    }
+    
+  // Speed increased 250%: interval now 200-1200ms (was 800-4800ms)
+  }, 200 + Math.random() * 1000);
 }
-
 // ========== CONNECTOR LINES ==========
 let activeHoverLines = [];
 
