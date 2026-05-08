@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
 <style>
-  /* ========== GLOBAL TYPOGRAPHY - ALL FONTS GARAMOND ========== */
   *, *::before, *::after { 
     box-sizing: border-box; 
     margin: 0; 
@@ -22,18 +21,16 @@
     --warm-mid: #999999;
     --accent: #FF3030;
     --accent-light: #ff5555;
-    --accent-lighter: rgba(255,48,48,0.3);
     --muted: #666666;
     --rule: #e0e0e0;
     --grid-line: #999999;
     --grid-line-small: #cccccc;
   }
 
-  html { scroll-behavior: smooth; }
   body {
     background: var(--paper);
     color: var(--ink);
-    font-family: 'EB Garamond', 'Garamond', Georgia, serif;
+    font-family: 'EB Garamond', serif;
     font-size: 18px;
     line-height: 1.75;
     overflow-x: hidden;
@@ -41,7 +38,6 @@
     min-height: 100vh;
   }
 
-  /* Large grid = GRAY */
   body::before {
     content: "";
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -50,7 +46,6 @@
     pointer-events: none; z-index: 0;
   }
 
-  /* Small grid = LIGHTER GRAY */
   body::after {
     content: "";
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -64,11 +59,9 @@
     pointer-events: none; z-index: 1; overflow: visible;
   }
 
-  /* Plus signs: BLACK, half opacity, at grid nodes */
   .grid-plus {
     position: absolute;
     color: #000000;
-    font-family: 'EB Garamond', monospace;
     font-size: 11px;
     font-weight: 100;
     pointer-events: none;
@@ -77,7 +70,9 @@
     line-height: 1;
     transform: translate(-50%, -50%);
     width: 12px; height: 12px;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .grid-plus.hidden { opacity: 0; }
@@ -107,22 +102,25 @@
   }
 
   .nav-name {
-    font-family: 'EB Garamond', serif; 
     font-size: 0.9rem;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--ink); text-decoration: none; font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 600;
   }
 
   .nav-links { display: flex; gap: 2rem; list-style: none; }
   .nav-links a {
-    font-family: 'EB Garamond', serif; 
     font-size: 0.7rem;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted); text-decoration: none; transition: color 0.2s;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
   }
   .nav-links a:hover { color: var(--accent); }
 
-  /* Categories with DOT between each */
   .categories {
     position: fixed; top: 65px; left: 0; right: 0; z-index: 90;
     text-align: center; padding: 0.6rem;
@@ -132,21 +130,24 @@
   }
 
   .category-filters {
-    display: flex; justify-content: center; gap: 1rem; list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    list-style: none;
     flex-wrap: wrap;
   }
 
   .category-filters li {
-    font-family: 'EB Garamond', serif; 
     font-size: 0.65rem;
-    letter-spacing: 0.15em; text-transform: uppercase;
-    cursor: pointer; padding: 0.3rem 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.3rem 0.8rem;
     transition: all 0.3s ease;
     color: var(--muted);
     position: relative;
   }
 
-  /* DOT between categories */
   .category-filters li:not(:last-child)::after {
     content: '•';
     position: absolute;
@@ -157,14 +158,12 @@
     font-size: 0.5rem;
   }
 
-  /* Hover: BOLD + ITALIC */
   .category-filters li:hover { 
     color: var(--accent); 
     font-weight: bold !important;
     font-style: italic !important;
   }
 
-  /* Active: BOLD + ITALIC */
   .category-filters li.active { 
     color: var(--accent); 
     font-weight: bold !important;
@@ -177,14 +176,18 @@
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--rule);
     padding: 0.4rem 1rem;
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
   }
 
   .tag-filter {
-    font-family: 'EB Garamond', serif; 
     font-size: 0.55rem;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    cursor: pointer; padding: 0.25rem 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.25rem 0.7rem;
     border: none;
     border-radius: 3px;
     color: white;
@@ -195,7 +198,6 @@
 
   .tag-filter:hover { background: var(--accent-light); opacity: 0.9; }
 
-  /* Tooltip at BOTTOM of tags */
   .tag-filter::after {
     content: attr(data-tooltip);
     position: absolute;
@@ -213,33 +215,43 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s;
-    font-family: 'EB Garamond', monospace;
-    letter-spacing: normal;
   }
 
   .tag-filter:hover::after { opacity: 1; }
 
   .sticky-canvas {
-    position: relative; min-height: 100vh;
-    padding: 175px 2rem 2rem; z-index: 3;
+    position: relative;
+    min-height: 100vh;
+    padding: 175px 2rem 2rem;
+    z-index: 3;
   }
 
-  /* Sticky Note - full state */
   .sticky-note {
-    position: absolute; background: #fefefe;
-    border: 1px solid var(--rule); padding: 8px 10px;
-    border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    cursor: pointer; font-size: 0.6rem;
-    transition: all 0.15s ease; width: 160px; z-index: 10; color: var(--ink);
+    position: absolute;
+    background: #fefefe;
+    border: 1px solid var(--rule);
+    padding: 8px 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    cursor: pointer;
+    font-size: 0.6rem;
+    transition: all 0.15s ease;
+    width: 160px;
+    z-index: 10;
+    color: var(--ink);
   }
 
   .sticky-note:hover {
-    transform: scale(1.02); border-color: var(--accent);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 9999 !important;
+    transform: scale(1.02);
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 9999 !important;
   }
 
   .sticky-note.preview-active {
-    width: 280px; height: auto; z-index: 500;
+    width: 280px;
+    height: auto;
+    z-index: 500;
     border: 1px solid var(--accent);
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   }
@@ -253,27 +265,31 @@
   .sticky-preview-slide img { width: 100%; height: 100px; object-fit: cover; background: #f5f5f5; }
 
   .sticky-preview-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-  .sticky-preview-tag { font-size: 0.5rem; padding: 3px 6px; border: none; border-radius: 2px; color: white; background: var(--accent); font-weight: 400; }
+  .sticky-preview-tag { font-size: 0.5rem; padding: 3px 6px; border-radius: 2px; color: white; background: var(--accent); font-weight: 400; }
 
   .sticky-note .sticky-title { color: var(--accent); margin-bottom: 3px; font-size: 0.7rem; font-weight: 600; }
   .sticky-note .sticky-subtitle { font-size: 0.5rem; color: var(--muted); }
 
   .sticky-note-controls {
     position: absolute; top: 3px; right: 6px;
-    display: flex; gap: 6px; opacity: 0; transition: opacity 0.2s;
+    display: flex; gap: 6px; opacity: 0;
+    transition: opacity 0.2s;
   }
 
   .sticky-note:hover .sticky-note-controls { opacity: 1; }
 
   .sticky-note-controls button {
-    background: rgba(0,0,0,0.05); border: 1px solid var(--rule);
-    border-radius: 3px; font-size: 0.6rem; cursor: pointer;
-    color: var(--muted); padding: 0 3px;
+    background: rgba(0,0,0,0.05);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    font-size: 0.6rem;
+    cursor: pointer;
+    color: var(--muted);
+    padding: 0 3px;
   }
 
   .sticky-note-controls button:hover { color: var(--accent); border-color: var(--accent); }
 
-  /* FROZEN STICKY NOTE (minimized state) - borderless, static */
   .sticky-note.frozen {
     border: none !important;
     box-shadow: none !important;
@@ -286,9 +302,7 @@
   .sticky-note.frozen .sticky-subtitle {
     display: none !important;
   }
-  .sticky-note.frozen .sticky-title {
-    font-size: 0.6rem;
-  }
+  .sticky-note.frozen .sticky-title { font-size: 0.6rem; }
   .sticky-note.frozen .frozen-image {
     display: block;
     width: 100%;
@@ -298,11 +312,10 @@
   }
   .sticky-note .frozen-image { display: none; }
 
-  /* Floating Window - BORDERLESS */
   .floating-window {
     position: fixed;
     background: white;
-    border-radius: 0px;
+    border-radius: 0;
     box-shadow: 0 20px 35px rgba(0,0,0,0.25);
     border: none;
     display: flex;
@@ -312,7 +325,6 @@
     min-width: 380px;
     width: auto;
     height: auto;
-    resize: none;
   }
 
   .window-header {
@@ -376,13 +388,18 @@
     border-radius: 20px;
   }
 
-  /* Sidebar Tabs - VARYING LENGTHS */
   .sidebar-tabs {
     position: fixed; right: 0; top: 50%; transform: translateY(-50%);
-    background: rgba(255,255,255,0.95); border-left: 1px solid var(--rule);
-    border-radius: 8px 0 0 8px; padding: 0.5rem; z-index: 200;
-    display: flex; flex-direction: column; gap: 5px;
-    max-height: 70vh; overflow-y: auto;
+    background: rgba(255,255,255,0.95);
+    border-left: 1px solid var(--rule);
+    border-radius: 8px 0 0 8px;
+    padding: 0.5rem;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 70vh;
+    overflow-y: auto;
     box-shadow: -2px 2px 8px rgba(0,0,0,0.05);
   }
 
@@ -421,31 +438,55 @@
     opacity: 0.6;
   }
 
-  /* Modals */
   .results-modal-overlay, .cv-modal-overlay {
-    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
-    z-index: 5000; justify-content: center; align-items: center;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    z-index: 5000;
+    justify-content: center;
+    align-items: center;
   }
 
   .results-modal, .cv-modal {
-    background: var(--paper); width: 90%; max-width: 1200px; height: 85%;
-    border-radius: 12px; display: flex; flex-direction: column; border: 1px solid var(--rule);
+    background: var(--paper);
+    width: 90%;
+    max-width: 1200px;
+    height: 85%;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--rule);
   }
 
   .results-modal-header, .cv-modal-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 1rem; border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--rule);
   }
 
   .results-grid {
-    flex: 1; overflow-y: auto; padding: 1rem;
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem;
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
   }
 
   .result-card {
-    background: #fafafa; border: 1px solid var(--rule); border-radius: 8px;
-    padding: 0.8rem; cursor: pointer; transition: all 0.2s;
+    background: #fafafa;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
   }
   .result-card:hover { border-color: var(--accent); transform: translateY(-2px); }
 
@@ -453,7 +494,8 @@
   .split-pane { flex: 1; background: var(--paper); border-radius: 12px; display: flex; flex-direction: column; border: 1px solid var(--rule); overflow: hidden; }
 
   #contact {
-    position: relative; z-index: 10;
+    position: relative;
+    z-index: 10;
     border-top: 1px solid var(--rule);
     padding: 3rem 2rem;
     background: rgba(255,255,255,0.97);
@@ -461,8 +503,12 @@
   }
 
   footer {
-    background: rgba(255,255,255,0.95); border-top: 1px solid var(--rule);
-    padding: 0.6rem; text-align: center; position: relative; z-index: 10;
+    background: rgba(255,255,255,0.95);
+    border-top: 1px solid var(--rule);
+    padding: 0.6rem;
+    text-align: center;
+    position: relative;
+    z-index: 10;
   }
 
   @media (max-width: 768px) {
@@ -476,7 +522,6 @@
 <div id="gridPlusContainer"></div>
 <svg id="connectorSvg"></svg>
 
-<!-- CV MODAL -->
 <div id="cvModal" class="results-modal-overlay">
   <div class="cv-modal">
     <div class="cv-modal-header">
@@ -485,7 +530,7 @@
     </div>
     <div class="cv-modal-body" style="padding:1rem; overflow-y:auto;">
       <h4>Profile</h4>
-      <p>An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches. My work is enriched by interdisciplinary collaboration and strong research foundations, aiming to create architectural visions that cultivate connection and commonality.</p>
+      <p>An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches.</p>
       <h4>Education</h4>
       <p><strong>PhD / DR.TECH</strong> — University of Applied Arts Vienna · 2024–present</p>
       <p><strong>MArch</strong> — University of Applied Arts Vienna · Magna cum laude · 2020–2024</p>
@@ -493,7 +538,6 @@
   </div>
 </div>
 
-<!-- Results Modal -->
 <div id="resultsModal" class="results-modal-overlay">
   <div class="results-modal">
     <div class="results-modal-header">
@@ -504,7 +548,6 @@
   </div>
 </div>
 
-<!-- Split Modal -->
 <div id="splitModal" class="results-modal-overlay">
   <div class="split-view" id="splitView"></div>
 </div>
@@ -545,87 +588,86 @@
 <footer><span>Ad(h)am Sinan — Architecture, Art &amp; Research</span></footer>
 
 <script>
-// ========== PROJECT DATA - 12 TAGS, 6 IMAGES EACH (UNDERSCORE CONVENTION) ==========
+// ========== PROJECT DATA - 12 TAGS, 6 IMAGES EACH ==========
 const allProjects = [
   { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", 
     tags: ["Ecological", "Vernacular"], 
     images: ["spiral_spines_1.jpg", "spiral_spines_2.jpg", "spiral_spines_3.jpg", "spiral_spines_4.jpg", "spiral_spines_5.jpg", "spiral_spines_6.jpg"],
-    fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing." },
+    fullDesc: "A regenerative material practice that transforms uprooted and discarded timber." },
   { id: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", 
     tags: ["Vernacular", "Digital Fabrication"], 
     images: ["woven_realities_1.jpg", "woven_realities_2.jpg", "woven_realities_3.jpg", "woven_realities_4.jpg", "woven_realities_5.jpg", "woven_realities_6.jpg"],
-    fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice using reusable by-products." },
+    fullDesc: "A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice." },
   { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", 
     tags: ["Post-Conflict", "Material Research"], 
     images: ["new_cairn_1.jpg", "new_cairn_2.jpg", "new_cairn_3.jpg", "new_cairn_4.jpg", "new_cairn_5.jpg", "new_cairn_6.jpg"],
-    fullDesc: "A research and construction project proposing whole, un-crushed demolition rubble as masonry units in compression-only enclosures, deployable in Palestine and Afghanistan." },
+    fullDesc: "Research project proposing un-crushed demolition rubble as masonry units." },
   { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", 
     tags: ["Speculative", "Ecological"], 
     images: ["carbonfloss_1.jpg", "carbonfloss_2.jpg", "carbonfloss_3.jpg", "carbonfloss_4.jpg", "carbonfloss_5.jpg", "carbonfloss_6.jpg"],
-    fullDesc: "A political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity." },
+    fullDesc: "A political statement against absurd reluctance policies." },
   { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", 
     tags: ["Material Research", "Digital Fabrication"], 
     images: ["ourobos_1.jpg", "ourobos_2.jpg", "ourobos_3.jpg", "ourobos_4.jpg", "ourobos_5.jpg", "ourobos_6.jpg"],
-    fullDesc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies." },
+    fullDesc: "Exploration of residual morphogenesis using AI-driven workflows." },
   { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", 
     tags: ["Ecological", "Collective Practice"], 
     images: ["agropraxis_1.jpg", "agropraxis_2.jpg", "agropraxis_3.jpg", "agropraxis_4.jpg", "agropraxis_5.jpg", "agropraxis_6.jpg"],
-    fullDesc: "Explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles." },
+    fullDesc: "Intersection of agriculture and architectural practice." },
   { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", category: "education", 
     tags: ["Pedagogy", "Vernacular"], 
     images: ["medius_1.jpg", "medius_2.jpg", "medius_3.jpg", "medius_4.jpg", "medius_5.jpg", "medius_6.jpg"],
-    fullDesc: "A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes connected by circular paths." },
+    fullDesc: "A prototype tracing character from Diola compounds in Senegal." },
   { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", 
     tags: ["Collective Practice", "Installation"], 
     images: ["soft_unsealing_1.jpg", "soft_unsealing_2.jpg", "soft_unsealing_3.jpg", "soft_unsealing_4.jpg", "soft_unsealing_5.jpg", "soft_unsealing_6.jpg"],
-    fullDesc: "Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts." },
+    fullDesc: "Exploring softening boundaries in urban contexts." },
   { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", 
     tags: ["Collective Practice", "Installation"], 
     images: ["old_airfield_1.jpg", "old_airfield_2.jpg", "old_airfield_3.jpg", "old_airfield_4.jpg", "old_airfield_5.jpg", "old_airfield_6.jpg"],
-    fullDesc: "An acoustic mirror cultural gateway exploring sound and spatial memory, published at Chicago Architecture Biennial CAB5." },
+    fullDesc: "Acoustic mirror cultural gateway exploring sound and spatial memory." },
   { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", 
     tags: ["Vernacular", "Ecological"], 
     images: ["enkidu_1.jpg", "enkidu_2.jpg", "enkidu_3.jpg", "enkidu_4.jpg", "enkidu_5.jpg", "enkidu_6.jpg"],
-    fullDesc: "Reviving elements of vernacular Palestinian architecture in Dier Ghassaneh — not through aesthetic value alone, but through ecological, economical, and tradition revival." },
+    fullDesc: "Reviving vernacular Palestinian architecture in Dier Ghassaneh." },
   { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", category: "art", 
     tags: ["Installation", "Speculative"], 
     images: ["aura_1.jpg", "aura_2.jpg", "aura_3.jpg", "aura_4.jpg", "aura_5.jpg", "aura_6.jpg"],
-    fullDesc: "A folly project exploring the atmospheric and experiential qualities of architectural space through material and light." },
+    fullDesc: "Exploring atmospheric qualities of architectural space." },
   { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", 
     tags: ["Political", "Speculative"], 
     images: ["liberation_fronts_1.jpg", "liberation_fronts_2.jpg", "liberation_fronts_3.jpg", "liberation_fronts_4.jpg", "liberation_fronts_5.jpg", "liberation_fronts_6.jpg"],
-    fullDesc: "A diploma thesis exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements." },
+    fullDesc: "Exploring liberation fronts as spatial and political constructs." },
   { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", 
     tags: ["Residency", "Installation"], 
     images: ["regutting_1.jpg", "regutting_2.jpg", "regutting_3.jpg", "regutting_4.jpg", "regutting_5.jpg", "regutting_6.jpg"],
-    fullDesc: "A residency project exploring returns and remains through film, photography, and installation at Wonder Cabinet, Bethlehem." },
+    fullDesc: "Returns and remains through film, photography, and installation." },
   { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", 
     tags: ["Exhibition", "Political"], 
     images: ["agential_cartographies_1.jpg", "agential_cartographies_2.jpg", "agential_cartographies_3.jpg", "agential_cartographies_4.jpg", "agential_cartographies_5.jpg", "agential_cartographies_6.jpg"],
-    fullDesc: "An exhibition presenting experimental mappings across three spatial typologies: the camp, the city, and the limbo landscape, exploring agency as a dynamic and malleable force." },
+    fullDesc: "Experimental mappings across three spatial typologies." },
   { id: "15", title: "PhD Research", year: "2024+", subtitle: "Die Angewandte", category: "education", 
     tags: ["Material Research", "Pedagogy"], 
     images: ["phd_research_1.jpg", "phd_research_2.jpg", "phd_research_3.jpg", "phd_research_4.jpg", "phd_research_5.jpg", "phd_research_6.jpg"],
-    fullDesc: "Doctoral research at the University of Applied Arts Vienna focusing on post-conflict material practice and rubble reuse." },
+    fullDesc: "Post-conflict material practice and rubble reuse." },
   { id: "16", title: "Teaching at AAUP", year: "2025+", subtitle: "Arab American University", category: "education", 
     tags: ["Pedagogy", "Vernacular"], 
     images: ["teaching_aaup_1.jpg", "teaching_aaup_2.jpg", "teaching_aaup_3.jpg", "teaching_aaup_4.jpg", "teaching_aaup_5.jpg", "teaching_aaup_6.jpg"],
-    fullDesc: "Faculty member and lecturer at the Faculty of Architecture, Arab American University, Palestine." }
+    fullDesc: "Faculty member at the Faculty of Architecture, AAUP, Palestine." }
 ];
 
 let noteZIndex = 100;
 let autoPlayIntervals = {};
 let activeFloatingWindows = [];
 let previewTimeout = null;
-  // ========== STICKY NOTE MANAGER ==========
-class StickyNoteManager {
+  class StickyNoteManager {
   constructor() {
     this.notes = [];
     this.tabs = [];
     this.currentCategory = 'all';
     this.closedProjects = new Map();
     this.noteTabConnections = new Map();
-    this.dragInProgress = false;
+    this.isDraggingNote = false;
   }
 
   createNote(project, index, x, y, restoreData = null) {
@@ -679,6 +721,7 @@ class StickyNoteManager {
       }
     }
 
+    // Mouse enter - start auto-play carousel
     note.addEventListener('mouseenter', () => {
       if (note.classList.contains('frozen')) return;
       if (previewTimeout) clearTimeout(previewTimeout);
@@ -695,13 +738,9 @@ class StickyNoteManager {
       }, 300);
     });
 
+    // Click handler - only if not dragging
     note.addEventListener('click', (e) => {
-      // Only block if a drag actually happened (not just a click)
-      if (this.dragInProgress === true) {
-        // Reset and don't open
-        setTimeout(() => { this.dragInProgress = false; }, 50);
-        return;
-      }
+      if (this.isDraggingNote) return;
       if (e.target.closest('.sticky-note-controls')) return;
       if (note.classList.contains('frozen')) return;
       const rect = note.getBoundingClientRect();
@@ -831,13 +870,12 @@ class StickyNoteManager {
   makeDraggable(element, project) {
     let isDragging = false;
     let startX, startY, startLeft, startTop;
-    let hasMoved = false;
 
     element.addEventListener('mousedown', (e) => {
       if (e.target.closest('.sticky-note-controls')) return;
       if (element.classList.contains('frozen')) return;
       isDragging = true;
-      hasMoved = false;
+      this.isDraggingNote = true;
       startX = e.clientX; startY = e.clientY;
       startLeft = parseInt(element.style.left);
       startTop = parseInt(element.style.top);
@@ -853,21 +891,12 @@ class StickyNoteManager {
       element.style.left = `${newLeft}px`;
       element.style.top = `${newTop}px`;
       this.updateConnectorLineForNote(element);
-      
-      // If we moved, mark as drag (not click)
-      if (Math.abs(e.clientX - startX) > 3 || Math.abs(e.clientY - startY) > 3) {
-        hasMoved = true;
-        this.dragInProgress = true;
-      }
     };
     
     const onMouseUp = () => {
       isDragging = false;
       element.style.cursor = '';
-      // Reset drag flag after a short delay
-      setTimeout(() => {
-        this.dragInProgress = false;
-      }, 150);
+      setTimeout(() => { this.isDraggingNote = false; }, 100);
     };
     
     document.addEventListener('mousemove', onMouseMove);
@@ -907,15 +936,14 @@ class StickyNoteManager {
     path.setAttribute('d', d);
     svg.appendChild(path);
   }
-
-   openFloatingWindow(project, clickX, clickY) {
+     openFloatingWindow(project, clickX, clickY) {
     if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
     
     const win = document.createElement('div');
     win.className = 'floating-window';
     win.setAttribute('data-id', project.id);
     
-    // SIMPLE POSITIONING - NO CSS CONFLICTS
+    // Position exactly at sticky note location
     win.style.position = 'fixed';
     win.style.left = clickX + 'px';
     win.style.top = clickY + 'px';
@@ -936,6 +964,8 @@ class StickyNoteManager {
           <div class="window-slides" id="window-slides-${project.id}">
             ${project.images.map(img => `<div class="window-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/500x280/f5f5f5/999?text=${encodeURIComponent(project.title)}'"></div>`).join('')}
           </div>
+          <button class="window-prev" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer;">‹</button>
+          <button class="window-next" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer;">›</button>
         </div>
         <div class="window-tags">${project.tags.map(t => `<span class="window-tag">${t}</span>`).join('')}</div>
         <div style="color: var(--accent); font-style: italic; font-size: 0.75rem;">${project.subtitle} (${project.year})</div>
@@ -946,12 +976,32 @@ class StickyNoteManager {
     document.body.appendChild(win);
     activeFloatingWindows.push(win);
     
-    // SIMPLE DRAG - NO RESIZE CONFLICT
+    // Carousel navigation for window
+    let winCurrentIndex = 0;
+    const winSlides = win.querySelector('.window-slides');
+    const winSlideCount = project.images.length;
+    const winPrevBtn = win.querySelector('.window-prev');
+    const winNextBtn = win.querySelector('.window-next');
+    
+    winPrevBtn.addEventListener('click', () => {
+      winCurrentIndex = Math.max(0, winCurrentIndex - 1);
+      winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`;
+    });
+    
+    winNextBtn.addEventListener('click', () => {
+      winCurrentIndex = Math.min(winSlideCount - 1, winCurrentIndex + 1);
+      winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`;
+    });
+    
+    // Drag functionality - entire window
     let isDragging = false;
     let dragStartX, dragStartY, startLeft, startTop;
     
     win.addEventListener('mousedown', (e) => {
-      if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize')) return;
+      if (e.target.classList.contains('window-close') || 
+          e.target.classList.contains('window-minimize') ||
+          e.target.classList.contains('window-prev') ||
+          e.target.classList.contains('window-next')) return;
       isDragging = true;
       dragStartX = e.clientX;
       dragStartY = e.clientY;
@@ -961,22 +1011,25 @@ class StickyNoteManager {
       e.preventDefault();
     });
     
-    document.addEventListener('mousemove', (e) => {
+    const onWinMouseMove = (e) => {
       if (!isDragging) return;
       win.style.left = (startLeft + (e.clientX - dragStartX)) + 'px';
       win.style.top = (startTop + (e.clientY - dragStartY)) + 'px';
-    });
+    };
     
-    document.addEventListener('mouseup', () => {
+    const onWinMouseUp = () => {
       isDragging = false;
-    });
+    };
     
-    // MINIMIZE BUTTON
+    document.addEventListener('mousemove', onWinMouseMove);
+    document.addEventListener('mouseup', onWinMouseUp);
+    
+    // Minimize button
     win.querySelector('.window-minimize').addEventListener('click', () => {
       const note = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
       if (note && !note.classList.contains('frozen')) {
         const noteRect = note.getBoundingClientRect();
-        win.style.transition = 'all 0.5s';
+        win.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
         win.style.left = noteRect.left + 'px';
         win.style.top = noteRect.top + 'px';
         win.style.width = noteRect.width + 'px';
@@ -985,6 +1038,8 @@ class StickyNoteManager {
         setTimeout(() => {
           win.remove();
           activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
+          note.style.transform = 'scale(1.02)';
+          setTimeout(() => { note.style.transform = ''; }, 300);
         }, 500);
       } else {
         win.remove();
@@ -992,77 +1047,14 @@ class StickyNoteManager {
       }
     });
     
-    // CLOSE BUTTON
+    // Close button
     win.querySelector('.window-close').addEventListener('click', () => {
       win.remove();
       activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
     });
   }
 
-  makeWindowResizableFromAnywhere(win) {
-    let isResizing = false;
-    let resizeDirection = '';
-    let startX, startY, startWidth, startHeight, startLeft, startTop;
-    
-    const handleMouseMove = (e) => {
-      if (!isResizing) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      
-      if (resizeDirection.includes('e')) win.style.width = `${Math.max(380, startWidth + dx)}px`;
-      if (resizeDirection.includes('w')) {
-        win.style.width = `${Math.max(380, startWidth - dx)}px`;
-        win.style.left = `${startLeft + dx}px`;
-      }
-      if (resizeDirection.includes('s')) win.style.height = `${Math.max(300, startHeight + dy)}px`;
-      if (resizeDirection.includes('n')) {
-        win.style.height = `${Math.max(300, startHeight - dy)}px`;
-        win.style.top = `${startTop + dy}px`;
-      }
-    };
-    
-    const handleMouseUp = () => {
-      isResizing = false;
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-    
-    win.addEventListener('mousemove', (e) => {
-      const rect = win.getBoundingClientRect();
-      const edgeThreshold = 15;
-      let direction = '';
-      if (e.clientX - rect.left < edgeThreshold) direction += 'w';
-      if (rect.right - e.clientX < edgeThreshold) direction += 'e';
-      if (e.clientY - rect.top < edgeThreshold) direction += 'n';
-      if (rect.bottom - e.clientY < edgeThreshold) direction += 's';
-      win.style.cursor = direction ? `${direction}-resize` : '';
-    });
-    
-    win.addEventListener('mousedown', (e) => {
-      const rect = win.getBoundingClientRect();
-      const edgeThreshold = 15;
-      let direction = '';
-      if (e.clientX - rect.left < edgeThreshold) direction += 'w';
-      if (rect.right - e.clientX < edgeThreshold) direction += 'e';
-      if (e.clientY - rect.top < edgeThreshold) direction += 'n';
-      if (rect.bottom - e.clientY < edgeThreshold) direction += 's';
-      
-      if (direction) {
-        isResizing = true;
-        resizeDirection = direction;
-        startX = e.clientX;
-        startY = e.clientY;
-        startWidth = win.offsetWidth;
-        startHeight = win.offsetHeight;
-        startLeft = win.offsetLeft;
-        startTop = win.offsetTop;
-        e.preventDefault();
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-      }
-    });
-  }
-    addToSidebar(project, index, noteRect, lastImageIndex, noteElement) {
+  addToSidebar(project, index, noteRect, lastImageIndex, noteElement) {
     const sidebar = document.getElementById('sidebarTabs');
     const existingTab = document.getElementById(`tab-${project.id}`);
     if (existingTab) return;
@@ -1163,7 +1155,7 @@ class StickyNoteManager {
 
 let manager;
 
-// ========== TAG FUNCTIONS (12 tags total) ==========
+// ========== TAG FUNCTIONS ==========
 function createTagFilters() {
   const tagsBar = document.getElementById('tagsBar');
   const consolidatedTags = [
@@ -1198,7 +1190,7 @@ function showProjectsByTag(tag) {
     card.innerHTML = `
       <div class="card-title">${project.id} · ${project.title}</div>
       <div class="card-subtitle">${project.subtitle} (${project.year})</div>
-      <div class="card-tags">${project.tags.map(t => `<span class="card-tag" style="background:var(--accent); color:white; padding:2px 8px; border-radius:12px; font-size:0.5rem;">${t}</span>`).join('')}</div>
+      <div class="card-tags">${project.tags.map(t => `<span style="background:var(--accent); color:white; padding:2px 8px; border-radius:12px; font-size:0.5rem;">${t}</span>`).join('')}</div>
     `;
     card.addEventListener('click', () => { 
       closeResultsModal(); 
@@ -1317,8 +1309,7 @@ function closeSplitModal() {
   const modal = document.getElementById('splitModal');
   if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
 }
-
-// ========== GRID PLUS SIGNS ==========
+  // ========== GRID PLUS SIGNS ==========
 let gridPluses = [];
 let hiddenGroupsInterval;
 
@@ -1334,6 +1325,7 @@ function initializeGridPluses() {
   const endX = scrollX + window.innerWidth + padding;
   const endY = scrollY + window.innerHeight + padding;
   
+  // Reduced density: step by 2 grid cells (~60% reduction)
   for (let x = startX; x < endX; x += gridSize * 2) {
     for (let y = startY; y < endY; y += gridSize * 2) {
       const plus = document.createElement('div');
@@ -1415,7 +1407,8 @@ function hideRandomPlusGroups() {
     }
   }, 800 + Math.random() * 4000);
 }
-  // ========== CONNECTOR LINES (Filleted corners, through tags) ==========
+
+// ========== CONNECTOR LINES ==========
 let activeHoverLines = [];
 
 function clearHoverLines() {
@@ -1503,7 +1496,10 @@ function initialize() {
   allProjects.forEach((project, i) => {
     const x = 30 + Math.random() * (window.innerWidth - 350);
     const y = 180 + Math.random() * (window.innerHeight - 500);
-    setTimeout(() => manager.createNote(project, i, x, y), 100 + i * 40);
+    setTimeout(() => {
+      manager.createNote(project, i, x, y);
+      manager.makeDraggable(document.querySelector(`.sticky-note[data-project-idx="${i}"]`), project);
+    }, 100 + i * 40);
   });
 
   setTimeout(createTagFilters, 800);
