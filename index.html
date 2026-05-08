@@ -525,8 +525,100 @@
   }
 
   @media (max-width: 768px) {
+ /* Hide sidebar tabs on mobile */
     .sidebar-tabs { display: none; }
-    .floating-window { width: 95% !important; left: 2.5% !important; }
+    
+    /* Make floating windows full width on mobile */
+    .floating-window {
+      width: 95% !important;
+      left: 2.5% !important;
+      right: 2.5% !important;
+      top: 5% !important;
+      min-width: unset;
+      max-width: unset;
+    }
+    
+    /* Smaller window header for mobile */
+    .window-header { padding: 8px 12px; }
+    .window-header h3 { font-size: 0.7rem; }
+    
+    /* Smaller images in window carousel */
+    .window-slide img { max-height: 180px; }
+    
+    /* Adjust category filters spacing */
+    .category-filters { gap: 0.5rem; }
+    .category-filters li {
+      font-size: 0.55rem;
+      padding: 0.2rem 0.5rem;
+    }
+    .category-filters li:not(:last-child)::after {
+      right: -0.4rem;
+      font-size: 0.4rem;
+    }
+    
+    /* Adjust tags container */
+    .tags-container {
+      top: 100px;
+      padding: 0.3rem 0.5rem;
+      gap: 0.3rem;
+    }
+    .tag-filter {
+      font-size: 0.45rem;
+      padding: 0.2rem 0.5rem;
+    }
+    
+    /* Adjust sticky canvas padding */
+    .sticky-canvas { padding: 160px 0.5rem 0.5rem; }
+    
+    /* Smaller sticky notes on mobile */
+    .sticky-note { width: 130px; font-size: 0.5rem; }
+    .sticky-note.preview-active { width: 220px; }
+    .sticky-note .sticky-title { font-size: 0.6rem; }
+    
+    /* Adjust nav bar */
+    nav { padding: 0.5rem 1rem; }
+    .nav-name { font-size: 0.7rem; }
+    .nav-links { gap: 1rem; }
+    .nav-links a { font-size: 0.6rem; }
+    
+    /* Adjust categories bar position */
+    .categories { top: 50px; padding: 0.4rem; }
+    
+    /* Adjust contact section */
+    .contact-links { flex-direction: column; gap: 0.8rem; }
+    
+    /* Make split view vertical on mobile */
+    .split-view { flex-direction: column; width: 95%; height: 90%; }
+    .split-pane { min-height: 300px; }
+    
+    /* Adjust modal sizes */
+    .results-modal, .cv-modal { width: 95%; height: 90%; }
+    
+    /* Smaller result cards */
+    .results-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+    
+    /* Touch-friendly buttons */
+    .tag-filter, .category-filters li, .sidebar-tab {
+      touch-action: manipulation;
+    }
+    
+    /* Hide connector lines on mobile for performance */
+    #connectorSvg { display: none; }
+  }
+   /* ========== TOUCH-OPTIMIZATIONS FOR MOBILE ========== */
+  .tag-filter, 
+  .category-filters li, 
+  .sidebar-tab,
+  .sticky-note,
+  .window-close,
+  .window-minimize {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  
+  /* Prevent zoom on input focus */
+  input, textarea, select {
+    font-size: 16px;
   }
 </style>
 </head>
