@@ -625,6 +625,7 @@ class StickyNoteManager {
     this.currentCategory = 'all';
     this.closedProjects = new Map();
     this.noteTabConnections = new Map();
+    this.didDrag = false;
   }
 
   createNote(project, index, x, y, restoreData = null) {
@@ -697,7 +698,7 @@ class StickyNoteManager {
     this.makeDraggable(note, project);
 
     note.addEventListener('click', (e) => {
-      if (didDrag) return;
+      if (this.didDrag) return;
       if (e.target.closest('.sticky-note-controls')) return;
       if (note.classList.contains('frozen')) return;
       const rect = note.getBoundingClientRect();
@@ -936,12 +937,11 @@ class StickyNoteManager {
     this.makeWindowResizableFromAnywhere(win);
     
     let isDragging = false, dragStartX, dragStartY, startLeft, startTop;
-    let didDrag = false;
     
     const startDrag = (e) => {
       if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize')) return;
       isDragging = true;
-      didDrag = false;
+      this.didDrag = false;
       dragStartX = e.clientX;
       dragStartY = e.clientY;
       startLeft = win.offsetLeft;
@@ -954,7 +954,7 @@ class StickyNoteManager {
     
     const dragMove = (e) => {
       if (!isDragging) return;
-      didDrag = true;
+      this.didDrag = true;
       win.style.left = `${startLeft + (e.clientX - dragStartX)}px`;
       win.style.top = `${startTop + (e.clientY - dragStartY)}px`;
       win.style.right = 'auto';
@@ -963,7 +963,7 @@ class StickyNoteManager {
     
 const dragEnd = () => { 
   isDragging = false; 
-  setTimeout(() => { didDrag = false; }, 100);
+  setTimeout(() => { this.didDrag = false; }, 100);
 };
     
     document.addEventListener('mousemove', dragMove);
