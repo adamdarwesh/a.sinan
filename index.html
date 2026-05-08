@@ -468,6 +468,13 @@
     .sidebar-tabs { display: none; }
     .floating-window { width: 95% !important; left: 2.5% !important; }
   }
+  /* FORCE windows to not stick to right side - FIX #3 */
+  .floating-window {
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+  }  
 </style>
 </head>
 <body>
@@ -929,7 +936,10 @@ class StickyNoteManager {
     win.style.top = `${clickY}px`;
     win.style.width = 'auto';
     win.style.height = 'auto';
-    win.style.minWidth = '380px';
+    win.style.minWidth = '380px
+    win.style.transition = 'all 0.3s ease-out';
+    win.style.right = 'auto';
+    win.style.bottom = 'auto';
     
     win.innerHTML = `
       <div class="window-header">
@@ -972,11 +982,13 @@ class StickyNoteManager {
     
     win.addEventListener('mousedown', startDrag);
     
-    const dragMove = (e) => {
-      if (!isDragging) return;
-      win.style.left = `${startLeft + (e.clientX - dragStartX)}px`;
-      win.style.top = `${startTop + (e.clientY - dragStartY)}px`;
-    };
+const dragMove = (e) => {
+  if (!isDragging) return;
+  win.style.left = `${startLeft + (e.clientX - dragStartX)}px`;
+  win.style.top = `${startTop + (e.clientY - dragStartY)}px`;
+  win.style.right = 'auto';  // ADD THIS LINE
+  win.style.bottom = 'auto'; // ADD THIS LINE
+};
     
     const dragEnd = () => { isDragging = false; };
     
@@ -1018,7 +1030,7 @@ class StickyNoteManager {
     }, 10);
   }
 
-  makeWindowResizableFromAnywhere(win) {
+  .floating-window {   left: auto !important;
     let isResizing = false;
     let resizeDirection = '';
     let startX, startY, startWidth, startHeight, startLeft, startTop;
