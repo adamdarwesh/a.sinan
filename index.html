@@ -158,13 +158,7 @@
     font-size: 0.5rem;
   }
 
-  .category-filters li:hover { 
-    color: var(--accent); 
-    font-weight: bold !important;
-    font-style: italic !important;
-  }
-
-  .category-filters li.active { 
+  .category-filters li:hover, .category-filters li.active { 
     color: var(--accent); 
     font-weight: bold !important;
     font-style: italic !important;
@@ -436,7 +430,6 @@
     opacity: 0.6;
   }
 
-  /* RESIZE HANDLES CSS */
   .resize-handle {
     position: absolute;
     background: transparent;
@@ -525,10 +518,7 @@
   }
 
   @media (max-width: 768px) {
- /* Hide sidebar tabs on mobile */
     .sidebar-tabs { display: none; }
-    
-    /* Make floating windows full width on mobile */
     .floating-window {
       width: 95% !important;
       left: 2.5% !important;
@@ -537,15 +527,9 @@
       min-width: unset;
       max-width: unset;
     }
-    
-    /* Smaller window header for mobile */
     .window-header { padding: 8px 12px; }
     .window-header h3 { font-size: 0.7rem; }
-    
-    /* Smaller images in window carousel */
     .window-slide img { max-height: 180px; }
-    
-    /* Adjust category filters spacing */
     .category-filters { gap: 0.5rem; }
     .category-filters li {
       font-size: 0.55rem;
@@ -555,8 +539,6 @@
       right: -0.4rem;
       font-size: 0.4rem;
     }
-    
-    /* Adjust tags container */
     .tags-container {
       top: 100px;
       padding: 0.3rem 0.5rem;
@@ -566,22 +548,14 @@
       font-size: 0.45rem;
       padding: 0.2rem 0.5rem;
     }
-    
-    /* Adjust sticky canvas padding */
     .sticky-canvas { padding: 160px 0.5rem 0.5rem; }
-    
-    /* Smaller sticky notes on mobile */
     .sticky-note { width: 130px; font-size: 0.5rem; }
     .sticky-note.preview-active { width: 220px; }
     .sticky-note .sticky-title { font-size: 0.6rem; }
-    
-    /* Adjust nav bar */
     nav { padding: 0.5rem 1rem; }
     .nav-name { font-size: 0.7rem; }
     .nav-links { gap: 1rem; }
     .nav-links a { font-size: 0.6rem; }
-   
-       /* Control buttons bar on mobile */
     div[style*="position: fixed; top: 130px;"] {
       top: 115px !important;
       gap: 0.4rem !important;
@@ -590,51 +564,23 @@
       font-size: 0.45rem !important;
       padding: 3px 8px !important;
     }
-    
-    /* Adjust categories bar position */
     .categories { top: 50px; padding: 0.4rem; }
-    
-    /* Adjust contact section */
     .contact-links { flex-direction: column; gap: 0.8rem; }
-    
-    /* Make split view vertical on mobile */
     .split-view { flex-direction: column; width: 95%; height: 90%; }
     .split-pane { min-height: 300px; }
-    
-    /* Adjust modal sizes */
     .results-modal, .cv-modal { width: 95%; height: 90%; }
-    
-    /* Smaller result cards */
     .results-grid { grid-template-columns: 1fr; gap: 0.5rem; }
-    
-    /* Touch-friendly buttons */
     .tag-filter, .category-filters li, .sidebar-tab {
       touch-action: manipulation;
     }
-    
- /* Make connector lines visible but thinner on mobile */
-    #connectorSvg { 
-      display: block; 
-      opacity: 0.7;
+    #connectorSvg { display: block; opacity: 0.7; }
+    .connector-line-tab { stroke-width: 0.8; stroke-dasharray: 2 3; }
+    .tag-filter, .category-filters li, .sidebar-tab,
+    .sticky-note, .window-close, .window-minimize {
+      cursor: pointer;
+      touch-action: manipulation;
     }
-    .connector-line-tab {
-      stroke-width: 0.8;
-      stroke-dasharray: 2 3;
-    }
-   /* ========== TOUCH-OPTIMIZATIONS FOR MOBILE ========== */
-  .tag-filter, 
-  .category-filters li, 
-  .sidebar-tab,
-  .sticky-note,
-  .window-close,
-  .window-minimize {
-    cursor: pointer;
-    touch-action: manipulation;
-  }
-  
-  /* Prevent zoom on input focus */
-  input, textarea, select {
-    font-size: 16px;
+    input, textarea, select { font-size: 16px; }
   }
 </style>
 </head>
@@ -690,13 +636,13 @@
     <li data-category="education">Education</li>
   </ul>
 </div>
- <!-- Control Buttons Bar -->
+
 <div style="position: fixed; top: 130px; left: 0; right: 0; z-index: 84; text-align: center; padding: 0.3rem; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); border-bottom: 1px solid var(--rule); display: flex; justify-content: center; gap: 0.8rem; flex-wrap: wrap;">
-  <button id="gridBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer; font-family: 'EB Garamond', serif;">Grid</button>
-  <button id="randomizeBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer; font-family: 'EB Garamond', serif;">Randomize</button>
-  <button id="closeAllBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer; font-family: 'EB Garamond', serif;">Close All</button>
-  <button id="hideLinesBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer; font-family: 'EB Garamond', serif;">Hide Lines</button>
-  <button id="showLinesBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer; font-family: 'EB Garamond', serif;">Show Lines</button>
+  <button id="gridBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer;">Grid</button>
+  <button id="randomizeBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer;">Randomize</button>
+  <button id="closeAllBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer;">Close All</button>
+  <button id="hideLinesBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer;">Hide Lines</button>
+  <button id="showLinesBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer;">Show Lines</button>
 </div>
 
 <div class="tags-container" id="tagsBar"></div>
@@ -797,7 +743,7 @@ let previewTimeout = null;
     this.closedProjects = new Map();
     this.noteTabConnections = new Map();
     this.isDraggingNote = false;
-
+  }
 
   createNote(project, index, x, y, restoreData = null) {
     const gridSize = 20;
@@ -865,7 +811,7 @@ let previewTimeout = null;
         this.stopAutoPlay(project.id);
       }, 300);
     });
-    // Click handler - only if not dragging
+
     note.addEventListener('click', (e) => {
       if (this.isDraggingNote) return;
       if (e.target.closest('.sticky-note-controls')) return;
@@ -873,7 +819,7 @@ let previewTimeout = null;
       const rect = note.getBoundingClientRect();
       this.openFloatingWindow(project, rect.left, rect.top, note);
     });
-   // Touch tap handler for mobile
+
     note.addEventListener('touchend', (e) => {
       if (this.isDraggingNote) return;
       if (e.target.closest('.sticky-note-controls')) return;
@@ -923,10 +869,8 @@ let previewTimeout = null;
     
     const previewDiv = note.querySelector('.sticky-preview');
     if (previewDiv) previewDiv.style.display = 'none';
-    
     const controls = note.querySelector('.sticky-note-controls');
     if (controls) controls.style.display = 'none';
-    
     const subtitle = note.querySelector('.sticky-subtitle');
     if (subtitle) subtitle.style.display = 'none';
     
@@ -955,13 +899,10 @@ let previewTimeout = null;
     
     const previewDiv = note.querySelector('.sticky-preview');
     if (previewDiv) previewDiv.style.display = '';
-    
     const controls = note.querySelector('.sticky-note-controls');
     if (controls) controls.style.display = '';
-    
     const subtitle = note.querySelector('.sticky-subtitle');
     if (subtitle) subtitle.style.display = '';
-    
     const frozenImg = note.querySelector('.frozen-image');
     if (frozenImg) frozenImg.style.display = 'none';
     
@@ -1003,12 +944,11 @@ let previewTimeout = null;
     }
   }
 
- makeDraggable(element, project) {
+  makeDraggable(element, project) {
     let isDragging = false;
     let startX, startY, startLeft, startTop;
     let touchStartX, touchStartY;
 
-    // Mouse events for desktop
     element.addEventListener('mousedown', (e) => {
       if (e.target.closest('.sticky-note-controls')) return;
       if (element.classList.contains('frozen')) return;
@@ -1023,7 +963,6 @@ let previewTimeout = null;
       e.preventDefault();
     });
 
-    // Touch events for mobile (phone)
     element.addEventListener('touchstart', (e) => {
       if (e.target.closest('.sticky-note-controls')) return;
       if (element.classList.contains('frozen')) return;
@@ -1048,7 +987,6 @@ let previewTimeout = null;
       this.updateConnectorLineForNote(element);
     };
     
-    // Touch move for mobile
     const onTouchMove = (e) => {
       if (!isDragging) return;
       e.preventDefault();
@@ -1077,16 +1015,12 @@ let previewTimeout = null;
     document.addEventListener('touchmove', onTouchMove, { passive: false });
     document.addEventListener('touchend', onTouchEnd);
   }
-  
- updateConnectorLineForNote(note) {
+
+  updateConnectorLineForNote(note) {
     const projectId = note.getAttribute('data-project-id');
     const tab = document.getElementById(`tab-${projectId}`);
-    
-    // If tab exists, draw connector line
     if (tab) {
       const noteRect = note.getBoundingClientRect();
-      
-      // Store or update the connection data
       if (this.noteTabConnections.has(projectId)) {
         const value = this.noteTabConnections.get(projectId);
         value.noteRect = noteRect;
@@ -1094,45 +1028,9 @@ let previewTimeout = null;
       } else {
         this.noteTabConnections.set(projectId, { tab, noteRect });
       }
-      
       this.drawLightConnectorLineFromNoteToTab(projectId, noteRect, tab);
     }
   }
-  // Connect floating window to its tab
-  updateConnectorLineForWindow(win, projectId, tab) {
-    if (!tab) {
-      tab = document.getElementById(`tab-${projectId}`);
-    }
-    if (tab && document.getElementById('connectorSvg').style.display !== 'none') {
-      const winRect = win.getBoundingClientRect();
-      const tabRect = tab.getBoundingClientRect();
-      
-      const svg = document.getElementById('connectorSvg');
-      const existingLine = document.getElementById(`connector-window-${projectId}`);
-      if (existingLine) existingLine.remove();
-      
-      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.id = `connector-window-${projectId}`;
-      path.setAttribute('class', 'connector-line-tab');
-      
-      const startX = winRect.right;
-      const startY = winRect.top + winRect.height / 2;
-      const endX = tabRect.left;
-      const endY = tabRect.top + tabRect.height / 2;
-      
-      const midX = startX + (endX - startX) * 0.3;
-      const d = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
-      path.setAttribute('d', d);
-      svg.appendChild(path);
-    }
-  }
-  
-  // Remove window connector
-  removeWindowConnector(projectId) {
-    const line = document.getElementById(`connector-window-${projectId}`);
-    if (line) line.remove();
-  }
-  
 
   drawLightConnectorLineFromNoteToTab(projectId, noteRect, tab) {
     const svg = document.getElementById('connectorSvg');
@@ -1154,6 +1052,35 @@ let previewTimeout = null;
     const d = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
     path.setAttribute('d', d);
     svg.appendChild(path);
+  }
+
+  updateConnectorLineForWindow(win, projectId, tab) {
+    if (!tab) tab = document.getElementById(`tab-${projectId}`);
+    if (tab && document.getElementById('connectorSvg').style.display !== 'none') {
+      const winRect = win.getBoundingClientRect();
+      const tabRect = tab.getBoundingClientRect();
+      const svg = document.getElementById('connectorSvg');
+      const existingLine = document.getElementById(`connector-window-${projectId}`);
+      if (existingLine) existingLine.remove();
+      
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.id = `connector-window-${projectId}`;
+      path.setAttribute('class', 'connector-line-tab');
+      
+      const startX = winRect.right;
+      const startY = winRect.top + winRect.height / 2;
+      const endX = tabRect.left;
+      const endY = tabRect.top + tabRect.height / 2;
+      const midX = startX + (endX - startX) * 0.3;
+      const d = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
+      path.setAttribute('d', d);
+      svg.appendChild(path);
+    }
+  }
+
+  removeWindowConnector(projectId) {
+    const line = document.getElementById(`connector-window-${projectId}`);
+    if (line) line.remove();
   }
     openFloatingWindow(project, clickX, clickY, note) {
     if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
@@ -1192,14 +1119,11 @@ let previewTimeout = null;
     
     document.body.appendChild(win);
     activeFloatingWindows.push(win);
-        // Connect window to its tab
+    
     const projectId = project.id;
     const tab = document.getElementById(`tab-${projectId}`);
-    if (tab) {
-      this.updateConnectorLineForWindow(win, projectId, tab);
-    }
+    if (tab) this.updateConnectorLineForWindow(win, projectId, tab);
     
-    // RESIZE HANDLES - ADD TO WINDOW
     const handles = ['top', 'right', 'bottom', 'left', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
     handles.forEach(handle => {
       const div = document.createElement('div');
@@ -1220,17 +1144,12 @@ let previewTimeout = null;
         const onMouseMove = (moveEvent) => {
           const dx = moveEvent.clientX - startX;
           const dy = moveEvent.clientY - startY;
-          
-          if (handle.includes('right')) {
-            win.style.width = Math.max(300, startWidth + dx) + 'px';
-          }
+          if (handle.includes('right')) win.style.width = Math.max(300, startWidth + dx) + 'px';
           if (handle.includes('left')) {
             win.style.width = Math.max(300, startWidth - dx) + 'px';
             win.style.left = startLeft + dx + 'px';
           }
-          if (handle.includes('bottom')) {
-            win.style.height = Math.max(200, startHeight + dy) + 'px';
-          }
+          if (handle.includes('bottom')) win.style.height = Math.max(200, startHeight + dy) + 'px';
           if (handle.includes('top')) {
             win.style.height = Math.max(200, startHeight - dy) + 'px';
             win.style.top = startTop + dy + 'px';
@@ -1247,7 +1166,6 @@ let previewTimeout = null;
       });
     });
     
-    // CAROUSEL NAVIGATION
     let winCurrentIndex = 0;
     const winSlides = win.querySelector('.window-slides');
     const winSlideCount = project.images.length;
@@ -1266,15 +1184,12 @@ let previewTimeout = null;
       winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`;
     });
     
-    // DRAG FUNCTIONALITY - ENTIRE WINDOW
     let isDragging = false;
     let dragStartX, dragStartY, startLeft, startTop;
     
     win.addEventListener('mousedown', (e) => {
-      if (e.target.classList.contains('window-close') || 
-          e.target.classList.contains('window-minimize') ||
-          e.target.classList.contains('window-prev') ||
-          e.target.classList.contains('window-next') ||
+      if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize') ||
+          e.target.classList.contains('window-prev') || e.target.classList.contains('window-next') ||
           e.target.classList.contains('resize-handle')) return;
       isDragging = true;
       dragStartX = e.clientX;
@@ -1284,12 +1199,10 @@ let previewTimeout = null;
       win.style.zIndex = 30000 + activeFloatingWindows.length;
       e.preventDefault();
     });
-         // Touch drag for mobile
+    
     win.addEventListener('touchstart', (e) => {
-      if (e.target.classList.contains('window-close') || 
-          e.target.classList.contains('window-minimize') ||
-          e.target.classList.contains('window-prev') ||
-          e.target.classList.contains('window-next') ||
+      if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize') ||
+          e.target.classList.contains('window-prev') || e.target.classList.contains('window-next') ||
           e.target.classList.contains('resize-handle')) return;
       e.preventDefault();
       const touch = e.touches[0];
@@ -1301,11 +1214,10 @@ let previewTimeout = null;
       win.style.zIndex = 30000 + activeFloatingWindows.length;
     });
     
-const onWinMouseMove = (e) => {
+    const onWinMouseMove = (e) => {
       if (!isDragging) return;
       win.style.left = (startLeft + (e.clientX - dragStartX)) + 'px';
       win.style.top = (startTop + (e.clientY - dragStartY)) + 'px';
-      // Update connector line when window moves
       this.updateConnectorLineForWindow(win, project.id);
     };
     
@@ -1315,17 +1227,18 @@ const onWinMouseMove = (e) => {
       const touch = e.touches[0];
       win.style.left = (startLeft + (touch.clientX - dragStartX)) + 'px';
       win.style.top = (startTop + (touch.clientY - dragStartY)) + 'px';
-      // Update connector line when window moves
       this.updateConnectorLineForWindow(win, project.id);
+    };
+    
+    const onWinMouseUp = () => {
+      isDragging = false;
     };
     
     document.addEventListener('mousemove', onWinMouseMove);
     document.addEventListener('mouseup', onWinMouseUp);
     document.addEventListener('touchmove', onWinTouchMove, { passive: false });
     document.addEventListener('touchend', onWinMouseUp);
-
     
-    // MINIMIZE BUTTON
     win.querySelector('.window-minimize').addEventListener('click', () => {
       const noteEl = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
       if (noteEl && !noteEl.classList.contains('frozen')) {
@@ -1348,8 +1261,7 @@ const onWinMouseMove = (e) => {
       }
     });
     
-    // CLOSE BUTTON
-     win.querySelector('.window-close').addEventListener('click', () => {
+    win.querySelector('.window-close').addEventListener('click', () => {
       this.removeWindowConnector(project.id);
       win.remove();
       activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
@@ -1377,9 +1289,7 @@ const onWinMouseMove = (e) => {
     this.drawLightConnectorLineFromNoteToTab(project.id, noteRect, tab);
     
     tab.addEventListener('click', () => {
-      // Remove window connector if exists
       this.removeWindowConnector(project.id);
-      
       if (noteElement && noteElement.parentNode) {
         this.unfreezeNote(noteElement, project, index);
         const connectorLine = document.getElementById(`connector-${project.id}`);
@@ -1461,37 +1371,13 @@ const onWinMouseMove = (e) => {
     });
     this.updateAllConnectorLines();
   }
-     highlightByCategory(category) {
-    if (category === 'all') {
-      this.notes.forEach(n => n.classList.remove('blurred', 'highlight'));
-      this.tabs.forEach(t => t.classList.remove('highlight'));
-      return;
-    }
-    this.notes.forEach(note => {
-      const cat = note.getAttribute('data-category');
-      if (cat === category) {
-        note.classList.add('highlight'); note.classList.remove('blurred');
-      } else if (this.currentCategory === 'all') {
-        note.classList.add('blurred'); note.classList.remove('highlight');
-      }
-    });
-    this.tabs.forEach(tab => {
-      const cat = tab.getAttribute('data-category');
-      if (cat === category) tab.classList.add('highlight');
-      else if (this.currentCategory === 'all') tab.classList.remove('highlight');
-    });
-    this.updateAllConnectorLines();
-  }
 
-  // ========== ADD THE 5 FUNCTIONS HERE ==========
-  
-  // Grid arrangement function
+  // ========== CONTROL BUTTON FUNCTIONS ==========
   arrangeGrid() {
     const gridSize = 200;
     const startX = 50;
     const startY = 200;
     const cols = Math.floor((window.innerWidth - 100) / gridSize);
-    
     this.notes.forEach((note, i) => {
       const row = Math.floor(i / cols);
       const col = i % cols;
@@ -1502,13 +1388,11 @@ const onWinMouseMove = (e) => {
       this.updateConnectorLineForNote(note);
     });
   }
-  
-  // Randomize arrangement function
+
   randomizeArrangement() {
     const padding = 50;
     const maxX = window.innerWidth - 300;
     const maxY = window.innerHeight - 200;
-    
     this.notes.forEach((note) => {
       const newX = padding + Math.random() * (maxX - padding);
       const newY = 150 + Math.random() * (maxY - 150);
@@ -1517,8 +1401,7 @@ const onWinMouseMove = (e) => {
       this.updateConnectorLineForNote(note);
     });
   }
-  
-  // Close all sticky notes (send to sidebar)
+
   closeAllNotes() {
     this.notes.forEach((note) => {
       if (!note.classList.contains('frozen')) {
@@ -1526,7 +1409,6 @@ const onWinMouseMove = (e) => {
         const project = allProjects.find(p => p.id === projectId);
         const index = parseInt(note.getAttribute('data-project-idx'));
         const noteRect = note.getBoundingClientRect();
-        
         const slidesContainer = note.querySelector(`#preview-${projectId}`);
         let lastImageIndex = 0;
         if (slidesContainer) {
@@ -1534,20 +1416,17 @@ const onWinMouseMove = (e) => {
           const match = transform.match(/translateX\(-([0-9]+)%/);
           if (match) lastImageIndex = parseInt(match[1]) / 100;
         }
-        
         this.freezeNote(note, project, lastImageIndex);
         this.addToSidebar(project, index, noteRect, lastImageIndex, note);
       }
     });
   }
-  
-  // Hide all connector lines
+
   hideAllLines() {
     const svg = document.getElementById('connectorSvg');
     svg.style.display = 'none';
   }
-  
-  // Show all connector lines
+
   showAllLines() {
     const svg = document.getElementById('connectorSvg');
     svg.style.display = 'block';
@@ -1555,18 +1434,13 @@ const onWinMouseMove = (e) => {
     activeFloatingWindows.forEach(win => {
       const projectId = win.getAttribute('data-id');
       const tab = document.getElementById(`tab-${projectId}`);
-      if (tab) {
-        this.updateConnectorLineForWindow(win, projectId, tab);
-      }
+      if (tab) this.updateConnectorLineForWindow(win, projectId, tab);
     });
   }
-
-}  // <-- THIS CLOSES THE CLASS
-
+}
 
 let manager;
-
-// ========== TAG FUNCTIONS ==========
+ // ========== TAG FUNCTIONS ==========
 function createTagFilters() {
   const tagsBar = document.getElementById('tagsBar');
   const consolidatedTags = [
@@ -1574,9 +1448,7 @@ function createTagFilters() {
     "Material Research", "Speculative", "Collective Practice", "Pedagogy", 
     "Installation", "Political", "Residency", "Exhibition"
   ];
-  
   tagsBar.innerHTML = '';
-
   consolidatedTags.forEach(tag => {
     const tagEl = document.createElement('div');
     tagEl.className = 'tag-filter';
@@ -1620,6 +1492,7 @@ function closeResultsModal() {
   document.getElementById('resultsModal').style.display = 'none';
   document.body.style.overflow = 'auto';
 }
+
 // ========== SPLIT VIEW ==========
 function openSplitViewForProject(index) {
   const project = allProjects[index];
@@ -1661,7 +1534,6 @@ function openSplitViewForProject(index) {
   `;
   document.getElementById('splitModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
-
   let splitCurrentIndex = 0;
   window.splitPrev = () => {
     const slides = document.getElementById('splitCarousel');
@@ -1735,7 +1607,6 @@ function initializeGridPluses() {
   const startY = Math.floor((scrollY - padding) / gridSize) * gridSize;
   const endX = scrollX + window.innerWidth + padding;
   const endY = scrollY + window.innerHeight + padding;
-  
   for (let x = startX; x < endX; x += gridSize * 2) {
     for (let y = startY; y < endY; y += gridSize * 2) {
       const plus = document.createElement('div');
@@ -1759,31 +1630,25 @@ function hideRandomPlusGroups() {
   if (hiddenGroupsInterval) clearInterval(hiddenGroupsInterval);
   hiddenGroupsInterval = setInterval(() => {
     gridPluses.forEach(p => p.classList.remove('hidden'));
-    
     const hidePercentage = Math.random() * 0.5 + 0.3;
     const hiddenCount = Math.floor(gridPluses.length * hidePercentage);
     const positions = [];
-    
     gridPluses.forEach((plus, idx) => {
       const rect = plus.getBoundingClientRect();
       positions.push({ x: Math.round(rect.left), y: Math.round(rect.top), idx });
     });
-    
     const patchCount = Math.floor(Math.random() * 15) + 5;
     let totalHidden = 0;
     const hiddenIndices = new Set();
-    
     for (let p = 0; p < patchCount && totalHidden < hiddenCount; p++) {
       const centerPlus = positions[Math.floor(Math.random() * positions.length)];
       const patchRadius = Math.random() * 170 + 30;
       const patchDensity = Math.random() * 0.5 + 0.3;
       const shapeType = Math.floor(Math.random() * 3);
-      
       positions.forEach(plus => {
         if (hiddenIndices.has(plus.idx) || totalHidden >= hiddenCount) return;
         const dx = plus.x - centerPlus.x, dy = plus.y - centerPlus.y;
         let falloff;
-        
         if (shapeType === 0) {
           const distance = Math.sqrt(dx * dx + dy * dy);
           falloff = Math.exp(-Math.pow(distance / patchRadius, 2));
@@ -1797,7 +1662,6 @@ function hideRandomPlusGroups() {
           const skew = Math.random() * 2 + 0.5;
           falloff = Math.exp(-Math.pow(distance / patchRadius, skew));
         }
-        
         if (Math.random() < falloff * patchDensity) {
           hiddenIndices.add(plus.idx);
           gridPluses[plus.idx].classList.add('hidden');
@@ -1805,7 +1669,6 @@ function hideRandomPlusGroups() {
         }
       });
     }
-    
     const scatteredCount = Math.floor(gridPluses.length * 0.1);
     for (let i = 0; i < scatteredCount && totalHidden < hiddenCount; i++) {
       const randomIdx = Math.floor(Math.random() * gridPluses.length);
@@ -1834,12 +1697,9 @@ function drawFilletedLine(svg, x1, y1, x2, y2, opacity) {
   const snappedY1 = Math.round(y1 / gridSize) * gridSize;
   const snappedX2 = Math.round(x2 / gridSize) * gridSize;
   const snappedY2 = Math.round(y2 / gridSize) * gridSize;
-  
   const midY1 = snappedY1 + (snappedY2 - snappedY1) * 0.3;
   const midY2 = snappedY1 + (snappedY2 - snappedY1) * 0.7;
-  
   const d = `M ${snappedX1} ${snappedY1} C ${snappedX1} ${midY1}, ${(snappedX1 + snappedX2) / 2} ${midY1}, ${(snappedX1 + snappedX2) / 2} ${(snappedY1 + snappedY2) / 2} C ${(snappedX1 + snappedX2) / 2} ${midY2}, ${snappedX2} ${midY2}, ${snappedX2} ${snappedY2}`;
-  
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   path.setAttribute('class', 'connector-line');
   path.setAttribute('d', d);
@@ -1854,35 +1714,27 @@ function drawCategoryHoverLines(categoryEl) {
   const gridSize = 20;
   const category = categoryEl.getAttribute('data-category');
   const catRect = categoryEl.getBoundingClientRect();
-
   let startX = catRect.left + catRect.width / 2;
   let startY = catRect.bottom + 3;
   startX = Math.round(startX / gridSize) * gridSize;
   startY = Math.round(startY / gridSize) * gridSize;
-
   const notes = document.querySelectorAll('.sticky-note:not(.frozen)');
   const tagFilters = document.querySelectorAll('.tag-filter');
-
   notes.forEach(note => {
     if (note.style.display === 'none') return;
     const noteCat = note.getAttribute('data-category');
     if (category !== 'all' && noteCat !== category) return;
-
     const projectIdx = parseInt(note.getAttribute('data-project-idx'));
     let matchingTags = [];
     if (projectIdx >= 0 && projectIdx < allProjects.length) {
       const project = allProjects[projectIdx];
-      matchingTags = Array.from(tagFilters).filter(tagEl => 
-        project.tags.includes(tagEl.textContent.trim())
-      );
+      matchingTags = Array.from(tagFilters).filter(tagEl => project.tags.includes(tagEl.textContent.trim()));
     }
-
     const noteRect = note.getBoundingClientRect();
     let endX = noteRect.left + noteRect.width / 2;
     let endY = noteRect.top - 3;
     endX = Math.round(endX / gridSize) * gridSize;
     endY = Math.round(endY / gridSize) * gridSize;
-
     if (matchingTags.length > 0) {
       const tagEl = matchingTags[0];
       const tagRect = tagEl.getBoundingClientRect();
@@ -1890,7 +1742,6 @@ function drawCategoryHoverLines(categoryEl) {
       let tagY = tagRect.bottom + 5;
       tagX = Math.round(tagX / gridSize) * gridSize;
       tagY = Math.round(tagY / gridSize) * gridSize;
-
       drawFilletedLine(svg, startX, startY, tagX, tagY, 0.55);
       drawFilletedLine(svg, tagX, tagY, endX, endY, 0.55);
     } else {
@@ -1899,9 +1750,9 @@ function drawCategoryHoverLines(categoryEl) {
   });
 }
 
+// ========== INITIALIZE ==========
 function initialize() {
   manager = new StickyNoteManager();
-
   allProjects.forEach((project, i) => {
     const x = 30 + Math.random() * (window.innerWidth - 350);
     const y = 180 + Math.random() * (window.innerHeight - 500);
@@ -1911,9 +1762,7 @@ function initialize() {
       if (noteEl) manager.makeDraggable(noteEl, project);
     }, 100 + i * 40);
   });
-
   setTimeout(createTagFilters, 800);
-
   const filters = document.querySelectorAll('#categoryFilters li');
   filters.forEach(filter => {
     filter.addEventListener('click', () => {
@@ -1923,26 +1772,17 @@ function initialize() {
       manager.filterByCategory(category);
       clearHoverLines();
     });
-
     filter.addEventListener('mouseenter', () => {
       manager.highlightByCategory(filter.getAttribute('data-category'));
       setTimeout(() => drawCategoryHoverLines(filter), 50);
     });
-
- filter.addEventListener('mouseleave', () => {
-      // Only clear hover lines if lines are not hidden
-      if (document.getElementById('connectorSvg').style.display !== 'none') {
-        clearHoverLines();
-      }
+    filter.addEventListener('mouseleave', () => {
+      if (document.getElementById('connectorSvg').style.display !== 'none') clearHoverLines();
       const activeCategory = document.querySelector('#categoryFilters li.active').getAttribute('data-category');
       manager.highlightByCategory(activeCategory);
-      // Redraw lines after category change
-      setTimeout(() => {
-        if (manager) manager.updateAllConnectorLines();
-      }, 100);
+      setTimeout(() => { if (manager) manager.updateAllConnectorLines(); }, 100);
     });
-
-
+  });
   document.getElementById('openCvBtn').addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('cvModal').style.display = 'flex';
@@ -1958,57 +1798,26 @@ function initialize() {
       document.body.style.overflow = 'auto';
     }
   });
-
   document.getElementById('closeResultsBtn').addEventListener('click', closeResultsModal);
   document.getElementById('resultsModal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('resultsModal')) closeResultsModal();
   });
-
   document.getElementById('splitModal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('splitModal')) closeSplitModal();
   });
-  
-  window.addEventListener('resize', () => {
-    if (manager) manager.updateAllConnectorLines();
-  });
-
-  // ========== BUTTON EVENT LISTENERS ==========
+  window.addEventListener('resize', () => { if (manager) manager.updateAllConnectorLines(); });
   const gridBtn = document.getElementById('gridBtn');
   const randomizeBtn = document.getElementById('randomizeBtn');
   const closeAllBtn = document.getElementById('closeAllBtn');
   const hideLinesBtn = document.getElementById('hideLinesBtn');
   const showLinesBtn = document.getElementById('showLinesBtn');
-  
-  if (gridBtn) {
-    gridBtn.addEventListener('click', () => {
-      manager.arrangeGrid();
-    });
-  }
-  
-  if (randomizeBtn) {
-    randomizeBtn.addEventListener('click', () => {
-      manager.randomizeArrangement();
-    });
-  }
-  
-  if (closeAllBtn) {
-    closeAllBtn.addEventListener('click', () => {
-      manager.closeAllNotes();
-    });
-  }
-  
-  if (hideLinesBtn) {
-    hideLinesBtn.addEventListener('click', () => {
-      manager.hideAllLines();
-    });
-  }
-  
-  if (showLinesBtn) {
-    showLinesBtn.addEventListener('click', () => {
-      manager.showAllLines();
-    });
-  }
+  if (gridBtn) gridBtn.addEventListener('click', () => manager.arrangeGrid());
+  if (randomizeBtn) randomizeBtn.addEventListener('click', () => manager.randomizeArrangement());
+  if (closeAllBtn) closeAllBtn.addEventListener('click', () => manager.closeAllNotes());
+  if (hideLinesBtn) hideLinesBtn.addEventListener('click', () => manager.hideAllLines());
+  if (showLinesBtn) showLinesBtn.addEventListener('click', () => manager.showAllLines());
 }
+
 window.addEventListener('load', () => {
   initializeGridPluses();
   hideRandomPlusGroups();
@@ -2016,10 +1825,11 @@ window.addEventListener('load', () => {
 });
 
 window.addEventListener('resize', initializeGridPluses);
-
 window.openSplitViewForProject = openSplitViewForProject;
 window.loadCompareProject = loadCompareProject;
 window.closeSplitModal = closeSplitModal;
 </script>
 </body>
-</html> 
+</html>
+ 
+  
