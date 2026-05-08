@@ -729,76 +729,78 @@
 </footer>
 
 <script>
-// ========== PROJECT DATA WITH CONSOLIDATED TAGS (12 tags only - reduced from original) ==========
+// ========== PROJECT DATA WITH CONSOLIDATED TAGS (12 tags total) ==========
 // CONSOLIDATED TAG LIST (12 total tags across all projects):
 // 1. Ecological, 2. Vernacular, 3. Digital Fabrication, 4. Post-Conflict, 5. Material Research, 
 // 6. Speculative, 7. Collective Practice, 8. Pedagogy, 9. Installation, 10. Political, 
 // 11. Residency, 12. Exhibition
 
+// ========== MODIFIED: ALL IMAGES USE UNDERSCORES (e.g., spiral_spines_1.jpg) ==========
+
 const allProjects = [
   { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", 
     tags: ["Ecological", "Vernacular"], 
-    images: ["spiral-spines-1.jpg", "spiral-spines-2.jpg", "spiral-spines-3.jpg", "spiral-spines-4.jpg", "spiral-spines-5.jpg", "spiral-spines-6.jpg"],
+    images: ["spiral_spines_1.jpg", "spiral_spines_2.jpg", "spiral_spines_3.jpg", "spiral_spines_4.jpg", "spiral_spines_5.jpg", "spiral_spines_6.jpg"],
     fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing." },
   { id: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", 
     tags: ["Vernacular", "Digital Fabrication"], 
-    images: ["woven-realities-1.jpg", "woven-realities-2.jpg", "woven-realities-3.jpg", "woven-realities-4.jpg", "woven-realities-5.jpg", "woven-realities-6.jpg"],
+    images: ["woven_realities_1.jpg", "woven_realities_2.jpg", "woven_realities_3.jpg", "woven_realities_4.jpg", "woven_realities_5.jpg", "woven_realities_6.jpg"],
     fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice using reusable by-products." },
   { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", 
     tags: ["Post-Conflict", "Material Research"], 
-    images: ["new-cairn-1.jpg", "new-cairn-2.jpg", "new-cairn-3.jpg", "new-cairn-4.jpg", "new-cairn-5.jpg", "new-cairn-6.jpg"],
+    images: ["new_cairn_1.jpg", "new_cairn_2.jpg", "new_cairn_3.jpg", "new_cairn_4.jpg", "new_cairn_5.jpg", "new_cairn_6.jpg"],
     fullDesc: "A research and construction project proposing whole, un-crushed demolition rubble as masonry units in compression-only enclosures, deployable in Palestine and Afghanistan." },
   { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", 
     tags: ["Speculative", "Ecological"], 
-    images: ["carbonfloss-1.jpg", "carbonfloss-2.jpg", "carbonfloss-3.jpg", "carbonfloss-4.jpg", "carbonfloss-5.jpg", "carbonfloss-6.jpg"],
+    images: ["carbonfloss_1.jpg", "carbonfloss_2.jpg", "carbonfloss_3.jpg", "carbonfloss_4.jpg", "carbonfloss_5.jpg", "carbonfloss_6.jpg"],
     fullDesc: "A political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity." },
   { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", 
     tags: ["Material Research", "Digital Fabrication"], 
-    images: ["ourobos-1.jpg", "ourobos-2.jpg", "ourobos-3.jpg", "ourobos-4.jpg", "ourobos-5.jpg", "ourobos-6.jpg"],
+    images: ["ourobos_1.jpg", "ourobos_2.jpg", "ourobos_3.jpg", "ourobos_4.jpg", "ourobos_5.jpg", "ourobos_6.jpg"],
     fullDesc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies." },
   { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", 
     tags: ["Ecological", "Collective Practice"], 
-    images: ["agropraxis-1.jpg", "agropraxis-2.jpg", "agropraxis-3.jpg", "agropraxis-4.jpg", "agropraxis-5.jpg", "agropraxis-6.jpg"],
+    images: ["agropraxis_1.jpg", "agropraxis_2.jpg", "agropraxis_3.jpg", "agropraxis_4.jpg", "agropraxis_5.jpg", "agropraxis_6.jpg"],
     fullDesc: "Explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles." },
   { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", category: "education", 
     tags: ["Pedagogy", "Vernacular"], 
-    images: ["medius-1.jpg", "medius-2.jpg", "medius-3.jpg", "medius-4.jpg", "medius-5.jpg", "medius-6.jpg"],
+    images: ["medius_1.jpg", "medius_2.jpg", "medius_3.jpg", "medius_4.jpg", "medius_5.jpg", "medius_6.jpg"],
     fullDesc: "A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes connected by circular paths." },
   { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", 
     tags: ["Collective Practice", "Installation"], 
-    images: ["soft-unsealing-1.jpg", "soft-unsealing-2.jpg", "soft-unsealing-3.jpg", "soft-unsealing-4.jpg", "soft-unsealing-5.jpg", "soft-unsealing-6.jpg"],
+    images: ["soft_unsealing_1.jpg", "soft_unsealing_2.jpg", "soft_unsealing_3.jpg", "soft_unsealing_4.jpg", "soft_unsealing_5.jpg", "soft_unsealing_6.jpg"],
     fullDesc: "Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts." },
   { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", 
     tags: ["Collective Practice", "Installation"], 
-    images: ["old-airfield-1.jpg", "old-airfield-2.jpg", "old-airfield-3.jpg", "old-airfield-4.jpg", "old-airfield-5.jpg", "old-airfield-6.jpg"],
+    images: ["old_airfield_1.jpg", "old_airfield_2.jpg", "old_airfield_3.jpg", "old_airfield_4.jpg", "old_airfield_5.jpg", "old_airfield_6.jpg"],
     fullDesc: "An acoustic mirror cultural gateway exploring sound and spatial memory, published at Chicago Architecture Biennial CAB5." },
   { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", 
     tags: ["Vernacular", "Ecological"], 
-    images: ["enkidu-1.jpg", "enkidu-2.jpg", "enkidu-3.jpg", "enkidu-4.jpg", "enkidu-5.jpg", "enkidu-6.jpg"],
+    images: ["enkidu_1.jpg", "enkidu_2.jpg", "enkidu_3.jpg", "enkidu_4.jpg", "enkidu_5.jpg", "enkidu_6.jpg"],
     fullDesc: "Reviving elements of vernacular Palestinian architecture in Dier Ghassaneh — not through aesthetic value alone, but through ecological, economical, and tradition revival." },
   { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", category: "art", 
     tags: ["Installation", "Speculative"], 
-    images: ["aura-1.jpg", "aura-2.jpg", "aura-3.jpg", "aura-4.jpg", "aura-5.jpg", "aura-6.jpg"],
+    images: ["aura_1.jpg", "aura_2.jpg", "aura_3.jpg", "aura_4.jpg", "aura_5.jpg", "aura_6.jpg"],
     fullDesc: "A folly project exploring the atmospheric and experiential qualities of architectural space through material and light." },
   { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", 
     tags: ["Political", "Speculative"], 
-    images: ["liberation-fronts-1.jpg", "liberation-fronts-2.jpg", "liberation-fronts-3.jpg", "liberation-fronts-4.jpg", "liberation-fronts-5.jpg", "liberation-fronts-6.jpg"],
+    images: ["liberation_fronts_1.jpg", "liberation_fronts_2.jpg", "liberation_fronts_3.jpg", "liberation_fronts_4.jpg", "liberation_fronts_5.jpg", "liberation_fronts_6.jpg"],
     fullDesc: "A diploma thesis exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements." },
   { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", 
     tags: ["Residency", "Installation"], 
-    images: ["regutting-1.jpg", "regutting-2.jpg", "regutting-3.jpg", "regutting-4.jpg", "regutting-5.jpg", "regutting-6.jpg"],
+    images: ["regutting_1.jpg", "regutting_2.jpg", "regutting_3.jpg", "regutting_4.jpg", "regutting_5.jpg", "regutting_6.jpg"],
     fullDesc: "A residency project exploring returns and remains through film, photography, and installation at Wonder Cabinet, Bethlehem." },
   { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", 
     tags: ["Exhibition", "Political"], 
-    images: ["agential-cartographies-1.jpg", "agential-cartographies-2.jpg", "agential-cartographies-3.jpg", "agential-cartographies-4.jpg", "agential-cartographies-5.jpg", "agential-cartographies-6.jpg"],
+    images: ["agential_cartographies_1.jpg", "agential_cartographies_2.jpg", "agential_cartographies_3.jpg", "agential_cartographies_4.jpg", "agential_cartographies_5.jpg", "agential_cartographies_6.jpg"],
     fullDesc: "An exhibition presenting experimental mappings across three spatial typologies: the camp, the city, and the limbo landscape, exploring agency as a dynamic and malleable force." },
   { id: "15", title: "PhD Research", year: "2024+", subtitle: "Die Angewandte", category: "education", 
     tags: ["Material Research", "Pedagogy"], 
-    images: ["phd-research-1.jpg", "phd-research-2.jpg", "phd-research-3.jpg", "phd-research-4.jpg", "phd-research-5.jpg", "phd-research-6.jpg"],
+    images: ["phd_research_1.jpg", "phd_research_2.jpg", "phd_research_3.jpg", "phd_research_4.jpg", "phd_research_5.jpg", "phd_research_6.jpg"],
     fullDesc: "Doctoral research at the University of Applied Arts Vienna focusing on post-conflict material practice and rubble reuse." },
   { id: "16", title: "Teaching at AAUP", year: "2025+", subtitle: "Arab American University", category: "education", 
     tags: ["Pedagogy", "Vernacular"], 
-    images: ["teaching-aaup-1.jpg", "teaching-aaup-2.jpg", "teaching-aaup-3.jpg", "teaching-aaup-4.jpg", "teaching-aaup-5.jpg", "teaching-aaup-6.jpg"],
+    images: ["teaching_aaup_1.jpg", "teaching_aaup_2.jpg", "teaching_aaup_3.jpg", "teaching_aaup_4.jpg", "teaching_aaup_5.jpg", "teaching_aaup_6.jpg"],
     fullDesc: "Faculty member and lecturer at the Faculty of Architecture, Arab American University, Palestine." }
 ];
 
@@ -808,7 +810,7 @@ let noteZIndex = 100;
 let previewTimeout = null;
 let autoPlayIntervals = {};
 let activeFloatingWindows = [];
-let activeTabConnections = new Map(); // Store connections between sticky notes and sidebar tabs
+let activeTabConnections = new Map();
 
 // ========== STICKY NOTE MANAGER ==========
 class StickyNoteManager {
@@ -817,7 +819,7 @@ class StickyNoteManager {
     this.tabs = [];
     this.currentCategory = 'all';
     this.closedProjects = new Map();
-    this.noteTabConnections = new Map(); // Track which tab came from which note
+    this.noteTabConnections = new Map();
   }
 
   createNote(project, index, x, y) {
@@ -841,7 +843,7 @@ class StickyNoteManager {
     note.style.top = `${finalY}px`;
     note.style.zIndex = noteZIndex++;
 
-    // MODIFIED: 6 images per project in preview
+    // MODIFIED: 6 images per project in preview (using underscore filenames)
     note.innerHTML = `
       <div class="sticky-title">${project.id} · ${project.title}</div>
       <div class="sticky-subtitle">${project.subtitle} (${project.year})</div>
@@ -956,7 +958,6 @@ class StickyNoteManager {
       element.style.left = `${newLeft}px`;
       element.style.top = `${newTop}px`;
       
-      // Update connector line to tab if this note has a tab
       this.updateConnectorToTab(element);
     });
 
@@ -970,8 +971,6 @@ class StickyNoteManager {
     const projectId = note.getAttribute('data-project-id');
     const tab = document.getElementById(`tab-${projectId}`);
     if (!tab) return;
-    
-    // Draw light connector line between note and tab
     this.drawLightConnectorLine(note, tab);
   }
 
@@ -985,7 +984,6 @@ class StickyNoteManager {
     const endX = tabRect.left;
     const endY = tabRect.top + tabRect.height / 2;
     
-    // Remove existing line for this connection
     const existingLine = document.getElementById(`connector-${note.getAttribute('data-project-id')}`);
     if (existingLine) existingLine.remove();
     
@@ -993,15 +991,13 @@ class StickyNoteManager {
     path.id = `connector-${note.getAttribute('data-project-id')}`;
     path.setAttribute('class', 'connector-line-tab');
     
-    // Filleted/rounded corners for the connector
     const midX = (startX + endX) / 2;
     const d = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
     path.setAttribute('d', d);
     svg.appendChild(path);
   }
 
-  // MODIFIED: Floating window - BORDERLESS, resizable from ANYWHERE, auto-size, white text bg
-  // MODIFIED: Has (-) minimize button with SMOOTH animation back to sticky note shape
+  // MODIFIED: Floating window with 6 images (underscore convention)
   openFloatingWindow(project, clickX, clickY) {
     if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
     
@@ -1009,7 +1005,6 @@ class StickyNoteManager {
     win.className = 'floating-window';
     win.setAttribute('data-id', project.id);
     
-    // Open exactly at the clicked position (enlarged in place)
     win.style.left = `${clickX}px`;
     win.style.top = `${clickY}px`;
     win.style.width = 'auto';
@@ -1017,7 +1012,6 @@ class StickyNoteManager {
     win.style.minWidth = '380px';
     win.style.transition = 'all 0.3s ease-out';
     
-    // MODIFIED: Added (-) minimize button next to X
     win.innerHTML = `
       <div class="window-header">
         <h3>${project.id} · ${project.title}</h3>
@@ -1028,7 +1022,7 @@ class StickyNoteManager {
       </div>
       <div class="window-body">
         <div class="window-carousel">
-          <div class="window-slides">
+          <div class="window-slides" id="window-slides-${project.id}">
             ${project.images.map(img => `<div class="window-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/500x280/f5f5f5/999?text=${encodeURIComponent(project.title)}'"></div>`).join('')}
           </div>
         </div>
@@ -1041,13 +1035,12 @@ class StickyNoteManager {
     document.body.appendChild(win);
     activeFloatingWindows.push(win);
     
-    // Make window resizable from ANYWHERE
     this.makeWindowResizableFromAnywhere(win);
     
-    // Dragging functionality
-    const header = win.querySelector('.window-header');
+    // MODIFIED: Window movable from ANYWHERE (not just header)
     let isDragging = false, dragStartX, dragStartY, startLeft, startTop;
-    header.addEventListener('mousedown', (e) => {
+    
+    const startDrag = (e) => {
       if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize')) return;
       isDragging = true;
       dragStartX = e.clientX;
@@ -1056,16 +1049,21 @@ class StickyNoteManager {
       startTop = win.offsetTop;
       win.style.zIndex = 30000 + activeFloatingWindows.length;
       e.preventDefault();
-    });
+    };
     
-    document.addEventListener('mousemove', (e) => {
+    win.addEventListener('mousedown', startDrag);
+    
+    const dragMove = (e) => {
       if (!isDragging) return;
       win.style.left = `${startLeft + (e.clientX - dragStartX)}px`;
       win.style.top = `${startTop + (e.clientY - dragStartY)}px`;
-    });
-    document.addEventListener('mouseup', () => { isDragging = false; });
+    };
     
-    // MODIFIED: Minimize button - smooth animation back to sticky note shape
+    const dragEnd = () => { isDragging = false; };
+    
+    document.addEventListener('mousemove', dragMove);
+    document.addEventListener('mouseup', dragEnd);
+    
     win.querySelector('.window-minimize').addEventListener('click', () => {
       const note = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
       if (note) {
@@ -1079,7 +1077,6 @@ class StickyNoteManager {
         setTimeout(() => {
           win.remove();
           activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
-          // Highlight the sticky note
           note.style.transform = 'scale(1.02)';
           setTimeout(() => { note.style.transform = ''; }, 300);
         }, 500);
@@ -1089,11 +1086,9 @@ class StickyNoteManager {
       }
     });
     
-    // MODIFIED: Close only on X - sends to sidebar
     win.querySelector('.window-close').addEventListener('click', () => {
       win.remove();
       activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
-      // Send to sidebar with connector line
       const note = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
       if (note) {
         const noteRect = note.getBoundingClientRect();
@@ -1101,7 +1096,6 @@ class StickyNoteManager {
       }
     });
     
-    // Auto-size after render
     setTimeout(() => {
       win.style.width = 'auto';
       win.style.height = 'auto';
@@ -1115,20 +1109,15 @@ class StickyNoteManager {
     
     const handleMouseMove = (e) => {
       if (!isResizing) return;
-      
       const dx = e.clientX - startX;
       const dy = e.clientY - startY;
       
-      if (resizeDirection.includes('e')) {
-        win.style.width = `${Math.max(380, startWidth + dx)}px`;
-      }
+      if (resizeDirection.includes('e')) win.style.width = `${Math.max(380, startWidth + dx)}px`;
       if (resizeDirection.includes('w')) {
         win.style.width = `${Math.max(380, startWidth - dx)}px`;
         win.style.left = `${startLeft + dx}px`;
       }
-      if (resizeDirection.includes('s')) {
-        win.style.height = `${Math.max(300, startHeight + dy)}px`;
-      }
+      if (resizeDirection.includes('s')) win.style.height = `${Math.max(300, startHeight + dy)}px`;
       if (resizeDirection.includes('n')) {
         win.style.height = `${Math.max(300, startHeight - dy)}px`;
         win.style.top = `${startTop + dy}px`;
@@ -1151,11 +1140,7 @@ class StickyNoteManager {
       if (e.clientY - rect.top < edgeThreshold) direction += 'n';
       if (rect.bottom - e.clientY < edgeThreshold) direction += 's';
       
-      if (direction) {
-        win.style.cursor = `${direction}-resize`;
-      } else {
-        win.style.cursor = '';
-      }
+      win.style.cursor = direction ? `${direction}-resize` : '';
     });
     
     win.addEventListener('mousedown', (e) => {
@@ -1196,24 +1181,19 @@ class StickyNoteManager {
     tab.setAttribute('data-category', project.category);
     tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
 
-    // Store the connection between note and tab for connector line
     this.noteTabConnections.set(project.id, { tab, noteRect });
     
-    // MODIFIED: Draw LIGHT LINE connecting sticky note and tab
     this.drawLightConnectorLineFromNoteToTab(project.id, noteRect, tab);
     
-    // MODIFIED: When hovering or clicking categories, the tab highlights
     tab.addEventListener('click', () => {
       tab.remove();
       this.tabs = this.tabs.filter(t => t !== tab);
-      // Remove connector line
       const connectorLine = document.getElementById(`connector-${project.id}`);
       if (connectorLine) connectorLine.remove();
       this.noteTabConnections.delete(project.id);
       this.reopenAsStickyNote(project, index);
     });
     
-    // Category highlight for tabs
     const observeCategoryChange = () => {
       const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all';
       if (activeCategory === 'all' || project.category === activeCategory) {
@@ -1237,7 +1217,6 @@ class StickyNoteManager {
     const svg = document.getElementById('connectorSvg');
     const tabRect = tab.getBoundingClientRect();
     
-    // MODIFIED: Connector line connects to TAB instead of window
     const startX = noteRect.right;
     const startY = noteRect.top + noteRect.height / 2;
     const endX = tabRect.left;
@@ -1250,7 +1229,6 @@ class StickyNoteManager {
     path.id = `connector-${projectId}`;
     path.setAttribute('class', 'connector-line-tab');
     
-    // MODIFIED: Filleted/rounded corners for the connector line
     const midX = startX + (endX - startX) * 0.3;
     const d = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
     path.setAttribute('d', d);
@@ -1258,7 +1236,6 @@ class StickyNoteManager {
   }
 
   updateAllConnectorLines() {
-    // Update connector lines for all closed projects
     this.noteTabConnections.forEach((value, projectId) => {
       const tab = document.getElementById(`tab-${projectId}`);
       if (tab && value.noteRect) {
@@ -1324,7 +1301,6 @@ class StickyNoteManager {
 // ========== TAG FUNCTIONS (12 tags total - reduced and consolidated) ==========
 function createTagFilters() {
   const tagsBar = document.getElementById('tagsBar');
-  // MODIFIED: Only 12 tags total, consolidated across all projects
   const consolidatedTags = [
     "Ecological", "Vernacular", "Digital Fabrication", "Post-Conflict", 
     "Material Research", "Speculative", "Collective Practice", "Pedagogy", 
@@ -1377,7 +1353,7 @@ function closeResultsModal() {
   document.body.style.overflow = 'auto';
 }
 
-// ========== SPLIT VIEW ==========
+// ========== SPLIT VIEW with 6 images (underscore convention) ==========
 function openSplitViewForProject(index) {
   const project = allProjects[index];
   const splitView = document.getElementById('splitView');
@@ -1388,16 +1364,16 @@ function openSplitViewForProject(index) {
         <button onclick="closeSplitModal()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
       </div>
       <div style="padding: 1rem; overflow-y: auto; flex: 1;">
-        <div class="project-modal-carousel">
-          <div class="project-modal-slides" id="splitCarousel">
-            ${project.images.map(img => `<div class="project-modal-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'"></div>`).join('')}
+        <div class="project-modal-carousel" style="position: relative;">
+          <div class="project-modal-slides" id="splitCarousel" style="display: flex; transition: transform 0.3s ease; overflow: hidden;">
+            ${project.images.map(img => `<div class="project-modal-slide" style="min-width: 100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'" style="width: 100%; height: auto; max-height: 400px; object-fit: cover;"></div>`).join('')}
           </div>
-          <button class="project-modal-btn project-modal-prev" onclick="splitPrev()">‹</button>
-          <button class="project-modal-btn project-modal-next" onclick="splitNext()">›</button>
+          <button class="project-modal-btn project-modal-prev" onclick="splitPrev()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">‹</button>
+          <button class="project-modal-btn project-modal-next" onclick="splitNext()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">›</button>
         </div>
-        <div class="project-modal-tags">${project.tags.map(t => `<span class="project-modal-tag">${t}</span>`).join('')}</div>
-        <div class="project-modal-subtitle">${project.subtitle} (${project.year})</div>
-        <div class="project-modal-desc">${project.fullDesc}</div>
+        <div class="project-modal-tags" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">${project.tags.map(t => `<span style="background: var(--accent); color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.6rem;">${t}</span>`).join('')}</div>
+        <div class="project-modal-subtitle" style="color: var(--accent); font-style: italic; margin-top: 0.5rem;">${project.subtitle} (${project.year})</div>
+        <div class="project-modal-desc" style="margin-top: 1rem; font-size: 0.8rem; line-height: 1.5;">${project.fullDesc}</div>
       </div>
     </div>
     <div class="split-pane" id="secondPane">
@@ -1444,16 +1420,16 @@ function loadCompareProject(index) {
         <button onclick="closeSplitModal()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
       </div>
       <div style="padding: 1rem; overflow-y: auto; flex: 1;">
-        <div class="project-modal-carousel">
-          <div class="project-modal-slides" id="compareCarousel">
-            ${project.images.map(img => `<div class="project-modal-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'"></div>`).join('')}
+        <div class="project-modal-carousel" style="position: relative;">
+          <div class="project-modal-slides" id="compareCarousel" style="display: flex; transition: transform 0.3s ease; overflow: hidden;">
+            ${project.images.map(img => `<div class="project-modal-slide" style="min-width: 100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'" style="width: 100%; height: auto; max-height: 400px; object-fit: cover;"></div>`).join('')}
           </div>
-          <button class="project-modal-btn project-modal-prev" onclick="comparePrev()">‹</button>
-          <button class="project-modal-btn project-modal-next" onclick="compareNext()">›</button>
+          <button class="project-modal-btn project-modal-prev" onclick="comparePrev()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">‹</button>
+          <button class="project-modal-btn project-modal-next" onclick="compareNext()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">›</button>
         </div>
-        <div class="project-modal-tags">${project.tags.map(t => `<span class="project-modal-tag">${t}</span>`).join('')}</div>
-        <div class="project-modal-subtitle">${project.subtitle} (${project.year})</div>
-        <div class="project-modal-desc">${project.fullDesc}</div>
+        <div class="project-modal-tags" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">${project.tags.map(t => `<span style="background: var(--accent); color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.6rem;">${t}</span>`).join('')}</div>
+        <div class="project-modal-subtitle" style="color: var(--accent); font-style: italic; margin-top: 0.5rem;">${project.subtitle} (${project.year})</div>
+        <div class="project-modal-desc" style="margin-top: 1rem; font-size: 0.8rem; line-height: 1.5;">${project.fullDesc}</div>
       </div>
     `;
   }
@@ -1498,7 +1474,6 @@ function initializeGridPluses() {
   const endX = scrollX + window.innerWidth + padding;
   const endY = scrollY + window.innerHeight + padding;
   
-  // MODIFIED: Reduced density - step by 2 grid cells (~60% reduction from original)
   for (let x = startX; x < endX; x += gridSize * 2) {
     for (let y = startY; y < endY; y += gridSize * 2) {
       const plus = document.createElement('div');
@@ -1518,13 +1493,11 @@ window.addEventListener('scroll', () => {
   scrollUpdateTimeout = setTimeout(initializeGridPluses, 50);
 }, { passive: true });
 
-// MODIFIED: Random hiding patches with varied sizes, shapes, frequencies
 function hideRandomPlusGroups() {
   if (hiddenGroupsInterval) clearInterval(hiddenGroupsInterval);
   hiddenGroupsInterval = setInterval(() => {
     gridPluses.forEach(p => p.classList.remove('hidden'));
     
-    // Random percentage of pluses to hide (30-80%)
     const hidePercentage = Math.random() * 0.5 + 0.3;
     const hiddenCount = Math.floor(gridPluses.length * hidePercentage);
     const positions = [];
@@ -1534,19 +1507,15 @@ function hideRandomPlusGroups() {
       positions.push({ x: Math.round(rect.left), y: Math.round(rect.top), idx });
     });
     
-    // MODIFIED: More random patches - varied count, sizes, shapes
-    const patchCount = Math.floor(Math.random() * 15) + 5; // 5-20 patches
+    const patchCount = Math.floor(Math.random() * 15) + 5;
     let totalHidden = 0;
     const hiddenIndices = new Set();
     
     for (let p = 0; p < patchCount && totalHidden < hiddenCount; p++) {
       const centerPlus = positions[Math.floor(Math.random() * positions.length)];
-      // MODIFIED: Varied patch radius (30-200px)
       const patchRadius = Math.random() * 170 + 30;
-      // MODIFIED: Varied patch density (0.3-0.8)
       const patchDensity = Math.random() * 0.5 + 0.3;
-      // MODIFIED: Varied shape (using different falloff functions)
-      const shapeType = Math.floor(Math.random() * 3); // 0: circular, 1: elliptical, 2: gaussian
+      const shapeType = Math.floor(Math.random() * 3);
       
       positions.forEach(plus => {
         if (hiddenIndices.has(plus.idx) || totalHidden >= hiddenCount) return;
@@ -1554,17 +1523,14 @@ function hideRandomPlusGroups() {
         let falloff;
         
         if (shapeType === 0) {
-          // Circular falloff
           const distance = Math.sqrt(dx * dx + dy * dy);
           falloff = Math.exp(-Math.pow(distance / patchRadius, 2));
         } else if (shapeType === 1) {
-          // Elliptical falloff
           const rx = patchRadius * (Math.random() * 0.5 + 0.8);
           const ry = patchRadius * (Math.random() * 0.5 + 0.8);
           const distance = Math.sqrt((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry));
           falloff = Math.exp(-Math.pow(distance, 2));
         } else {
-          // Gaussian with random skew
           const distance = Math.sqrt(dx * dx + dy * dy);
           const skew = Math.random() * 2 + 0.5;
           falloff = Math.exp(-Math.pow(distance / patchRadius, skew));
@@ -1578,7 +1544,6 @@ function hideRandomPlusGroups() {
       });
     }
     
-    // MODIFIED: Additional random scattered hidden pluses for more organic feel
     const scatteredCount = Math.floor(gridPluses.length * 0.1);
     for (let i = 0; i < scatteredCount && totalHidden < hiddenCount; i++) {
       const randomIdx = Math.floor(Math.random() * gridPluses.length);
@@ -1588,20 +1553,14 @@ function hideRandomPlusGroups() {
         totalHidden++;
       }
     }
-  }, 800 + Math.random() * 4000); // Random interval between 0.8-4.8 seconds
+  }, 800 + Math.random() * 4000);
 }
 
 // ========== MODIFIED: CONNECTOR LINES ==========
-// - Lines from categories go through respective matching tag
-// - Filleted/rounded corners (not sharp angles)
-// - When window becomes sidebar tab, connector line connects to tab
-// - Lines from categories should go through the respective matching tag
-
 let activeHoverLines = [];
 
 function clearHoverLines() {
   const svg = document.getElementById('connectorSvg');
-  // Only remove connector lines, not tab connector lines
   const linesToRemove = svg.querySelectorAll('.connector-line');
   linesToRemove.forEach(line => line.remove());
   activeHoverLines = [];
@@ -1614,11 +1573,9 @@ function drawFilletedLine(svg, x1, y1, x2, y2, opacity) {
   const snappedX2 = Math.round(x2 / gridSize) * gridSize;
   const snappedY2 = Math.round(y2 / gridSize) * gridSize;
   
-  // MODIFIED: Filleted/rounded corners using cubic bezier curves instead of sharp angles
   const midY1 = snappedY1 + (snappedY2 - snappedY1) * 0.3;
   const midY2 = snappedY1 + (snappedY2 - snappedY1) * 0.7;
   
-  // Create a smooth curved line with filleted corners
   const d = `M ${snappedX1} ${snappedY1} C ${snappedX1} ${midY1}, ${(snappedX1 + snappedX2) / 2} ${midY1}, ${(snappedX1 + snappedX2) / 2} ${(snappedY1 + snappedY2) / 2} C ${(snappedX1 + snappedX2) / 2} ${midY2}, ${snappedX2} ${midY2}, ${snappedX2} ${snappedY2}`;
   
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -1629,7 +1586,6 @@ function drawFilletedLine(svg, x1, y1, x2, y2, opacity) {
   activeHoverLines.push(path);
 }
 
-// MODIFIED: Lines from categories go through respective matching tag
 function drawCategoryHoverLines(categoryEl) {
   clearHoverLines();
   const svg = document.getElementById('connectorSvg');
@@ -1665,7 +1621,6 @@ function drawCategoryHoverLines(categoryEl) {
     endX = Math.round(endX / gridSize) * gridSize;
     endY = Math.round(endY / gridSize) * gridSize;
 
-    // MODIFIED: Line goes through matching tag
     if (matchingTags.length > 0) {
       const tagEl = matchingTags[0];
       const tagRect = tagEl.getBoundingClientRect();
@@ -1674,9 +1629,7 @@ function drawCategoryHoverLines(categoryEl) {
       tagX = Math.round(tagX / gridSize) * gridSize;
       tagY = Math.round(tagY / gridSize) * gridSize;
 
-      // Draw from category to tag
       drawFilletedLine(svg, startX, startY, tagX, tagY, 0.55);
-      // Draw from tag to note
       drawFilletedLine(svg, tagX, tagY, endX, endY, 0.55);
     } else {
       drawFilletedLine(svg, startX, startY, endX, endY, 0.55);
@@ -1698,7 +1651,6 @@ function initialize() {
 
   setTimeout(createTagFilters, 800);
 
-  // MODIFIED: Category event handlers with BOLD+ITALIC on hover and active
   const filters = document.querySelectorAll('#categoryFilters li');
   filters.forEach(filter => {
     filter.addEventListener('click', () => {
@@ -1722,7 +1674,6 @@ function initialize() {
     });
   });
 
-  // CV Modal
   document.getElementById('openCvBtn').addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('cvModal').style.display = 'flex';
@@ -1739,18 +1690,15 @@ function initialize() {
     }
   });
 
-  // Results Modal
   document.getElementById('closeResultsBtn').addEventListener('click', closeResultsModal);
   document.getElementById('resultsModal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('resultsModal')) closeResultsModal();
   });
 
-  // Split Modal
   document.getElementById('splitModal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('splitModal')) closeSplitModal();
   });
   
-  // MODIFIED: Window resize handling for connector lines
   window.addEventListener('resize', () => {
     if (manager) manager.updateAllConnectorLines();
   });
@@ -1764,10 +1712,10 @@ window.addEventListener('load', () => {
 
 window.addEventListener('resize', initializeGridPluses);
 
-// Add split view function to window for global access
 window.openSplitViewForProject = openSplitViewForProject;
 window.loadCompareProject = loadCompareProject;
 window.closeSplitModal = closeSplitModal;
 </script>
 </body>
 </html>
+  
