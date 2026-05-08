@@ -580,6 +580,16 @@
     .nav-name { font-size: 0.7rem; }
     .nav-links { gap: 1rem; }
     .nav-links a { font-size: 0.6rem; }
+   
+       /* Control buttons bar on mobile */
+    div[style*="position: fixed; top: 130px;"] {
+      top: 115px !important;
+      gap: 0.4rem !important;
+    }
+    div[style*="position: fixed; top: 130px;"] button {
+      font-size: 0.45rem !important;
+      padding: 3px 8px !important;
+    }
     
     /* Adjust categories bar position */
     .categories { top: 50px; padding: 0.4rem; }
@@ -680,6 +690,14 @@
     <li data-category="education">Education</li>
   </ul>
 </div>
+ <!-- Control Buttons Bar -->
+<div style="position: fixed; top: 130px; left: 0; right: 0; z-index: 84; text-align: center; padding: 0.3rem; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); border-bottom: 1px solid var(--rule); display: flex; justify-content: center; gap: 0.8rem; flex-wrap: wrap;">
+  <button id="gridBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer; font-family: 'EB Garamond', serif;">Grid</button>
+  <button id="randomizeBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer; font-family: 'EB Garamond', serif;">Randomize</button>
+  <button id="closeAllBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer; font-family: 'EB Garamond', serif;">Close All</button>
+  <button id="hideLinesBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer; font-family: 'EB Garamond', serif;">Hide Lines</button>
+  <button id="showLinesBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer; font-family: 'EB Garamond', serif;">Show Lines</button>
+</div>
 
 <div class="tags-container" id="tagsBar"></div>
 <div class="sticky-canvas" id="stickyCanvas"></div>
@@ -779,6 +797,82 @@ let previewTimeout = null;
     this.closedProjects = new Map();
     this.noteTabConnections = new Map();
     this.isDraggingNote = false;
+     // Grid arrangement function
+  arrangeGrid() {
+    const gridSize = 200; // Width between notes
+    const startX = 50;
+    const startY = 200;
+    const cols = Math.floor((window.innerWidth - 100) / gridSize);
+    
+    this.notes.forEach((note, i) => {
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      const newX = startX + (col * gridSize);
+      const newY = startY + (row * gridSize);
+      note.style.left = `${newX}px`;
+      note.style.top = `${newY}px`;
+      this.updateConnectorLineForNote(note);
+    });
+  }
+  
+  // Randomize arrangement function
+  randomizeArrangement() {
+    const padding = 50;
+    const maxX = window.innerWidth - 300;
+    const maxY = window.innerHeight - 200;
+    
+    this.notes.forEach((note) => {
+      const newX = padding + Math.random() * (maxX - padding);
+      const newY = 150 + Math.random() * (maxY - 150);
+      note.style.left = `${newX}px`;
+      note.style.top = `${newY}px`;
+      this.updateConnectorLineForNote(note);
+    });
+  }
+  
+  // Close all sticky notes (send to sidebar)
+  closeAllNotes() {
+    this.notes.forEach((note) => {
+      if (!note.classList.contains('frozen')) {
+        const projectId = note.getAttribute('data-project-id');
+        const project = allProjects.find(p => p.id === projectId);
+        const index = parseInt(note.getAttribute('data-project-idx'));
+        const noteRect = note.getBoundingClientRect();
+        
+        // Get current carousel image index
+        const slidesContainer = note.querySelector(`#preview-${projectId}`);
+        let lastImageIndex = 0;
+        if (slidesContainer) {
+          const transform = slidesContainer.style.transform;
+          const match = transform.match(/translateX\(-([0-9]+)%/);
+          if (match) lastImageIndex = parseInt(match[1]) / 100;
+        }
+        
+        this.freezeNote(note, project, lastImageIndex);
+        this.addToSidebar(project, index, noteRect, lastImageIndex, note);
+      }
+    });
+  }
+  
+  // Hide all connector lines
+  hideAllLines() {
+    const svg = document.getElementById('connectorSvg');
+    svg.style.display = 'none';
+  }
+  
+  // Show all connector lines
+  showAllLines() {
+    const svg = document.getElementById('connectorSvg');
+    svg.style.display = 'block';
+    this.updateAllConnectorLines();
+    // Also update window connectors if any windows open
+    activeFloatingWindows.forEach(win => {
+      const projectId = win.getAttribute('data-id');
+      const tab = document.getElementById(`tab-${projectId}`);
+      if (tab) {
+        this.updateConnectorLineForWindow(win, projectId, tab);
+      }
+    });
   }
 
   createNote(project, index, x, y, restoreData = null) {
@@ -1080,12 +1174,12 @@ let previewTimeout = null;
       this.drawLightConnectorLineFromNoteToTab(projectId, noteRect, tab);
     }
   }
-    // Connect floating window to its tab
+  // Connect floating window to its tab
   updateConnectorLineForWindow(win, projectId, tab) {
     if (!tab) {
       tab = document.getElementById(`tab-${projectId}`);
     }
-    if (tab) {
+    if (tab && document.getElementById('connectorSvg').style.display !== 'none') {
       const winRect = win.getBoundingClientRect();
       const tabRect = tab.getBoundingClientRect();
       
@@ -1780,7 +1874,6 @@ function drawCategoryHoverLines(categoryEl) {
   });
 }
 
-// ========== INITIALIZE ==========
 function initialize() {
   manager = new StickyNoteManager();
 
@@ -1811,12 +1904,19 @@ function initialize() {
       setTimeout(() => drawCategoryHoverLines(filter), 50);
     });
 
-    filter.addEventListener('mouseleave', () => {
-      clearHoverLines();
+ filter.addEventListener('mouseleave', () => {
+      // Only clear hover lines if lines are not hidden
+      if (document.getElementById('connectorSvg').style.display !== 'none') {
+        clearHoverLines();
+      }
       const activeCategory = document.querySelector('#categoryFilters li.active').getAttribute('data-category');
       manager.highlightByCategory(activeCategory);
+      // Redraw lines after category change
+      setTimeout(() => {
+        if (manager) manager.updateAllConnectorLines();
+      }, 100);
     });
-  });
+
 
   document.getElementById('openCvBtn').addEventListener('click', (e) => {
     e.preventDefault();
@@ -1846,8 +1946,44 @@ function initialize() {
   window.addEventListener('resize', () => {
     if (manager) manager.updateAllConnectorLines();
   });
-}
 
+  // ========== BUTTON EVENT LISTENERS ==========
+  const gridBtn = document.getElementById('gridBtn');
+  const randomizeBtn = document.getElementById('randomizeBtn');
+  const closeAllBtn = document.getElementById('closeAllBtn');
+  const hideLinesBtn = document.getElementById('hideLinesBtn');
+  const showLinesBtn = document.getElementById('showLinesBtn');
+  
+  if (gridBtn) {
+    gridBtn.addEventListener('click', () => {
+      manager.arrangeGrid();
+    });
+  }
+  
+  if (randomizeBtn) {
+    randomizeBtn.addEventListener('click', () => {
+      manager.randomizeArrangement();
+    });
+  }
+  
+  if (closeAllBtn) {
+    closeAllBtn.addEventListener('click', () => {
+      manager.closeAllNotes();
+    });
+  }
+  
+  if (hideLinesBtn) {
+    hideLinesBtn.addEventListener('click', () => {
+      manager.hideAllLines();
+    });
+  }
+  
+  if (showLinesBtn) {
+    showLinesBtn.addEventListener('click', () => {
+      manager.showAllLines();
+    });
+  }
+}
 window.addEventListener('load', () => {
   initializeGridPluses();
   hideRandomPlusGroups();
