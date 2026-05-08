@@ -841,11 +841,20 @@ let previewTimeout = null;
         this.stopAutoPlay(project.id);
       }, 300);
     });
-
+    // Click handler - only if not dragging
     note.addEventListener('click', (e) => {
       if (this.isDraggingNote) return;
       if (e.target.closest('.sticky-note-controls')) return;
       if (note.classList.contains('frozen')) return;
+      const rect = note.getBoundingClientRect();
+      this.openFloatingWindow(project, rect.left, rect.top, note);
+    });
+   // Touch tap handler for mobile
+    note.addEventListener('touchend', (e) => {
+      if (this.isDraggingNote) return;
+      if (e.target.closest('.sticky-note-controls')) return;
+      if (note.classList.contains('frozen')) return;
+      e.preventDefault();
       const rect = note.getBoundingClientRect();
       this.openFloatingWindow(project, rect.left, rect.top, note);
     });
@@ -970,21 +979,40 @@ let previewTimeout = null;
     }
   }
 
-  makeDraggable(element, project) {
+ makeDraggable(element, project) {
     let isDragging = false;
     let startX, startY, startLeft, startTop;
+    let touchStartX, touchStartY;
 
+    // Mouse events for desktop
     element.addEventListener('mousedown', (e) => {
       if (e.target.closest('.sticky-note-controls')) return;
       if (element.classList.contains('frozen')) return;
       isDragging = true;
       this.isDraggingNote = true;
-      startX = e.clientX; startY = e.clientY;
+      startX = e.clientX;
+      startY = e.clientY;
       startLeft = parseInt(element.style.left);
       startTop = parseInt(element.style.top);
       element.style.zIndex = noteZIndex++;
       element.style.cursor = 'grabbing';
       e.preventDefault();
+    });
+
+    // Touch events for mobile (phone)
+    element.addEventListener('touchstart', (e) => {
+      if (e.target.closest('.sticky-note-controls')) return;
+      if (element.classList.contains('frozen')) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      isDragging = true;
+      this.isDraggingNote = true;
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      startLeft = parseInt(element.style.left);
+      startTop = parseInt(element.style.top);
+      element.style.zIndex = noteZIndex++;
+      element.style.cursor = 'grabbing';
     });
 
     const onMouseMove = (e) => {
@@ -996,7 +1024,25 @@ let previewTimeout = null;
       this.updateConnectorLineForNote(element);
     };
     
+    // Touch move for mobile
+    const onTouchMove = (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      let newLeft = startLeft + (touch.clientX - touchStartX);
+      let newTop = startTop + (touch.clientY - touchStartY);
+      element.style.left = `${newLeft}px`;
+      element.style.top = `${newTop}px`;
+      this.updateConnectorLineForNote(element);
+    };
+    
     const onMouseUp = () => {
+      isDragging = false;
+      element.style.cursor = '';
+      setTimeout(() => { this.isDraggingNote = false; }, 100);
+    };
+    
+    const onTouchEnd = () => {
       isDragging = false;
       element.style.cursor = '';
       setTimeout(() => { this.isDraggingNote = false; }, 100);
@@ -1004,8 +1050,10 @@ let previewTimeout = null;
     
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('touchmove', onTouchMove, { passive: false });
+    document.addEventListener('touchend', onTouchEnd);
   }
-
+  
   updateConnectorLineForNote(note) {
     const projectId = note.getAttribute('data-project-id');
     const tab = document.getElementById(`tab-${projectId}`);
@@ -1162,11 +1210,35 @@ let previewTimeout = null;
       win.style.zIndex = 30000 + activeFloatingWindows.length;
       e.preventDefault();
     });
+         // Touch drag for mobile
+    win.addEventListener('touchstart', (e) => {
+      if (e.target.classList.contains('window-close') || 
+          e.target.classList.contains('window-minimize') ||
+          e.target.classList.contains('window-prev') ||
+          e.target.classList.contains('window-next') ||
+          e.target.classList.contains('resize-handle')) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      isDragging = true;
+      dragStartX = touch.clientX;
+      dragStartY = touch.clientY;
+      startLeft = win.offsetLeft;
+      startTop = win.offsetTop;
+      win.style.zIndex = 30000 + activeFloatingWindows.length;
+    });
     
-    const onWinMouseMove = (e) => {
+const onWinMouseMove = (e) => {
       if (!isDragging) return;
       win.style.left = (startLeft + (e.clientX - dragStartX)) + 'px';
       win.style.top = (startTop + (e.clientY - dragStartY)) + 'px';
+    };
+    
+    const onWinTouchMove = (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      win.style.left = (startLeft + (touch.clientX - dragStartX)) + 'px';
+      win.style.top = (startTop + (touch.clientY - dragStartY)) + 'px';
     };
     
     const onWinMouseUp = () => {
@@ -1175,6 +1247,9 @@ let previewTimeout = null;
     
     document.addEventListener('mousemove', onWinMouseMove);
     document.addEventListener('mouseup', onWinMouseUp);
+    document.addEventListener('touchmove', onWinTouchMove, { passive: false });
+    document.addEventListener('touchend', onWinMouseUp);
+
     
     // MINIMIZE BUTTON
     win.querySelector('.window-minimize').addEventListener('click', () => {
