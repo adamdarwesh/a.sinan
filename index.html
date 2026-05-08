@@ -558,7 +558,11 @@
     .nav-links a { font-size: 0.6rem; }
     div[style*="position: fixed; top: 130px;"] {
       top: 115px !important;
+      left: 0 !important;
+      right: 0 !important;
       gap: 0.4rem !important;
+      justify-content: flex-start !important;
+      padding: 0.3rem 0.8rem !important;
     }
     div[style*="position: fixed; top: 130px;"] button {
       font-size: 0.45rem !important;
@@ -637,7 +641,7 @@
   </ul>
 </div>
 
-<div style="position: fixed; top: 130px; left: 0; right: 0; z-index: 84; text-align: center; padding: 0.3rem; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); border-bottom: 1px solid var(--rule); display: flex; justify-content: center; gap: 0.8rem; flex-wrap: wrap;">
+<div style="position: fixed; top: 130px; left: 0; right: 0; z-index: 84; padding: 0.3rem 1rem; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); border-bottom: 1px solid var(--rule); display: flex; justify-content: flex-start; gap: 0.8rem; flex-wrap: wrap;">
   <button id="gridBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer;">Grid</button>
   <button id="randomizeBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer;">Randomize</button>
   <button id="closeAllBtn" style="background: var(--accent); color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.6rem; cursor: pointer;">Close All</button>
