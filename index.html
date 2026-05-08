@@ -818,7 +818,7 @@ let previewTimeout = null;
       }
     }
 
-    note.addEventListener('mouseenter', () => {
+   note.addEventListener('mouseenter', () => {
       if (note.classList.contains('frozen')) return;
       if (previewTimeout) clearTimeout(previewTimeout);
       note.style.zIndex = 9999;
@@ -833,7 +833,7 @@ let previewTimeout = null;
         this.stopAutoPlay(project.id);
       }, 300);
     });
-
+   
     note.addEventListener('click', (e) => {
       if (this.isDraggingNote) return;
       if (e.target.closest('.sticky-note-controls')) return;
@@ -953,27 +953,39 @@ let previewTimeout = null;
     note.style.width = '160px';
   }
 
-  startAutoPlay(projectId, note) {
+   startAutoPlay(projectId, note) {
     const slidesContainer = note.querySelector(`#preview-${projectId}`);
     if (!slidesContainer) return;
     const slideCount = slidesContainer.children.length;
     if (slideCount <= 1) return;
     
+    // Clear any existing interval for this project
+    if (autoPlayIntervals[projectId]) {
+      clearInterval(autoPlayIntervals[projectId]);
+      delete autoPlayIntervals[projectId];
+    }
+    
     let currentIndex = 0;
+    
+    // Get current transform to know starting index
     const transform = slidesContainer.style.transform;
-    const match = transform.match(/translateX\(-([0-9]+)%/);
-    if (match) currentIndex = parseInt(match[1]) / 100;
+    if (transform && transform !== 'none') {
+      const match = transform.match(/translateX\(-([0-9]+)%/);
+      if (match) currentIndex = parseInt(match[1]) / 100;
+    }
     
-    if (autoPlayIntervals[projectId]) clearInterval(autoPlayIntervals[projectId]);
-    
+    // Start new auto-play interval
     autoPlayIntervals[projectId] = setInterval(() => {
-      if (note.classList.contains('frozen')) return;
+      // Don't auto-play if note is frozen
+      if (note.classList && note.classList.contains('frozen')) return;
+      // Don't auto-play if note is not in preview-active state
+      if (!note.classList.contains('preview-active')) return;
+      
       currentIndex = (currentIndex + 1) % slideCount;
       slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
       note.setAttribute('data-last-image-index', currentIndex);
     }, 2000);
   }
-
   stopAutoPlay(projectId) {
     if (autoPlayIntervals[projectId]) {
       clearInterval(autoPlayIntervals[projectId]);
