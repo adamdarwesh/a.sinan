@@ -686,72 +686,81 @@
 
 <script>
 // ========== PROJECT DATA - 12 TAGS, 6 IMAGES EACH ==========
-const allProjects = [
-  { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", 
-    tags: ["Ecological", "Vernacular"], 
-    images: ["spiral_spines_1.jpg", "spiral_spines_2.jpg", "spiral_spines_3.jpg", "spiral_spines_4.jpg", "spiral_spines_5.jpg", "spiral_spines_6.jpg"],
-    fullDesc: "A regenerative material practice that transforms uprooted and discarded timber." },
-  { id: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", 
-    tags: ["Vernacular", "Digital Fabrication"], 
-    images: ["woven_realities_1.jpg", "woven_realities_2.jpg", "woven_realities_3.jpg", "woven_realities_4.jpg", "woven_realities_5.jpg", "woven_realities_6.jpg"],
-    fullDesc: "A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice." },
-  { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", 
-    tags: ["Post-Conflict", "Material Research"], 
-    images: ["new_cairn_1.jpg", "new_cairn_2.jpg", "new_cairn_3.jpg", "new_cairn_4.jpg", "new_cairn_5.jpg", "new_cairn_6.jpg"],
-    fullDesc: "Research project proposing un-crushed demolition rubble as masonry units." },
-  { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", 
-    tags: ["Speculative", "Ecological"], 
-    images: ["carbonfloss_1.jpg", "carbonfloss_2.jpg", "carbonfloss_3.jpg", "carbonfloss_4.jpg", "carbonfloss_5.jpg", "carbonfloss_6.jpg"],
-    fullDesc: "A political statement against absurd reluctance policies." },
-  { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", 
-    tags: ["Material Research", "Digital Fabrication"], 
-    images: ["ourobos_1.jpg", "ourobos_2.jpg", "ourobos_3.jpg", "ourobos_4.jpg", "ourobos_5.jpg", "ourobos_6.jpg"],
-    fullDesc: "Exploration of residual morphogenesis using AI-driven workflows." },
-  { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", 
-    tags: ["Ecological", "Collective Practice"], 
-    images: ["agropraxis_1.jpg", "agropraxis_2.jpg", "agropraxis_3.jpg", "agropraxis_4.jpg", "agropraxis_5.jpg", "agropraxis_6.jpg"],
-    fullDesc: "Intersection of agriculture and architectural practice." },
-  { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", category: "education", 
-    tags: ["Pedagogy", "Vernacular"], 
-    images: ["medius_1.jpg", "medius_2.jpg", "medius_3.jpg", "medius_4.jpg", "medius_5.jpg", "medius_6.jpg"],
-    fullDesc: "A prototype tracing character from Diola compounds in Senegal." },
-  { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", 
-    tags: ["Collective Practice", "Installation"], 
-    images: ["soft_unsealing_1.jpg", "soft_unsealing_2.jpg", "soft_unsealing_3.jpg", "soft_unsealing_4.jpg", "soft_unsealing_5.jpg", "soft_unsealing_6.jpg"],
-    fullDesc: "Exploring softening boundaries in urban contexts." },
-  { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", 
-    tags: ["Collective Practice", "Installation"], 
-    images: ["old_airfield_1.jpg", "old_airfield_2.jpg", "old_airfield_3.jpg", "old_airfield_4.jpg", "old_airfield_5.jpg", "old_airfield_6.jpg"],
-    fullDesc: "Acoustic mirror cultural gateway exploring sound and spatial memory." },
-  { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", 
-    tags: ["Vernacular", "Ecological"], 
-    images: ["enkidu_1.jpg", "enkidu_2.jpg", "enkidu_3.jpg", "enkidu_4.jpg", "enkidu_5.jpg", "enkidu_6.jpg"],
-    fullDesc: "Reviving vernacular Palestinian architecture in Dier Ghassaneh." },
-  { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", category: "art", 
-    tags: ["Installation", "Speculative"], 
-    images: ["aura_1.jpg", "aura_2.jpg", "aura_3.jpg", "aura_4.jpg", "aura_5.jpg", "aura_6.jpg"],
-    fullDesc: "Exploring atmospheric qualities of architectural space." },
-  { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", 
-    tags: ["Political", "Speculative"], 
-    images: ["liberation_fronts_1.jpg", "liberation_fronts_2.jpg", "liberation_fronts_3.jpg", "liberation_fronts_4.jpg", "liberation_fronts_5.jpg", "liberation_fronts_6.jpg"],
-    fullDesc: "Exploring liberation fronts as spatial and political constructs." },
-  { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", 
-    tags: ["Residency", "Installation"], 
-    images: ["regutting_1.jpg", "regutting_2.jpg", "regutting_3.jpg", "regutting_4.jpg", "regutting_5.jpg", "regutting_6.jpg"],
-    fullDesc: "Returns and remains through film, photography, and installation." },
-  { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", 
-    tags: ["Exhibition", "Political"], 
-    images: ["agential_cartographies_1.jpg", "agential_cartographies_2.jpg", "agential_cartographies_3.jpg", "agential_cartographies_4.jpg", "agential_cartographies_5.jpg", "agential_cartographies_6.jpg"],
-    fullDesc: "Experimental mappings across three spatial typologies." },
-  { id: "15", title: "PhD Research", year: "2024+", subtitle: "Die Angewandte", category: "education", 
-    tags: ["Material Research", "Pedagogy"], 
-    images: ["phd_research_1.jpg", "phd_research_2.jpg", "phd_research_3.jpg", "phd_research_4.jpg", "phd_research_5.jpg", "phd_research_6.jpg"],
-    fullDesc: "Post-conflict material practice and rubble reuse." },
-  { id: "16", title: "Teaching at AAUP", year: "2025+", subtitle: "Arab American University", category: "education", 
-    tags: ["Pedagogy", "Vernacular"], 
-    images: ["teaching_aaup_1.jpg", "teaching_aaup_2.jpg", "teaching_aaup_3.jpg", "teaching_aaup_4.jpg", "teaching_aaup_5.jpg", "teaching_aaup_6.jpg"],
-    fullDesc: "Faculty member at the Faculty of Architecture, AAUP, Palestine." }
-];
+// Helper function to auto-detect number of images for a project
+async function detectImageCount(projectSlug) {
+  let count = 0;
+  for (let i = 1; i <= 20; i++) { // Try up to 20 images
+    const img = new Image();
+    img.src = `images/${projectSlug}_${i}.jpg`;
+    await new Promise((resolve) => {
+      img.onload = () => {
+        count = i;
+        resolve();
+      };
+      img.onerror = () => {
+        if (i === 1) count = 0;
+        resolve();
+      };
+      setTimeout(() => resolve(), 100); // Timeout after 100ms
+    });
+    if (img.complete && img.naturalWidth === 0) break;
+  }
+  return count;
+}
+
+// Build image arrays dynamically
+async function buildProjectsWithDynamicImages() {
+  const baseProjects = [
+    { id: "01", title: "Spiral Spines", slug: "spiral_spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", 
+      tags: ["Ecological", "Vernacular"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber." },
+    { id: "02", title: "Woven Realities", slug: "woven_realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", 
+      tags: ["Vernacular", "Digital Fabrication"], fullDesc: "A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice." },
+    { id: "03", title: "The New Cairn", slug: "new_cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", 
+      tags: ["Post-Conflict", "Material Research"], fullDesc: "Research project proposing un-crushed demolition rubble as masonry units." },
+    { id: "04", title: "Carbonfloss", slug: "carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", 
+      tags: ["Speculative", "Ecological"], fullDesc: "A political statement against absurd reluctance policies." },
+    { id: "05", title: "OUROBOS", slug: "ourobos", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", 
+      tags: ["Material Research", "Digital Fabrication"], fullDesc: "Exploration of residual morphogenesis using AI-driven workflows." },
+    { id: "06", title: "Agropraxis", slug: "agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", 
+      tags: ["Ecological", "Collective Practice"], fullDesc: "Intersection of agriculture and architectural practice." },
+    { id: "07", title: "Medius paedagogicus", slug: "medius", year: "2022", subtitle: "Published in Dazeen", category: "education", 
+      tags: ["Pedagogy", "Vernacular"], fullDesc: "A prototype tracing character from Diola compounds in Senegal." },
+    { id: "08", title: "Soft Unsealing", slug: "soft_unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", 
+      tags: ["Collective Practice", "Installation"], fullDesc: "Exploring softening boundaries in urban contexts." },
+    { id: "09", title: "Old Airfield", slug: "old_airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", 
+      tags: ["Collective Practice", "Installation"], fullDesc: "Acoustic mirror cultural gateway exploring sound and spatial memory." },
+    { id: "10", title: "Enkidu", slug: "enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", 
+      tags: ["Vernacular", "Ecological"], fullDesc: "Reviving vernacular Palestinian architecture in Dier Ghassaneh." },
+    { id: "11", title: "Aura", slug: "aura", year: "2022", subtitle: "Folly Project", category: "art", 
+      tags: ["Installation", "Speculative"], fullDesc: "Exploring atmospheric qualities of architectural space." },
+    { id: "12", title: "Liberation Fronts", slug: "liberation_fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", 
+      tags: ["Political", "Speculative"], fullDesc: "Exploring liberation fronts as spatial and political constructs." },
+    { id: "13", title: "Regutting", slug: "regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", 
+      tags: ["Residency", "Installation"], fullDesc: "Returns and remains through film, photography, and installation." },
+    { id: "14", title: "Agential Cartographies", slug: "agential_cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", 
+      tags: ["Exhibition", "Political"], fullDesc: "Experimental mappings across three spatial typologies." },
+    { id: "15", title: "PhD Research", slug: "phd_research", year: "2024+", subtitle: "Die Angewandte", category: "education", 
+      tags: ["Material Research", "Pedagogy"], fullDesc: "Post-conflict material practice and rubble reuse." },
+    { id: "16", title: "Teaching at AAUP", slug: "teaching_aaup", year: "2025+", subtitle: "Arab American University", category: "education", 
+      tags: ["Pedagogy", "Vernacular"], fullDesc: "Faculty member at the Faculty of Architecture, AAUP, Palestine." }
+  ];
+
+  const allProjects = [];
+  
+  for (const project of baseProjects) {
+    const imageCount = await detectImageCount(project.slug);
+    const images = [];
+    for (let i = 1; i <= imageCount; i++) {
+      images.push(`${project.slug}_${i}.jpg`);
+    }
+    allProjects.push({ ...project, images });
+  }
+  
+  return allProjects;
+}
+
+// This will be populated after detection
+let allProjects = [];
 
 let noteZIndex = 100;
 let autoPlayIntervals = {};
@@ -1800,8 +1809,12 @@ function drawCategoryHoverLines(categoryEl) {
 }
 
 // ========== INITIALIZE ==========
-function initialize() {
+async function initialize() {
+  // Wait for images to be auto-detected from folder
+  allProjects = await buildProjectsWithDynamicImages();
+  
   manager = new StickyNoteManager();
+
   allProjects.forEach((project, i) => {
     const x = 30 + Math.random() * (window.innerWidth - 350);
     const y = 180 + Math.random() * (window.innerHeight - 500);
@@ -1811,7 +1824,9 @@ function initialize() {
       if (noteEl) manager.makeDraggable(noteEl, project);
     }, 100 + i * 40);
   });
+
   setTimeout(createTagFilters, 800);
+
   const filters = document.querySelectorAll('#categoryFilters li');
   filters.forEach(filter => {
     filter.addEventListener('click', () => {
@@ -1821,10 +1836,12 @@ function initialize() {
       manager.filterByCategory(category);
       clearHoverLines();
     });
+
     filter.addEventListener('mouseenter', () => {
       manager.highlightByCategory(filter.getAttribute('data-category'));
       setTimeout(() => drawCategoryHoverLines(filter), 50);
     });
+
     filter.addEventListener('mouseleave', () => {
       if (document.getElementById('connectorSvg').style.display !== 'none') clearHoverLines();
       const activeCategory = document.querySelector('#categoryFilters li.active').getAttribute('data-category');
@@ -1832,6 +1849,7 @@ function initialize() {
       setTimeout(() => { if (manager) manager.updateAllConnectorLines(); }, 100);
     });
   });
+
   document.getElementById('openCvBtn').addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('cvModal').style.display = 'flex';
@@ -1847,26 +1865,30 @@ function initialize() {
       document.body.style.overflow = 'auto';
     }
   });
+
   document.getElementById('closeResultsBtn').addEventListener('click', closeResultsModal);
   document.getElementById('resultsModal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('resultsModal')) closeResultsModal();
   });
+
   document.getElementById('splitModal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('splitModal')) closeSplitModal();
   });
+  
   window.addEventListener('resize', () => { if (manager) manager.updateAllConnectorLines(); });
+
   const gridBtn = document.getElementById('gridBtn');
   const randomizeBtn = document.getElementById('randomizeBtn');
   const closeAllBtn = document.getElementById('closeAllBtn');
   const hideLinesBtn = document.getElementById('hideLinesBtn');
   const showLinesBtn = document.getElementById('showLinesBtn');
+  
   if (gridBtn) gridBtn.addEventListener('click', () => manager.arrangeGrid());
   if (randomizeBtn) randomizeBtn.addEventListener('click', () => manager.randomizeArrangement());
   if (closeAllBtn) closeAllBtn.addEventListener('click', () => manager.closeAllNotes());
   if (hideLinesBtn) hideLinesBtn.addEventListener('click', () => manager.hideAllLines());
   if (showLinesBtn) showLinesBtn.addEventListener('click', () => manager.showAllLines());
 }
-
 window.addEventListener('load', () => {
   initializeGridPluses();
   hideRandomPlusGroups();
