@@ -2,17 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ad(h)am Sinan — Sticky Note Canvas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     --ink: #111111;
@@ -29,9 +25,8 @@
     --mono: 'DM Mono', monospace;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
+  h1,h2,h3,h4,h5,h6 { font-family: var(--body-serif); }
 
   body {
     background: var(--paper);
@@ -44,43 +39,25 @@
     min-height: 100vh;
   }
 
-  /* Double grid pattern */
   body::before {
     content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: 60px 60px;
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
 
   body::after {
     content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-image: linear-gradient(var(--grid-line-small) 0.5px, transparent 0.5px), linear-gradient(90deg, var(--grid-line-small) 0.5px, transparent 0.5px);
     background-size: 20px 20px;
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
 
-  /* floating + signs container */
   #gridPlusContainer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 1;
-    overflow: visible;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    pointer-events: none; z-index: 1; overflow: visible;
   }
 
   .grid-plus {
@@ -91,119 +68,72 @@
     font-weight: 300;
     pointer-events: none;
     opacity: 1;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.3s ease;
     line-height: 1;
     transform: translate(-50%, -50%);
-    width: 12px;
-    height: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 12px; height: 12px;
+    display: flex; align-items: center; justify-content: center;
   }
 
-  .grid-plus.hidden {
-    opacity: 0;
-  }
+  .grid-plus.hidden { opacity: 0; }
 
-  /* SVG Connector lines */
+  /* Connector Lines SVG */
   #connectorSvg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 2;
-    overflow: visible;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    pointer-events: none; z-index: 2; overflow: visible;
   }
 
   .connector-line {
     stroke: var(--accent);
-    stroke-width: 1.3;
+    stroke-width: 1.2;
     fill: none;
     stroke-linecap: round;
     stroke-linejoin: round;
-    transition: stroke-opacity 0.2s ease;
   }
 
-  /* navigation and UI */
-  nav, .categories, .tags-container, footer {
-    position: relative;
-    z-index: 100;
-  }
+  nav, .categories, .tags-container, footer { position: relative; z-index: 100; }
 
   nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
     padding: 0.8rem 2rem;
-    background: rgba(255,255,255,0.75);
-    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--rule);
   }
 
   .nav-name {
-    font-family: var(--body-serif);
-    font-size: 0.9rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink);
-    text-decoration: none;
-    font-weight: 600;
+    font-family: var(--body-serif); font-size: 0.9rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none; font-weight: 600;
   }
 
-  .nav-links {
-    display: flex;
-    gap: 2rem;
-    list-style: none;
-  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
 
   .nav-links a {
-    font-family: var(--body-serif);
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
+    font-family: var(--body-serif); font-size: 0.7rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none; transition: color 0.2s;
   }
 
-  .nav-links a:hover {
-    color: var(--accent);
-  }
+  .nav-links a:hover { color: var(--accent); }
 
   .categories {
-    position: fixed;
-    top: 65px;
-    left: 0;
-    right: 0;
-    z-index: 90;
-    text-align: center;
-    padding: 0.6rem;
-    background: rgba(255,255,255,0.75);
-    backdrop-filter: blur(12px);
+    position: fixed; top: 65px; left: 0; right: 0; z-index: 90;
+    text-align: center; padding: 0.6rem;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--rule);
   }
 
   .category-filters {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    list-style: none;
+    display: flex; justify-content: center; gap: 2rem; list-style: none;
   }
 
   .category-filters li {
-    font-family: var(--body-serif);
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    cursor: pointer;
-    padding: 0.3rem 0.8rem;
+    font-family: var(--body-serif); font-size: 0.65rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: pointer; padding: 0.3rem 0.8rem;
     transition: all 0.3s ease;
     color: var(--muted);
     position: relative;
@@ -211,68 +141,41 @@
 
   .category-filters li::after {
     content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1.5px;
-    background: var(--accent);
-    transform: scaleX(0);
-    transition: transform 0.2s ease;
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 1.5px; background: var(--accent);
+    transform: scaleX(0); transition: transform 0.2s ease;
   }
 
   .category-filters li:hover::after,
-  .category-filters li.active::after {
-    transform: scaleX(1);
-  }
-  .category-filters li:hover {
-    color: var(--accent);
-  }
-  .category-filters li.active {
-    color: var(--accent);
-  }
+  .category-filters li.active::after { transform: scaleX(1); }
+  .category-filters li:hover { color: var(--accent); }
+  .category-filters li.active { color: var(--accent); }
 
   .tags-container {
-    position: fixed;
-    top: 108px;
-    left: 0;
-    right: 0;
-    z-index: 85;
-    background: rgba(255,255,255,0.75);
-    backdrop-filter: blur(12px);
+    position: fixed; top: 108px; left: 0; right: 0; z-index: 85;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--rule);
     padding: 0.4rem 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem;
   }
 
   .tag-filter {
-    font-family: var(--body-serif);
-    font-size: 0.55rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    padding: 0.25rem 0.7rem;
+    font-family: var(--body-serif); font-size: 0.55rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; padding: 0.25rem 0.7rem;
     border: none;
-    border-radius: 20px;
+    border-radius: 3px;
     color: white;
     background: var(--accent);
     transition: all 0.2s ease;
     position: relative;
   }
 
-  .tag-filter:hover {
-    background: var(--accent-light);
-    transform: translateY(-1px);
-  }
+  .tag-filter:hover { background: var(--accent-light); opacity: 0.9; }
 
-  /* tag tooltip at bottom */
-  .tag-filter[data-tooltip] {
-    position: relative;
-  }
-  .tag-filter[data-tooltip]::after {
+  /* Tooltip at BOTTOM of tag */
+  .tag-filter::after {
     content: attr(data-tooltip);
     position: absolute;
     top: 100%;
@@ -292,229 +195,114 @@
     font-family: var(--mono);
     letter-spacing: normal;
   }
-  .tag-filter:hover::after {
-    opacity: 1;
-  }
 
-  /* Sticky Canvas */
+  .tag-filter:hover::after { opacity: 1; }
+
   .sticky-canvas {
-    position: relative;
-    min-height: 100vh;
-    padding: 175px 2rem 2rem;
-    z-index: 3;
+    position: relative; min-height: 100vh;
+    padding: 175px 2rem 2rem; z-index: 3;
   }
 
   .sticky-note {
-    position: absolute;
-    background: #fefefe;
-    border: 1px solid var(--rule);
-    padding: 8px 10px;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    cursor: pointer;
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    transition: all 0.15s ease;
-    width: 160px;
-    z-index: 10;
-    color: var(--ink);
+    position: absolute; background: #fefefe;
+    border: 1px solid var(--rule); padding: 8px 10px;
+    border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    cursor: pointer; font-family: var(--mono); font-size: 0.6rem;
+    transition: all 0.15s ease; width: 160px; z-index: 10; color: var(--ink);
   }
 
   .sticky-note:hover {
-    transform: scale(1.02);
-    border-color: var(--accent);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    transform: scale(1.02); border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     z-index: 9999 !important;
   }
 
   .sticky-note.preview-active {
-    width: 280px;
-    height: auto;
-    z-index: 500;
+    width: 280px; height: auto; z-index: 500;
     border: 1px solid var(--accent);
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   }
 
-  .sticky-note.preview-active .sticky-preview {
-    display: block;
-  }
-  .sticky-note .sticky-preview {
-    display: none;
-    margin-top: 8px;
-  }
+  .sticky-note.preview-active .sticky-preview { display: block; }
+  .sticky-note .sticky-preview { display: none; margin-top: 8px; }
 
-  .sticky-preview-carousel {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    border-radius: 4px;
-    margin-bottom: 6px;
-  }
-  .sticky-preview-slides {
-    display: flex;
-    transition: transform 0.5s ease;
-  }
-  .sticky-preview-slide {
-    min-width: 100%;
-  }
-  .sticky-preview-slide img {
-    width: 100%;
-    height: 100px;
-    object-fit: cover;
-    background: #f5f5f5;
-  }
+  .sticky-preview-carousel { position: relative; width: 100%; overflow: hidden; border-radius: 4px; margin-bottom: 6px; }
+  .sticky-preview-slides { display: flex; transition: transform 0.5s ease; }
+  .sticky-preview-slide { min-width: 100%; }
+  .sticky-preview-slide img { width: 100%; height: 100px; object-fit: cover; background: #f5f5f5; }
 
-  .sticky-preview-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: 6px;
-  }
-  .sticky-preview-tag {
-    font-size: 0.5rem;
-    padding: 3px 6px;
-    border-radius: 2px;
-    color: white;
-    background: var(--accent);
-    font-family: var(--body-serif);
-  }
+  .sticky-preview-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .sticky-preview-tag { font-size: 0.5rem; padding: 3px 6px; border: none; border-radius: 2px; color: white; background: var(--accent); font-family: var(--body-serif); font-weight: 400; }
 
-  .sticky-title {
-    color: var(--accent);
-    margin-bottom: 3px;
-    font-size: 0.7rem;
-    font-weight: 600;
-  }
-  .sticky-subtitle {
-    font-size: 0.5rem;
-    color: var(--muted);
-  }
+  .sticky-note .sticky-title { color: var(--accent); margin-bottom: 3px; font-size: 0.7rem; font-weight: 600; font-family: var(--body-serif); }
+  .sticky-note .sticky-subtitle { font-size: 0.5rem; color: var(--muted); }
 
   .sticky-note-controls {
-    position: absolute;
-    top: 3px;
-    right: 6px;
-    display: flex;
-    gap: 6px;
-    opacity: 0;
-    transition: opacity 0.2s;
+    position: absolute; top: 3px; right: 6px;
+    display: flex; gap: 6px; opacity: 0; transition: opacity 0.2s;
   }
-  .sticky-note:hover .sticky-note-controls {
-    opacity: 1;
-  }
+
+  .sticky-note:hover .sticky-note-controls { opacity: 1; }
+
   .sticky-note-controls button {
-    background: rgba(0,0,0,0.05);
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    font-size: 0.6rem;
-    cursor: pointer;
-    color: var(--muted);
-    padding: 0 3px;
+    background: rgba(0,0,0,0.05); border: 1px solid var(--rule);
+    border-radius: 3px; font-size: 0.6rem; cursor: pointer;
+    color: var(--muted); padding: 0 3px;
   }
-  .sticky-note.minimized {
-    width: 120px !important;
-  }
+
+  .sticky-note-controls button:hover { color: var(--accent); border-color: var(--accent); }
+
+  .sticky-note.minimized { width: 120px !important; height: auto !important; }
   .sticky-note.minimized .sticky-preview,
-  .sticky-note.minimized .sticky-subtitle {
-    display: none;
-  }
-  .sticky-note.blurred {
-    opacity: 0.4;
-    filter: blur(1px);
-  }
-  .sticky-note.highlight {
-    opacity: 1;
-    filter: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent);
-  }
+  .sticky-note.minimized .sticky-subtitle { display: none; }
 
-  /* Sidebar tabs */
-  .sidebar-tabs {
-    position: fixed;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.95);
-    border-left: 1px solid var(--rule);
-    border-radius: 8px 0 0 8px;
-    padding: 0.5rem;
-    z-index: 200;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    max-height: 70vh;
-    overflow-y: auto;
-    box-shadow: -2px 2px 8px rgba(0,0,0,0.05);
-  }
-  .sidebar-tab {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    padding: 5px 3px;
-    font-family: var(--mono);
-    font-size: 0.45rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    background: #fefefe;
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    color: var(--muted);
-    transition: all 0.2s;
-  }
-  .sidebar-tab:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
+  .sticky-note.blurred { opacity: 0.4; filter: blur(1px); }
+  .sticky-note.highlight { opacity: 1; filter: none; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
 
-  /* FLOATING PROJECT WINDOW */
+  /* Floating Project Window */
   .floating-window {
     position: fixed;
     background: white;
     border-radius: 12px;
-    box-shadow: 0 20px 35px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.05);
+    box-shadow: 0 20px 35px rgba(0,0,0,0.25);
+    border: 1px solid var(--rule);
     display: flex;
     flex-direction: column;
-    z-index: 10000;
+    z-index: 20000;
     overflow: hidden;
-    backdrop-filter: blur(0px);
-    border: 1px solid var(--rule);
-    resize: both;
+    min-width: 380px;
+    min-height: 400px;
   }
+
   .window-header {
     background: var(--accent);
     color: white;
-    padding: 8px 12px;
+    padding: 10px 14px;
     cursor: move;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-family: var(--mono);
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.5px;
   }
-  .window-header h3 {
-    margin: 0;
-    font-size: 0.8rem;
-  }
+
+  .window-header h3 { margin: 0; font-size: 0.85rem; }
   .window-close {
     background: rgba(255,255,255,0.2);
     border: none;
     color: white;
     font-size: 1.2rem;
     cursor: pointer;
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
   }
-  .window-close:hover {
-    background: rgba(255,255,255,0.4);
-  }
+  .window-close:hover { background: rgba(255,255,255,0.4); }
+
   .window-body {
     flex: 1;
     padding: 1rem;
@@ -522,33 +310,20 @@
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
-    background: var(--paper);
   }
+
   .window-carousel {
     position: relative;
     width: 100%;
     overflow: hidden;
     border-radius: 8px;
     background: #f5f5f5;
-    min-height: 180px;
   }
-  .window-slides {
-    display: flex;
-    transition: transform 0.3s ease;
-  }
-  .window-slide {
-    min-width: 100%;
-  }
-  .window-slide img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-  }
-  .window-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
+  .window-slides { display: flex; transition: transform 0.3s ease; }
+  .window-slide { min-width: 100%; }
+  .window-slide img { width: 100%; height: 180px; object-fit: cover; }
+
+  .window-tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .window-tag {
     font-size: 0.6rem;
     padding: 4px 10px;
@@ -556,55 +331,67 @@
     color: white;
     border-radius: 20px;
   }
-  .resize-handle-window {
+
+  .resize-handle {
     position: absolute;
-    bottom: 4px;
-    right: 4px;
-    width: 14px;
-    height: 14px;
+    bottom: 5px;
+    right: 5px;
+    width: 16px;
+    height: 16px;
     background: linear-gradient(135deg, transparent 50%, var(--accent) 50%);
     cursor: nw-resize;
-    z-index: 101;
+    border-radius: 0 0 8px 0;
   }
 
-  /* modals */
+  /* Sidebar Tabs */
+  .sidebar-tabs {
+    position: fixed; right: 0; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,0.95); border-left: 1px solid var(--rule);
+    border-radius: 8px 0 0 8px; padding: 0.5rem; z-index: 200;
+    display: flex; flex-direction: column; gap: 5px;
+    max-height: 70vh; overflow-y: auto;
+    box-shadow: -2px 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .sidebar-tab {
+    writing-mode: vertical-rl; text-orientation: mixed;
+    padding: 5px 3px; font-family: var(--mono); font-size: 0.45rem;
+    letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
+    background: #fefefe; border: 1px solid var(--rule); border-radius: 4px;
+    color: var(--muted); transition: all 0.2s;
+  }
+
+  .sidebar-tab:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Modals */
   .cv-modal-overlay, .results-modal-overlay {
-    display: none;
-    position: fixed;
-    top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(5px);
-    z-index: 15000;
-    justify-content: center;
-    align-items: center;
-  }
-  .cv-modal, .results-modal {
-    background: white;
-    max-width: 800px;
-    width: 90%;
-    max-height: 85%;
-    border-radius: 12px;
-    overflow: auto;
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
+    z-index: 30000; justify-content: center; align-items: center;
   }
 
-  /* contact */
+  .cv-modal, .results-modal {
+    background: white; width: 90%; max-width: 700px; max-height: 80%;
+    border-radius: 12px; overflow: auto;
+  }
+
   #contact {
-    position: relative;
-    z-index: 10;
+    position: relative; z-index: 10;
     border-top: 1px solid var(--rule);
     padding: 3rem 2rem;
     background: rgba(255,255,255,0.97);
     text-align: center;
   }
+
   footer {
-    background: rgba(255,255,255,0.95);
-    border-top: 1px solid var(--rule);
-    padding: 0.6rem;
-    text-align: center;
+    background: rgba(255,255,255,0.95); border-top: 1px solid var(--rule);
+    padding: 0.6rem; text-align: center; position: relative; z-index: 10;
   }
+
   @media (max-width: 768px) {
-    .sticky-canvas { padding-top: 200px; }
+    .sticky-canvas { padding: 170px 1rem 1rem; }
     .sidebar-tabs { display: none; }
+    .floating-window { width: 90% !important; left: 5% !important; }
   }
 </style>
 </head>
@@ -614,253 +401,626 @@
 <svg id="connectorSvg"></svg>
 
 <!-- CV MODAL -->
-<div id="cvModal" class="cv-modal-overlay"><div class="cv-modal"><div class="cv-modal-header" style="padding:1rem;border-bottom:1px solid #e0e0e0;display:flex;justify-content:space-between"><h2 style="color:#FF3030">CV / Resume</h2><button id="closeCvBtn" style="background:none;border:none;font-size:1.5rem">✕</button></div><div class="cv-modal-body" style="padding:1rem"><p><strong>Ad(h)am Sinan</strong> — Architect, Artist, Researcher</p><p>PhD candidate at Die Angewandte, Vienna. Teaching at AAUP. Exhibitions: IABR, Chicago Biennial, etc.</p></div></div></div>
+<div id="cvModal" class="cv-modal-overlay">
+  <div class="cv-modal">
+    <div style="padding:1rem; border-bottom:1px solid #e0e0e0; display:flex; justify-content:space-between;">
+      <h2 style="color:#FF3030">CV / Resume</h2>
+      <button id="closeCvBtn" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">✕</button>
+    </div>
+    <div style="padding:1rem;">
+      <h4>Ad(h)am Sinan</h4>
+      <p>Architect · Artist · Researcher · PhD candidate at Die Angewandte, Vienna</p>
+      <p><strong>Education:</strong> MArch (Magna cum laude), B.Sc Architectural Engineering</p>
+      <p><strong>Experience:</strong> Faculty at AAUP, LAVA Berlin, freelance worldwide</p>
+      <p><strong>Exhibitions:</strong> IABR Rotterdam, Chicago Biennial, Vienna Climate Biennale</p>
+    </div>
+  </div>
+</div>
 
-<!-- Results modal for tags -->
-<div id="resultsModal" class="results-modal-overlay"><div class="results-modal" style="background:white"><div style="padding:1rem;border-bottom:1px solid #ddd"><h2 id="resultsTitle">Projects</h2><button id="closeResultsBtn" style="float:right">✕</button></div><div id="resultsGrid" style="padding:1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem"></div></div></div>
+<!-- Results Modal -->
+<div id="resultsModal" class="results-modal-overlay">
+  <div class="results-modal">
+    <div style="padding:1rem; border-bottom:1px solid #e0e0e0; display:flex; justify-content:space-between;">
+      <h2 id="resultsTitle" style="color:#FF3030">Projects</h2>
+      <button id="closeResultsBtn" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">✕</button>
+    </div>
+    <div id="resultsGrid" style="padding:1rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem;"></div>
+  </div>
+</div>
 
 <nav>
   <a href="#" class="nav-name">Ad(h)am Sinan</a>
-  <ul class="nav-links"><li><a href="#" id="openCvBtn">CV</a></li><li><a href="#contact">Contact</a></li></ul>
+  <ul class="nav-links">
+    <li><a href="#" id="openCvBtn">CV</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
 </nav>
-<div class="categories"><ul class="category-filters" id="categoryFilters"><li data-category="all" class="active">All</li><li data-category="architecture">Architecture</li><li data-category="art">Art</li><li data-category="research">Research</li><li data-category="education">Education</li></ul></div>
+
+<div class="categories">
+  <ul class="category-filters" id="categoryFilters">
+    <li data-category="all" class="active">All</li>
+    <li data-category="architecture">Architecture</li>
+    <li data-category="art">Art</li>
+    <li data-category="research">Research</li>
+    <li data-category="education">Education</li>
+  </ul>
+</div>
+
 <div class="tags-container" id="tagsBar"></div>
 <div class="sticky-canvas" id="stickyCanvas"></div>
 <div class="sidebar-tabs" id="sidebarTabs"></div>
-<section id="contact"><p class="contact-heading">Get in Touch</p><h2 class="contact-name">Ad(h)am Sinan</h2><div class="contact-links"><a href="mailto:adam95darwesh@gmail.com">adam95darwesh@gmail.com</a> · <a href="#">LinkedIn</a> · <a href="#">Instagram</a></div></section>
+
+<section id="contact">
+  <h2 class="contact-name">Ad(h)am Sinan</h2>
+  <p>Architect · Artist · Researcher</p>
+  <p>Vienna, Austria · Bethlehem, Palestine</p>
+  <p><a href="mailto:adam95darwesh@gmail.com" style="color:#FF3030">adam95darwesh@gmail.com</a></p>
+</section>
+
 <footer><span>Ad(h)am Sinan — Architecture, Art &amp; Research</span></footer>
 
 <script>
-// PROJECT DATA
+// ========== PROJECT DATA ==========
 const allProjects = [
-  { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", tags: ["Regenerative Material", "Vernacular Craft", "Woodcarving"], fullDesc: "A regenerative material practice that transforms uprooted timber." },
-  { id: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", tags: ["Circular Architecture", "Modular Assembly", "Afghan Heritage"], fullDesc: "1:1 prototype of Afghan dwelling." },
-  { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", tags: ["Rubble Reuse", "Post-Conflict", "Compression-Only"], fullDesc: "Demolition rubble as masonry units." },
-  { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", tags: ["Speculative", "Ecological", "Skyscraper"], fullDesc: "Political skyscraper statement." },
-  { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", tags: ["AI Strategy", "Residual Material", "Morphogenesis"], fullDesc: "AI-driven material strategies." },
-  { id: "06", title: "Agropraxis", year: "2021", subtitle: "Dazeen", category: "architecture", tags: ["Agricultural", "Spatial Practice", "Ecological"], fullDesc: "Agriculture meets architecture." },
-  { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Dazeen", category: "education", tags: ["Pedagogical Space", "Flat Hierarchy", "Institutional"], fullDesc: "Radial educational space." },
-  { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11", category: "art", tags: ["Collective", "Installation", "Spatial Practice"], fullDesc: "Urban installation." },
-  { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", tags: ["Collective", "Acoustic", "Landscape"], fullDesc: "Acoustic mirror gateway." },
-  { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", tags: ["Vernacular", "Ecological", "Palestinian"], fullDesc: "Reviving Palestinian vernacular." }
+  { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", tags: ["Regenerative Material", "Vernacular Craft", "Woodcarving"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing." },
+  { id: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", tags: ["Circular Architecture", "Modular Assembly", "Afghan Heritage"], fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice using reusable by-products." },
+  { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", tags: ["Rubble Reuse", "Post-Conflict", "Compression-Only"], fullDesc: "A research and construction project proposing whole, un-crushed demolition rubble as masonry units in compression-only enclosures." },
+  { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", tags: ["Speculative", "Ecological", "Skyscraper"], fullDesc: "A political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity." },
+  { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", tags: ["AI Strategy", "Residual Material", "Morphogenesis"], fullDesc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies." },
+  { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", tags: ["Agricultural", "Spatial Practice", "Ecological"], fullDesc: "Explores the intersection of agriculture and architectural practice." },
+  { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", category: "education", tags: ["Pedagogical Space", "Flat Hierarchy", "Institutional"], fullDesc: "A prototype tracing its character from Diola compounds in Casamance, Senegal." },
+  { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", tags: ["Collective", "Installation", "Spatial Practice"], fullDesc: "Part of the [A]FA Collective, Soft Unsealing explores softening boundaries." },
+  { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", tags: ["Collective", "Acoustic", "Landscape"], fullDesc: "An acoustic mirror cultural gateway exploring sound and spatial memory." },
+  { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", tags: ["Vernacular", "Ecological", "Palestinian"], fullDesc: "Reviving elements of vernacular Palestinian architecture in Dier Ghassaneh." },
+  { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", category: "art", tags: ["Folly", "Installation", "Atmosphere"], fullDesc: "A folly project exploring the atmospheric qualities of architectural space." },
+  { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", tags: ["Thesis", "Political", "Spatial Agency"], fullDesc: "Exploring liberation fronts as spatial and political constructs." },
+  { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", tags: ["Residency", "Installation", "Film"], fullDesc: "A residency project exploring returns and remains through film and installation." },
+  { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", tags: ["Exhibition", "Cartography", "Agency"], fullDesc: "An exhibition presenting experimental mappings across three spatial typologies." },
+  { id: "15", title: "PhD Research", year: "2024+", subtitle: "Die Angewandte", category: "education", tags: ["Doctoral", "Material Practice", "Research"], fullDesc: "Doctoral research focusing on post-conflict material practice and rubble reuse." },
+  { id: "16", title: "Teaching at AAUP", year: "2025+", subtitle: "Arab American University", category: "education", tags: ["Faculty", "Pedagogy", "Palestine"], fullDesc: "Faculty member and lecturer at the Faculty of Architecture, AAUP, Palestine." }
 ];
 
-// Helper: rounded corner line (cubic bezier rounded corners)
-function roundedLinePath(x1, y1, x2, y2, radius = 8) {
-  const dx = x2 - x1, dy = y2 - y1;
-  const angle = Math.atan2(dy, dx);
-  const perpX = -Math.sin(angle) * radius;
-  const perpY = Math.cos(angle) * radius;
-  const startOffset = { x: perpX, y: perpY };
-  const endOffset = { x: -perpX, y: -perpY };
-  const p1 = { x: x1 + startOffset.x, y: y1 + startOffset.y };
-  const p2 = { x: x2 + endOffset.x, y: y2 + endOffset.y };
-  const cp1 = { x: x1, y: y1 };
-  const cp2 = { x: x2, y: y2 };
-  return `M ${p1.x} ${p1.y} Q ${cp1.x} ${cp1.y} ${(p1.x+cp1.x)/2} ${(p1.y+cp1.y)/2} T ${x1+startOffset.x*0.5} ${y1+startOffset.y*0.5} L ${x2+endOffset.x*0.5} ${y2+endOffset.y*0.5} Q ${cp2.x} ${cp2.y} ${p2.x} ${p2.y}`;
+// ========== GLOBALS ==========
+let stickyNotes = [];
+let noteZIndex = 100;
+let autoPlayIntervals = {};
+let currentCategory = 'all';
+let tagElements = [];
+let activeWindows = [];
+
+// ========== UTILITIES ==========
+function snapToGrid(value, gridSize = 20) {
+  return Math.round(value / gridSize) * gridSize;
 }
 
-class Portfolio {
-  constructor() {
-    this.floatingWindows = [];
-    this.notes = [];
-    this.closedMap = new Map();
-    this.currentCategory = 'all';
-    this.tagElements = [];
-    this.init();
+// Rounded corner line (filleted corners using quadratic bezier)
+function createRoundedPath(x1, y1, x2, y2, radius = 6) {
+  // If points are close, just draw straight line
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  if (distance < radius * 2) {
+    return `M ${x1} ${y1} L ${x2} ${y2}`;
   }
+  
+  // For simplicity with orthogonal-like paths, use a stepped approach with rounded corners
+  // Go horizontal then vertical OR vertical then horizontal
+  const midX = x1;
+  const midY = y2;
+  
+  // Path: x1,y1 → x1,midY (with fillet) → x2,midY (with fillet) → x2,y2
+  const r = radius;
+  return `M ${x1} ${y1} 
+          L ${x1} ${midY - r} 
+          Q ${x1} ${midY} ${x1 + r} ${midY} 
+          L ${x2 - r} ${midY} 
+          Q ${x2} ${midY} ${x2} ${midY + r} 
+          L ${x2} ${y2}`;
+}
 
-  init() {
-    this.createStickyNotes();
-    this.buildTagFilters();
-    this.setupCategoryListeners();
-    this.setupModals();
-    this.initGridPlus(0.6);
-    this.initConnectorLines();
-  }
+function clearConnectorLines() {
+  const svg = document.getElementById('connectorSvg');
+  svg.innerHTML = '';
+}
 
-  createStickyNotes() {
-    const canvas = document.getElementById('stickyCanvas');
-    allProjects.forEach((proj, idx) => {
-      const note = document.createElement('div');
-      note.className = 'sticky-note';
-      note.setAttribute('data-category', proj.category);
-      note.setAttribute('data-project-idx', idx);
-      note.setAttribute('data-project-id', proj.id);
-      note.style.left = `${50 + (idx * 37) % (window.innerWidth - 300)}px`;
-      note.style.top = `${180 + (idx * 23) % (window.innerHeight - 400)}px`;
-      note.style.zIndex = 100 + idx;
-      note.innerHTML = `<div class="sticky-title">${proj.id} · ${proj.title}</div><div class="sticky-subtitle">${proj.subtitle} (${proj.year})</div><div class="sticky-preview"><div class="sticky-preview-carousel"><div class="sticky-preview-slides">${[1,2,3].map(() => `<div class="sticky-preview-slide"><img src="https://placehold.co/200x100/f5f5f5/999?text=${proj.title.slice(0,3)}"></div>`).join('')}</div></div><div class="sticky-preview-tags">${proj.tags.slice(0,2).map(t=>`<span class="sticky-preview-tag">${t}</span>`).join('')}</div></div><div class="sticky-note-controls"><button class="minimize-note">−</button><button class="close-note">✕</button></div>`;
-      note.addEventListener('mouseenter', (e) => { note.classList.add('preview-active'); e.stopPropagation(); note.style.zIndex = 9999; });
-      note.addEventListener('mouseleave', () => { note.classList.remove('preview-active'); });
-      note.addEventListener('click', (e) => { if(!e.target.closest('.sticky-note-controls')) this.openFloatingWindow(proj); });
-      note.querySelector('.close-note')?.addEventListener('click', (e)=>{ e.stopPropagation(); note.remove(); this.addToSidebar(proj,idx); });
-      note.querySelector('.minimize-note')?.addEventListener('click', (e)=>{ e.stopPropagation(); note.classList.toggle('minimized'); });
-      this.makeDraggableSticky(note);
-      canvas.appendChild(note);
-      this.notes.push(note);
-    });
-  }
+function drawConnectorLine(svg, x1, y1, x2, y2, opacity = 0.55) {
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  const d = createRoundedPath(x1, y1, x2, y2, 6);
+  path.setAttribute('d', d);
+  path.setAttribute('class', 'connector-line');
+  path.setAttribute('stroke-opacity', opacity);
+  svg.appendChild(path);
+}
 
-  makeDraggableSticky(el) {
-    let isDown=false, startX,startY, left,top;
-    el.addEventListener('mousedown', (e) => { if(e.target.closest('.sticky-note-controls')) return; isDown=true; startX=e.clientX;startY=e.clientY; left=parseInt(el.style.left);top=parseInt(el.style.top); el.style.zIndex=9999; e.preventDefault(); });
-    document.addEventListener('mousemove', (e) => { if(!isDown) return; el.style.left = `${left + (e.clientX-startX)}px`; el.style.top = `${top + (e.clientY-startY)}px`; });
-    document.addEventListener('mouseup', () => isDown=false);
-  }
+// ========== FLOATING WINDOW (resizable, draggable, multiple) ==========
+function openFloatingWindow(project) {
+  // Check if already open
+  if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
+  
+  const win = document.createElement('div');
+  win.className = 'floating-window';
+  win.setAttribute('data-id', project.id);
+  win.style.width = '520px';
+  win.style.height = '480px';
+  win.style.left = `${100 + activeWindows.length * 30}px`;
+  win.style.top = `${120 + activeWindows.length * 30}px`;
+  
+  win.innerHTML = `
+    <div class="window-header">
+      <h3>${project.id} · ${project.title}</h3>
+      <button class="window-close">✕</button>
+    </div>
+    <div class="window-body">
+      <div class="window-carousel">
+        <div class="window-slides">
+          ${[1,2,3,4].map(i => `<div class="window-slide"><img src="https://placehold.co/400x200/f5f5f5/999?text=${encodeURIComponent(project.title)}+${i}" onerror="this.src='https://placehold.co/400x200/f5f5f5/999?text=Image'"></div>`).join('')}
+        </div>
+      </div>
+      <div class="window-tags">
+        ${project.tags.map(t => `<span class="window-tag">${t}</span>`).join('')}
+      </div>
+      <div style="color: var(--accent); font-style: italic; font-size: 0.75rem;">${project.subtitle} (${project.year})</div>
+      <div style="font-size: 0.8rem; line-height: 1.5; color: var(--muted);">${project.fullDesc}</div>
+      <div class="resize-handle"></div>
+    </div>
+  `;
+  
+  document.body.appendChild(win);
+  activeWindows.push(win);
+  
+  // Dragging
+  const header = win.querySelector('.window-header');
+  let isDragging = false, dragStartX, dragStartY, startLeft, startTop;
+  
+  header.addEventListener('mousedown', (e) => {
+    if (e.target.classList.contains('window-close')) return;
+    isDragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    startLeft = win.offsetLeft;
+    startTop = win.offsetTop;
+    win.style.zIndex = 30000 + activeWindows.length;
+    e.preventDefault();
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    win.style.left = `${startLeft + (e.clientX - dragStartX)}px`;
+    win.style.top = `${startTop + (e.clientY - dragStartY)}px`;
+  });
+  
+  document.addEventListener('mouseup', () => { isDragging = false; });
+  
+  // Resizing
+  const resizeHandle = win.querySelector('.resize-handle');
+  let isResizing = false, startResizeX, startResizeY, startWidth, startHeight;
+  
+  resizeHandle.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    startResizeX = e.clientX;
+    startResizeY = e.clientY;
+    startWidth = win.offsetWidth;
+    startHeight = win.offsetHeight;
+    e.preventDefault();
+    e.stopPropagation();
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    const newWidth = Math.max(380, startWidth + (e.clientX - startResizeX));
+    const newHeight = Math.max(400, startHeight + (e.clientY - startResizeY));
+    win.style.width = `${newWidth}px`;
+    win.style.height = `${newHeight}px`;
+  });
+  
+  document.addEventListener('mouseup', () => { isResizing = false; });
+  
+  // Close button
+  win.querySelector('.window-close').addEventListener('click', () => {
+    win.remove();
+    activeWindows = activeWindows.filter(w => w !== win);
+  });
+}
 
-  addToSidebar(proj, idx) {
-    const sidebar=document.getElementById('sidebarTabs');
-    const tab=document.createElement('div'); tab.className='sidebar-tab'; tab.textContent=`${proj.id} · ${proj.title.slice(0,8)}`; tab.setAttribute('data-project-id',proj.id);
-    tab.addEventListener('click',()=>{ tab.remove(); this.openFloatingWindow(proj); });
-    sidebar.appendChild(tab);
-    this.closedMap.set(proj.id, proj);
-  }
-
-  openFloatingWindow(proj) {
-    // avoid duplicate window for same project
-    if(document.querySelector(`.floating-window[data-id="${proj.id}"]`)) return;
-    const win=document.createElement('div'); win.className='floating-window'; win.setAttribute('data-id',proj.id);
-    win.style.width='480px'; win.style.height='420px'; win.style.left='120px'; win.style.top='150px'; win.style.position='fixed';
-    win.innerHTML=`<div class="window-header"><h3>${proj.id} · ${proj.title}</h3><button class="window-close">✕</button></div><div class="window-body"><div class="window-carousel"><div class="window-slides">${[1,2,3].map(()=>`<div class="window-slide"><img src="https://placehold.co/400x200/f5f5f5/999?text=${proj.title}"></div>`).join('')}</div></div><div class="window-tags">${proj.tags.map(t=>`<span class="window-tag">${t}</span>`).join('')}</div><div class="window-subtitle">${proj.subtitle} (${proj.year})</div><div class="window-desc">${proj.fullDesc}</div><div class="resize-handle-window"></div></div>`;
-    document.body.appendChild(win);
-    const header=win.querySelector('.window-header');
-    let isDrag=false, offX,offY;
-    header.addEventListener('mousedown',(e)=>{ if(e.target.classList.contains('window-close')) return; isDrag=true; offX=e.clientX-win.offsetLeft; offY=e.clientY-win.offsetTop; win.style.zIndex=20000; e.preventDefault(); });
-    document.addEventListener('mousemove',(e)=>{ if(!isDrag) return; win.style.left=`${e.clientX-offX}px`; win.style.top=`${e.clientY-offY}px`; });
-    document.addEventListener('mouseup',()=>isDrag=false);
-    win.querySelector('.window-close').addEventListener('click',()=>win.remove());
-    const resizeHandle=win.querySelector('.resize-handle-window');
-    let resize=false, startW,startH, startX,startY;
-    resizeHandle.addEventListener('mousedown',(e)=>{ resize=true; startW=win.offsetWidth; startH=win.offsetHeight; startX=e.clientX; startY=e.clientY; e.preventDefault(); });
-    document.addEventListener('mousemove',(e)=>{ if(!resize) return; win.style.width=`${Math.max(320, startW + (e.clientX-startX))}px`; win.style.height=`${Math.max(280, startH + (e.clientY-startY))}px`; });
-    document.addEventListener('mouseup',()=>resize=false);
-    this.floatingWindows.push(win);
-  }
-
-  buildTagFilters() {
-    const allTags = [...new Set(allProjects.flatMap(p=>p.tags))];
-    const freq = {};
-    allTags.forEach(t=>freq[t]=allProjects.filter(p=>p.tags.includes(t)).length);
-    const topTags = allTags.sort((a,b)=>freq[b]-freq[a]).slice(0,8);
-    const bar=document.getElementById('tagsBar'); bar.innerHTML='';
-    topTags.forEach(tag=>{
-      const span=document.createElement('span'); span.className='tag-filter'; span.textContent=tag;
-      const titles = allProjects.filter(p=>p.tags.includes(tag)).map(p=>`${p.id}. ${p.title}`).join(' · ');
-      span.setAttribute('data-tooltip', titles);
-      span.addEventListener('click',()=>this.showProjectsByTag(tag));
-      bar.appendChild(span);
-      this.tagElements.push(span);
-    });
-  }
-
-  showProjectsByTag(tag) {
-    const filtered=allProjects.filter(p=>p.tags.includes(tag));
-    const grid=document.getElementById('resultsGrid'); grid.innerHTML='';
-    filtered.forEach(p=>{
-      const card=document.createElement('div'); card.className='result-card'; card.style.border='1px solid #e0e0e0'; card.style.padding='1rem'; card.style.marginBottom='8px'; card.style.cursor='pointer';
-      card.innerHTML=`<strong>${p.id} · ${p.title}</strong><div>${p.subtitle}</div><div style="display:flex;gap:4px;margin-top:4px">${p.tags.map(t=>`<span style="background:#FF3030;color:white;padding:2px 6px;font-size:10px">${t}</span>`).join('')}</div>`;
-      card.addEventListener('click',()=>{ this.closeResultsModal(); this.openFloatingWindow(p); });
-      grid.appendChild(card);
-    });
-    document.getElementById('resultsModal').style.display='flex';
-  }
-  closeResultsModal(){ document.getElementById('resultsModal').style.display='none'; }
-
-  setupCategoryListeners() {
-    const filters=document.querySelectorAll('#categoryFilters li');
-    filters.forEach(f=>{
-      f.addEventListener('click',()=>{ filters.forEach(fi=>fi.classList.remove('active')); f.classList.add('active'); this.currentCategory=f.dataset.category; this.filterNotes(); });
-      f.addEventListener('mouseenter',()=>{ this.drawCategoryLines(f.dataset.category); });
-      f.addEventListener('mouseleave',()=>{ document.getElementById('connectorSvg').innerHTML=''; });
-    });
-  }
-
-  filterNotes() {
-    this.notes.forEach(n=>{ const cat=n.dataset.category; n.style.display=(this.currentCategory==='all'||cat===this.currentCategory)?'block':'none'; });
-  }
-
-  drawCategoryLines(category) {
-    const svg=document.getElementById('connectorSvg'); svg.innerHTML='';
-    const catEl=document.querySelector(`#categoryFilters li[data-category="${category}"]`); if(!catEl) return;
-    const catRect=catEl.getBoundingClientRect(); let startX=catRect.left+catRect.width/2, startY=catRect.bottom+2;
-    const gridSize=20;
-    startX=Math.round(startX/gridSize)*gridSize; startY=Math.round(startY/gridSize)*gridSize;
-    this.notes.forEach(note=>{
-      if(this.currentCategory!=='all' && note.dataset.category!==category && category!=='all') return;
-      const projIdx=parseInt(note.dataset.projectIdx); const proj=allProjects[projIdx];
-      if(!proj) return;
-      const matchingTags=this.tagElements.filter(tagEl=>proj.tags.includes(tagEl.textContent));
-      let endX, endY;
-      if(matchingTags.length){
-        const tagRect=matchingTags[0].getBoundingClientRect();
-        let tagX=tagRect.left+tagRect.width/2, tagY=tagRect.bottom+4;
-        tagX=Math.round(tagX/gridSize)*gridSize; tagY=Math.round(tagY/gridSize)*gridSize;
-        const noteRect=note.getBoundingClientRect();
-        let noteX=noteRect.left+noteRect.width/2, noteY=noteRect.top-2;
-        noteX=Math.round(noteX/gridSize)*gridSize; noteY=Math.round(noteY/gridSize)*gridSize;
-        this.drawRoundedLine(svg, startX, startY, tagX, tagY, 8);
-        this.drawRoundedLine(svg, tagX, tagY, noteX, noteY, 8);
-      } else {
-        const noteRect=note.getBoundingClientRect();
-        let noteX=noteRect.left+noteRect.width/2, noteY=noteRect.top-2;
-        noteX=Math.round(noteX/gridSize)*gridSize; noteY=Math.round(noteY/gridSize)*gridSize;
-        this.drawRoundedLine(svg, startX, startY, noteX, noteY, 8);
+// ========== STICKY NOTE CREATION ==========
+function createStickyNote(project, index, x, y) {
+  const gridSize = 20;
+  const snappedX = snapToGrid(x, gridSize);
+  const snappedY = snapToGrid(y, gridSize);
+  
+  const note = document.createElement('div');
+  note.className = 'sticky-note';
+  note.setAttribute('data-project-idx', index);
+  note.setAttribute('data-category', project.category);
+  note.setAttribute('data-project-id', project.id);
+  note.style.left = `${snappedX}px`;
+  note.style.top = `${snappedY}px`;
+  note.style.zIndex = noteZIndex++;
+  
+  note.innerHTML = `
+    <div class="sticky-title">${project.id} · ${project.title}</div>
+    <div class="sticky-subtitle">${project.subtitle} (${project.year})</div>
+    <div class="sticky-preview">
+      <div class="sticky-preview-carousel">
+        <div class="sticky-preview-slides" id="preview-${project.id}">
+          ${[1,2,3].map(i => `<div class="sticky-preview-slide"><img src="https://placehold.co/200x100/f5f5f5/999?text=${encodeURIComponent(project.title)}+${i}" onerror="this.src='https://placehold.co/200x100/f5f5f5/999?text=Preview'"></div>`).join('')}
+        </div>
+      </div>
+      <div class="sticky-preview-tags">
+        ${project.tags.slice(0,3).map(t => `<span class="sticky-preview-tag">${t}</span>`).join('')}
+      </div>
+    </div>
+    <div class="sticky-note-controls">
+      <button class="minimize-note" title="Minimize">−</button>
+      <button class="close-note" title="Send to sidebar">✕</button>
+    </div>
+  `;
+  
+  // Hover: bring to front + preview
+  note.addEventListener('mouseenter', () => {
+    note.style.zIndex = 9999;
+    note.classList.add('preview-active');
+    startAutoPlay(project.id);
+  });
+  
+  note.addEventListener('mouseleave', () => {
+    setTimeout(() => {
+      if (!note.matches(':hover')) {
+        note.classList.remove('preview-active');
+        stopAutoPlay(project.id);
       }
+    }, 200);
+  });
+  
+  // Click: open floating window
+  note.addEventListener('click', (e) => {
+    if (e.target.closest('.sticky-note-controls')) return;
+    openFloatingWindow(project);
+  });
+  
+  // Minimize
+  note.querySelector('.minimize-note').addEventListener('click', (e) => {
+    e.stopPropagation();
+    note.classList.toggle('minimized');
+  });
+  
+  // Close (to sidebar)
+  note.querySelector('.close-note').addEventListener('click', (e) => {
+    e.stopPropagation();
+    note.remove();
+    stickyNotes = stickyNotes.filter(n => n !== note);
+    addToSidebar(project, index);
+  });
+  
+  makeDraggable(note);
+  
+  document.getElementById('stickyCanvas').appendChild(note);
+  stickyNotes.push(note);
+  return note;
+}
+
+function makeDraggable(element) {
+  let isDragging = false;
+  let startX, startY, startLeft, startTop;
+  
+  element.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.sticky-note-controls')) return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = parseInt(element.style.left);
+    startTop = parseInt(element.style.top);
+    element.style.zIndex = noteZIndex++;
+    e.preventDefault();
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    let newLeft = startLeft + (e.clientX - startX);
+    let newTop = startTop + (e.clientY - startY);
+    newLeft = Math.max(10, Math.min(newLeft, window.innerWidth - element.offsetWidth - 20));
+    newTop = Math.max(80, Math.min(newTop, window.innerHeight - element.offsetHeight - 100));
+    element.style.left = `${newLeft}px`;
+    element.style.top = `${newTop}px`;
+  });
+  
+  document.addEventListener('mouseup', () => { isDragging = false; });
+}
+
+function startAutoPlay(projectId) {
+  const slidesContainer = document.getElementById(`preview-${projectId}`);
+  if (!slidesContainer) return;
+  const slideCount = slidesContainer.children.length;
+  if (slideCount <= 1) return;
+  let currentIndex = 0;
+  if (autoPlayIntervals[projectId]) clearInterval(autoPlayIntervals[projectId]);
+  autoPlayIntervals[projectId] = setInterval(() => {
+    currentIndex = (currentIndex + 1) % slideCount;
+    slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+  }, 2000);
+}
+
+function stopAutoPlay(projectId) {
+  if (autoPlayIntervals[projectId]) {
+    clearInterval(autoPlayIntervals[projectId]);
+    delete autoPlayIntervals[projectId];
+  }
+}
+
+function addToSidebar(project, index) {
+  const sidebar = document.getElementById('sidebarTabs');
+  const existingTab = document.getElementById(`tab-${project.id}`);
+  if (existingTab) return;
+  
+  const tab = document.createElement('div');
+  tab.className = 'sidebar-tab';
+  tab.id = `tab-${project.id}`;
+  tab.setAttribute('data-project-id', project.id);
+  tab.setAttribute('data-category', project.category);
+  tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
+  
+  tab.addEventListener('click', () => {
+    tab.remove();
+    openFloatingWindow(project);
+  });
+  
+  sidebar.appendChild(tab);
+}
+
+// ========== TAG FILTERS ==========
+function createTagFilters() {
+  const tagsBar = document.getElementById('tagsBar');
+  const allTags = [...new Set(allProjects.flatMap(p => p.tags))];
+  const tagFrequency = {};
+  allTags.forEach(tag => { tagFrequency[tag] = allProjects.filter(p => p.tags.includes(tag)).length; });
+  const topTags = allTags.sort((a, b) => tagFrequency[b] - tagFrequency[a]).slice(0, 10);
+  
+  tagsBar.innerHTML = '';
+  tagElements = [];
+  
+  topTags.forEach(tag => {
+    const tagEl = document.createElement('div');
+    tagEl.className = 'tag-filter';
+    tagEl.textContent = tag;
+    const titles = allProjects.filter(p => p.tags.includes(tag)).map(p => `${p.id}. ${p.title}`).join(' · ');
+    tagEl.setAttribute('data-tooltip', titles);
+    tagEl.addEventListener('click', () => showProjectsByTag(tag));
+    tagsBar.appendChild(tagEl);
+    tagElements.push(tagEl);
+  });
+}
+
+function showProjectsByTag(tag) {
+  const projects = allProjects.filter(p => p.tags.includes(tag));
+  const resultsGrid = document.getElementById('resultsGrid');
+  document.getElementById('resultsTitle').textContent = `"${tag}" — ${projects.length} projects`;
+  resultsGrid.innerHTML = '';
+  
+  projects.forEach(project => {
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.style.border = '1px solid #e0e0e0';
+    card.style.padding = '0.8rem';
+    card.style.borderRadius = '8px';
+    card.style.cursor = 'pointer';
+    card.style.transition = 'all 0.2s';
+    card.innerHTML = `
+      <div style="font-weight:600; color:#FF3030;">${project.id} · ${project.title}</div>
+      <div style="font-size:0.7rem; color:#666;">${project.subtitle} (${project.year})</div>
+      <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">${project.tags.map(t => `<span style="background:#FF3030; color:white; padding:2px 8px; border-radius:2px; font-size:0.5rem;">${t}</span>`).join('')}</div>
+    `;
+    card.addEventListener('click', () => {
+      closeResultsModal();
+      openFloatingWindow(project);
     });
-  }
+    resultsGrid.appendChild(card);
+  });
+  
+  document.getElementById('resultsModal').style.display = 'flex';
+}
 
-  drawRoundedLine(svg, x1,y1,x2,y2, rad=8){
-    const dx=x2-x1, dy=y2-y1;
-    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
-    const midX=x1+dx*0.5, midY=y1+dy*0.5;
-    const d = `M ${x1+rad} ${y1} L ${midX-rad/2} ${y1} Q ${midX} ${y1} ${midX} ${y1+rad/2} L ${midX} ${y2-rad/2} Q ${midX} ${y2} ${midX+rad/2} ${y2} L ${x2-rad} ${y2} Q ${x2} ${y2} ${x2} ${y2-rad}`;
-    path.setAttribute('d', d);
-    path.setAttribute('class','connector-line');
-    svg.appendChild(path);
-  }
+function closeResultsModal() {
+  document.getElementById('resultsModal').style.display = 'none';
+}
 
-  initGridPlus(hidePercentage=0.6) {
-    const container=document.getElementById('gridPlusContainer'); container.innerHTML='';
-    const pluses=[];
-    for(let i=0;i<180;i++){
-      const plus=document.createElement('div'); plus.className='grid-plus'; plus.textContent='+';
-      const x=Math.random()*window.innerWidth; const y=Math.random()*window.innerHeight;
-      plus.style.left=`${x}px`; plus.style.top=`${y}px`;
-      container.appendChild(plus); pluses.push(plus);
+// ========== CATEGORY HOVER LINES (through matching tags) ==========
+function drawCategoryLines(category) {
+  clearConnectorLines();
+  const svg = document.getElementById('connectorSvg');
+  const catEl = document.querySelector(`#categoryFilters li[data-category="${category}"]`);
+  if (!catEl) return;
+  
+  const catRect = catEl.getBoundingClientRect();
+  let startX = catRect.left + catRect.width / 2;
+  let startY = catRect.bottom + 2;
+  startX = snapToGrid(startX);
+  startY = snapToGrid(startY);
+  
+  stickyNotes.forEach(note => {
+    if (currentCategory !== 'all' && note.dataset.category !== category && category !== 'all') return;
+    if (note.style.display === 'none') return;
+    
+    const projIdx = parseInt(note.dataset.projectIdx);
+    const project = allProjects[projIdx];
+    if (!project) return;
+    
+    // Find matching tag elements for this project
+    const matchingTags = tagElements.filter(tagEl => project.tags.includes(tagEl.textContent));
+    
+    const noteRect = note.getBoundingClientRect();
+    let endX = noteRect.left + noteRect.width / 2;
+    let endY = noteRect.top - 2;
+    endX = snapToGrid(endX);
+    endY = snapToGrid(endY);
+    
+    if (matchingTags.length > 0) {
+      // Route through the first matching tag
+      const tagEl = matchingTags[0];
+      const tagRect = tagEl.getBoundingClientRect();
+      let tagX = tagRect.left + tagRect.width / 2;
+      let tagY = tagRect.bottom + 3;
+      tagX = snapToGrid(tagX);
+      tagY = snapToGrid(tagY);
+      
+      // Draw line: category → tag
+      drawConnectorLine(svg, startX, startY, tagX, tagY, 0.5);
+      // Draw line: tag → sticky note
+      drawConnectorLine(svg, tagX, tagY, endX, endY, 0.5);
+    } else {
+      // Direct line
+      drawConnectorLine(svg, startX, startY, endX, endY, 0.5);
     }
-    setInterval(()=>{
-      pluses.forEach(p=>p.classList.remove('hidden'));
-      const toHide=Math.floor(pluses.length*hidePercentage);
-      const patches=Math.floor(Math.random()*8)+5;
-      let hidden=0;
-      const hideSet=new Set();
-      while(hidden<toHide && hideSet.size<pluses.length){
-        const centerIdx=Math.floor(Math.random()*pluses.length);
-        const radius=40+Math.random()*90;
-        for(let i=0;i<pluses.length && hidden<toHide;i++){
-          if(Math.random()<0.3 && !hideSet.has(i)){
-            const dx=Math.random()*radius*2-radius;
-            if(Math.abs(dx)<radius*0.8){
-              hideSet.add(i);
-              pluses[i].classList.add('hidden');
-              hidden++;
-            }
-          }
-        }
-        if(hideSet.size>=pluses.length-10) break;
-      }
-    }, 1800);
-  }
-
-  initConnectorLines(){}
-  setupModals(){
-    document.getElementById('openCvBtn').addEventListener('click',(e)=>{ e.preventDefault(); document.getElementById('cvModal').style.display='flex'; });
-    document.getElementById('closeCvBtn').addEventListener('click',()=>{ document.getElementById('cvModal').style.display='none'; });
-    document.getElementById('closeResultsBtn').addEventListener('click',()=>this.closeResultsModal());
-  }
+  });
 }
-new Portfolio();
+
+// ========== GRID PLUS SIGNS (reduced to ~60% with random patches) ==========
+let gridPluses = [];
+let hideInterval;
+
+function initGridPluses() {
+  const container = document.getElementById('gridPlusContainer');
+  container.innerHTML = '';
+  gridPluses = [];
+  
+  // Generate ~40% fewer plus signs (target ~60% of original density)
+  const targetCount = Math.floor((window.innerWidth * window.innerHeight) / 5000); // ~60% density
+  const actualCount = Math.min(targetCount, 300);
+  
+  for (let i = 0; i < actualCount; i++) {
+    const plus = document.createElement('div');
+    plus.className = 'grid-plus';
+    plus.textContent = '+';
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+    plus.style.left = `${x}px`;
+    plus.style.top = `${y}px`;
+    container.appendChild(plus);
+    gridPluses.push(plus);
+  }
+  
+  // Start random hiding patches
+  if (hideInterval) clearInterval(hideInterval);
+  hideInterval = setInterval(() => {
+    // Reset all
+    gridPluses.forEach(p => p.classList.remove('hidden'));
+    
+    // Hide random percentage between 40-70%
+    const hidePercent = 0.4 + Math.random() * 0.3;
+    let toHide = Math.floor(gridPluses.length * hidePercent);
+    
+    // Create 3-12 random patches
+    const patchCount = Math.floor(Math.random() * 10) + 3;
+    const hiddenSet = new Set();
+    
+    for (let p = 0; p < patchCount && hiddenSet.size < toHide; p++) {
+      const centerIdx = Math.floor(Math.random() * gridPluses.length);
+      const radius = 60 + Math.random() * 120;
+      const density = 0.3 + Math.random() * 0.6;
+      
+      gridPluses.forEach((plus, idx) => {
+        if (hiddenSet.has(idx) || hiddenSet.size >= toHide) return;
+        const rect = plus.getBoundingClientRect();
+        const centerRect = gridPluses[centerIdx].getBoundingClientRect();
+        const dx = rect.left - centerRect.left;
+        const dy = rect.top - centerRect.top;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const probability = Math.exp(-Math.pow(distance / radius, 2)) * density;
+        if (Math.random() < probability) {
+          plus.classList.add('hidden');
+          hiddenSet.add(idx);
+        }
+      });
+    }
+  }, 1200 + Math.random() * 2000);
+}
+
+// ========== FILTERING ==========
+function filterByCategory(category) {
+  currentCategory = category;
+  stickyNotes.forEach(note => {
+    const cat = note.getAttribute('data-category');
+    note.style.display = (category === 'all' || cat === category) ? 'block' : 'none';
+  });
+}
+
+function highlightByCategory(category) {
+  if (category === 'all') {
+    stickyNotes.forEach(n => { n.classList.remove('blurred', 'highlight'); });
+    return;
+  }
+  stickyNotes.forEach(note => {
+    const cat = note.getAttribute('data-category');
+    if (cat === category) {
+      note.classList.add('highlight');
+      note.classList.remove('blurred');
+    } else if (currentCategory === 'all') {
+      note.classList.add('blurred');
+      note.classList.remove('highlight');
+    }
+  });
+}
+
+// ========== INITIALIZE ==========
+window.addEventListener('load', () => {
+  // Create sticky notes at random positions
+  allProjects.forEach((project, i) => {
+    const x = 30 + Math.random() * (window.innerWidth - 400);
+    const y = 180 + Math.random() * (window.innerHeight - 500);
+    setTimeout(() => createStickyNote(project, i, x, y), i * 50);
+  });
+  
+  createTagFilters();
+  initGridPluses();
+  
+  // Category filters
+  const filters = document.querySelectorAll('#categoryFilters li');
+  filters.forEach(filter => {
+    filter.addEventListener('click', () => {
+      filters.forEach(f => f.classList.remove('active'));
+      filter.classList.add('active');
+      const category = filter.getAttribute('data-category');
+      filterByCategory(category);
+      clearConnectorLines();
+    });
+    
+    filter.addEventListener('mouseenter', () => {
+      const category = filter.getAttribute('data-category');
+      highlightByCategory(category);
+      setTimeout(() => drawCategoryLines(category), 30);
+    });
+    
+    filter.addEventListener('mouseleave', () => {
+      clearConnectorLines();
+      const activeCategory = document.querySelector('#categoryFilters li.active').getAttribute('data-category');
+      highlightByCategory(activeCategory);
+    });
+  });
+  
+  // CV Modal
+  document.getElementById('openCvBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('cvModal').style.display = 'flex';
+  });
+  document.getElementById('closeCvBtn').addEventListener('click', () => {
+    document.getElementById('cvModal').style.display = 'none';
+  });
+  document.getElementById('cvModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('cvModal')) {
+      document.getElementById('cvModal').style.display = 'none';
+    }
+  });
+  
+  // Results Modal close
+  document.getElementById('closeResultsBtn').addEventListener('click', closeResultsModal);
+  document.getElementById('resultsModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('resultsModal')) closeResultsModal();
+  });
+  
+  // Handle window resize for grid pluses
+  window.addEventListener('resize', () => {
+    initGridPluses();
+  });
+});
 </script>
 </body>
 </html>
