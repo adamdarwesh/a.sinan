@@ -695,11 +695,13 @@ class StickyNoteManager {
       }, 300);
     });
 
-    this.makeDraggable(note, project);
-
     note.addEventListener('click', (e) => {
-      // DON'T open if we just finished dragging
-      if (this.dragInProgress) return;
+      // Only block if a drag actually happened (not just a click)
+      if (this.dragInProgress === true) {
+        // Reset and don't open
+        setTimeout(() => { this.dragInProgress = false; }, 50);
+        return;
+      }
       if (e.target.closest('.sticky-note-controls')) return;
       if (note.classList.contains('frozen')) return;
       const rect = note.getBoundingClientRect();
@@ -829,12 +831,13 @@ class StickyNoteManager {
   makeDraggable(element, project) {
     let isDragging = false;
     let startX, startY, startLeft, startTop;
+    let hasMoved = false;
 
     element.addEventListener('mousedown', (e) => {
       if (e.target.closest('.sticky-note-controls')) return;
       if (element.classList.contains('frozen')) return;
       isDragging = true;
-      this.dragInProgress = true;  // ← SET DRAG FLAG
+      hasMoved = false;
       startX = e.clientX; startY = e.clientY;
       startLeft = parseInt(element.style.left);
       startTop = parseInt(element.style.top);
@@ -850,13 +853,21 @@ class StickyNoteManager {
       element.style.left = `${newLeft}px`;
       element.style.top = `${newTop}px`;
       this.updateConnectorLineForNote(element);
+      
+      // If we moved, mark as drag (not click)
+      if (Math.abs(e.clientX - startX) > 3 || Math.abs(e.clientY - startY) > 3) {
+        hasMoved = true;
+        this.dragInProgress = true;
+      }
     };
     
     const onMouseUp = () => {
       isDragging = false;
-      // Clear drag flag after a short delay
-      setTimeout(() => { this.dragInProgress = false; }, 100);
       element.style.cursor = '';
+      // Reset drag flag after a short delay
+      setTimeout(() => {
+        this.dragInProgress = false;
+      }, 150);
     };
     
     document.addEventListener('mousemove', onMouseMove);
