@@ -797,83 +797,7 @@ let previewTimeout = null;
     this.closedProjects = new Map();
     this.noteTabConnections = new Map();
     this.isDraggingNote = false;
-     // Grid arrangement function
-  arrangeGrid() {
-    const gridSize = 200; // Width between notes
-    const startX = 50;
-    const startY = 200;
-    const cols = Math.floor((window.innerWidth - 100) / gridSize);
-    
-    this.notes.forEach((note, i) => {
-      const row = Math.floor(i / cols);
-      const col = i % cols;
-      const newX = startX + (col * gridSize);
-      const newY = startY + (row * gridSize);
-      note.style.left = `${newX}px`;
-      note.style.top = `${newY}px`;
-      this.updateConnectorLineForNote(note);
-    });
-  }
-  
-  // Randomize arrangement function
-  randomizeArrangement() {
-    const padding = 50;
-    const maxX = window.innerWidth - 300;
-    const maxY = window.innerHeight - 200;
-    
-    this.notes.forEach((note) => {
-      const newX = padding + Math.random() * (maxX - padding);
-      const newY = 150 + Math.random() * (maxY - 150);
-      note.style.left = `${newX}px`;
-      note.style.top = `${newY}px`;
-      this.updateConnectorLineForNote(note);
-    });
-  }
-  
-  // Close all sticky notes (send to sidebar)
-  closeAllNotes() {
-    this.notes.forEach((note) => {
-      if (!note.classList.contains('frozen')) {
-        const projectId = note.getAttribute('data-project-id');
-        const project = allProjects.find(p => p.id === projectId);
-        const index = parseInt(note.getAttribute('data-project-idx'));
-        const noteRect = note.getBoundingClientRect();
-        
-        // Get current carousel image index
-        const slidesContainer = note.querySelector(`#preview-${projectId}`);
-        let lastImageIndex = 0;
-        if (slidesContainer) {
-          const transform = slidesContainer.style.transform;
-          const match = transform.match(/translateX\(-([0-9]+)%/);
-          if (match) lastImageIndex = parseInt(match[1]) / 100;
-        }
-        
-        this.freezeNote(note, project, lastImageIndex);
-        this.addToSidebar(project, index, noteRect, lastImageIndex, note);
-      }
-    });
-  }
-  
-  // Hide all connector lines
-  hideAllLines() {
-    const svg = document.getElementById('connectorSvg');
-    svg.style.display = 'none';
-  }
-  
-  // Show all connector lines
-  showAllLines() {
-    const svg = document.getElementById('connectorSvg');
-    svg.style.display = 'block';
-    this.updateAllConnectorLines();
-    // Also update window connectors if any windows open
-    activeFloatingWindows.forEach(win => {
-      const projectId = win.getAttribute('data-id');
-      const tab = document.getElementById(`tab-${projectId}`);
-      if (tab) {
-        this.updateConnectorLineForWindow(win, projectId, tab);
-      }
-    });
-  }
+
 
   createNote(project, index, x, y, restoreData = null) {
     const gridSize = 20;
@@ -1537,7 +1461,108 @@ const onWinMouseMove = (e) => {
     });
     this.updateAllConnectorLines();
   }
-}
+     highlightByCategory(category) {
+    if (category === 'all') {
+      this.notes.forEach(n => n.classList.remove('blurred', 'highlight'));
+      this.tabs.forEach(t => t.classList.remove('highlight'));
+      return;
+    }
+    this.notes.forEach(note => {
+      const cat = note.getAttribute('data-category');
+      if (cat === category) {
+        note.classList.add('highlight'); note.classList.remove('blurred');
+      } else if (this.currentCategory === 'all') {
+        note.classList.add('blurred'); note.classList.remove('highlight');
+      }
+    });
+    this.tabs.forEach(tab => {
+      const cat = tab.getAttribute('data-category');
+      if (cat === category) tab.classList.add('highlight');
+      else if (this.currentCategory === 'all') tab.classList.remove('highlight');
+    });
+    this.updateAllConnectorLines();
+  }
+
+  // ========== ADD THE 5 FUNCTIONS HERE ==========
+  
+  // Grid arrangement function
+  arrangeGrid() {
+    const gridSize = 200;
+    const startX = 50;
+    const startY = 200;
+    const cols = Math.floor((window.innerWidth - 100) / gridSize);
+    
+    this.notes.forEach((note, i) => {
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      const newX = startX + (col * gridSize);
+      const newY = startY + (row * gridSize);
+      note.style.left = `${newX}px`;
+      note.style.top = `${newY}px`;
+      this.updateConnectorLineForNote(note);
+    });
+  }
+  
+  // Randomize arrangement function
+  randomizeArrangement() {
+    const padding = 50;
+    const maxX = window.innerWidth - 300;
+    const maxY = window.innerHeight - 200;
+    
+    this.notes.forEach((note) => {
+      const newX = padding + Math.random() * (maxX - padding);
+      const newY = 150 + Math.random() * (maxY - 150);
+      note.style.left = `${newX}px`;
+      note.style.top = `${newY}px`;
+      this.updateConnectorLineForNote(note);
+    });
+  }
+  
+  // Close all sticky notes (send to sidebar)
+  closeAllNotes() {
+    this.notes.forEach((note) => {
+      if (!note.classList.contains('frozen')) {
+        const projectId = note.getAttribute('data-project-id');
+        const project = allProjects.find(p => p.id === projectId);
+        const index = parseInt(note.getAttribute('data-project-idx'));
+        const noteRect = note.getBoundingClientRect();
+        
+        const slidesContainer = note.querySelector(`#preview-${projectId}`);
+        let lastImageIndex = 0;
+        if (slidesContainer) {
+          const transform = slidesContainer.style.transform;
+          const match = transform.match(/translateX\(-([0-9]+)%/);
+          if (match) lastImageIndex = parseInt(match[1]) / 100;
+        }
+        
+        this.freezeNote(note, project, lastImageIndex);
+        this.addToSidebar(project, index, noteRect, lastImageIndex, note);
+      }
+    });
+  }
+  
+  // Hide all connector lines
+  hideAllLines() {
+    const svg = document.getElementById('connectorSvg');
+    svg.style.display = 'none';
+  }
+  
+  // Show all connector lines
+  showAllLines() {
+    const svg = document.getElementById('connectorSvg');
+    svg.style.display = 'block';
+    this.updateAllConnectorLines();
+    activeFloatingWindows.forEach(win => {
+      const projectId = win.getAttribute('data-id');
+      const tab = document.getElementById(`tab-${projectId}`);
+      if (tab) {
+        this.updateConnectorLineForWindow(win, projectId, tab);
+      }
+    });
+  }
+
+}  // <-- THIS CLOSES THE CLASS
+
 
 let manager;
 
