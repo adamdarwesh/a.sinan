@@ -893,23 +893,20 @@ class StickyNoteManager {
     svg.appendChild(path);
   }
 
-  openFloatingWindow(project, clickX, clickY) {
+   openFloatingWindow(project, clickX, clickY) {
     if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
     
     const win = document.createElement('div');
     win.className = 'floating-window';
     win.setAttribute('data-id', project.id);
     
-    win.style.left = `${clickX}px`;
-    win.style.top = `${clickY}px`;
-    win.style.right = 'auto';
-    win.style.bottom = 'auto';
+    // SIMPLE POSITIONING - NO CSS CONFLICTS
+    win.style.position = 'fixed';
+    win.style.left = clickX + 'px';
+    win.style.top = clickY + 'px';
     win.style.width = 'auto';
     win.style.height = 'auto';
     win.style.minWidth = '380px';
-    win.style.transition = 'all 0.3s ease-out';
-    win.style.right = 'auto';
-    win.style.bottom = 'auto';
     
     win.innerHTML = `
       <div class="window-header">
@@ -934,56 +931,45 @@ class StickyNoteManager {
     document.body.appendChild(win);
     activeFloatingWindows.push(win);
     
-    this.makeWindowResizableFromAnywhere(win);
+    // SIMPLE DRAG - NO RESIZE CONFLICT
+    let isDragging = false;
+    let dragStartX, dragStartY, startLeft, startTop;
     
-    let isDragging = false, dragStartX, dragStartY, startLeft, startTop;
-    
-    const startDrag = (e) => {
+    win.addEventListener('mousedown', (e) => {
       if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize')) return;
       isDragging = true;
-      this.didDrag = false;
       dragStartX = e.clientX;
       dragStartY = e.clientY;
       startLeft = win.offsetLeft;
       startTop = win.offsetTop;
       win.style.zIndex = 30000 + activeFloatingWindows.length;
       e.preventDefault();
-    };
+    });
     
-    win.addEventListener('mousedown', startDrag);
-    
-    const dragMove = (e) => {
+    document.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
-      this.didDrag = true;
-      win.style.left = `${startLeft + (e.clientX - dragStartX)}px`;
-      win.style.top = `${startTop + (e.clientY - dragStartY)}px`;
-      win.style.right = 'auto';
-      win.style.bottom = 'auto';
-    };
+      win.style.left = (startLeft + (e.clientX - dragStartX)) + 'px';
+      win.style.top = (startTop + (e.clientY - dragStartY)) + 'px';
+    });
     
-const dragEnd = () => { 
-  isDragging = false; 
-  setTimeout(() => { this.didDrag = false; }, 100);
-};
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
     
-    document.addEventListener('mousemove', dragMove);
-    document.addEventListener('mouseup', dragEnd);
-    
+    // MINIMIZE BUTTON
     win.querySelector('.window-minimize').addEventListener('click', () => {
       const note = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
       if (note && !note.classList.contains('frozen')) {
         const noteRect = note.getBoundingClientRect();
-        win.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-        win.style.left = `${noteRect.left}px`;
-        win.style.top = `${noteRect.top}px`;
-        win.style.width = `${noteRect.width}px`;
-        win.style.height = `${noteRect.height}px`;
+        win.style.transition = 'all 0.5s';
+        win.style.left = noteRect.left + 'px';
+        win.style.top = noteRect.top + 'px';
+        win.style.width = noteRect.width + 'px';
+        win.style.height = noteRect.height + 'px';
         win.style.opacity = '0';
         setTimeout(() => {
           win.remove();
           activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
-          note.style.transform = 'scale(1.02)';
-          setTimeout(() => { note.style.transform = ''; }, 300);
         }, 500);
       } else {
         win.remove();
@@ -991,15 +977,11 @@ const dragEnd = () => {
       }
     });
     
+    // CLOSE BUTTON
     win.querySelector('.window-close').addEventListener('click', () => {
       win.remove();
       activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
     });
-    
-    setTimeout(() => {
-      win.style.width = 'auto';
-      win.style.height = 'auto';
-    }, 10);
   }
 
   makeWindowResizableFromAnywhere(win) {
