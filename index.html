@@ -14,6 +14,21 @@
     padding: 0; 
     font-family: 'EB Garamond', 'Garamond', Georgia, 'Times New Roman', serif !important;
   }
+   /* Different sizes for frozen sticky notes */
+  .sticky-note.frozen[data-frozen-size="120"] { width: 120px; }
+  .sticky-note.frozen[data-frozen-size="140"] { width: 140px; }
+  .sticky-note.frozen[data-frozen-size="160"] { width: 160px; }
+  .sticky-note.frozen[data-frozen-size="180"] { width: 180px; }
+  .sticky-note.frozen[data-frozen-size="200"] { width: 200px; }
+  
+  /* Adjust frozen image sizes based on note width */
+  .sticky-note.frozen .frozen-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    margin-bottom: 4px;
+  }
 
   :root {
     --ink: #111111;
@@ -892,10 +907,17 @@ let previewTimeout = null;
       frozenImg.onerror = () => { frozenImg.src = 'https://placehold.co/200x80/f5f5f5/999?text=Image'; };
     }
     
-    note.style.width = '160px';
+    // VARIOUS SIZES FOR FROZEN NOTES
+    // Options: 120px, 140px, 160px, 180px, 200px
+    const sizeOptions = [120, 140, 160, 180, 200];
+    const randomIndex = Math.floor(Math.random() * sizeOptions.length);
+    const randomSize = sizeOptions[randomIndex];
+    
+    note.style.width = randomSize + 'px';
     note.style.cursor = 'default';
     note.setAttribute('data-frozen', 'true');
     note.setAttribute('data-last-image-index', lastImageIndex);
+    note.setAttribute('data-frozen-size', randomSize);
   }
 
   unfreezeNote(note, project, index) {
@@ -920,6 +942,7 @@ let previewTimeout = null;
     }
     
     note.removeAttribute('data-frozen');
+    note.removeAttribute('data-frozen-size');
     note.style.width = '160px';
   }
 
