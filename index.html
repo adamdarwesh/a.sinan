@@ -866,16 +866,19 @@ class StickyNoteManager {
       e.preventDefault();
     });
 
-    const onMouseMove = (e) => {
-      if (!isDragging) return;
-      let newLeft = startLeft + (e.clientX - startX);
-      let newTop = startTop + (e.clientY - startY);
-      element.style.left = `${newLeft}px`;
-      element.style.top = `${newTop}px`;
-      
-      // Update connector line if this note has a tab connection
-      this.updateConnectorLineForNote(element);
-    };
+const onMouseMove = (e) => {
+  if (!isDragging) return;
+  let newLeft = startLeft + (e.clientX - startX);
+  let newTop = startTop + (e.clientY - startY);
+  const maxX = window.innerWidth - element.offsetWidth - 20;  // ← STILL HERE
+  const maxY = window.innerHeight - element.offsetHeight - 100; // ← STILL HERE
+  newLeft = Math.max(10, Math.min(newLeft, maxX));  // ← STILL HERE
+  newTop = Math.max(60, Math.min(newTop, maxY));   // ← STILL HERE
+  element.style.left = `${newLeft}px`;
+  element.style.top = `${newTop}px`;
+  
+  this.updateConnectorLineForNote(element);
+};
     
     const onMouseUp = () => {
       isDragging = false;
