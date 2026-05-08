@@ -625,7 +625,7 @@ class StickyNoteManager {
     this.currentCategory = 'all';
     this.closedProjects = new Map();
     this.noteTabConnections = new Map();
-    this.didDrag = false;
+    this.dragInProgress = false;
   }
 
   createNote(project, index, x, y, restoreData = null) {
@@ -698,7 +698,8 @@ class StickyNoteManager {
     this.makeDraggable(note, project);
 
     note.addEventListener('click', (e) => {
-      if (this.didDrag) return;
+      // DON'T open if we just finished dragging
+      if (this.dragInProgress) return;
       if (e.target.closest('.sticky-note-controls')) return;
       if (note.classList.contains('frozen')) return;
       const rect = note.getBoundingClientRect();
@@ -833,6 +834,7 @@ class StickyNoteManager {
       if (e.target.closest('.sticky-note-controls')) return;
       if (element.classList.contains('frozen')) return;
       isDragging = true;
+      this.dragInProgress = true;  // ← SET DRAG FLAG
       startX = e.clientX; startY = e.clientY;
       startLeft = parseInt(element.style.left);
       startTop = parseInt(element.style.top);
@@ -852,6 +854,8 @@ class StickyNoteManager {
     
     const onMouseUp = () => {
       isDragging = false;
+      // Clear drag flag after a short delay
+      setTimeout(() => { this.dragInProgress = false; }, 100);
       element.style.cursor = '';
     };
     
