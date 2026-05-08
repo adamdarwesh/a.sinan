@@ -214,6 +214,7 @@
     pointer-events: none;
     transition: opacity 0.2s;
     font-family: 'EB Garamond', monospace;
+    letter-spacing: normal;
   }
 
   .tag-filter:hover::after { opacity: 1; }
@@ -421,7 +422,7 @@
   }
 
   /* Modals */
-  .results-modal-overlay, .cv-modal-overlay, .split-modal-overlay {
+  .results-modal-overlay, .cv-modal-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
     z-index: 5000; justify-content: center; align-items: center;
@@ -468,13 +469,6 @@
     .sidebar-tabs { display: none; }
     .floating-window { width: 95% !important; left: 2.5% !important; }
   }
-  /* FORCE windows to not stick to right side - FIX #3 */
-  .floating-window {
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
-  }  
 </style>
 </head>
 <body>
@@ -491,7 +485,7 @@
     </div>
     <div class="cv-modal-body" style="padding:1rem; overflow-y:auto;">
       <h4>Profile</h4>
-      <p>An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches...</p>
+      <p>An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches. My work is enriched by interdisciplinary collaboration and strong research foundations, aiming to create architectural visions that cultivate connection and commonality.</p>
       <h4>Education</h4>
       <p><strong>PhD / DR.TECH</strong> — University of Applied Arts Vienna · 2024–present</p>
       <p><strong>MArch</strong> — University of Applied Arts Vienna · Magna cum laude · 2020–2024</p>
@@ -556,79 +550,80 @@ const allProjects = [
   { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", 
     tags: ["Ecological", "Vernacular"], 
     images: ["spiral_spines_1.jpg", "spiral_spines_2.jpg", "spiral_spines_3.jpg", "spiral_spines_4.jpg", "spiral_spines_5.jpg", "spiral_spines_6.jpg"],
-    fullDesc: "A regenerative material practice that transforms uprooted and discarded timber." },
+    fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing." },
   { id: "02", title: "Woven Realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", 
     tags: ["Vernacular", "Digital Fabrication"], 
     images: ["woven_realities_1.jpg", "woven_realities_2.jpg", "woven_realities_3.jpg", "woven_realities_4.jpg", "woven_realities_5.jpg", "woven_realities_6.jpg"],
-    fullDesc: "A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice." },
+    fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice using reusable by-products." },
   { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", 
     tags: ["Post-Conflict", "Material Research"], 
     images: ["new_cairn_1.jpg", "new_cairn_2.jpg", "new_cairn_3.jpg", "new_cairn_4.jpg", "new_cairn_5.jpg", "new_cairn_6.jpg"],
-    fullDesc: "Research project proposing un-crushed demolition rubble as masonry units." },
+    fullDesc: "A research and construction project proposing whole, un-crushed demolition rubble as masonry units in compression-only enclosures, deployable in Palestine and Afghanistan." },
   { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", 
     tags: ["Speculative", "Ecological"], 
     images: ["carbonfloss_1.jpg", "carbonfloss_2.jpg", "carbonfloss_3.jpg", "carbonfloss_4.jpg", "carbonfloss_5.jpg", "carbonfloss_6.jpg"],
-    fullDesc: "A political statement against absurd reluctance policies." },
+    fullDesc: "A political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity." },
   { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", 
     tags: ["Material Research", "Digital Fabrication"], 
     images: ["ourobos_1.jpg", "ourobos_2.jpg", "ourobos_3.jpg", "ourobos_4.jpg", "ourobos_5.jpg", "ourobos_6.jpg"],
-    fullDesc: "Exploration of residual morphogenesis using AI-driven workflows." },
+    fullDesc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies." },
   { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", 
     tags: ["Ecological", "Collective Practice"], 
     images: ["agropraxis_1.jpg", "agropraxis_2.jpg", "agropraxis_3.jpg", "agropraxis_4.jpg", "agropraxis_5.jpg", "agropraxis_6.jpg"],
-    fullDesc: "Intersection of agriculture and architectural practice." },
+    fullDesc: "Explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles." },
   { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", category: "education", 
     tags: ["Pedagogy", "Vernacular"], 
     images: ["medius_1.jpg", "medius_2.jpg", "medius_3.jpg", "medius_4.jpg", "medius_5.jpg", "medius_6.jpg"],
-    fullDesc: "A prototype tracing character from Diola compounds in Senegal." },
+    fullDesc: "A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes connected by circular paths." },
   { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", 
     tags: ["Collective Practice", "Installation"], 
     images: ["soft_unsealing_1.jpg", "soft_unsealing_2.jpg", "soft_unsealing_3.jpg", "soft_unsealing_4.jpg", "soft_unsealing_5.jpg", "soft_unsealing_6.jpg"],
-    fullDesc: "Exploring softening boundaries in urban contexts." },
+    fullDesc: "Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts." },
   { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", 
     tags: ["Collective Practice", "Installation"], 
     images: ["old_airfield_1.jpg", "old_airfield_2.jpg", "old_airfield_3.jpg", "old_airfield_4.jpg", "old_airfield_5.jpg", "old_airfield_6.jpg"],
-    fullDesc: "Acoustic mirror cultural gateway exploring sound and spatial memory." },
+    fullDesc: "An acoustic mirror cultural gateway exploring sound and spatial memory, published at Chicago Architecture Biennial CAB5." },
   { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", 
     tags: ["Vernacular", "Ecological"], 
     images: ["enkidu_1.jpg", "enkidu_2.jpg", "enkidu_3.jpg", "enkidu_4.jpg", "enkidu_5.jpg", "enkidu_6.jpg"],
-    fullDesc: "Reviving vernacular Palestinian architecture in Dier Ghassaneh." },
+    fullDesc: "Reviving elements of vernacular Palestinian architecture in Dier Ghassaneh — not through aesthetic value alone, but through ecological, economical, and tradition revival." },
   { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", category: "art", 
     tags: ["Installation", "Speculative"], 
     images: ["aura_1.jpg", "aura_2.jpg", "aura_3.jpg", "aura_4.jpg", "aura_5.jpg", "aura_6.jpg"],
-    fullDesc: "Exploring atmospheric qualities of architectural space." },
+    fullDesc: "A folly project exploring the atmospheric and experiential qualities of architectural space through material and light." },
   { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", 
     tags: ["Political", "Speculative"], 
     images: ["liberation_fronts_1.jpg", "liberation_fronts_2.jpg", "liberation_fronts_3.jpg", "liberation_fronts_4.jpg", "liberation_fronts_5.jpg", "liberation_fronts_6.jpg"],
-    fullDesc: "Exploring liberation fronts as spatial and political constructs." },
+    fullDesc: "A diploma thesis exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements." },
   { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", 
     tags: ["Residency", "Installation"], 
     images: ["regutting_1.jpg", "regutting_2.jpg", "regutting_3.jpg", "regutting_4.jpg", "regutting_5.jpg", "regutting_6.jpg"],
-    fullDesc: "Returns and remains through film, photography, and installation." },
+    fullDesc: "A residency project exploring returns and remains through film, photography, and installation at Wonder Cabinet, Bethlehem." },
   { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", 
     tags: ["Exhibition", "Political"], 
     images: ["agential_cartographies_1.jpg", "agential_cartographies_2.jpg", "agential_cartographies_3.jpg", "agential_cartographies_4.jpg", "agential_cartographies_5.jpg", "agential_cartographies_6.jpg"],
-    fullDesc: "Experimental mappings across three spatial typologies." },
+    fullDesc: "An exhibition presenting experimental mappings across three spatial typologies: the camp, the city, and the limbo landscape, exploring agency as a dynamic and malleable force." },
   { id: "15", title: "PhD Research", year: "2024+", subtitle: "Die Angewandte", category: "education", 
     tags: ["Material Research", "Pedagogy"], 
     images: ["phd_research_1.jpg", "phd_research_2.jpg", "phd_research_3.jpg", "phd_research_4.jpg", "phd_research_5.jpg", "phd_research_6.jpg"],
-    fullDesc: "Post-conflict material practice and rubble reuse." },
+    fullDesc: "Doctoral research at the University of Applied Arts Vienna focusing on post-conflict material practice and rubble reuse." },
   { id: "16", title: "Teaching at AAUP", year: "2025+", subtitle: "Arab American University", category: "education", 
     tags: ["Pedagogy", "Vernacular"], 
     images: ["teaching_aaup_1.jpg", "teaching_aaup_2.jpg", "teaching_aaup_3.jpg", "teaching_aaup_4.jpg", "teaching_aaup_5.jpg", "teaching_aaup_6.jpg"],
-    fullDesc: "Faculty member at the Faculty of Architecture, AAUP, Palestine." }
+    fullDesc: "Faculty member and lecturer at the Faculty of Architecture, Arab American University, Palestine." }
 ];
 
 let noteZIndex = 100;
 let autoPlayIntervals = {};
 let activeFloatingWindows = [];
+let previewTimeout = null;
   // ========== STICKY NOTE MANAGER ==========
 class StickyNoteManager {
   constructor() {
     this.notes = [];
     this.tabs = [];
     this.currentCategory = 'all';
-    this.closedProjects = new Map(); // Stores frozen notes data: { project, index, noteRect, lastImageIndex, noteElement }
+    this.closedProjects = new Map();
     this.noteTabConnections = new Map();
   }
 
@@ -653,7 +648,6 @@ class StickyNoteManager {
     note.style.top = `${finalY}px`;
     note.style.zIndex = noteZIndex++;
     
-    // Store carousel index for this note
     let currentImageIndex = restoreData ? restoreData.lastImageIndex : 0;
 
     note.innerHTML = `
@@ -676,7 +670,6 @@ class StickyNoteManager {
       </div>
     `;
     
-    // If restoring, set the carousel to the last viewed image
     if (restoreData && restoreData.lastImageIndex !== undefined) {
       currentImageIndex = restoreData.lastImageIndex;
       const slidesContainer = note.querySelector(`#preview-${project.id}`);
@@ -685,7 +678,6 @@ class StickyNoteManager {
       }
     }
 
-    // Mouse enter - show carousel, start auto-play
     note.addEventListener('mouseenter', () => {
       if (note.classList.contains('frozen')) return;
       if (previewTimeout) clearTimeout(previewTimeout);
@@ -704,7 +696,6 @@ class StickyNoteManager {
 
     this.makeDraggable(note, project);
 
-    // Click opens floating window (only if not frozen)
     note.addEventListener('click', (e) => {
       if (e.target.closest('.sticky-note-controls')) return;
       if (note.classList.contains('frozen')) return;
@@ -725,12 +716,10 @@ class StickyNoteManager {
       }
     });
 
-    // X button - freeze the note (borderless, last image only, send to sidebar)
     const closeBtn = note.querySelector('.close-note');
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       const noteRect = note.getBoundingClientRect();
-      // Get the current carousel image index
       const slidesContainer = note.querySelector(`#preview-${project.id}`);
       let lastImageIndex = 0;
       if (slidesContainer) {
@@ -738,9 +727,7 @@ class StickyNoteManager {
         const match = transform.match(/translateX\(-([0-9]+)%/);
         if (match) lastImageIndex = parseInt(match[1]) / 100;
       }
-      // Freeze the note - borderless, show only last image, title, tags
       this.freezeNote(note, project, lastImageIndex);
-      // Add to sidebar with frozen state
       this.addToSidebar(project, index, noteRect, lastImageIndex, note);
     });
 
@@ -749,25 +736,20 @@ class StickyNoteManager {
     return note;
   }
 
-  // Freeze note - borderless, static, shows only last image + title + tags
   freezeNote(note, project, lastImageIndex) {
     note.classList.add('frozen');
     note.style.border = 'none';
     note.style.boxShadow = 'none';
     
-    // Hide carousel preview
     const previewDiv = note.querySelector('.sticky-preview');
     if (previewDiv) previewDiv.style.display = 'none';
     
-    // Hide controls
     const controls = note.querySelector('.sticky-note-controls');
     if (controls) controls.style.display = 'none';
     
-    // Hide subtitle
     const subtitle = note.querySelector('.sticky-subtitle');
     if (subtitle) subtitle.style.display = 'none';
     
-    // Show frozen image with last viewed image
     const frozenImg = note.querySelector('.frozen-image');
     if (frozenImg) {
       frozenImg.style.display = 'block';
@@ -779,23 +761,18 @@ class StickyNoteManager {
       frozenImg.onerror = () => { frozenImg.src = 'https://placehold.co/200x80/f5f5f5/999?text=Image'; };
     }
     
-    // Adjust note size for frozen state
     note.style.width = '160px';
     note.style.cursor = 'default';
-    
-    // Store frozen data
     note.setAttribute('data-frozen', 'true');
     note.setAttribute('data-last-image-index', lastImageIndex);
   }
 
-  // Unfreeze note - restore full functionality at exact location
   unfreezeNote(note, project, index) {
     note.classList.remove('frozen');
     note.style.border = '';
     note.style.boxShadow = '';
     note.style.cursor = 'pointer';
     
-    // Show preview and controls
     const previewDiv = note.querySelector('.sticky-preview');
     if (previewDiv) previewDiv.style.display = '';
     
@@ -805,11 +782,9 @@ class StickyNoteManager {
     const subtitle = note.querySelector('.sticky-subtitle');
     if (subtitle) subtitle.style.display = '';
     
-    // Hide frozen image
     const frozenImg = note.querySelector('.frozen-image');
     if (frozenImg) frozenImg.style.display = 'none';
     
-    // Restore carousel transform to saved index
     const lastIndex = parseInt(note.getAttribute('data-last-image-index')) || 0;
     const slidesContainer = note.querySelector(`#preview-${project.id}`);
     if (slidesContainer) {
@@ -827,7 +802,6 @@ class StickyNoteManager {
     if (slideCount <= 1) return;
     
     let currentIndex = 0;
-    // Get current transform to know starting index
     const transform = slidesContainer.style.transform;
     const match = transform.match(/translateX\(-([0-9]+)%/);
     if (match) currentIndex = parseInt(match[1]) / 100;
@@ -838,7 +812,6 @@ class StickyNoteManager {
       if (note.classList.contains('frozen')) return;
       currentIndex = (currentIndex + 1) % slideCount;
       slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
-      // Store current index on note for freeze restoration
       note.setAttribute('data-last-image-index', currentIndex);
     }, 2000);
   }
@@ -866,19 +839,14 @@ class StickyNoteManager {
       e.preventDefault();
     });
 
-const onMouseMove = (e) => {
-  if (!isDragging) return;
-  let newLeft = startLeft + (e.clientX - startX);
-  let newTop = startTop + (e.clientY - startY);
-  const maxX = window.innerWidth - element.offsetWidth - 20;  // ← STILL HERE
-  const maxY = window.innerHeight - element.offsetHeight - 100; // ← STILL HERE
-  newLeft = Math.max(10, Math.min(newLeft, maxX));  // ← STILL HERE
-  newTop = Math.max(60, Math.min(newTop, maxY));   // ← STILL HERE
-  element.style.left = `${newLeft}px`;
-  element.style.top = `${newTop}px`;
-  
-  this.updateConnectorLineForNote(element);
-};
+    const onMouseMove = (e) => {
+      if (!isDragging) return;
+      let newLeft = startLeft + (e.clientX - startX);
+      let newTop = startTop + (e.clientY - startY);
+      element.style.left = `${newLeft}px`;
+      element.style.top = `${newTop}px`;
+      this.updateConnectorLineForNote(element);
+    };
     
     const onMouseUp = () => {
       isDragging = false;
@@ -923,7 +891,6 @@ const onMouseMove = (e) => {
     svg.appendChild(path);
   }
 
-  // Floating window - opens at exact sticky note position, movable from anywhere
   openFloatingWindow(project, clickX, clickY) {
     if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
     
@@ -965,7 +932,6 @@ const onMouseMove = (e) => {
     
     this.makeWindowResizableFromAnywhere(win);
     
-    // Window movable from ANYWHERE (not just header)
     let isDragging = false, dragStartX, dragStartY, startLeft, startTop;
     
     const startDrag = (e) => {
@@ -994,7 +960,6 @@ const onMouseMove = (e) => {
     document.addEventListener('mousemove', dragMove);
     document.addEventListener('mouseup', dragEnd);
     
-    // Minimize button - smooth animation back to sticky note
     win.querySelector('.window-minimize').addEventListener('click', () => {
       const note = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
       if (note && !note.classList.contains('frozen')) {
@@ -1017,7 +982,6 @@ const onMouseMove = (e) => {
       }
     });
     
-    // Close button - just close window, note remains
     win.querySelector('.window-close').addEventListener('click', () => {
       win.remove();
       activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
@@ -1092,30 +1056,6 @@ const onMouseMove = (e) => {
       }
     });
   }
-    win.addEventListener('mousedown', (e) => {
-      const rect = win.getBoundingClientRect();
-      const edgeThreshold = 15;
-      let direction = '';
-      if (e.clientX - rect.left < edgeThreshold) direction += 'w';
-      if (rect.right - e.clientX < edgeThreshold) direction += 'e';
-      if (e.clientY - rect.top < edgeThreshold) direction += 'n';
-      if (rect.bottom - e.clientY < edgeThreshold) direction += 's';
-      
-      if (direction) {
-        isResizing = true;
-        resizeDirection = direction;
-        startX = e.clientX;
-        startY = e.clientY;
-        startWidth = win.offsetWidth;
-        startHeight = win.offsetHeight;
-        startLeft = win.offsetLeft;
-        startTop = win.offsetTop;
-        e.preventDefault();
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-      }
-    });
-  }
     addToSidebar(project, index, noteRect, lastImageIndex, noteElement) {
     const sidebar = document.getElementById('sidebarTabs');
     const existingTab = document.getElementById(`tab-${project.id}`);
@@ -1132,16 +1072,12 @@ const onMouseMove = (e) => {
     this.drawLightConnectorLineFromNoteToTab(project.id, noteRect, tab);
     
     tab.addEventListener('click', () => {
-      // Restore the frozen note to full state at exact original location
       if (noteElement && noteElement.parentNode) {
-        // Unfreeze the existing note
         this.unfreezeNote(noteElement, project, index);
-        // Remove connector line
         const connectorLine = document.getElementById(`connector-${project.id}`);
         if (connectorLine) connectorLine.remove();
         this.noteTabConnections.delete(project.id);
       } else {
-        // Note was removed, recreate it
         const x = noteRect.left;
         const y = noteRect.top;
         this.createNote(project, index, x, y, { lastImageIndex: lastImageIndex || 0 });
@@ -1220,7 +1156,6 @@ const onMouseMove = (e) => {
 }
 
 let manager;
-let previewTimeout = null;
 
 // ========== TAG FUNCTIONS (12 tags total) ==========
 function createTagFilters() {
@@ -1393,7 +1328,6 @@ function initializeGridPluses() {
   const endX = scrollX + window.innerWidth + padding;
   const endY = scrollY + window.innerHeight + padding;
   
-  // Reduced density: step by 2 grid cells (~60% reduction)
   for (let x = startX; x < endX; x += gridSize * 2) {
     for (let y = startY; y < endY; y += gridSize * 2) {
       const plus = document.createElement('div');
@@ -1475,7 +1409,7 @@ function hideRandomPlusGroups() {
     }
   }, 800 + Math.random() * 4000);
 }
-// ========== CONNECTOR LINES (Filleted corners, through tags) ==========
+  // ========== CONNECTOR LINES (Filleted corners, through tags) ==========
 let activeHoverLines = [];
 
 function clearHoverLines() {
@@ -1590,7 +1524,6 @@ function initialize() {
     });
   });
 
-  // CV Modal
   document.getElementById('openCvBtn').addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('cvModal').style.display = 'flex';
@@ -1607,13 +1540,11 @@ function initialize() {
     }
   });
 
-  // Results Modal
   document.getElementById('closeResultsBtn').addEventListener('click', closeResultsModal);
   document.getElementById('resultsModal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('resultsModal')) closeResultsModal();
   });
 
-  // Split Modal
   document.getElementById('splitModal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('splitModal')) closeSplitModal();
   });
