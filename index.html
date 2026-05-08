@@ -436,6 +436,21 @@
     opacity: 0.6;
   }
 
+  /* RESIZE HANDLES CSS */
+  .resize-handle {
+    position: absolute;
+    background: transparent;
+    z-index: 20001;
+  }
+  .resize-top { top: -5px; left: 0; width: 100%; height: 10px; cursor: ns-resize; }
+  .resize-right { top: 0; right: -5px; width: 10px; height: 100%; cursor: ew-resize; }
+  .resize-bottom { bottom: -5px; left: 0; width: 100%; height: 10px; cursor: ns-resize; }
+  .resize-left { top: 0; left: -5px; width: 10px; height: 100%; cursor: ew-resize; }
+  .resize-top-left { top: -5px; left: -5px; width: 15px; height: 15px; cursor: nw-resize; }
+  .resize-top-right { top: -5px; right: -5px; width: 15px; height: 15px; cursor: ne-resize; }
+  .resize-bottom-left { bottom: -5px; left: -5px; width: 15px; height: 15px; cursor: sw-resize; }
+  .resize-bottom-right { bottom: -5px; right: -5px; width: 15px; height: 15px; cursor: nw-resize; }
+
   .results-modal-overlay, .cv-modal-overlay {
     display: none;
     position: fixed;
@@ -658,7 +673,7 @@ let noteZIndex = 100;
 let autoPlayIntervals = {};
 let activeFloatingWindows = [];
 let previewTimeout = null;
-  class StickyNoteManager {
+ class StickyNoteManager {
   constructor() {
     this.notes = [];
     this.tabs = [];
@@ -719,7 +734,6 @@ let previewTimeout = null;
       }
     }
 
-    // Mouse enter - start auto-play carousel
     note.addEventListener('mouseenter', () => {
       if (note.classList.contains('frozen')) return;
       if (previewTimeout) clearTimeout(previewTimeout);
@@ -736,7 +750,6 @@ let previewTimeout = null;
       }, 300);
     });
 
-    // Click handler - only if not dragging
     note.addEventListener('click', (e) => {
       if (this.isDraggingNote) return;
       if (e.target.closest('.sticky-note-controls')) return;
@@ -934,18 +947,18 @@ let previewTimeout = null;
     path.setAttribute('d', d);
     svg.appendChild(path);
   }
-  openFloatingWindow(project, clickX, clickY, note) {
-
+    openFloatingWindow(project, clickX, clickY, note) {
     if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
     
     const win = document.createElement('div');
     win.className = 'floating-window';
     win.setAttribute('data-id', project.id);
     
-    // Position exactly at sticky note location
     const rect = note.getBoundingClientRect();
     win.style.left = rect.left + 'px';
     win.style.top = rect.top + 'px';
+    win.style.width = '500px';
+    win.style.height = 'auto';
     
     win.innerHTML = `
       <div class="window-header">
@@ -957,11 +970,11 @@ let previewTimeout = null;
       </div>
       <div class="window-body">
         <div class="window-carousel">
-          <div class="window-slides" id="window-slides-${project.id}">
-            ${project.images.map(img => `<div class="window-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/500x280/f5f5f5/999?text=${encodeURIComponent(project.title)}'"></div>`).join('')}
+          <div class="window-slides" id="window-slides-${project.id}" style="display:flex;">
+            ${project.images.map(img => `<div class="window-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/500x280/f5f5f5/999?text=${encodeURIComponent(project.title)}'"></div>`).join('')}
           </div>
-          <button class="window-prev" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer;">‹</button>
-          <button class="window-next" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer;">›</button>
+          <button class="window-prev" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; z-index:10;">‹</button>
+          <button class="window-next" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; z-index:10;">›</button>
         </div>
         <div class="window-tags">${project.tags.map(t => `<span class="window-tag">${t}</span>`).join('')}</div>
         <div style="color: var(--accent); font-style: italic; font-size: 0.75rem;">${project.subtitle} (${project.year})</div>
@@ -971,7 +984,8 @@ let previewTimeout = null;
     
     document.body.appendChild(win);
     activeFloatingWindows.push(win);
-     // ADD RESIZE HANDLES TO THE WINDOW
+    
+    // RESIZE HANDLES - ADD TO WINDOW
     const handles = ['top', 'right', 'bottom', 'left', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
     handles.forEach(handle => {
       const div = document.createElement('div');
@@ -1017,88 +1031,28 @@ let previewTimeout = null;
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
       });
-    });  
-    /* Resize handles for floating windows */
-  .resize-handle {
-    position: absolute;
-    background: transparent;
-    z-index: 20001;
-  }
-  .resize-top {
-    top: -5px;
-    left: 0;
-    width: 100%;
-    height: 10px;
-    cursor: ns-resize;
-  }
-  .resize-right {
-    top: 0;
-    right: -5px;
-    width: 10px;
-    height: 100%;
-    cursor: ew-resize;
-  }
-  .resize-bottom {
-    bottom: -5px;
-    left: 0;
-    width: 100%;
-    height: 10px;
-    cursor: ns-resize;
-  }
-  .resize-left {
-    top: 0;
-    left: -5px;
-    width: 10px;
-    height: 100%;
-    cursor: ew-resize;
-  }
-  .resize-top-left {
-    top: -5px;
-    left: -5px;
-    width: 15px;
-    height: 15px;
-    cursor: nw-resize;
-  }
-  .resize-top-right {
-    top: -5px;
-    right: -5px;
-    width: 15px;
-    height: 15px;
-    cursor: ne-resize;
-  }
-  .resize-bottom-left {
-    bottom: -5px;
-    left: -5px;
-    width: 15px;
-    height: 15px;
-    cursor: sw-resize;
-  }
-  .resize-bottom-right {
-    bottom: -5px;
-    right: -5px;
-    width: 15px;
-    height: 15px;
-    cursor: nw-resize;
-  }
+    });
     
-    // Carousel navigation for window
+    // CAROUSEL NAVIGATION
     let winCurrentIndex = 0;
     const winSlides = win.querySelector('.window-slides');
     const winSlideCount = project.images.length;
     const winPrevBtn = win.querySelector('.window-prev');
     const winNextBtn = win.querySelector('.window-next');
     
-    winPrevBtn.addEventListener('click', () => {
+    winPrevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       winCurrentIndex = Math.max(0, winCurrentIndex - 1);
       winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`;
     });
     
-    winNextBtn.addEventListener('click', () => {
+    winNextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       winCurrentIndex = Math.min(winSlideCount - 1, winCurrentIndex + 1);
       winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`;
     });
     
-    // Drag functionality - entire window
+    // DRAG FUNCTIONALITY - ENTIRE WINDOW
     let isDragging = false;
     let dragStartX, dragStartY, startLeft, startTop;
     
@@ -1106,7 +1060,8 @@ let previewTimeout = null;
       if (e.target.classList.contains('window-close') || 
           e.target.classList.contains('window-minimize') ||
           e.target.classList.contains('window-prev') ||
-          e.target.classList.contains('window-next')) return;
+          e.target.classList.contains('window-next') ||
+          e.target.classList.contains('resize-handle')) return;
       isDragging = true;
       dragStartX = e.clientX;
       dragStartY = e.clientY;
@@ -1129,11 +1084,11 @@ let previewTimeout = null;
     document.addEventListener('mousemove', onWinMouseMove);
     document.addEventListener('mouseup', onWinMouseUp);
     
-    // Minimize button
+    // MINIMIZE BUTTON
     win.querySelector('.window-minimize').addEventListener('click', () => {
-      const note = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
-      if (note && !note.classList.contains('frozen')) {
-        const noteRect = note.getBoundingClientRect();
+      const noteEl = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
+      if (noteEl && !noteEl.classList.contains('frozen')) {
+        const noteRect = noteEl.getBoundingClientRect();
         win.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
         win.style.left = noteRect.left + 'px';
         win.style.top = noteRect.top + 'px';
@@ -1143,8 +1098,8 @@ let previewTimeout = null;
         setTimeout(() => {
           win.remove();
           activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
-          note.style.transform = 'scale(1.02)';
-          setTimeout(() => { note.style.transform = ''; }, 300);
+          noteEl.style.transform = 'scale(1.02)';
+          setTimeout(() => { noteEl.style.transform = ''; }, 300);
         }, 500);
       } else {
         win.remove();
@@ -1152,11 +1107,16 @@ let previewTimeout = null;
       }
     });
     
-    // Close button
+    // CLOSE BUTTON
     win.querySelector('.window-close').addEventListener('click', () => {
       win.remove();
       activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
     });
+    
+    setTimeout(() => {
+      win.style.width = 'auto';
+      win.style.height = 'auto';
+    }, 10);
   }
 
   addToSidebar(project, index, noteRect, lastImageIndex, noteElement) {
@@ -1314,7 +1274,6 @@ function closeResultsModal() {
   document.getElementById('resultsModal').style.display = 'none';
   document.body.style.overflow = 'auto';
 }
-
 // ========== SPLIT VIEW ==========
 function openSplitViewForProject(index) {
   const project = allProjects[index];
@@ -1414,7 +1373,8 @@ function closeSplitModal() {
   const modal = document.getElementById('splitModal');
   if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
 }
-  // ========== GRID PLUS SIGNS ==========
+
+// ========== GRID PLUS SIGNS ==========
 let gridPluses = [];
 let hiddenGroupsInterval;
 
@@ -1430,7 +1390,6 @@ function initializeGridPluses() {
   const endX = scrollX + window.innerWidth + padding;
   const endY = scrollY + window.innerHeight + padding;
   
-  // Reduced density: step by 2 grid cells (~60% reduction)
   for (let x = startX; x < endX; x += gridSize * 2) {
     for (let y = startY; y < endY; y += gridSize * 2) {
       const plus = document.createElement('div');
@@ -1603,7 +1562,8 @@ function initialize() {
     const y = 180 + Math.random() * (window.innerHeight - 500);
     setTimeout(() => {
       manager.createNote(project, i, x, y);
-      manager.makeDraggable(document.querySelector(`.sticky-note[data-project-idx="${i}"]`), project);
+      const noteEl = document.querySelector(`.sticky-note[data-project-idx="${i}"]`);
+      if (noteEl) manager.makeDraggable(noteEl, project);
     }, 100 + i * 40);
   });
 
@@ -1674,4 +1634,4 @@ window.loadCompareProject = loadCompareProject;
 window.closeSplitModal = closeSplitModal;
 </script>
 </body>
-</html>
+</html> 
