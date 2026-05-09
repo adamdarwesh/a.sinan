@@ -1641,6 +1641,33 @@ let previewTimeout = null;
     this.updateAllConnectorLines();
   }
 
+  // Animate filtered notes into smooth grid layout
+  animateToGrid() {
+    const gridSize = 220;
+    const startX = 50;
+    const startY = 200;
+    const cols = Math.floor((window.innerWidth - 100) / gridSize);
+    
+    const visibleNotes = this.notes.filter(note => note.style.display !== 'none');
+    
+    visibleNotes.forEach((note, i) => {
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      const targetX = startX + (col * gridSize);
+      const targetY = startY + (row * gridSize);
+      
+      note.style.transition = 'left 0.4s cubic-bezier(0.4, 0, 0.2, 1), top 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+      note.style.left = targetX + 'px';
+      note.style.top = targetY + 'px';
+      
+      setTimeout(() => {
+        note.style.transition = '';
+      }, 400);
+      
+      this.updateConnectorLineForNote(note);
+    });
+  }
+
   highlightByCategory(category) {
     if (category === 'all') {
       this.notes.forEach(n => n.classList.remove('blurred', 'highlight'));
@@ -2098,6 +2125,9 @@ function initialize() {
       filters.forEach(f => f.classList.remove('active'));
       filter.classList.add('active');
       manager.filterByCategory(category);
+      setTimeout(() => {
+        manager.animateToGrid();
+      }, 50);
       clearHoverLines();
     });
 
@@ -2147,7 +2177,9 @@ function initialize() {
   const hideLinesBtn = document.getElementById('hideLinesBtn');
   const showLinesBtn = document.getElementById('showLinesBtn');
   
-  if (gridBtn) gridBtn.addEventListener('click', () => manager.arrangeGrid());
+   if (gridBtn) gridBtn.addEventListener('click', () => {
+    manager.animateToGrid();
+  });
   if (randomizeBtn) randomizeBtn.addEventListener('click', () => manager.randomizeArrangement());
   if (closeAllBtn) closeAllBtn.addEventListener('click', () => manager.closeAllNotes());
   if (hideLinesBtn) hideLinesBtn.addEventListener('click', () => manager.hideAllLines());
