@@ -653,9 +653,27 @@
     nav { padding: 1rem 1.5rem; }
     .hero-left, .hero-right { padding: 4rem 1.5rem; }
   }
+   /* Hover overlay styles */
+  #hoverOverlay {
+    backdrop-filter: blur(2px);
+  }
+  
+  #hoverImage {
+    box-shadow: 0 0 30px rgba(255,48,48,0.3);
+    transition: transform 0.3s ease;
+  }
+  
+  .hero-index li {
+    cursor: pointer;
+    position: relative;
+  }
 </style>
 </head>
 <body>
+ <!-- Hover Overlay Image for Project Previews -->
+<div id="hoverOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease;">
+  <img id="hoverImage" src="" alt="Project preview" style="max-width: 80%; max-height: 80%; object-fit: contain; filter: invert(1); mix-blend-mode: screen; border-radius: 12px;">
+</div>
 
 <!-- CV MODAL -->
 <div id="cvModal" class="cv-modal-overlay">
@@ -903,11 +921,88 @@ function setupHeroIndexClicks() {
     });
   });
 }
+// ========== HOVER OVERLAY FUNCTIONALITY ==========
+let hoverTimeout;
 
+function showImageOverlay(projectSlug, projectTitle) {
+  const overlay = document.getElementById('hoverOverlay');
+  const hoverImg = document.getElementById('hoverImage');
+  
+  if (!overlay || !hoverImg) return;
+  
+  let imgPath;
+  
+  // SPECIAL CASE: For Aura project (index 10), use aura_6_overlay.jpg
+  if (projectTitle === "Aura") {
+    imgPath = `images/aura_6_overlay.jpg`;
+  } else {
+    // For all other projects, use first image
+    imgPath = `images/${projectSlug}_1.jpg`;
+  }
+  
+  hoverImg.src = imgPath;
+  hoverImg.onerror = () => {
+    // Fallback if image not found
+    if (projectTitle === "Aura") {
+      hoverImg.src = `images/${projectSlug}_1.jpg`;
+    } else {
+      hoverImg.src = 'https://placehold.co/800x600/1a1a1a/FF3030?text=Image+Not+Found';
+    }
+  };
+  
+  overlay.style.opacity = '1';
+}
+
+function hideImageOverlay() {
+  const overlay = document.getElementById('hoverOverlay');
+  if (overlay) {
+    overlay.style.opacity = '0';
+  }
+}
+
+function setupHeroIndexHover() {
+  const heroItems = document.querySelectorAll('.hero-index li');
+  
+  heroItems.forEach((item, idx) => {
+    // Store the project title on the element
+    const projectTitle = allProjects[idx]?.title;
+    const projectSlug = allProjects[idx]?.slug;
+    
+    if (!projectTitle) return;
+    
+    // Clone to remove existing listeners
+    const newItem = item.cloneNode(true);
+    item.parentNode.replaceChild(newItem, item);
+    
+    // Hover enter - show overlay
+    newItem.addEventListener('mouseenter', () => {
+      if (hoverTimeout) clearTimeout(hoverTimeout);
+      showImageOverlay(projectSlug, projectTitle);
+    });
+    
+    // Hover leave - hide overlay
+    newItem.addEventListener('mouseleave', () => {
+      hoverTimeout = setTimeout(() => {
+        hideImageOverlay();
+      }, 150);
+    });
+    
+    // Click - open modal (keep original behavior)
+    newItem.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (allProjects[idx]) {
+        openProjectModal(allProjects[idx]);
+      }
+    });
+  });
+}
+// ========== INITIALIZE ==========
 // ========== INITIALIZE ==========
 function initialize() {
-  setupHeroIndexClicks();
+  // Setup hover overlay (replaces click-only)
+  setupHeroIndexHover();
   
+  // Modal controls
   document.getElementById('closeModalBtn').addEventListener('click', closeProjectModal);
   document.getElementById('modalCarouselPrev').addEventListener('click', prevModalSlide);
   document.getElementById('modalCarouselNext').addEventListener('click', nextModalSlide);
@@ -916,6 +1011,7 @@ function initialize() {
     if (e.target === document.getElementById('projectModal')) closeProjectModal();
   });
   
+  // CV Modal controls
   document.getElementById('openCvBtn').addEventListener('click', (e) => {
     e.preventDefault();
     openCvModal();
@@ -925,6 +1021,7 @@ function initialize() {
     if (e.target === document.getElementById('cvModal')) closeCvModal();
   });
   
+  // Scroll reveal animations
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
