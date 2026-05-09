@@ -1083,7 +1083,21 @@ let previewTimeout = null;
     const closeBtn = note.querySelector('.close-note');
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const noteRect = note.getBoundingClientRect();
+      
+      // Get exact position relative to viewport
+      const rect = note.getBoundingClientRect();
+      const scrollX = window.scrollX || window.pageXOffset;
+      const scrollY = window.scrollY || window.pageYOffset;
+      
+      // Convert to absolute position (accounting for scroll)
+      const absoluteLeft = rect.left + scrollX;
+      const absoluteTop = rect.top + scrollY;
+      
+      // Set position using absolute coordinates
+      note.style.position = 'absolute';
+      note.style.left = absoluteLeft + 'px';
+      note.style.top = absoluteTop + 'px';
+      
       const slidesContainer = note.querySelector(`#preview-${project.id}`);
       let lastImageIndex = 0;
       if (slidesContainer) {
@@ -1092,7 +1106,7 @@ let previewTimeout = null;
         if (match) lastImageIndex = parseInt(match[1]) / 100;
       }
       this.freezeNote(note, project, lastImageIndex);
-      this.addToSidebar(project, index, noteRect, lastImageIndex, note);
+      this.addToSidebar(project, index, rect, lastImageIndex, note);
     });
 
     document.getElementById('stickyCanvas').appendChild(note);
