@@ -256,7 +256,12 @@
     transform: scale(1.02);
     border-color: var(--accent);
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    z-index: 9999 !important;  /* ← THIS LINE MUST EXIST */
+    z-index: 9999 !important;
+  }
+
+  /* When preview-active AND hover, even higher z-index */
+  .sticky-note.preview-active:hover {
+    z-index: 10000 !important;
   }
 
   .sticky-note.preview-active {
@@ -1212,7 +1217,7 @@ let previewTimeout = null;
       startY = e.clientY;
       startLeft = parseInt(element.style.left);
       startTop = parseInt(element.style.top);
-      element.style.zIndex = noteZIndex++;
+      element.style.zIndex = 9998;
       element.style.cursor = 'grabbing';
       e.preventDefault();
     });
@@ -1228,7 +1233,7 @@ let previewTimeout = null;
       touchStartY = touch.clientY;
       startLeft = parseInt(element.style.left);
       startTop = parseInt(element.style.top);
-      element.style.zIndex = noteZIndex++;
+      element.style.zIndex = 9998;
       element.style.cursor = 'grabbing';
     });
 
