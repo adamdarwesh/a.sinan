@@ -403,7 +403,7 @@
     transform: translateY(0);
   }
 
-  /* ========== PROJECT MODAL (Large Window) ========== */
+  /* ========== PROJECT MODAL ========== */
   .project-modal-overlay {
     display: none;
     position: fixed;
@@ -543,12 +543,6 @@
     border-radius: 4px;
   }
 
-  .modal-project-info h3 {
-    font-family: var(--serif);
-    font-size: 1.3rem;
-    margin-bottom: 0.5rem;
-  }
-
   .modal-project-info .modal-subtitle {
     color: var(--accent);
     font-style: italic;
@@ -574,43 +568,6 @@
   .modal-project-info .modal-full-desc {
     line-height: 1.8;
     color: var(--muted);
-  }
-
-  /* ========== STICKY NOTES ========== */
-  .sticky-note {
-    position: fixed;
-    background: #111;
-    border-left: 4px solid var(--accent);
-    padding: 10px 15px;
-    border-radius: 8px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.5);
-    cursor: pointer;
-    z-index: 2000;
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    max-width: 180px;
-    backdrop-filter: blur(4px);
-    border: 0.5px solid var(--rule);
-    border-left: 4px solid var(--accent);
-  }
-
-  .sticky-note:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    border-left-width: 6px;
-  }
-
-  .sticky-note .sticky-title {
-    color: var(--accent);
-    margin-bottom: 4px;
-  }
-
-  .sticky-note .sticky-subtitle {
-    font-size: 0.6rem;
-    color: var(--muted);
-    font-family: var(--body-serif);
   }
 
   /* ========== CV MODAL ========== */
@@ -681,7 +638,7 @@
     padding-bottom: 0.3rem;
   }
 
-  .cv-modal-body p {
+  .cv-modal-body p, .cv-modal-body ul {
     color: var(--muted);
   }
 
@@ -730,6 +687,7 @@
       <h4>Contact</h4>
       <p>📧 <a href="mailto:adam95darwesh@gmail.com" style="color:#FF3030;">adam95darwesh@gmail.com</a></p>
       <p>🔗 <a href="https://www.linkedin.com/in/aladham/" target="_blank" style="color:#FF3030;">linkedin.com/in/aladham</a></p>
+      <p>📷 <a href="https://www.instagram.com/al_adhambinsinan/" target="_blank" style="color:#FF3030;">@al_adhambinsinan</a></p>
     </div>
   </div>
 </div>
@@ -743,9 +701,7 @@
     </div>
     <div class="project-modal-body">
       <div class="modal-carousel">
-        <div class="modal-carousel-slides" id="modalCarouselSlides">
-          <!-- Images inserted here -->
-        </div>
+        <div class="modal-carousel-slides" id="modalCarouselSlides"></div>
         <button class="modal-carousel-btn modal-carousel-prev" id="modalCarouselPrev">‹</button>
         <button class="modal-carousel-btn modal-carousel-next" id="modalCarouselNext">›</button>
         <div class="modal-carousel-dots" id="modalCarouselDots"></div>
@@ -832,52 +788,23 @@
 </footer>
 
 <script>
-// ========== PROJECT DATA (EXACTLY FROM YOUR FILE) ==========
+// ========== PROJECT DATA (with correct image slugs for underscore convention) ==========
 const allProjects = [
-  { id: "01", title: "Spiral Spines", year: "2026", subtitle: "Climate Biennale Vienna 2026", tags: ["Regenerative Material", "Vernacular Craft", "1:1 Prototype"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing, embedding collective narratives into reclaimed structural columns through a universal semiotic language inspired by ancient scripts.", images: [1,2,3,4,5,6] },
-  { id: "02", title: "Woven Realities", year: "2026", subtitle: "The Diversity of Afghan Homes", tags: ["Circular Architecture", "Modular Assembly", "Afghan Heritage"], fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice. The structure substitutes traditional earth with reusable by-products from the construction and consumer waste sectors — Heraklith wood wool panels, chipboard, stones, and textiles — assembled through low-tech modular means.", images: [1,2,3,4,5,6] },
-  { id: "03", title: "The New Cairn", year: "Ongoing", subtitle: "Rubble Stacking for Post-Disaster Contexts", tags: ["Rubble Reuse", "Compression-Only", "Post-Conflict"], fullDesc: "A research and construction project proposing whole, un-crushed demolition rubble — reinforced concrete, non-reinforced concrete, stone cladding — as masonry units in compression-only enclosures. The project develops a destruction-mode typology, a field-legible sorting system, and a practitioner handbook deployable in post-disaster Palestine and Afghanistan without specialist equipment.", images: [1,2,3,4,5,6] },
-  { id: "04", title: "Carbonfloss", year: "2020", subtitle: "eVolo Skyscraper Competition — Honorable Mention", tags: ["Speculative", "Ecological", "Political Statement"], fullDesc: "Carbonfloss is a political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity amid impending environmental disaster. There's no room for hope when there is no action. Alarms of demise are ignored.", images: [1,2,3,4,5,6] },
-  { id: "05", title: "OUROBOS", year: "2022", subtitle: "Residual Morphogenesis", tags: ["AI Strategy", "Residual Material", "Morphogenesis"], fullDesc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies. The project synthesizes urban residue into architectural form, exploring parallel park, amorphous composite, and AI generation workflows.", images: [1,2,3,4,5,6] },
-  { id: "06", title: "Agropraxis", year: "2021", subtitle: "Published in Dazeen", tags: ["Academic", "Agricultural", "Spatial Practice"], fullDesc: "Agropraxis explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles and regenerative farming principles.", images: [1,2,3,4,5,6] },
-  { id: "07", title: "Medius paedagogicus", year: "2022", subtitle: "Published in Dazeen", tags: ["Pedagogical Space", "Institutional", "Flat Hierarchy"], fullDesc: "A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes connected by circular paths around an open shared area. The alternating volumes strategy allows for uninterrupted interconnected passage through classes and facilities alike, as a physical manifestation of equality and flat hierarchy.", images: [1,2,3,4,5,6] },
-  { id: "08", title: "Soft Unsealing", year: "2024", subtitle: "IABR11 Rotterdam", tags: ["Collective", "Installation", "Spatial Practice"], fullDesc: "Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts. Project exhibited at IABR11 and Galerie Göttlicher.", images: [1,2,3,4,5,6] },
-  { id: "09", title: "Old Airfield", year: "Ongoing", subtitle: "Chicago Architecture Biennial", tags: ["Collective", "Acoustic", "Landscape"], fullDesc: "A solo sub-project within the [A]FA Collective ongoing realization at Tamale, Ghana. An acoustic mirror cultural gateway exploring sound and spatial memory, published at Chicago Architecture Biennial CAB5.", images: [1,2,3,4,5,6] },
-  { id: "10", title: "Enkidu", year: "In Dev", subtitle: "Vernacular Revival", tags: ["Vernacular", "Ecological", "Tradition Revival"], fullDesc: "Enkidu aims to revive elements of vernacular Palestinian architecture — not through aesthetic value alone, but through ecological, economical, and tradition revival. The project is still in the early development stages, located in Dier Ghassaneh.", images: [1,2,3,4,5,6] },
-  { id: "11", title: "Aura", year: "2022", subtitle: "Folly Project", tags: ["Folly", "Installation", "Spatial Experience"], fullDesc: "A folly project exploring the atmospheric and experiential qualities of architectural space through material and light, exhibited at various Vienna locations including Rustenschacherallee.", images: [1,2,3,4,5,6] },
-  { id: "12", title: "Liberation Fronts", year: "2024", subtitle: "Diploma Thesis — Honors", tags: ["Thesis", "Political", "Spatial Agency"], fullDesc: "A diploma thesis exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements and the role of spatial practice in decolonial contexts.", images: [1,2,3,4,5,6] },
-  { id: "13", title: "Regutting", year: "2025", subtitle: "Wonder Cabinet", tags: ["Residency", "Installation", "Film"], fullDesc: "A residency project exploring returns and remains through film, photography, and installation at Wonder Cabinet, Bethlehem. Part of 'All the Wild Places Exhibition' at Spring Sessions.", images: [1,2,3,4,5,6] },
-  { id: "14", title: "Agential Cartographies", year: "2025", subtitle: "Dar Jacir", tags: ["Exhibition", "Cartography", "Agency"], fullDesc: "An exhibition presenting experimental mappings across three spatial typologies: the camp, the city, and the limbo landscape, exploring agency as a dynamic and malleable force that shapes and redefines cartographic representations in occupied Palestine.", images: [1,2,3,4,5,6] }
+  { id: "01", title: "Spiral Spines", slug: "spiral_spines", year: "2026", subtitle: "Climate Biennale Vienna 2026", tags: ["Regenerative Material", "Vernacular Craft", "1:1 Prototype"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber — ecological disruption made structural. Traditional Afghan woodcarving techniques are adapted as a contemporary method for material processing, embedding collective narratives into reclaimed structural columns through a universal semiotic language inspired by ancient scripts." },
+  { id: "02", title: "Woven Realities", slug: "woven_realities", year: "2026", subtitle: "The Diversity of Afghan Homes", tags: ["Circular Architecture", "Modular Assembly", "Afghan Heritage"], fullDesc: "A 1:1-scale architectural prototype translating the intimate dimensions of Afghan dwelling into circular material practice. The structure substitutes traditional earth with reusable by-products from the construction and consumer waste sectors — Heraklith wood wool panels, chipboard, stones, and textiles — assembled through low-tech modular means." },
+  { id: "03", title: "The New Cairn", slug: "new_cairn", year: "Ongoing", subtitle: "Rubble Stacking for Post-Disaster Contexts", tags: ["Rubble Reuse", "Compression-Only", "Post-Conflict"], fullDesc: "A research and construction project proposing whole, un-crushed demolition rubble — reinforced concrete, non-reinforced concrete, stone cladding — as masonry units in compression-only enclosures. The project develops a destruction-mode typology, a field-legible sorting system, and a practitioner handbook deployable in post-disaster Palestine and Afghanistan without specialist equipment." },
+  { id: "04", title: "Carbonfloss", slug: "carbonfloss", year: "2020", subtitle: "eVolo Skyscraper Competition — Honorable Mention", tags: ["Speculative", "Ecological", "Political Statement"], fullDesc: "Carbonfloss is a political statement against absurd reluctance policies, spurring hope for action as reassurance for humanity amid impending environmental disaster. There's no room for hope when there is no action. Alarms of demise are ignored." },
+  { id: "05", title: "OUROBOS", slug: "ourobos", year: "2022", subtitle: "Residual Morphogenesis", tags: ["AI Strategy", "Residual Material", "Morphogenesis"], fullDesc: "An exploration of residual morphogenesis using AI-driven workflows and material strategies. The project synthesizes urban residue into architectural form, exploring parallel park, amorphous composite, and AI generation workflows." },
+  { id: "06", title: "Agropraxis", slug: "agropraxis", year: "2021", subtitle: "Published in Dazeen", tags: ["Academic", "Agricultural", "Spatial Practice"], fullDesc: "Agropraxis explores the intersection of agriculture and architectural practice, proposing new models for spatial organization rooted in ecological cycles and regenerative farming principles." },
+  { id: "07", title: "Medius paedagogicus", slug: "medius", year: "2022", subtitle: "Published in Dazeen", tags: ["Pedagogical Space", "Institutional", "Flat Hierarchy"], fullDesc: "A prototype tracing its character from Diola compounds in Casamance, Senegal — a covered radial arrangement of volumes connected by circular paths around an open shared area. The alternating volumes strategy allows for uninterrupted interconnected passage through classes and facilities alike, as a physical manifestation of equality and flat hierarchy." },
+  { id: "08", title: "Soft Unsealing", slug: "soft_unsealing", year: "2024", subtitle: "IABR11 Rotterdam", tags: ["Collective", "Installation", "Spatial Practice"], fullDesc: "Part of the [A]FA Collective, Soft Unsealing explores softening boundaries and unsealing latent spatial potentials in urban contexts. Project exhibited at IABR11 and Galerie Göttlicher." },
+  { id: "09", title: "Old Airfield", slug: "old_airfield", year: "Ongoing", subtitle: "Chicago Architecture Biennial", tags: ["Collective", "Acoustic", "Landscape"], fullDesc: "A solo sub-project within the [A]FA Collective ongoing realization at Tamale, Ghana. An acoustic mirror cultural gateway exploring sound and spatial memory, published at Chicago Architecture Biennial CAB5." },
+  { id: "10", title: "Enkidu", slug: "enkidu", year: "In Dev", subtitle: "Vernacular Revival", tags: ["Vernacular", "Ecological", "Tradition Revival"], fullDesc: "Enkidu aims to revive elements of vernacular Palestinian architecture — not through aesthetic value alone, but through ecological, economical, and tradition revival. The project is still in the early development stages, located in Dier Ghassaneh." },
+  { id: "11", title: "Aura", slug: "aura", year: "2022", subtitle: "Folly Project", tags: ["Folly", "Installation", "Spatial Experience"], fullDesc: "A folly project exploring the atmospheric and experiential qualities of architectural space through material and light, exhibited at various Vienna locations including Rustenschacherallee." },
+  { id: "12", title: "Liberation Fronts", slug: "liberation_fronts", year: "2024", subtitle: "Diploma Thesis — Honors", tags: ["Thesis", "Political", "Spatial Agency"], fullDesc: "A diploma thesis exploring liberation fronts as spatial and political constructs, examining how architecture can participate in liberation movements and the role of spatial practice in decolonial contexts." },
+  { id: "13", title: "Regutting", slug: "regutting", year: "2025", subtitle: "Wonder Cabinet", tags: ["Residency", "Installation", "Film"], fullDesc: "A residency project exploring returns and remains through film, photography, and installation at Wonder Cabinet, Bethlehem. Part of 'All the Wild Places Exhibition' at Spring Sessions." },
+  { id: "14", title: "Agential Cartographies", slug: "agential_cartographies", year: "2025", subtitle: "Dar Jacir", tags: ["Exhibition", "Cartography", "Agency"], fullDesc: "An exhibition presenting experimental mappings across three spatial typologies: the camp, the city, and the limbo landscape, exploring agency as a dynamic and malleable force that shapes and redefines cartographic representations in occupied Palestine." }
 ];
-
-// ========== CREATE STICKY NOTES ==========
-let stickyNotes = [];
-
-function createStickyNote(project, index) {
-  const note = document.createElement('div');
-  note.className = 'sticky-note';
-  note.setAttribute('data-project-id', project.id);
-  
-  const padding = 20;
-  const maxX = window.innerWidth - 200;
-  const maxY = window.innerHeight - 80;
-  const x = Math.max(padding, Math.random() * maxX);
-  const y = Math.max(padding + (index * 25), Math.random() * maxY);
-  
-  note.style.left = `${x}px`;
-  note.style.top = `${y}px`;
-  note.style.zIndex = 2000 + index;
-  
-  note.innerHTML = `
-    <div class="sticky-title">📌 ${project.id} · ${project.title}</div>
-    <div class="sticky-subtitle">${project.subtitle}</div>
-  `;
-  
-  note.addEventListener('click', () => openProjectModal(project));
-  document.body.appendChild(note);
-  stickyNotes.push(note);
-  return note;
-}
 
 // ========== MODAL CAROUSEL ==========
 let modalCarouselIndex = 0;
@@ -897,11 +824,12 @@ function openProjectModal(project) {
   const slidesContainer = document.getElementById('modalCarouselSlides');
   slidesContainer.innerHTML = '';
   
+  // Generate 6 images per project using underscore convention
   for (let i = 1; i <= 6; i++) {
     const slide = document.createElement('div');
     slide.className = 'modal-carousel-slide';
-    const imgName = `${project.title.toLowerCase().replace(/ /g, '-')}-${i}.jpg`;
-    slide.innerHTML = `<img src="images/${imgName}" alt="${project.title} image ${i}" onerror="this.src='https://placehold.co/800x500/1a1a1a/FF3030?text=${project.title}+${i}'">`;
+    const imgPath = `images/${project.slug}_${i}.jpg`;
+    slide.innerHTML = `<img src="${imgPath}" alt="${project.title} image ${i}" onerror="this.src='https://placehold.co/800x500/1a1a1a/FF3030?text=${project.title}+${i}'">`;
     slidesContainer.appendChild(slide);
   }
   
@@ -978,12 +906,6 @@ function setupHeroIndexClicks() {
 
 // ========== INITIALIZE ==========
 function initialize() {
-  allProjects.forEach((project, i) => {
-    setTimeout(() => {
-      createStickyNote(project, i);
-    }, 100 + i * 80);
-  });
-  
   setupHeroIndexClicks();
   
   document.getElementById('closeModalBtn').addEventListener('click', closeProjectModal);
@@ -1012,17 +934,6 @@ function initialize() {
     });
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-  
-  window.addEventListener('resize', () => {
-    stickyNotes.forEach(note => {
-      let left = parseInt(note.style.left);
-      let top = parseInt(note.style.top);
-      left = Math.max(10, Math.min(left, window.innerWidth - 200));
-      top = Math.max(10, Math.min(top, window.innerHeight - 80));
-      note.style.left = `${left}px`;
-      note.style.top = `${top}px`;
-    });
-  });
 }
 
 initialize();
