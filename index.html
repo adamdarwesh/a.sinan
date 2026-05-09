@@ -57,7 +57,7 @@
   }
 
   #gridPlusContainer {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
     pointer-events: none; z-index: 1; overflow: visible;
   }
 
@@ -81,7 +81,7 @@
   .grid-plus.hidden { opacity: 0; }
 
   #connectorSvg {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
     pointer-events: none; z-index: 2; overflow: visible;
   }
 
@@ -357,8 +357,6 @@
     display: block;
     width: 100%;
     height: auto;
-    min-height: 60px;
-    max-height: 100px;
     object-fit: contain;
     margin-bottom: 4px;
   }
@@ -681,7 +679,7 @@
   }
     /* ========== DARK THEME STYLES ========== */
   body.dark-theme {
-    background: #1a1a1a;
+    background: #000000;
     color: #e0e0e0;
   }
   
@@ -1103,9 +1101,17 @@ let previewTimeout = null;
   }
 
   freezeNote(note, project, lastImageIndex) {
+    // Store current position before freezing
+    const currentLeft = note.style.left;
+    const currentTop = note.style.top;
+    
     note.classList.add('frozen');
     note.style.border = '1px dashed var(--accent) !important';
     note.style.boxShadow = 'none';
+    
+    // Restore position (ensure it doesn't move)
+    note.style.left = currentLeft;
+    note.style.top = currentTop;
     
     const previewDiv = note.querySelector('.sticky-preview');
     if (previewDiv) previewDiv.style.display = 'none';
