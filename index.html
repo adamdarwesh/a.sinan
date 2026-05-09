@@ -888,29 +888,14 @@
 <script>
 // ========== PROJECT DATA - 12 TAGS, 6 IMAGES EACH ==========
 // Helper function to auto-detect number of images for a project
-async function detectImageCount(projectSlug) {
-  let count = 0;
-  for (let i = 1; i <= 20; i++) { // Try up to 20 images
-    const img = new Image();
-    img.src = `images/${projectSlug}_${i}.jpg`;
-    await new Promise((resolve) => {
-      img.onload = () => {
-        count = i;
-        resolve();
-      };
-      img.onerror = () => {
-        if (i === 1) count = 0;
-        resolve();
-      };
-      setTimeout(() => resolve(), 100); // Timeout after 100ms
-    });
-    if (img.complete && img.naturalWidth === 0) break;
-  }
-  return count;
+function detectImageCount(projectSlug) {
+  // Instantly return 6 without checking files
+  return 6;
 }
 
 // Build image arrays dynamically
-async function buildProjectsWithDynamicImages() {
+// Build image arrays dynamically
+function buildProjectsWithDynamicImages() {
   const baseProjects = [
     { id: "01", title: "Spiral Spines", slug: "spiral_spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", 
       tags: ["Ecological", "Vernacular"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber." },
@@ -949,7 +934,7 @@ async function buildProjectsWithDynamicImages() {
   const allProjects = [];
   
   for (const project of baseProjects) {
-    const imageCount = await detectImageCount(project.slug);
+    const imageCount = detectImageCount(project.slug);  // REMOVED 'await'
     const images = [];
     for (let i = 1; i <= imageCount; i++) {
       images.push(`${project.slug}_${i}.jpg`);
@@ -2055,21 +2040,86 @@ function drawCategoryHoverLines(categoryEl) {
 }
 
 // ========== INITIALIZE ==========
-async function initialize() {
-  // Wait for images to be auto-detected from folder
-  allProjects = await buildProjectsWithDynamicImages();
+function initialize() {
+  // REMOVED: allProjects = await buildProjectsWithDynamicImages();
+  // (images are already hardcoded or detectImageCount returns instantly)
   
   manager = new StickyNoteManager();
 
+  // SOLUTION 4: Create all notes simultaneously (no delays)
   allProjects.forEach((project, i) => {
     const x = 30 + Math.random() * (window.innerWidth - 350);
     const y = 180 + Math.random() * (window.innerHeight - 500);
-    setTimeout(() => {
-      manager.createNote(project, i, x, y);
-      const noteEl = document.querySelector(`.sticky-note[data-project-idx="${i}"]`);
-      if (noteEl) manager.makeDraggable(noteEl, project);
-    }, 100 + i * 40);
+    manager.createNote(project, i, x, y);
+    const noteEl = document.querySelector(`.sticky-note[data-project-idx="${i}"]`);
+    if (noteEl) manager.makeDraggable(noteEl, project);
   });
+
+  // Rest of the code remains the same
+  setTimeout(createTagFilters, 800);
+
+  const filters = document.querySelectorAll('#categoryFilters li');
+  filters.forEach(filter => {
+    filter.addEventListener('click', () => {
+      const category = filter.getAttribute('data-category');
+      filters.forEach(f => f.classList.remove('active'));
+      filter.classList.add('active');
+      manager.filterByCategory(category);
+      clearHoverLines();
+    });
+
+    filter.addEventListener('mouseenter', () => {
+      manager.highlightByCategory(filter.getAttribute('data-category'));
+      setTimeout(() => drawCategoryHoverLines(filter), 50);
+    });
+
+    filter.addEventListener('mouseleave', () => {
+      if (document.getElementById('connectorSvg').style.display !== 'none') clearHoverLines();
+      const activeCategory = document.querySelector('#categoryFilters li.active').getAttribute('data-category');
+      manager.highlightByCategory(activeCategory);
+      setTimeout(() => { if (manager) manager.updateAllConnectorLines(); }, 100);
+    });
+  });
+
+  document.getElementById('openCvBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('cvModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  });
+  document.getElementById('closeCvBtn').addEventListener('click', () => {
+    document.getElementById('cvModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+  });
+  document.getElementById('cvModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('cvModal')) {
+      document.getElementById('cvModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  });
+
+  document.getElementById('closeResultsBtn').addEventListener('click', closeResultsModal);
+  document.getElementById('resultsModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('resultsModal')) closeResultsModal();
+  });
+
+  document.getElementById('splitModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('splitModal')) closeSplitModal();
+  });
+  
+  window.addEventListener('resize', () => { if (manager) manager.updateAllConnectorLines(); });
+
+  const gridBtn = document.getElementById('gridBtn');
+  const randomizeBtn = document.getElementById('randomizeBtn');
+  const closeAllBtn = document.getElementById('closeAllBtn');
+  const hideLinesBtn = document.getElementById('hideLinesBtn');
+  const showLinesBtn = document.getElementById('showLinesBtn');
+  
+  if (gridBtn) gridBtn.addEventListener('click', () => manager.arrangeGrid());
+  if (randomizeBtn) randomizeBtn.addEventListener('click', () => manager.randomizeArrangement());
+  if (closeAllBtn) closeAllBtn.addEventListener('click', () => manager.closeAllNotes());
+  if (hideLinesBtn) hideLinesBtn.addEventListener('click', () => manager.hideAllLines());
+  if (showLinesBtn) showLinesBtn.addEventListener('click', () => manager.showAllLines());
+}
 
   setTimeout(createTagFilters, 800);
 
