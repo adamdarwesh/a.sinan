@@ -1281,13 +1281,13 @@ let previewTimeout = null;
     const onMouseUp = () => {
       isDragging = false;
       element.style.cursor = '';
-      setTimeout(() => { this.isDraggingNote = false; }, 100);
+      setTimeout(() => { this.isDraggingNote = false; }, 50);
     };
     
     const onTouchEnd = () => {
       isDragging = false;
       element.style.cursor = '';
-      setTimeout(() => { this.isDraggingNote = false; }, 100);
+      setTimeout(() => { this.isDraggingNote = false; }, 50);
     };
     
     document.addEventListener('mousemove', onMouseMove);
