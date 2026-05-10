@@ -181,6 +181,55 @@
     margin: 0;
     padding: 5rem 0 0 0;
   }
+    /* ========== ENTRANCE ANIMATION - HERO COLLAPSES ON SCROLL ========== */
+  .hero {
+    transition: min-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hero.collapsed {
+    min-height: 0;
+    padding: 0;
+  }
+
+  /* Hero Content - elements that fade/shrink on scroll */
+  .hero-eyebrow,
+  .hero-bio,
+  .hero-cta,
+  .hero-category-wrapper {
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
+  }
+
+  /* Name that moves to nav bar */
+  .hero-name-wrapper {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hero-name-wrapper.shrunk {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+
+  /* Sticky canvas starts hidden */
+  .sticky-canvas-wrapper {
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sticky-canvas-wrapper.visible {
+    opacity: 1;
+  }
+
+  /* Progress bar for scroll (optional) */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: var(--accent);
+    z-index: 1001;
+    transition: width 0.05s linear;
+  }
 
   /* Sticky Canvas Container (75% area) */
   .hero-canvas {
@@ -956,6 +1005,145 @@
     .ctrl-btn { padding: 6px 10px; font-size: 0.45rem; }
     .floating-window { width: 95% !important; left: 2.5% !important; min-width: unset; }
   }
+    /* ========== ENTRANCE CONTENT STYLES ========== */
+  .hero-entrance-content {
+    position: relative;
+    z-index: 10;
+    padding: 4rem 2rem;
+    max-width: 90%;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+  }
+
+  .hero-name {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.5rem 0;
+    color: var(--text);
+    transition: all 0.3s ease;
+  }
+
+  .hero-name em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-bio {
+    font-family: var(--body-serif);
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 90%;
+    margin-bottom: 2rem;
+    transition: opacity 0.3s ease;
+  }
+
+  .hero-category-wrapper {
+    margin-bottom: 2rem;
+  }
+
+  .hero-category-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-category-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .hero-chip {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--rule);
+    border-radius: 30px;
+    color: var(--text);
+    background: transparent;
+    transition: all 0.2s ease;
+  }
+
+  .hero-chip:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .hero-cta {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--accent);
+    padding-bottom: 4px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .hero-cta:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* Fading out classes */
+  .hero-entrance-content.fade-out {
+    opacity: 0;
+    transform: translateY(-30px);
+    pointer-events: none;
+  }
+
+  /* Name shrink animation */
+  .hero-name-wrapper.move-to-nav {
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+
+  /* Right column category filters - start hidden, fade in later */
+  .hero-right {
+    opacity: 0;
+    transition: opacity 0.4s ease 0.2s;
+  }
+
+  .hero-right.visible {
+    opacity: 1;
+  }
+
+  /* Sticky canvas wrapper */
+  .sticky-canvas-wrapper {
+    position: relative;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .sticky-canvas-wrapper.visible {
+    opacity: 1;
+  }
+
+  /* Nav name update */
+  .nav-name.large {
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
 </style>
 </head>
 <body>
@@ -1021,19 +1209,48 @@
 
 
   <!-- HERO SECTION: 75% Sticky Canvas / 25% Categories -->
-<div class="hero">
+<!-- HERO SECTION WITH ENTRANCE ANIMATION -->
+<div class="hero" id="heroSection">
+  <!-- LEFT COLUMN (75%) - Entrance Content + Sticky Canvas -->
   <div class="hero-canvas">
-    <div class="sticky-canvas" id="stickyCanvas"></div>
-    <div class="sidebar-tabs" id="sidebarTabs"></div>
-    <div class="canvas-tags-bar" id="canvasTagsBar"></div>
-    <div class="canvas-control-panel" id="canvasControlPanel">
-      <button class="ctrl-btn" id="gridBtn" title="Arrange sticky notes in grid">Grid</button>
-      <button class="ctrl-btn" id="randomizeBtn" title="Randomize notes">Randomize</button>
-      <button class="ctrl-btn" id="hideLinesBtn" title="Hide connector lines">Hide Lines</button>
-      <button class="ctrl-btn" id="showLinesBtn" title="Show connector lines">Show Lines</button>
-      <button class="ctrl-btn" id="themeBtn" title="Switch theme">🌓 Theme</button>
+    <!-- ENTRANCE CONTENT (visible on load, fades on scroll) -->
+    <div class="hero-entrance-content" id="heroEntranceContent">
+      <div class="hero-eyebrow">Architecture · Art · Research · Education</div>
+      <div class="hero-name-wrapper" id="heroNameWrapper">
+        <h1 class="hero-name">Ad(h)am<br><em>Sinan</em></h1>
+      </div>
+      <div class="hero-bio">
+        An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches. My work is enriched by interdisciplinary collaboration and strong research foundations.
+      </div>
+      <div class="hero-category-wrapper">
+        <div class="hero-category-label">Explore by category:</div>
+        <div class="hero-category-chips">
+          <span class="hero-chip" data-category="all">All</span>
+          <span class="hero-chip" data-category="architecture">Architecture</span>
+          <span class="hero-chip" data-category="art">Art</span>
+          <span class="hero-chip" data-category="research">Research</span>
+          <span class="hero-chip" data-category="education">Education</span>
+        </div>
+      </div>
+      <a href="#research" class="hero-cta">View Research</a>
+    </div>
+
+    <!-- STICKY CANVAS WRAPPER (hidden on load, appears on scroll) -->
+    <div class="sticky-canvas-wrapper" id="stickyCanvasWrapper">
+      <div class="sticky-canvas" id="stickyCanvas"></div>
+      <div class="sidebar-tabs" id="sidebarTabs"></div>
+      <div class="canvas-tags-bar" id="canvasTagsBar"></div>
+      <div class="canvas-control-panel" id="canvasControlPanel">
+        <button class="ctrl-btn" id="gridBtn" title="Arrange sticky notes in grid">Grid</button>
+        <button class="ctrl-btn" id="randomizeBtn" title="Randomize notes">Randomize</button>
+        <button class="ctrl-btn" id="hideLinesBtn" title="Hide connector lines">Hide Lines</button>
+        <button class="ctrl-btn" id="showLinesBtn" title="Show connector lines">Show Lines</button>
+        <button class="ctrl-btn" id="themeBtn" title="Switch theme">🌓 Theme</button>
+      </div>
     </div>
   </div>
+
+  <!-- RIGHT COLUMN (25%) - Category Filters (moved here after scroll) -->
   <div class="hero-right">
     <ul class="category-filters" id="categoryFilters">
       <li data-category="all" class="active">All</li>
@@ -1044,6 +1261,9 @@
     </ul>
   </div>
 </div>
+
+<!-- Scroll Progress Bar -->
+<div class="scroll-progress" id="scrollProgress"></div>
 
 <!-- GRID PLUS CONTAINER -->
 <div id="gridPlusContainer"></div>
@@ -2371,10 +2591,117 @@ function drawCategoryHoverLines(categoryEl) {
 }
 
 // ========== INITIALIZE ==========
-function initialize() {
+// ========== ENTRANCE ANIMATION ON SCROLL ==========
+function initEntranceAnimation() {
+  const heroSection = document.getElementById('heroSection');
+  const entranceContent = document.getElementById('heroEntranceContent');
+  const nameWrapper = document.getElementById('heroNameWrapper');
+  const stickyWrapper = document.getElementById('stickyCanvasWrapper');
+  const heroRight = document.querySelector('.hero-right');
+  const navName = document.querySelector('.nav-name');
+  const scrollProgress = document.getElementById('scrollProgress');
+  
+  // Set initial nav name (small)
+  navName.textContent = 'Ad(h)am Sinan';
+  
+  // Animation on scroll
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const maxScroll = 500; // Full animation completes at 500px
+    
+    // Calculate progress (0 to 1)
+    let progress = Math.min(scrollY / maxScroll, 1);
+    
+    // Update scroll progress bar
+    if (scrollProgress) {
+      scrollProgress.style.width = `${progress * 100}%`;
+    }
+    
+    // Fade out entrance content
+    if (entranceContent) {
+      entranceContent.style.opacity = Math.max(0, 1 - progress * 1.2);
+      entranceContent.style.transform = `translateY(-${progress * 40}px)`;
+      if (progress >= 0.8) {
+        entranceContent.style.pointerEvents = 'none';
+      }
+    }
+    
+    // Shrink and fade name
+    if (nameWrapper) {
+      const nameScale = Math.max(0.15, 1 - progress * 0.85);
+      const nameOpacity = Math.max(0, 1 - progress * 1.1);
+      nameWrapper.style.transform = `translateY(-${progress * 50}px)`;
+      nameWrapper.style.opacity = nameOpacity;
+      
+      // Update nav name appearance
+      if (progress > 0.3) {
+        navName.style.opacity = '1';
+        navName.style.transform = 'translateY(0)';
+        if (progress > 0.7) {
+          navName.classList.add('large');
+        }
+      } else {
+        navName.style.opacity = '0.7';
+      }
+    }
+    
+    // Collapse hero section height
+    if (heroSection) {
+      const newMinHeight = Math.max(0, 100 - progress * 100);
+      heroSection.style.minHeight = `${newMinHeight}vh`;
+    }
+    
+    // Reveal sticky canvas
+    if (stickyWrapper) {
+      let canvasProgress = Math.max(0, (progress - 0.2) / 0.8);
+      stickyWrapper.style.opacity = Math.min(1, canvasProgress);
+      if (canvasProgress >= 0.9) {
+        stickyWrapper.classList.add('visible');
+      }
+    }
+    
+    // Reveal right column category filters
+    if (heroRight) {
+      let rightProgress = Math.max(0, (progress - 0.3) / 0.7);
+      heroRight.style.opacity = Math.min(1, rightProgress);
+      if (rightProgress >= 0.8) {
+        heroRight.classList.add('visible');
+      }
+    }
+    
+    // Add collapsed class to hero
+    if (progress >= 0.9) {
+      heroSection.classList.add('collapsed');
+    } else {
+      heroSection.classList.remove('collapsed');
+    }
+  });
+  
+  // Trigger initial check in case page loads scrolled
+  setTimeout(() => {
+    window.dispatchEvent(new Event('scroll'));
+  }, 100);
+}
+    function initialize() {
   allProjects = buildProjectsWithDynamicImages();
   
   manager = new StickyNoteManager();
+      function initialize() {
+  allProjects = buildProjectsWithDynamicImages();
+  
+  manager = new StickyNoteManager();
+  
+  initEntranceAnimation();  // <-- ADD THIS LINE HERE
+  
+  // Create all notes at temporary positions
+  allProjects.forEach((project, i) => {
+    manager.createNote(project, i, 0, 0);
+    const noteEl = document.querySelector(`.sticky-note[data-project-idx="${i}"]`);
+    if (noteEl) manager.makeDraggable(noteEl, project);
+  });
+  
+  // ... rest of initialize
+}
 
 // Create all notes at temporary positions
 allProjects.forEach((project, i) => {
