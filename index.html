@@ -1374,7 +1374,9 @@ let previewTimeout = null;
       let newTop = startTop + (touch.clientY - touchStartY);
       
       newLeft = Math.max(minX, Math.min(newLeft, maxX));
-      newTop = Math.max(60, Math.min(newTop, window.innerHeight - 100));
+ const canvas = document.getElementById('stickyCanvas');
+const canvasMaxY = canvas ? canvas.offsetHeight - 180 : window.innerHeight - 200;
+newTop = Math.max(60, Math.min(newTop, canvasMaxY));
       
       element.style.left = `${newLeft}px`;
       element.style.top = `${newTop}px`;
