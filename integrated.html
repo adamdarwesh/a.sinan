@@ -1,1 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ad(h)am Sinan — Sticky Note Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ========== RESET & ROOT VARIABLES ========== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --bg: #000000;
+    --text: #ffffff;
+    --accent: #FF3030;
+    --accent-light: #ff5555;
+    --muted: #aaaaaa;
+    --rule: rgba(255,255,255,0.2);
+    --grid-line: rgba(255,255,255,0.03);
+    --serif: 'Playfair Display', Georgia, serif;
+    --body-serif: 'Cormorant Garamond', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+    --paper: #ffffff;
+    --ink: #111111;
+    --warm-mid: #999999;
+    --grid-line-small: rgba(255,255,255,0.05);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body-serif);
+    font-size: 18px;
+    line-height: 1.75;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Background grid from simple.html */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      radial-gradient(circle at 0 0, var(--accent) 1.5px, transparent 1.5px);
+    background-size: 40px 40px, 40px 40px, 40px 40px;
+    background-position: 0 0, 0 0, 0 0;
+    background-repeat: repeat, repeat, repeat;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.25;
+  }
+
+  nav, .hero, section, footer, .sticky-canvas, .sidebar-tabs, .control-panel {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ========== DARK THEME ========== */
+  body.dark-theme {
+    --bg: #000000;
+    --text: #e0e0e0;
+    --rule: rgba(255,255,255,0.15);
+    --grid-line: rgba(255,255,255,0.05);
+    --paper: #2d2d2d;
+    --ink: #e0e0e0;
+    --warm-mid: #888888;
+  }
+
+  body.dark-theme .sticky-note {
+    background: #2d2d2d;
+    border-color: #444444;
+    color: #e0e0e0;
+  }
+
+  body.dark-theme .sticky-note .sticky-title { color: #cccccc; }
+  body.dark-theme .sidebar-tab { background: #2d2d2d; border-color: #444444; color: #cccccc; }
+  body.dark-theme .tag-filter { background: #555555; color: #1a1a1a; }
+  body.dark-theme .category-filters li { color: #999999; }
+  body.dark-theme .category-filters li.active { color: #ffffff; }
+    /* ========== NAVIGATION ========== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  .nav-name {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ========== HERO 75/25 LAYOUT ========== */
+  .hero {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    min-height: auto;
+    position: relative;
+    margin: 0;
+    padding: 5rem 0 0 0;
+  }
+
+  /* Sticky Canvas Container (75% area) */
+  .hero-canvas {
+    position: relative;
+    background: transparent;
+    min-height: 600px;
+    padding: 0;
+  }
+
+  /* Right Column (25% area) */
+  .hero-right {
+    border-left: 0.5px solid var(--rule);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* ========== STICKY CANVAS STYLES (from index27) ========== */
+  .sticky-canvas {
+    position: relative;
+    width: 100%;
+    min-height: 600px;
+    overflow-y: auto;
+    padding: 80px 80px 1rem 20px;
+    z-index: 3;
+  }
+
+  .sticky-note {
+    position: absolute;
+    background: #fefefe;
+    border: 1px solid var(--rule);
+    padding: 8px 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    cursor: pointer;
+    font-size: 0.6rem;
+    transition: all 0.15s ease;
+    width: 160px;
+    z-index: 10;
+    color: var(--ink);
+  }
+
+  .sticky-note:hover {
+    transform: scale(1.02);
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 9999 !important;
+  }
+
+  .sticky-note.preview-active {
+    width: 160px;
+    min-height: 280px;
+    z-index: 500;
+    border: 1px solid var(--accent);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+
+  .sticky-note.preview-active .sticky-preview { display: block; }
+  .sticky-note .sticky-preview { display: none; margin-top: 8px; }
+
+  .sticky-preview-carousel { position: relative; width: 100%; overflow: hidden; border-radius: 4px; margin-bottom: 6px; }
+  .sticky-preview-slides { display: flex; transition: transform 0.5s ease; }
+  .sticky-preview-slide { min-width: 100%; }
+
+  .sticky-preview-slide img {
+    width: 100%;
+    height: auto;
+    min-height: 100px;
+    max-height: 120px;
+    object-fit: contain;
+    background: #f5f5f5;
+  }
+
+  .sticky-preview-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .sticky-preview-tag { font-size: 0.5rem; padding: 3px 6px; border-radius: 2px; color: white; background: var(--accent); font-weight: 500; }
+
+  .sticky-note .sticky-title {
+    color: var(--accent);
+    margin-bottom: 3px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .sticky-note .sticky-subtitle {
+    font-size: 0.45rem;
+    color: var(--warm-mid);
+  }
+
+  .sticky-note-controls {
+    position: absolute; top: 3px; right: 6px;
+    display: flex; gap: 6px; opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .sticky-note:hover .sticky-note-controls { opacity: 1; }
+
+  .sticky-note-controls button {
+    background: rgba(0,0,0,0.05);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    font-size: 0.6rem;
+    cursor: pointer;
+    color: var(--muted);
+    padding: 0 3px;
+  }
+    /* FROZEN NOTES */
+  .sticky-note.frozen {
+    border: 1px dashed var(--accent) !important;
+    box-shadow: none !important;
+    background: #fefefe;
+    cursor: default;
+    width: 160px;
+    opacity: 0.75;
+    position: relative;
+  }
+
+  .sticky-note.frozen::after {
+    content: "❄️";
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    font-size: 0.5rem;
+    opacity: 0.6;
+  }
+
+  .sticky-note.frozen .sticky-preview,
+  .sticky-note.frozen .sticky-note-controls,
+  .sticky-note.frozen .sticky-subtitle {
+    display: none !important;
+  }
+
+  .sticky-note.frozen .sticky-title { font-size: 0.6rem; }
+
+  .sticky-note.frozen .frozen-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 4px;
+  }
+
+  .sticky-note .frozen-image { display: none; }
+
+  /* Category highlight */
+  .sticky-note.blurred { opacity: 0.4; transition: opacity 0.2s ease; }
+  .sticky-note.highlight { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+  /* SIDEBAR TABS - inside canvas, right edge */
+  .sidebar-tabs {
+    position: absolute;
+    right: 10px;
+    top: 80px;
+    width: 100px;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    border-left: 1px solid var(--accent);
+    border-radius: 8px 0 0 8px;
+    padding: 0.5rem;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 500px;
+    overflow-y: auto;
+    pointer-events: auto;
+  }
+
+  .sidebar-tab {
+    padding: 5px 8px;
+    font-size: 0.45rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: rgba(30,30,30,0.95);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--muted);
+    transition: all 0.2s;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .sidebar-tab.highlight { border-color: var(--accent); background: var(--accent); color: white; }
+
+  /* Category Filters (right column) */
+  .category-filters {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .category-filters li {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.3rem 0;
+    transition: all 0.3s ease;
+    color: var(--muted);
+    position: relative;
+  }
+
+  .category-filters li:hover, .category-filters li.active {
+    color: var(--accent);
+    font-weight: bold;
+    font-style: italic;
+  }
+
+  /* Tags Bar (inside sticky canvas, top) */
+  .canvas-tags-bar {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 120px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    padding: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    z-index: 50;
+    pointer-events: auto;
+  }
+
+  .tag-filter {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.25rem 0.7rem;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    background: var(--accent);
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .tag-filter:hover { background: var(--accent-light); opacity: 0.9; }
+
+  /* Connector Lines SVG */
+  #connectorSvg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    pointer-events: none; z-index: 2; overflow: visible;
+  }
+
+  .connector-line-tab {
+    stroke: var(--accent);
+    stroke-width: 1;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 4 3;
+    opacity: 0.6;
+  }
+    /* ========== RESEARCH SECTION (from simple.html) ========== */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 4rem 3rem 2rem;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .section-rule {
+    flex: 1;
+    height: 0.5px;
+    background: var(--rule);
+  }
+
+  .writing-grid {
+    padding: 0 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+
+  .writing-item {
+    padding: 2.5rem 2.5rem 2.5rem 0;
+    border-right: 0.5px solid var(--rule);
+    transition: background 0.2s;
+  }
+
+  .writing-item:hover { background: rgba(255,48,48,0.08); }
+  .writing-item:last-child { border-right: none; padding-left: 2.5rem; padding-right: 0; }
+  .writing-item:nth-child(2) { padding-left: 2.5rem; }
+
+  .writing-type {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .writing-title {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+  }
+
+  .writing-desc {
+    font-family: var(--body-serif);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .writing-date {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--accent);
+    margin-top: 1.5rem;
+  }
+
+  /* ========== CONTACT SECTION (75/25 split) ========== */
+  #contact {
+    background: var(--bg);
+    border-top: 0.5px solid var(--rule);
+    padding: 6rem 3rem;
+    display: grid;
+    grid-template-columns: 75% 25%;
+    gap: 4rem;
+    align-items: end;
+  }
+
+  .contact-left h2 {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+
+  .contact-left h2 em { font-style: italic; color: var(--accent); }
+  .contact-left p {
+    font-family: var(--body-serif);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 40ch;
+  }
+
+  .contact-links { display: flex; flex-direction: column; gap: 1.5rem; }
+  .contact-link {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-decoration: none;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--rule);
+    transition: border-color 0.2s;
+  }
+  .contact-link:hover { border-color: var(--accent); }
+  .contact-link:hover .contact-link-val { color: var(--accent); }
+
+  .contact-link-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .contact-link-val {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    color: var(--text);
+    font-weight: 700;
+    transition: color 0.2s;
+  }
+
+  footer {
+    background: var(--bg);
+    border-top: 0.5px solid var(--rule);
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer span {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* ========== MODALS ========== */
+  .cv-modal-overlay, .results-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 5000;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cv-modal, .results-modal {
+    background: #0a0a0a;
+    width: 85%;
+    max-width: 800px;
+    height: 85%;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    border: 0.5px solid var(--rule);
+  }
+
+  .cv-modal-header, .results-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  .cv-modal-close, .results-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .cv-modal-close:hover, .results-close:hover { color: var(--accent); }
+
+  .cv-modal-body, .results-grid {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .result-card {
+    background: #1a1a1a;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 0.8rem;
+    cursor: pointer;
+  }
+  .result-card:hover { border-color: var(--accent); }
+
+  /* Control Panel */
+  .control-panel {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .ctrl-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.55rem;
+    cursor: pointer;
+    font-family: var(--mono);
+  }
+  .ctrl-btn:hover { background: var(--accent-light); }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { border-left: none; border-top: 0.5px solid var(--rule); }
+    .writing-grid { grid-template-columns: 1fr; }
+    .writing-item { border-right: none; border-bottom: 0.5px solid var(--rule); }
+    #contact { grid-template-columns: 1fr; gap: 2rem; }
+    nav { padding: 1rem 1.5rem; }
+    .sidebar-tabs { width: 80px; right: 5px; }
+    .canvas-tags-bar { right: 100px; }
+  }
+</style>
+</head>
+<body>
+  <!-- CV MODAL -->
+<div id="cvModal" class="cv-modal-overlay">
+  <div class="cv-modal">
+    <div class="cv-modal-header">
+      <h2>CV / Resume</h2>
+      <button class="cv-modal-close" id="closeCvBtn">✕</button>
+    </div>
+    <div class="cv-modal-body">
+      <h4>Profile</h4>
+      <p>An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches.</p>
+      <h4>Education</h4>
+      <p><strong>PhD / DR.TECH</strong> — Die Angewandte (2024–present)</p>
+      <p><strong>MArch</strong> — Die Angewandte, Magna cum laude (2020–2024)</p>
+      <h4>Professional Experience</h4>
+      <p><strong>Faculty Member & Lecturer</strong> — AAUP, Palestine (2025–present)</p>
+      <p><strong>Researcher/Curator</strong> — CSRC at AAUP (2025–present)</p>
+      <p><strong>Architect</strong> — LAVA, Berlin (2024–2025)</p>
+      <h4>Skills</h4>
+      <p><strong>3D Modelling:</strong> Rhino3D, Archicad, Blender3D, Maya, Sketchup</p>
+      <p><strong>Visualisation:</strong> Vray, Cycles, D5 Render, Twinmotion, Keyshot, Lumion</p>
+      <p><strong>Languages:</strong> Arabic (native), English (fluent), Dutch (intermediate), German (beginner)</p>
+      <h4>Contact</h4>
+      <p>📧 <a href="mailto:adam95darwesh@gmail.com" style="color:#FF3030;">adam95darwesh@gmail.com</a></p>
+      <p>🔗 <a href="https://www.linkedin.com/in/aladham/" target="_blank" style="color:#FF3030;">linkedin.com/in/aladham</a></p>
+      <p>📷 <a href="https://www.instagram.com/al_adhambinsinan/" target="_blank" style="color:#FF3030;">@al_adhambinsinan</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS MODAL (for tag clicks) -->
+<div id="resultsModal" class="results-modal-overlay">
+  <div class="results-modal">
+    <div class="results-modal-header">
+      <h2 id="resultsTitle">Projects</h2>
+      <button class="results-close" id="closeResultsBtn">✕</button>
+    </div>
+    <div class="results-grid" id="resultsGrid"></div>
+  </div>
+</div>
+
+<nav>
+  <a href="#" class="nav-name">Ad(h)am Sinan</a>
+  <ul class="nav-links">
+    <li><a href="#" id="openCvBtn">CV</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO SECTION: 75% Sticky Canvas / 25% Categories -->
+<div class="hero">
+  <div class="hero-canvas">
+    <div class="sticky-canvas" id="stickyCanvas"></div>
+    <div class="sidebar-tabs" id="sidebarTabs"></div>
+    <div class="canvas-tags-bar" id="canvasTagsBar"></div>
+  </div>
+  <div class="hero-right">
+    <ul class="category-filters" id="categoryFilters">
+      <li data-category="all" class="active">All</li>
+      <li data-category="architecture">Architecture</li>
+      <li data-category="art">Art</li>
+      <li data-category="research">Research</li>
+      <li data-category="education">Education</li>
+    </ul>
+  </div>
+</div>
+
+<svg id="connectorSvg" style="position:fixed; top:0; left:0; width:100%; height:100vh; pointer-events:none; z-index:2;"></svg>
+
+<!-- RESEARCH SECTION -->
+<section id="research">
+  <div class="section-header">
+    <span class="section-label">Research & Publications</span>
+    <div class="section-rule"></div>
+  </div>
+  <div class="writing-grid">
+    <div class="writing-item"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Dynamic Ruinations: Architecture Against Finality</h3><p class="writing-desc">Presented at "Co-producing Alternative Futures through Experimental Urbanism" Symposium, University of Pretoria, South Africa (April 2026).</p><p class="writing-date">2026 — Newcastle University</p></div>
+    <div class="writing-item"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Agential Cartographies</h3><p class="writing-desc">Presented at "Spectres of the Undercommons" Conference, The American University in Cairo (April 2026).</p><p class="writing-date">2026 — Extra-territorial Studio</p></div>
+    <div class="writing-item"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Spatio-territorial Examination of the Actively Deterritorialized</h3><p class="writing-desc">Presented at "Engineering Destruction" Conference, Birzeit University (June 2025).</p><p class="writing-date">2025 — Birzeit University</p></div>
+    <div class="writing-item"><p class="writing-type">Book Chapter</p><h3 class="writing-title">Re: Action — Urban Resilience in the post-Information Age</h3><p class="writing-desc">Published by Birkhäuser (2023). Edited by Hani Rashid.</p><p class="writing-date">2023 — Birkhäuser</p></div>
+    <div class="writing-item"><p class="writing-type">Research Proposal</p><h3 class="writing-title">Rubble Typology: Destruction Mode as a Material Determinant</h3><p class="writing-desc">A comparative framework for understanding how different destruction modes produce materially distinct waste streams.</p><p class="writing-date">2025 — The New Cairn Project</p></div>
+    <div class="writing-item"><p class="writing-type">Material Research</p><h3 class="writing-title">Compression-Only Logic in Heterogeneous Rubble Assemblies</h3><p class="writing-desc">Applying the Safe Theorem to mixed-material demolition waste for compression-only structural logic.</p><p class="writing-date">2025 — Fellowship Research</p></div>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section id="contact">
+  <div class="contact-left">
+    <h2>Let's<br><em>work<br>together.</em></h2>
+    <p>Open to research collaborations, fellowship inquiries, exhibition commissions, and conversations about post-conflict material practice.</p>
+  </div>
+  <div class="contact-links">
+    <a href="mailto:adam95darwesh@gmail.com" class="contact-link"><span class="contact-link-label">Email</span><span class="contact-link-val">adam95darwesh@gmail.com</span></a>
+    <a href="https://www.linkedin.com/in/aladham/" class="contact-link" target="_blank"><span class="contact-link-label">LinkedIn</span><span class="contact-link-val">in/aladham</span></a>
+    <a href="https://www.instagram.com/al_adhambinsinan/" class="contact-link" target="_blank"><span class="contact-link-label">Instagram</span><span class="contact-link-val">@al_adhambinsinan</span></a>
+  </div>
+</section>
+
+<footer>
+  <span>Ad(h)am Sinan — Architecture, Art & Research</span>
+  <span>© 2025</span>
+</footer>
+
+<!-- CONTROL PANEL -->
+<div class="control-panel">
+  <button class="ctrl-btn" id="gridBtn" title="Arrange sticky notes in grid">Grid</button>
+  <button class="ctrl-btn" id="randomizeBtn" title="Randomize notes">Randomize</button>
+  <button class="ctrl-btn" id="hideLinesBtn" title="Hide connector lines">Hide Lines</button>
+  <button class="ctrl-btn" id="showLinesBtn" title="Show connector lines">Show Lines</button>
+  <button class="ctrl-btn" id="themeBtn" title="Switch theme">🌓 Theme</button>
+</div>
+<script>
+// ========== PROJECT DATA ==========
+function buildProjects() {
+  const baseProjects = [
+    { id: "01", title: "Spiral Spines", slug: "spiral_spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", tags: ["Ecological", "Vernacular"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber." },
+    { id: "02", title: "Woven Realities", slug: "woven_realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", tags: ["Vernacular", "Digital Fabrication"], fullDesc: "A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice." },
+    { id: "03", title: "The New Cairn", slug: "new_cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", tags: ["Post-Conflict", "Material Research"], fullDesc: "Research project proposing un-crushed demolition rubble as masonry units." },
+    { id: "04", title: "Carbonfloss", slug: "carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", tags: ["Speculative", "Ecological"], fullDesc: "A political statement against absurd reluctance policies." },
+    { id: "05", title: "OUROBOS", slug: "ourobos", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", tags: ["Material Research", "Digital Fabrication"], fullDesc: "Exploration of residual morphogenesis using AI-driven workflows." },
+    { id: "06", title: "Agropraxis", slug: "agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", tags: ["Ecological", "Collective Practice"], fullDesc: "Intersection of agriculture and architectural practice." },
+    { id: "07", title: "Medius paedagogicus", slug: "medius", year: "2022", subtitle: "Published in Dazeen", category: "education", tags: ["Pedagogy", "Vernacular"], fullDesc: "A prototype tracing character from Diola compounds in Senegal." },
+    { id: "08", title: "Soft Unsealing", slug: "soft_unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", tags: ["Collective Practice", "Installation"], fullDesc: "Exploring softening boundaries in urban contexts." },
+    { id: "09", title: "Old Airfield", slug: "old_airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", tags: ["Collective Practice", "Installation"], fullDesc: "Acoustic mirror cultural gateway exploring sound and spatial memory." },
+    { id: "10", title: "Enkidu", slug: "enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", tags: ["Vernacular", "Ecological"], fullDesc: "Reviving vernacular Palestinian architecture in Dier Ghassaneh." },
+    { id: "11", title: "Aura", slug: "aura", year: "2022", subtitle: "Folly Project", category: "art", tags: ["Installation", "Speculative"], fullDesc: "Exploring atmospheric qualities of architectural space." },
+    { id: "12", title: "Liberation Fronts", slug: "liberation_fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", tags: ["Political", "Speculative"], fullDesc: "Exploring liberation fronts as spatial and political constructs." },
+    { id: "13", title: "Regutting", slug: "regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", tags: ["Residency", "Installation"], fullDesc: "Returns and remains through film, photography, and installation." },
+    { id: "14", title: "Agential Cartographies", slug: "agential_cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", tags: ["Exhibition", "Political"], fullDesc: "Experimental mappings across three spatial typologies." },
+    { id: "15", title: "PhD Research", slug: "phd_research", year: "2024+", subtitle: "Die Angewandte", category: "education", tags: ["Material Research", "Pedagogy"], fullDesc: "Post-conflict material practice and rubble reuse." },
+    { id: "16", title: "Teaching at AAUP", slug: "teaching_aaup", year: "2025+", subtitle: "Arab American University", category: "education", tags: ["Pedagogy", "Vernacular"], fullDesc: "Faculty member at the Faculty of Architecture, AAUP, Palestine." }
+  ];
+  return baseProjects.map(p => ({ ...p, images: Array(6).fill().map((_, i) => `${p.slug}_${i+1}.jpg`) }));
+}
+
+let allProjects = [];
+let noteZIndex = 100;
+let autoPlayIntervals = {};
+let activeFloatingWindows = [];
+let previewTimeout = null;
+let manager = null;
+
+// ========== STICKY NOTE MANAGER CLASS ==========
+class StickyNoteManager {
+  constructor() {
+    this.notes = [];
+    this.tabs = [];
+    this.currentCategory = 'all';
+    this.closedProjects = new Map();
+    this.noteTabConnections = new Map();
+    this.isDraggingNote = false;
+  }
+
+  createNote(project, index, x, y, restoreData = null) {
+    const gridSize = 20;
+    const snappedX = Math.round(x / gridSize) * gridSize;
+    const snappedY = Math.round(y / gridSize) * gridSize;
+    const cornerOffsets = [{ dx: 0, dy: 0 }, { dx: 140, dy: 0 }, { dx: 0, dy: 140 }, { dx: 140, dy: 140 }];
+    const corner = cornerOffsets[Math.floor(Math.random() * cornerOffsets.length)];
+    const finalX = snappedX + corner.dx;
+    const finalY = snappedY + corner.dy;
+
+    const note = document.createElement('div');
+    note.className = 'sticky-note';
+    note.setAttribute('data-project-idx', index);
+    note.setAttribute('data-category', project.category);
+    note.setAttribute('data-project-id', project.id);
+    note.style.left = `${finalX}px`;
+    note.style.top = `${finalY}px`;
+    note.style.zIndex = noteZIndex++;
+
+    let currentImageIndex = restoreData ? restoreData.lastImageIndex : 0;
+
+    note.innerHTML = `
+      <div class="sticky-title">${project.id} · ${project.title}</div>
+      <div class="sticky-subtitle">${project.subtitle} (${project.year})</div>
+      <div class="sticky-preview">
+        <div class="sticky-preview-carousel">
+          <div class="sticky-preview-slides" id="preview-${project.id}" style="transform: translateX(0%);">
+            ${project.images.map(img => `<div class="sticky-preview-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/200x100/1a1a1a/FF3030?text=${project.title}'"></div>`).join('')}
+          </div>
+        </div>
+        <div class="sticky-preview-tags">
+          ${project.tags.slice(0,3).map(t => `<span class="sticky-preview-tag">${t}</span>`).join('')}
+        </div>
+      </div>
+      <img class="frozen-image" id="frozen-img-${project.id}" src="" style="display: none;">
+      <div class="sticky-note-controls">
+        <button class="minimize-note" title="Minimize">−</button>
+        <button class="close-note" title="Send to sidebar">✕</button>
+      </div>
+    `;
+
+    if (restoreData && restoreData.lastImageIndex !== undefined) {
+      const slidesContainer = note.querySelector(`#preview-${project.id}`);
+      if (slidesContainer) slidesContainer.style.transform = `translateX(-${restoreData.lastImageIndex * 100}%)`;
+    }
+
+    note.addEventListener('mouseenter', () => {
+      if (note.classList.contains('frozen')) return;
+      if (previewTimeout) clearTimeout(previewTimeout);
+      note.style.zIndex = 9999;
+      note.classList.add('preview-active');
+      this.startAutoPlay(project.id, note);
+    });
+
+    note.addEventListener('mouseleave', () => {
+      if (note.classList.contains('frozen')) return;
+      previewTimeout = setTimeout(() => {
+        note.classList.remove('preview-active');
+        this.stopAutoPlay(project.id);
+      }, 300);
+    });
+
+    const minimizeBtn = note.querySelector('.minimize-note');
+    minimizeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (note.classList.contains('frozen')) return;
+      if (note.classList.contains('minimized')) {
+        note.classList.remove('minimized');
+        note.style.width = '160px';
+      } else {
+        note.classList.add('minimized');
+        note.style.width = '120px';
+      }
+    });
+
+    const closeBtn = note.querySelector('.close-note');
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const rect = note.getBoundingClientRect();
+      const slidesContainer = note.querySelector(`#preview-${project.id}`);
+      let lastImageIndex = 0;
+      if (slidesContainer) {
+        const transform = slidesContainer.style.transform;
+        const match = transform.match(/translateX\(-([0-9]+)%/);
+        if (match) lastImageIndex = parseInt(match[1]) / 100;
+      }
+      this.freezeNote(note, project, lastImageIndex);
+      this.addToSidebar(project, index, rect, lastImageIndex, note);
+    });
+
+    document.getElementById('stickyCanvas').appendChild(note);
+    this.notes.push(note);
+    return note;
+  }
+
+  freezeNote(note, project, lastImageIndex) {
+    const currentLeft = note.style.left;
+    const currentTop = note.style.top;
+    note.classList.add('frozen');
+    note.style.left = currentLeft;
+    note.style.top = currentTop;
+    note.querySelector('.sticky-preview')?.style.setProperty('display', 'none');
+    note.querySelector('.sticky-note-controls')?.style.setProperty('display', 'none');
+    note.querySelector('.sticky-subtitle')?.style.setProperty('display', 'none');
+    const frozenImg = note.querySelector('.frozen-image');
+    if (frozenImg) {
+      frozenImg.style.display = 'block';
+      frozenImg.src = `images/${project.images[lastImageIndex]}`;
+      frozenImg.onerror = () => frozenImg.src = 'https://placehold.co/200x80/1a1a1a/FF3030?text=Image';
+    }
+    note.style.width = '160px';
+    note.style.cursor = 'default';
+    note.setAttribute('data-frozen', 'true');
+    note.setAttribute('data-last-image-index', lastImageIndex);
+  }
+
+  unfreezeNote(note, project, index) {
+    note.classList.remove('frozen');
+    note.querySelector('.sticky-preview')?.style.removeProperty('display');
+    note.querySelector('.sticky-note-controls')?.style.removeProperty('display');
+    note.querySelector('.sticky-subtitle')?.style.removeProperty('display');
+    const frozenImg = note.querySelector('.frozen-image');
+    if (frozenImg) frozenImg.style.display = 'none';
+    const lastIndex = parseInt(note.getAttribute('data-last-image-index')) || 0;
+    const slidesContainer = note.querySelector(`#preview-${project.id}`);
+    if (slidesContainer) slidesContainer.style.transform = `translateX(-${lastIndex * 100}%)`;
+    note.removeAttribute('data-frozen');
+    note.style.width = '160px';
+    note.style.cursor = 'pointer';
+  }
+
+  startAutoPlay(projectId, note) {
+    const slidesContainer = note.querySelector(`#preview-${projectId}`);
+    if (!slidesContainer || slidesContainer.children.length <= 1) return;
+    if (autoPlayIntervals[projectId]) clearInterval(autoPlayIntervals[projectId]);
+    let currentIndex = 0;
+    autoPlayIntervals[projectId] = setInterval(() => {
+      if (note.classList.contains('frozen') || !note.classList.contains('preview-active')) return;
+      currentIndex = (currentIndex + 1) % slidesContainer.children.length;
+      slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+      note.setAttribute('data-last-image-index', currentIndex);
+    }, 2000);
+  }
+
+  stopAutoPlay(projectId) {
+    if (autoPlayIntervals[projectId]) { clearInterval(autoPlayIntervals[projectId]); delete autoPlayIntervals[projectId]; }
+  }
+
+  makeDraggable(element, project) {
+    let isDragging = false, startX, startY, startLeft, startTop;
+    element.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.sticky-note-controls') || element.classList.contains('frozen')) return;
+      isDragging = true; this.isDraggingNote = true;
+      startX = e.clientX; startY = e.clientY;
+      startLeft = parseInt(element.style.left); startTop = parseInt(element.style.top);
+      element.style.zIndex = 9998; element.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+    const onMouseMove = (e) => {
+      if (!isDragging) return;
+      const container = document.getElementById('stickyCanvas');
+      const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+      const maxX = containerWidth - element.offsetWidth - 10;
+      let newLeft = startLeft + (e.clientX - startX);
+      let newTop = startTop + (e.clientY - startY);
+      newLeft = Math.max(10, Math.min(newLeft, maxX));
+      const containerRect = container?.getBoundingClientRect();
+      let maxTop = window.innerHeight - 150;
+      if (containerRect) maxTop = containerRect.bottom - element.offsetHeight - 60;
+      newTop = Math.max(60, Math.min(newTop, maxTop));
+      element.style.left = `${newLeft}px`; element.style.top = `${newTop}px`;
+      this.updateConnectorLineForNote(element);
+    };
+    const onMouseUp = () => { isDragging = false; element.style.cursor = ''; setTimeout(() => this.isDraggingNote = false, 50); };
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }
+
+  updateConnectorLineForNote(note) {
+    const projectId = note.getAttribute('data-project-id');
+    const tab = document.getElementById(`tab-${projectId}`);
+    if (tab) this.drawConnectorLine(projectId, note.getBoundingClientRect(), tab.getBoundingClientRect());
+  }
+
+  drawConnectorLine(projectId, noteRect, tabRect) {
+    const svg = document.getElementById('connectorSvg');
+    const existing = document.getElementById(`connector-${projectId}`);
+    if (existing) existing.remove();
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.id = `connector-${projectId}`;
+    path.setAttribute('class', 'connector-line-tab');
+    const startX = noteRect.right, startY = noteRect.top + noteRect.height/2;
+    const endX = tabRect.left, endY = tabRect.top + tabRect.height/2;
+    const midX = startX + (endX - startX) * 0.3;
+    path.setAttribute('d', `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`);
+    svg.appendChild(path);
+  }
+
+  addToSidebar(project, index, noteRect, lastImageIndex, noteElement) {
+    const sidebar = document.getElementById('sidebarTabs');
+    if (document.getElementById(`tab-${project.id}`)) return;
+    const tab = document.createElement('div');
+    tab.className = 'sidebar-tab';
+    tab.id = `tab-${project.id}`;
+    tab.setAttribute('data-project-id', project.id);
+    tab.setAttribute('data-category', project.category);
+    tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
+    this.drawConnectorLine(project.id, noteRect, tab.getBoundingClientRect());
+    tab.addEventListener('click', () => {
+      if (noteElement && noteElement.parentNode) {
+        this.unfreezeNote(noteElement, project, index);
+        document.getElementById(`connector-${project.id}`)?.remove();
+      } else {
+        const newNote = this.createNote(project, index, noteRect.left, noteRect.top, { lastImageIndex: lastImageIndex || 0 });
+        this.makeDraggable(newNote, project);
+      }
+      tab.remove();
+      this.tabs = this.tabs.filter(t => t !== tab);
+      this.noteTabConnections.delete(project.id);
+    });
+    sidebar.appendChild(tab);
+    this.tabs.push(tab);
+  }
+
+  filterByCategory(category) {
+    this.currentCategory = category;
+    this.notes.forEach(note => {
+      const cat = note.getAttribute('data-category');
+      note.style.display = (category === 'all' || cat === category) ? 'block' : 'none';
+      note.classList.remove('blurred', 'highlight');
+    });
+  }
+
+  animateToGrid() {
+    const container = document.getElementById('stickyCanvas');
+    const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+    const gridSize = 200, startX = 30, startY = 100;
+    const cols = Math.floor((containerWidth - 60) / gridSize);
+    const visibleNotes = this.notes.filter(n => n.style.display !== 'none');
+    visibleNotes.forEach((note, i) => {
+      const row = Math.floor(i / cols), col = i % cols;
+      note.style.transition = 'left 0.4s ease, top 0.4s ease';
+      note.style.left = `${startX + (col * gridSize)}px`;
+      note.style.top = `${startY + (row * gridSize)}px`;
+      setTimeout(() => note.style.transition = '', 400);
+    });
+  }
+
+  randomizeArrangement() {
+    const container = document.getElementById('stickyCanvas');
+    const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+    const maxX = containerWidth - 180, maxY = window.innerHeight - 200;
+    this.notes.forEach(note => {
+      note.style.left = `${20 + Math.random() * maxX}px`;
+      note.style.top = `${100 + Math.random() * maxY}px`;
+    });
+  }
+
+  hideAllLines() { document.getElementById('connectorSvg').style.display = 'none'; }
+  showAllLines() { document.getElementById('connectorSvg').style.display = 'block'; }
+}
+
+// ========== TAG FILTERS ==========
+function createTagFilters() {
+  const tagsBar = document.getElementById('canvasTagsBar');
+  const allTags = ["Ecological", "Vernacular", "Digital Fabrication", "Post-Conflict", "Material Research", "Speculative", "Collective Practice", "Pedagogy", "Installation", "Political", "Residency", "Exhibition"];
+  tagsBar.innerHTML = '';
+  allTags.forEach(tag => {
+    const tagEl = document.createElement('div');
+    tagEl.className = 'tag-filter';
+    tagEl.textContent = tag;
+    tagEl.addEventListener('click', () => {
+      const projects = allProjects.filter(p => p.tags.includes(tag));
+      const grid = document.getElementById('resultsGrid');
+      document.getElementById('resultsTitle').textContent = `"${tag}" — ${projects.length} projects`;
+      grid.innerHTML = projects.map(p => `<div class="result-card" data-project-idx="${allProjects.indexOf(p)}"><strong>${p.id} · ${p.title}</strong><br>${p.subtitle} (${p.year})</div>`).join('');
+      document.querySelectorAll('.result-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const idx = parseInt(card.getAttribute('data-project-idx'));
+          const rect = card.getBoundingClientRect();
+          if (manager) manager.openFloatingWindow?.(allProjects[idx], rect.left, rect.top);
+          document.getElementById('resultsModal').style.display = 'none';
+        });
+      });
+      document.getElementById('resultsModal').style.display = 'flex';
+    });
+    tagsBar.appendChild(tagEl);
+  });
+}
+
+// ========== FLOATING WINDOW (simplified) ==========
+StickyNoteManager.prototype.openFloatingWindow = function(project, clickX, clickY) {
+  if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
+  const win = document.createElement('div');
+  win.className = 'floating-window';
+  win.setAttribute('data-id', project.id);
+  win.style.position = 'fixed';
+  win.style.left = `${clickX}px`;
+  win.style.top = `${clickY}px`;
+  win.style.background = '#0a0a0a';
+  win.style.border = '0.5px solid var(--rule)';
+  win.style.borderRadius = '8px';
+  win.style.width = '400px';
+  win.style.zIndex = '30000';
+  win.innerHTML = `<div style="background:var(--accent); padding:10px; display:flex; justify-content:space-between;"><strong>${project.id} · ${project.title}</strong><button class="win-close" style="background:none; border:none; color:white; cursor:pointer;">✕</button></div><div style="padding:1rem;"><img src="images/${project.images[0]}" style="width:100%;" onerror="this.src='https://placehold.co/400x200/1a1a1a/FF3030?text=${project.title}'"><p style="margin-top:0.5rem; color:var(--muted);">${project.fullDesc}</p><div style="display:flex; gap:0.5rem; margin-top:0.5rem;">${project.tags.map(t => `<span style="background:var(--accent); padding:2px 8px; border-radius:12px; font-size:0.6rem;">${t}</span>`).join('')}</div></div>`;
+  win.querySelector('.win-close').addEventListener('click', () => win.remove());
+  document.body.appendChild(win);
+};
+
+// ========== INITIALIZE ==========
+function initialize() {
+  allProjects = buildProjects();
+  manager = new StickyNoteManager();
+  allProjects.forEach((project, i) => {
+    const maxX = document.getElementById('stickyCanvas').offsetWidth - 200;
+    const maxY = window.innerHeight - 300;
+    manager.createNote(project, i, 20 + Math.random() * maxX, 100 + Math.random() * maxY);
+    const noteEl = document.querySelector(`.sticky-note[data-project-idx="${i}"]`);
+    if (noteEl) manager.makeDraggable(noteEl, project);
+  });
+  createTagFilters();
+
+  const filters = document.querySelectorAll('#categoryFilters li');
+  filters.forEach(f => {
+    f.addEventListener('click', () => {
+      filters.forEach(f2 => f2.classList.remove('active'));
+      f.classList.add('active');
+      manager.filterByCategory(f.getAttribute('data-category'));
+    });
+  });
+
+  document.getElementById('gridBtn').addEventListener('click', () => manager.animateToGrid());
+  document.getElementById('randomizeBtn').addEventListener('click', () => manager.randomizeArrangement());
+  document.getElementById('hideLinesBtn').addEventListener('click', () => manager.hideAllLines());
+  document.getElementById('showLinesBtn').addEventListener('click', () => manager.showAllLines());
+  document.getElementById('openCvBtn').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('cvModal').style.display = 'flex'; });
+  document.getElementById('closeCvBtn').addEventListener('click', () => document.getElementById('cvModal').style.display = 'none');
+  document.getElementById('closeResultsBtn').addEventListener('click', () => document.getElementById('resultsModal').style.display = 'none');
+  document.getElementById('themeBtn').addEventListener('click', () => document.body.classList.toggle('dark-theme'));
+  window.addEventListener('click', (e) => { if (e.target === document.getElementById('cvModal')) document.getElementById('cvModal').style.display = 'none'; });
+}
+
+window.addEventListener('load', initialize);
+</script>
+</body>
+</html>
