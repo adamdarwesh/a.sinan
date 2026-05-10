@@ -77,17 +77,17 @@
     min-height: 100vh;
   }
 
-  /* Animated vertical divider line */
+  /* Animated vertical divider line - 3x thicker, 3x slower */
   .hero-canvas::after {
     content: '';
     position: absolute;
     top: 0;
     right: 0;
-    width: 1px;
+    width: 3px;  /* WAS 1px → NOW 3px (3x thicker) */
     height: 0%;
     background-color: var(--rule);
     z-index: 10;
-    animation: drawVerticalLine 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: drawVerticalLine 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;  /* WAS 1s → NOW 3s (3x slower) */
     animation-delay: 0.2s;
   }
 
