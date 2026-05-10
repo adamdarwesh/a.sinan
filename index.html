@@ -973,7 +973,6 @@
 <div style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); z-index: 84; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border: 1px solid var(--rule); border-radius: 12px; padding: 0.8rem 0.5rem; display: flex; flex-direction: column; gap: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
   <button id="gridBtn" title="Arrange sticky notes in organized grid layout" style="background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 0.55rem; cursor: pointer; white-space: nowrap;">Grid</button>
   <button id="randomizeBtn" title="Randomly scatter all sticky notes" style="background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 0.55rem; cursor: pointer; white-space: nowrap;">Randomize</button>
-  <button id="closeAllBtn" title="Send all active sticky notes to sidebar" style="background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 0.55rem; cursor: pointer; white-space: nowrap;">Close All</button>
   <button id="hideLinesBtn" title="Hide all connector lines" style="background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 0.55rem; cursor: pointer; white-space: nowrap;">Hide Lines</button>
   <button id="showLinesBtn" title="Show all connector lines" style="background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 0.55rem; cursor: pointer; white-space: nowrap;">Show Lines</button>
 </div>
@@ -2359,7 +2358,6 @@ function initialize() {
 
   const gridBtn = document.getElementById('gridBtn');
   const randomizeBtn = document.getElementById('randomizeBtn');
-  const closeAllBtn = document.getElementById('closeAllBtn');
   const hideLinesBtn = document.getElementById('hideLinesBtn');
   const showLinesBtn = document.getElementById('showLinesBtn');
   
@@ -2367,7 +2365,6 @@ function initialize() {
     manager.animateToGrid();
   });
   if (randomizeBtn) randomizeBtn.addEventListener('click', () => manager.randomizeArrangement());
-  if (closeAllBtn) closeAllBtn.addEventListener('click', () => manager.closeAllNotes());
   if (hideLinesBtn) hideLinesBtn.addEventListener('click', () => manager.hideAllLines());
   if (showLinesBtn) showLinesBtn.addEventListener('click', () => manager.showAllLines());
 
