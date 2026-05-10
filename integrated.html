@@ -899,10 +899,16 @@ class StickyNoteManager {
             ${project.images.map(img => `<div class="sticky-preview-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/200x100/f5f5f5/999?text=${project.title}'"></div>`).join('')}
           </div>
         </div>
-        <div class="sticky-preview-tags">${project.tags.slice(0,3).map(t => `<span class="sticky-preview-tag">${t}</span>`).join('')}</div>
+        <div class="sticky-preview-tags">
+          ${project.tags.slice(0,3).map(t => `<span class="sticky-preview-tag">${t}</span>`).join('')}
+        </div>
       </div>
       <img class="frozen-image" id="frozen-img-${project.id}" src="" style="display: none;">
-      <div class="sticky-note-controls"><button class="minimize-note" title="Minimize">−</button><button class="close-note" title="Send to sidebar">✕</button></div>
+      <div class="sticky-note-controls">
+        <button class="expand-note" title="Expand">□</button>
+        <button class="minimize-note" title="Minimize">−</button>
+        <button class="close-note" title="Send to sidebar">✕</button>
+      </div>
     `;
     if (restoreData && restoreData.lastImageIndex !== undefined) {
       currentImageIndex = restoreData.lastImageIndex;
@@ -935,6 +941,13 @@ class StickyNoteManager {
       if (e.target.closest('.sticky-note-controls')) return;
       if (note.classList.contains('frozen')) return;
       e.preventDefault();
+      const rect = note.getBoundingClientRect();
+      this.openFloatingWindow(project, rect.left, rect.top, note);
+    });
+     const expandBtn = note.querySelector('.expand-note');
+    expandBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (note.classList.contains('frozen')) return;
       const rect = note.getBoundingClientRect();
       this.openFloatingWindow(project, rect.left, rect.top, note);
     });
