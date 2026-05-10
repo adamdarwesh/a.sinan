@@ -78,17 +78,23 @@
   }
 
   /* Animated vertical divider line - 3x thicker, 3x slower */
+  /* Animated vertical divider line - starts below tag bar */
   .hero-canvas::after {
     content: '';
     position: absolute;
-    top: 0;
+    top: 180px;  /* WAS 0 → NOW starts below the tags (adjust as needed) */
     right: 0;
-    width: 3px;  /* WAS 1px → NOW 3px (3x thicker) */
+    width: 3px;
     height: 0%;
     background-color: var(--rule);
     z-index: 10;
-    animation: drawVerticalLine 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;  /* WAS 1s → NOW 3s (3x slower) */
+    animation: drawVerticalLine 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     animation-delay: 0.2s;
+  }
+
+  @keyframes drawVerticalLine {
+    0% { height: 0%; opacity: 0; }
+    100% { height: calc(100% - 180px); opacity: 1; }  /* Leaves tiny gap at bottom too */
   }
 
   @keyframes drawVerticalLine {
