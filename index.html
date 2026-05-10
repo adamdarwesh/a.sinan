@@ -507,7 +507,10 @@
   }
 
   .sidebar-tabs {
-    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
     background: rgba(255,255,255,0.95);
     border-left: 1px solid var(--rule);
     border-radius: 8px 0 0 8px;
@@ -879,6 +882,7 @@
 <div class="hero">
   <div class="hero-canvas">
     <div class="sticky-canvas" id="stickyCanvas"></div>
+   <div class="sidebar-tabs" id="sidebarTabs"></div>
   </div>
   <div class="hero-placeholder">
     <p>✦ Future Content</p>
@@ -955,7 +959,7 @@
 </div>
 
 <div class="tags-container" id="tagsBar"></div>
-<div class="sidebar-tabs" id="sidebarTabs"></div>
+
 
 <section id="contact">
   <p class="contact-heading">Get in Touch</p>
@@ -1317,8 +1321,17 @@ let previewTimeout = null;
 
     const onMouseMove = (e) => {
       if (!isDragging) return;
+      const container = document.getElementById('stickyCanvas');
+      const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+      const maxX = containerWidth - element.offsetWidth - 10;
+      const minX = 10;
+      
       let newLeft = startLeft + (e.clientX - startX);
       let newTop = startTop + (e.clientY - startY);
+      
+      newLeft = Math.max(minX, Math.min(newLeft, maxX));
+      newTop = Math.max(60, Math.min(newTop, window.innerHeight - 100));
+      
       element.style.left = `${newLeft}px`;
       element.style.top = `${newTop}px`;
       this.updateConnectorLineForNote(element);
@@ -1327,9 +1340,18 @@ let previewTimeout = null;
     const onTouchMove = (e) => {
       if (!isDragging) return;
       e.preventDefault();
+      const container = document.getElementById('stickyCanvas');
+      const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+      const maxX = containerWidth - element.offsetWidth - 10;
+      const minX = 10;
+      
       const touch = e.touches[0];
       let newLeft = startLeft + (touch.clientX - touchStartX);
       let newTop = startTop + (touch.clientY - touchStartY);
+      
+      newLeft = Math.max(minX, Math.min(newLeft, maxX));
+      newTop = Math.max(60, Math.min(newTop, window.innerHeight - 100));
+      
       element.style.left = `${newLeft}px`;
       element.style.top = `${newTop}px`;
       this.updateConnectorLineForNote(element);
@@ -1765,12 +1787,14 @@ let previewTimeout = null;
   }
 
   randomizeArrangement() {
-    const padding = 50;
-    const maxX = window.innerWidth - 300;
-    const maxY = window.innerHeight - 200;
+    const padding = 20;
+    const container = document.getElementById('stickyCanvas');
+    const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+    const maxX = containerWidth - 180;
+    const maxY = window.innerHeight - 150;
     this.notes.forEach((note) => {
       const newX = padding + Math.random() * (maxX - padding);
-      const newY = 150 + Math.random() * (maxY - 150);
+      const newY = 120 + Math.random() * (maxY - 120);
       note.style.left = `${newX}px`;
       note.style.top = `${newY}px`;
       this.updateConnectorLineForNote(note);
@@ -2166,8 +2190,12 @@ function initialize() {
   manager = new StickyNoteManager();
 
   allProjects.forEach((project, i) => {
-    const x = 30 + Math.random() * (window.innerWidth - 350);
-    const y = 180 + Math.random() * (window.innerHeight - 500);
+    const container = document.getElementById('stickyCanvas');
+    const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+    const maxX = containerWidth - 180;
+    const maxY = window.innerHeight - 200;
+    const x = 20 + Math.random() * maxX;
+    const y = 150 + Math.random() * maxY;
     manager.createNote(project, i, x, y);
     const noteEl = document.querySelector(`.sticky-note[data-project-idx="${i}"]`);
     if (noteEl) manager.makeDraggable(noteEl, project);
