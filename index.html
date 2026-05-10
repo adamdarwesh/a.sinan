@@ -1721,6 +1721,63 @@ let previewTimeout = null;
     this.tabs.push(tab);
     this.closedProjects.set(project.id, { project, index, noteRect, lastImageIndex, noteElement });
   }
+   addToSidebarWithPosition(project, index, savedLeft, savedTop, lastImageIndex, noteElement) {
+  const sidebar = document.getElementById('sidebarTabs');
+  const existingTab = document.getElementById(`tab-${project.id}`);
+  if (existingTab) return;
+
+  const tab = document.createElement('div');
+  tab.className = 'sidebar-tab';
+  tab.id = `tab-${project.id}`;
+  tab.setAttribute('data-project-id', project.id);
+  tab.setAttribute('data-category', project.category);
+  tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
+  
+  tab.setAttribute('data-saved-left', savedLeft);
+  tab.setAttribute('data-saved-top', savedTop);
+  tab.setAttribute('data-saved-image-index', lastImageIndex);
+  tab.setAttribute('data-project-index', index);
+
+  tab.addEventListener('click', () => {
+    const restoreLeft = parseFloat(tab.getAttribute('data-saved-left'));
+    const restoreTop = parseFloat(tab.getAttribute('data-saved-top'));
+    const restoreImageIndex = parseInt(tab.getAttribute('data-saved-image-index')) || 0;
+    const projectIndex = parseInt(tab.getAttribute('data-project-index'));
+    const originalProject = allProjects[projectIndex];
+    
+    const newNote = this.createNote(originalProject, projectIndex, restoreLeft, restoreTop, { lastImageIndex: restoreImageIndex });
+    if (newNote) {
+      this.makeDraggable(newNote, originalProject);
+      this.notes.push(newNote);
+    }
+    
+    const connectorLine = document.getElementById(`connector-${project.id}`);
+    if (connectorLine) connectorLine.remove();
+    tab.remove();
+    this.tabs = this.tabs.filter(t => t !== tab);
+    if (tab.categoryObserver) tab.categoryObserver.disconnect();
+    this.noteTabConnections.delete(project.id);
+  });
+
+  const observeCategoryChange = () => {
+    const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all';
+    if (activeCategory === 'all' || project.category === activeCategory) {
+      tab.classList.remove('highlight');
+    } else {
+      tab.classList.add('highlight');
+    }
+  };
+  
+  const categoryObserver = new MutationObserver(observeCategoryChange);
+  const categoryContainer = document.getElementById('categoryFilters');
+  categoryObserver.observe(categoryContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
+  tab.categoryObserver = categoryObserver;
+
+  sidebar.appendChild(tab);
+  this.tabs.push(tab);
+  this.closedProjects.set(project.id, { project, index, noteRect: { left: savedLeft, top: savedTop }, lastImageIndex, noteElement });
+}
+   
 
   updateAllConnectorLines() {
     this.noteTabConnections.forEach((value, projectId) => {
@@ -1829,25 +1886,41 @@ let previewTimeout = null;
     });
   }
 
-  closeAllNotes() {
-    this.notes.forEach((note) => {
-      if (!note.classList.contains('frozen')) {
-        const projectId = note.getAttribute('data-project-id');
-        const project = allProjects.find(p => p.id === projectId);
-        const index = parseInt(note.getAttribute('data-project-idx'));
-        const noteRect = note.getBoundingClientRect();
-        const slidesContainer = note.querySelector(`#preview-${projectId}`);
-        let lastImageIndex = 0;
-        if (slidesContainer) {
-          const transform = slidesContainer.style.transform;
-          const match = transform.match(/translateX\(-([0-9]+)%/);
-          if (match) lastImageIndex = parseInt(match[1]) / 100;
-        }
-        this.freezeNote(note, project, lastImageIndex);
-        this.addToSidebar(project, index, noteRect, lastImageIndex, note);
-      }
-    });
-  }
+closeAllNotes() {
+  const notesToClose = [...this.notes];
+  
+  notesToClose.forEach((note) => {
+    if (note.classList.contains('frozen')) return;
+    
+    const projectId = note.getAttribute('data-project-id');
+    const project = allProjects.find(p => p.id === projectId);
+    const index = parseInt(note.getAttribute('data-project-idx'));
+    
+    const rect = note.getBoundingClientRect();
+    const scrollX = window.scrollX || window.pageXOffset;
+    const scrollY = window.scrollY || window.pageYOffset;
+    const absoluteLeft = rect.left + scrollX;
+    const absoluteTop = rect.top + scrollY;
+    
+    const slidesContainer = note.querySelector(`#preview-${projectId}`);
+    let lastImageIndex = 0;
+    if (slidesContainer) {
+      const transform = slidesContainer.style.transform;
+      const match = transform.match(/translateX\(-([0-9]+)%/);
+      if (match) lastImageIndex = parseInt(match[1]) / 100;
+    }
+    
+    note.setAttribute('data-stored-left', absoluteLeft);
+    note.setAttribute('data-stored-top', absoluteTop);
+    note.setAttribute('data-stored-image-index', lastImageIndex);
+    
+    this.addToSidebarWithPosition(project, index, absoluteLeft, absoluteTop, lastImageIndex, note);
+    
+    note.remove();
+  });
+  
+  this.notes = [];
+}
 
   hideAllLines() {
     const svg = document.getElementById('connectorSvg');
