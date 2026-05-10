@@ -441,12 +441,12 @@
   .sticky-note.blurred { opacity: 0.4; transition: opacity 0.2s ease; }
   .sticky-note.highlight { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
 
-  /* ========== SIDEBAR TABS - inside canvas, right edge ========== */
-  /* ========== SIDEBAR TABS - inside canvas, above control panel, appears after scroll ========== */
+  /* ========== SIDEBAR TABS - vertically aligned with category filters ========== */
   .sidebar-tabs {
     position: absolute;
     right: 0;
-    bottom: 140px;
+    top: 50%;
+    transform: translateY(-50%);
     width: 100px;
     background: var(--sidebar-bg);
     backdrop-filter: blur(8px);
@@ -460,15 +460,13 @@
     max-height: 300px;
     overflow-y: auto;
     pointer-events: auto;
-    transition: background 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    transition: background 0.3s ease, opacity 0.3s ease;
     opacity: 0;
-    transform: translateY(20px);
   }
 
   /* Show sidebar tabs after scroll */
   .sidebar-tabs.visible {
     opacity: 1;
-    transform: translateY(0);
   }
   .sidebar-tab {
     padding: 5px 8px;
@@ -1028,17 +1026,7 @@ class StickyNoteManager {
     note.setAttribute('data-last-image-index', lastImageIndex);
     note.setAttribute('data-frozen-scale', randomScale);
   }
-    const scaleOptions = [1, 1.5, 2, 2.5];
-    const randomScale = scaleOptions[Math.floor(Math.random() * scaleOptions.length)];
-    const baseWidth = 160;
-    const newWidth = baseWidth * randomScale;
-    if (frozenImg) frozenImg.style.height = (80 * randomScale) + 'px';
-    note.style.width = newWidth + 'px';
-    note.style.cursor = 'default';
-    note.setAttribute('data-frozen', 'true');
-    note.setAttribute('data-last-image-index', lastImageIndex);
-    note.setAttribute('data-frozen-scale', randomScale);
-  }
+
 
   unfreezeNote(note, project, index) {
     note.classList.remove('frozen');
@@ -1355,44 +1343,7 @@ class StickyNoteManager {
     this.tabs.push(tab);
     this.closedProjects.set(project.id, { project, index, noteRect, lastImageIndex, noteElement });
   }
-    addToSidebarWithPosition(project, index, savedLeft, savedTop, lastImageIndex, noteElement) {
-    const sidebar = document.getElementById('sidebarTabs');
-    const existingTab = document.getElementById(`tab-${project.id}`);
-    if (existingTab) return;
-    const tab = document.createElement('div');
-    tab.className = 'sidebar-tab';
-    tab.id = `tab-${project.id}`;
-    tab.setAttribute('data-project-id', project.id);
-    tab.setAttribute('data-category', project.category);
-    tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
-    tab.setAttribute('data-saved-left', savedLeft);
-    tab.setAttribute('data-saved-top', savedTop);
-    tab.setAttribute('data-saved-image-index', lastImageIndex);
-    tab.setAttribute('data-project-index', index);
-    tab.addEventListener('click', () => {
-      const restoreLeft = parseFloat(tab.getAttribute('data-saved-left'));
-      const restoreTop = parseFloat(tab.getAttribute('data-saved-top'));
-      const restoreImageIndex = parseInt(tab.getAttribute('data-saved-image-index')) || 0;
-      const projectIndex = parseInt(tab.getAttribute('data-project-index'));
-      const originalProject = allProjects[projectIndex];
-      const newNote = this.createNote(originalProject, projectIndex, restoreLeft, restoreTop, { lastImageIndex: restoreImageIndex });
-      if (newNote) { this.makeDraggable(newNote, originalProject); this.notes.push(newNote); }
-      const connectorLine = document.getElementById(`connector-${project.id}`);
-      if (connectorLine) connectorLine.remove();
-      tab.remove();
-      this.tabs = this.tabs.filter(t => t !== tab);
-      if (tab.categoryObserver) tab.categoryObserver.disconnect();
-      this.noteTabConnections.delete(project.id);
-    });
-    const observeCategoryChange = () => { const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all'; if (activeCategory === 'all' || project.category === activeCategory) tab.classList.remove('highlight'); else tab.classList.add('highlight'); };
-    const categoryObserver = new MutationObserver(observeCategoryChange);
-    const categoryContainer = document.getElementById('categoryFilters');
-    categoryObserver.observe(categoryContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
-    tab.categoryObserver = categoryObserver;
-    sidebar.appendChild(tab);
-    this.tabs.push(tab);
-    this.closedProjects.set(project.id, { project, index, noteRect: { left: savedLeft, top: savedTop }, lastImageIndex, noteElement });
-  }
+  
       addToSidebarWithPosition(project, index, savedLeft, savedTop, lastImageIndex, noteElement) {
     const sidebar = document.getElementById('sidebarTabs');
     const existingTab = document.getElementById(`tab-${project.id}`);
