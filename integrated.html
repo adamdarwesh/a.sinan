@@ -11,7 +11,7 @@
   /* ========== RESET & ROOT VARIABLES ========== */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-   /* Light Theme (default) */
+  /* Light Theme (default) */
   :root {
     --bg: #ffffff;
     --text: #111111;
@@ -71,8 +71,7 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* Background grid from simple.html - adapts to theme */
-  /* Background grid - adapts to theme */
+  /* Background grid */
   body::before {
     content: "";
     position: fixed;
@@ -172,17 +171,14 @@
   }
   .nav-links a:hover { color: var(--accent); }
 
-  /* ========== HERO 75/25 LAYOUT ========== */
+  /* ========== HERO 75/25 LAYOUT WITH ENTRANCE ANIMATION ========== */
   .hero {
     display: grid;
     grid-template-columns: 75% 25%;
-    min-height: auto;
+    min-height: 100vh;
     position: relative;
     margin: 0;
     padding: 5rem 0 0 0;
-  }
-    /* ========== ENTRANCE ANIMATION - HERO COLLAPSES ON SCROLL ========== */
-  .hero {
     transition: min-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -191,35 +187,106 @@
     padding: 0;
   }
 
-  /* Hero Content - elements that fade/shrink on scroll */
-  .hero-eyebrow,
-  .hero-bio,
-  .hero-cta,
-  .hero-category-wrapper {
-    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
+  /* Entrance Animation Elements */
+  .hero-entrance-content {
+    position: relative;
+    z-index: 10;
+    padding: 4rem 2rem;
+    max-width: 90%;
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
-  /* Name that moves to nav bar */
-  .hero-name-wrapper {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
   }
 
-  .hero-name-wrapper.shrunk {
-    opacity: 0;
-    transform: translateY(-50px);
+  .hero-name {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.5rem 0;
+    color: var(--text);
+    transition: all 0.3s ease;
   }
 
-  /* Sticky canvas starts hidden */
+  .hero-name em { font-style: italic; color: var(--accent); }
+
+  .hero-bio {
+    font-family: var(--body-serif);
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 90%;
+    margin-bottom: 2rem;
+    transition: opacity 0.3s ease;
+  }
+
+  .hero-category-wrapper { margin-bottom: 2rem; }
+  .hero-category-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .hero-category-chips { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .hero-chip {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--rule);
+    border-radius: 30px;
+    color: var(--text);
+    background: transparent;
+    transition: all 0.2s ease;
+  }
+  .hero-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero-cta {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--accent);
+    padding-bottom: 4px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .hero-cta:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* Sticky canvas wrapper - starts hidden */
   .sticky-canvas-wrapper {
     opacity: 0;
     transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
+  .sticky-canvas-wrapper.visible { opacity: 1; }
 
-  .sticky-canvas-wrapper.visible {
-    opacity: 1;
+  /* Right column - starts hidden */
+  .hero-right {
+    border-left: 0.5px solid var(--rule);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    transition: border-color 0.3s ease, opacity 0.4s ease;
+    opacity: 0;
   }
+  .hero-right.visible { opacity: 1; }
 
-  /* Progress bar for scroll (optional) */
+  /* Scroll progress bar */
   .scroll-progress {
     position: fixed;
     top: 0;
@@ -231,7 +298,6 @@
     transition: width 0.05s linear;
   }
 
-  /* Sticky Canvas Container (75% area) */
   .hero-canvas {
     position: relative;
     background: transparent;
@@ -239,27 +305,17 @@
     padding: 0;
   }
 
-  /* Right Column (25% area) */
-  .hero-right {
-    border-left: 0.5px solid var(--rule);
-    padding: 2rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    transition: border-color 0.3s ease;
+  /* ========== STICKY CANVAS STYLES ========== */
+  .sticky-canvas {
+    position: relative;
+    width: 100%;
+    min-height: 800px;
+    height: 800px;
+    overflow: hidden;
+    padding: 60px 80px 1rem 20px;
+    z-index: 3;
+    transition: background 0.3s ease;
   }
-
-  /* ========== STICKY CANVAS STYLES - NO SCROLL (overflow: hidden) ========== */
-.sticky-canvas {
-  position: relative;
-  width: 100%;
-  min-height: 800px;
-  height: 800px;
-  overflow: hidden;
-  padding: 60px 80px 1rem 20px;
-  z-index: 3;
-  transition: background 0.3s ease;
-}
 
   .sticky-note {
     position: absolute;
@@ -290,14 +346,12 @@
     border: 1px solid var(--accent);
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   }
-
   .sticky-note.preview-active .sticky-preview { display: block; }
   .sticky-note .sticky-preview { display: none; margin-top: 8px; }
 
   .sticky-preview-carousel { position: relative; width: 100%; overflow: hidden; border-radius: 4px; margin-bottom: 6px; }
   .sticky-preview-slides { display: flex; transition: transform 0.5s ease; }
   .sticky-preview-slide { min-width: 100%; }
-
   .sticky-preview-slide img {
     width: 100%;
     height: auto;
@@ -306,10 +360,7 @@
     object-fit: contain;
     background: #f5f5f5;
   }
-
-  body.dark-theme .sticky-preview-slide img {
-    background: #1a1a1a;
-  }
+  body.dark-theme .sticky-preview-slide img { background: #1a1a1a; }
 
   .sticky-preview-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
   .sticky-preview-tag { font-size: 0.5rem; padding: 3px 6px; border-radius: 2px; color: white; background: var(--accent); font-weight: 500; }
@@ -320,10 +371,7 @@
     font-size: 0.75rem;
     font-weight: 700;
   }
-
-  body.dark-theme .sticky-note .sticky-title {
-    color: var(--sticky-title);
-  }
+  body.dark-theme .sticky-note .sticky-title { color: var(--sticky-title); }
 
   .sticky-note .sticky-subtitle {
     font-size: 0.45rem;
@@ -335,9 +383,7 @@
     display: flex; gap: 6px; opacity: 0;
     transition: opacity 0.2s;
   }
-
   .sticky-note:hover .sticky-note-controls { opacity: 1; }
-
   .sticky-note-controls button {
     background: rgba(0,0,0,0.05);
     border: 1px solid var(--rule);
@@ -348,7 +394,6 @@
     padding: 0 3px;
     transition: background 0.3s ease, color 0.3s ease;
   }
-
   .sticky-note-controls button:hover { color: var(--accent); border-color: var(--accent); }
 
   /* ========== FROZEN NOTES ========== */
@@ -361,7 +406,6 @@
     opacity: 0.75;
     position: relative;
   }
-
   .sticky-note.frozen::after {
     content: "❄️";
     position: absolute;
@@ -370,15 +414,10 @@
     font-size: 0.5rem;
     opacity: 0.6;
   }
-
   .sticky-note.frozen .sticky-preview,
   .sticky-note.frozen .sticky-note-controls,
-  .sticky-note.frozen .sticky-subtitle {
-    display: none !important;
-  }
-
+  .sticky-note.frozen .sticky-subtitle { display: none !important; }
   .sticky-note.frozen .sticky-title { font-size: 0.6rem; }
-
   .sticky-note.frozen .frozen-image {
     display: block;
     width: 100%;
@@ -386,7 +425,6 @@
     object-fit: contain;
     margin-bottom: 4px;
   }
-
   .sticky-note .frozen-image { display: none; }
 
   /* Category highlight */
@@ -429,16 +467,15 @@
     overflow-x: hidden;
     text-overflow: ellipsis;
   }
-
   body.dark-theme .sidebar-tab {
     background: #2d2d2d;
     border-color: #444444;
     color: #cccccc;
   }
-
   .sidebar-tab:hover { border-color: var(--accent); color: var(--accent); }
   .sidebar-tab.highlight { border-color: var(--accent); background: var(--accent); color: white; }
-    /* ========== CONTROL PANEL INSIDE CANVAS (matching sidebar tabs style) ========== */
+
+  /* ========== CONTROL PANEL INSIDE CANVAS ========== */
   .canvas-control-panel {
     position: absolute;
     right: 10px;
@@ -456,7 +493,6 @@
     pointer-events: auto;
     transition: background 0.3s ease;
   }
-
   .canvas-control-panel .ctrl-btn {
     background: var(--accent);
     color: white;
@@ -471,22 +507,16 @@
     transition: background 0.2s ease;
     width: 100%;
   }
+  .canvas-control-panel .ctrl-btn:hover { background: var(--accent-light); }
+  body.dark-theme .canvas-control-panel { background: rgba(30,30,30,0.95); }
 
-  .canvas-control-panel .ctrl-btn:hover {
-    background: var(--accent-light);
-  }
-
-  body.dark-theme .canvas-control-panel {
-    background: rgba(30,30,30,0.95);
-  }
-    /* ========== CATEGORY FILTERS (right column) ========== */
+  /* ========== CATEGORY FILTERS (right column) ========== */
   .category-filters {
     list-style: none;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
-
   .category-filters li {
     font-family: var(--mono);
     font-size: 0.65rem;
@@ -498,21 +528,14 @@
     color: var(--muted);
     position: relative;
   }
-
   .category-filters li:hover, .category-filters li.active {
     color: var(--accent);
     font-weight: bold;
     font-style: italic;
   }
-
-  body.dark-theme .category-filters li {
-    color: #999999;
-  }
-
+  body.dark-theme .category-filters li { color: #999999; }
   body.dark-theme .category-filters li:hover,
-  body.dark-theme .category-filters li.active {
-    color: #ffffff;
-  }
+  body.dark-theme .category-filters li.active { color: #ffffff; }
 
   /* ========== TAGS BAR (inside sticky canvas, top) ========== */
   .canvas-tags-bar {
@@ -531,10 +554,7 @@
     pointer-events: auto;
     transition: background 0.3s ease;
   }
-
-  body.dark-theme .canvas-tags-bar {
-    background: rgba(30,30,30,0.8);
-  }
+  body.dark-theme .canvas-tags-bar { background: rgba(30,30,30,0.8); }
 
   .tag-filter {
     font-family: var(--mono);
@@ -550,9 +570,7 @@
     transition: all 0.2s ease;
     position: relative;
   }
-
   .tag-filter:hover { background: var(--accent-light); opacity: 0.9; }
-
   .tag-filter::after {
     content: attr(data-tooltip);
     position: absolute;
@@ -571,24 +589,15 @@
     pointer-events: none;
     transition: opacity 0.2s;
   }
-
   .tag-filter:hover::after { opacity: 1; }
-
-  body.dark-theme .tag-filter {
-    background: #555555;
-    color: #1a1a1a;
-  }
-
-  body.dark-theme .tag-filter:hover {
-    background: #777777;
-  }
+  body.dark-theme .tag-filter { background: #555555; color: #1a1a1a; }
+  body.dark-theme .tag-filter:hover { background: #777777; }
 
   /* ========== CONNECTOR LINES SVG ========== */
   #connectorSvg {
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
     pointer-events: none; z-index: 2; overflow: visible;
   }
-
   .connector-line {
     stroke: var(--accent);
     stroke-width: 1.2;
@@ -596,7 +605,6 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-
   .connector-line-tab {
     stroke: var(--accent);
     stroke-width: 1;
@@ -606,596 +614,54 @@
     stroke-dasharray: 4 3;
     opacity: 0.6;
   }
-
-  /* ========== RESEARCH SECTION - WHITE HORIZONTAL LINE MAINTAINED ========== */
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    padding: 4rem 3rem 2rem;
-  }
-
-  .section-label {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    white-space: nowrap;
-  }
-
-  .section-rule {
-    flex: 1;
-    height: 0.5px;
-    background: var(--rule);
-    transition: background 0.3s ease;
-  }
-
-  /* THIS IS THE WHITE HORIZONTAL LINE - maintained from simple.html */
-  #research {
-    border-top: 0.5px solid var(--rule);
-    padding-bottom: 6rem;
-    transition: border-color 0.3s ease;
-  }
-
-  .writing-grid {
-    padding: 0 3rem;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-  }
-
-  .writing-item {
-    padding: 2.5rem 2.5rem 2.5rem 0;
-    border-right: 0.5px solid var(--rule);
-    transition: background 0.2s, border-color 0.3s ease;
-  }
-
-  .writing-item:hover { background: rgba(255,48,48,0.08); }
-  .writing-item:last-child { border-right: none; padding-left: 2.5rem; padding-right: 0; }
-  .writing-item:nth-child(2) { padding-left: 2.5rem; }
-
-  .writing-type {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1rem;
-  }
-
-  .writing-title {
-    font-family: var(--serif);
-    font-size: 1.2rem;
-    font-weight: 700;
-    line-height: 1.25;
-    margin-bottom: 0.75rem;
-    color: var(--text);
-    transition: color 0.3s ease;
-  }
-
-  .writing-desc {
-    font-family: var(--body-serif);
-    font-size: 0.9rem;
-    line-height: 1.7;
-    color: var(--muted);
-    transition: color 0.3s ease;
-  }
-
-  .writing-date {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    color: var(--accent);
-    margin-top: 1.5rem;
-  }
-
-  /* ========== CONTACT SECTION (75/25 split) ========== */
-  #contact {
-    background: var(--bg);
-    border-top: 0.5px solid var(--rule);
-    padding: 6rem 3rem;
-    display: grid;
-    grid-template-columns: 75% 25%;
-    gap: 4rem;
-    align-items: end;
-    transition: background 0.3s ease, border-color 0.3s ease;
-  }
-
-  .contact-left h2 {
-    font-family: var(--serif);
-    font-size: clamp(2.5rem, 4vw, 4rem);
-    font-weight: 900;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    margin-bottom: 1.5rem;
-    color: var(--text);
-    transition: color 0.3s ease;
-  }
-
-  .contact-left h2 em { font-style: italic; color: var(--accent); }
-  .contact-left p {
-    font-family: var(--body-serif);
-    font-size: 1.05rem;
-    line-height: 1.8;
-    color: var(--muted);
-    max-width: 40ch;
-    transition: color 0.3s ease;
-  }
-
-  .contact-links { display: flex; flex-direction: column; gap: 1.5rem; }
-  .contact-link {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    text-decoration: none;
-    padding-bottom: 1.5rem;
-    border-bottom: 0.5px solid var(--rule);
-    transition: border-color 0.2s;
-  }
-  .contact-link:hover { border-color: var(--accent); }
-  .contact-link:hover .contact-link-val { color: var(--accent); }
-
-  .contact-link-label {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    transition: color 0.3s ease;
-  }
-  .contact-link-val {
-    font-family: var(--serif);
-    font-size: 1.1rem;
-    color: var(--text);
-    font-weight: 700;
-    transition: color 0.2s;
-  }
-
-  /* ========== FOOTER ========== */
-  footer {
-    background: var(--bg);
-    border-top: 0.5px solid var(--rule);
-    padding: 1.5rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background 0.3s ease, border-color 0.3s ease;
-  }
-  footer span {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-    transition: color 0.3s ease;
-  }
-
-  /* ========== MODALS ========== */
-  .cv-modal-overlay, .results-modal-overlay, .split-modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(8px);
-    z-index: 5000;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .cv-modal, .results-modal {
-    background: var(--modal-bg);
-    width: 85%;
-    max-width: 800px;
-    height: 85%;
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    border: 0.5px solid var(--rule);
-    transition: background 0.3s ease, border-color 0.3s ease;
-  }
-
-  .cv-modal-header, .results-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 0.5px solid var(--rule);
-  }
-
-  .cv-modal-header h2, .results-modal-header h2 {
-    color: var(--accent);
-    font-family: var(--serif);
-  }
-
-  .cv-modal-close, .results-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--muted);
-    transition: color 0.2s;
-  }
-  .cv-modal-close:hover, .results-close:hover { color: var(--accent); }
-
-  .cv-modal-body, .results-grid {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1.5rem;
-  }
-
-  .cv-modal-body h4 {
-    font-family: var(--mono);
-    color: var(--accent);
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-    border-bottom: 0.5px solid var(--rule);
-    padding-bottom: 0.3rem;
-  }
-
-  .cv-modal-body p, .cv-modal-body ul {
-    color: var(--muted);
-  }
-
-  .results-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1rem;
-  }
-
-  .result-card {
-    background: var(--card-bg);
-    border: 1px solid var(--rule);
-    border-radius: 8px;
-    padding: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: var(--text);
-  }
-  .result-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-
-  /* Split View Modal */
-  .split-view {
-    display: flex;
-    gap: 20px;
-    width: 90%;
-    max-width: 1400px;
-    height: 85%;
-    background: transparent;
-  }
-  .split-pane {
-    flex: 1;
-    background: var(--modal-bg);
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--rule);
-    overflow: hidden;
-  }
-
-  /* ========== CONTROL PANEL ========== */
-  .control-panel {
-    position: fixed;
-    bottom: 30px;
-    left: 30px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .ctrl-btn {
-    background: var(--accent);
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 0.55rem;
-    cursor: pointer;
-    font-family: var(--mono);
-    transition: background 0.3s ease;
-  }
-  .ctrl-btn:hover { background: var(--accent-light); }
-
-  /* ========== FLOATING WINDOW ========== */
-  .floating-window {
-    position: fixed;
-    background: var(--modal-bg);
-    border: 0.5px solid var(--rule);
-    border-radius: 8px;
-    min-width: 400px;
-    max-width: 600px;
-    z-index: 30000;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.5);
-    transition: background 0.3s ease, border-color 0.3s ease;
-  }
-
-  .window-header {
-    background: var(--accent);
-    color: white;
-    padding: 10px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.75rem;
-    font-weight: 500;
-    border-radius: 8px 8px 0 0;
-  }
-
-  .window-header h3 { margin: 0; font-size: 0.85rem; }
-  .window-close, .window-minimize {
-    background: rgba(255,255,255,0.2);
-    border: none;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-  }
-  .window-minimize { margin-right: 8px; }
-  .window-close:hover, .window-minimize:hover { background: rgba(255,255,255,0.4); }
-
-  .window-header-right { display: flex; align-items: center; }
-
-  .window-body {
-    flex: 1;
-    padding: 1rem;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    background: var(--modal-bg);
-    color: var(--text);
-  }
-
-  .window-carousel {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    border-radius: 8px;
-    background: #f5f5f5;
-  }
-  .window-slides { display: flex; transition: transform 0.3s ease; }
-  .window-slide { min-width: 100%; }
-  .window-slide img {
-    width: 100%;
-    height: auto;
-    max-height: 280px;
-    object-fit: contain;
-    background: #f5f5f5;
-  }
-  .window-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .window-tag {
-    font-size: 0.6rem;
-    padding: 4px 10px;
-    background: var(--accent);
-    color: white;
-    border-radius: 20px;
-  }
-
-  .resize-handle {
-    position: absolute;
-    background: transparent;
-    z-index: 20001;
-  }
-  .resize-top { top: -5px; left: 0; width: 100%; height: 10px; cursor: ns-resize; }
-  .resize-right { top: 0; right: -5px; width: 10px; height: 100%; cursor: ew-resize; }
-  .resize-bottom { bottom: -5px; left: 0; width: 100%; height: 10px; cursor: ns-resize; }
-  .resize-left { top: 0; left: -5px; width: 10px; height: 100%; cursor: ew-resize; }
-  .resize-top-left { top: -5px; left: -5px; width: 15px; height: 15px; cursor: nw-resize; }
-  .resize-top-right { top: -5px; right: -5px; width: 15px; height: 15px; cursor: ne-resize; }
-  .resize-bottom-left { bottom: -5px; left: -5px; width: 15px; height: 15px; cursor: sw-resize; }
-  .resize-bottom-right { bottom: -5px; right: -5px; width: 15px; height: 15px; cursor: nw-resize; }
-
-  @media (max-width: 768px) {
-    .hero { grid-template-columns: 1fr; }
-    .hero-right { border-left: none; border-top: 0.5px solid var(--rule); }
-    .writing-grid { grid-template-columns: 1fr; }
-    .writing-item { border-right: none; border-bottom: 0.5px solid var(--rule); }
-    #contact { grid-template-columns: 1fr; gap: 2rem; }
-    nav { padding: 1rem 1.5rem; }
-    .sidebar-tabs { width: 80px; right: 5px; }
-    .canvas-tags-bar { right: 100px; }
-    .control-panel { bottom: 15px; left: 15px; }
-    .ctrl-btn { padding: 6px 10px; font-size: 0.45rem; }
-    .floating-window { width: 95% !important; left: 2.5% !important; min-width: unset; }
-  }
-    /* ========== ENTRANCE CONTENT STYLES ========== */
-  .hero-entrance-content {
-    position: relative;
-    z-index: 10;
-    padding: 4rem 2rem;
-    max-width: 90%;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-
-  .hero-eyebrow {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 2rem;
-  }
-
-  .hero-name {
-    font-family: var(--serif);
-    font-size: clamp(2.5rem, 8vw, 5.5rem);
-    font-weight: 900;
-    line-height: 0.95;
-    letter-spacing: -0.02em;
-    margin: 0 0 1.5rem 0;
-    color: var(--text);
-    transition: all 0.3s ease;
-  }
-
-  .hero-name em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .hero-bio {
-    font-family: var(--body-serif);
-    font-size: 1.1rem;
-    line-height: 1.7;
-    color: var(--muted);
-    max-width: 90%;
-    margin-bottom: 2rem;
-    transition: opacity 0.3s ease;
-  }
-
-  .hero-category-wrapper {
-    margin-bottom: 2rem;
-  }
-
-  .hero-category-label {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.75rem;
-  }
-
-  .hero-category-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  .hero-chip {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    padding: 0.4rem 1rem;
-    border: 1px solid var(--rule);
-    border-radius: 30px;
-    color: var(--text);
-    background: transparent;
-    transition: all 0.2s ease;
-  }
-
-  .hero-chip:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .hero-cta {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text);
-    text-decoration: none;
-    border-bottom: 1.5px solid var(--accent);
-    padding-bottom: 4px;
-    transition: color 0.2s, border-color 0.2s;
-  }
-
-  .hero-cta:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-
-  /* Fading out classes */
-  .hero-entrance-content.fade-out {
-    opacity: 0;
-    transform: translateY(-30px);
-    pointer-events: none;
-  }
-
-  /* Name shrink animation */
-  .hero-name-wrapper.move-to-nav {
-    opacity: 0;
-    transform: translateY(-60px);
-  }
-
-  /* Right column category filters - start hidden, fade in later */
-  .hero-right {
-    opacity: 0;
-    transition: opacity 0.4s ease 0.2s;
-  }
-
-  .hero-right.visible {
-    opacity: 1;
-  }
-
-  /* Sticky canvas wrapper */
-  .sticky-canvas-wrapper {
-    position: relative;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-
-  .sticky-canvas-wrapper.visible {
-    opacity: 1;
-  }
-
-  /* Nav name update */
-  .nav-name.large {
-    font-size: 0.9rem;
-    font-weight: 700;
-  }
 </style>
 </head>
 <body>
-<!-- CV MODAL -->
-<div id="cvModal" class="cv-modal-overlay">
-  <div class="cv-modal">
-    <div class="cv-modal-header">
-      <h2>CV / Resume</h2>
-      <button class="cv-modal-close" id="closeCvBtn">✕</button>
+  <!-- CV MODAL -->
+<div id="cvModal" class="cv-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:5000; justify-content:center; align-items:center;">
+  <div class="cv-modal" style="background:var(--modal-bg); width:85%; max-width:800px; height:85%; border-radius:16px; display:flex; flex-direction:column; border:0.5px solid var(--rule);">
+    <div class="cv-modal-header" style="display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; border-bottom:0.5px solid var(--rule);">
+      <h2 style="color:var(--accent); font-family:var(--serif);">CV / Resume</h2>
+      <button class="cv-modal-close" id="closeCvBtn" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--muted);">✕</button>
     </div>
-    <div class="cv-modal-body">
-      <h4>Profile</h4>
+    <div class="cv-modal-body" style="flex:1; overflow-y:auto; padding:1.5rem; color:var(--muted);">
+      <h4 style="color:var(--accent); font-family:var(--mono);">Profile</h4>
       <p>An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches. My work is enriched by interdisciplinary collaboration and strong research foundations.</p>
-      
-      <h4>Education</h4>
+      <h4 style="color:var(--accent); font-family:var(--mono);">Education</h4>
       <p><strong>PhD / DR.TECH</strong> — Die Angewandte (2024–present)</p>
       <p><strong>MArch</strong> — Die Angewandte, Magna cum laude (2020–2024)</p>
       <p><strong>B.Sc Architecture</strong> — AABU, Jordan (2013–2020)</p>
-      
-      <h4>Professional Experience</h4>
+      <h4 style="color:var(--accent); font-family:var(--mono);">Professional Experience</h4>
       <p><strong>Faculty Member & Lecturer</strong> — AAUP, Palestine (2025–present)</p>
       <p><strong>Researcher/Curator</strong> — CSRC at AAUP (2025–present)</p>
       <p><strong>Architect</strong> — LAVA, Berlin (2024–2025)</p>
       <p><strong>Freelance Architect</strong> — Worldwide (2022–present)</p>
-      
-      <h4>Skills</h4>
+      <h4 style="color:var(--accent); font-family:var(--mono);">Skills</h4>
       <p><strong>3D Modelling (5/5):</strong> Rhino3D, Archicad, Blender3D, Maya, Sketchup</p>
       <p><strong>Visualisation (4/5):</strong> Vray, Cycles, D5 Render, Twinmotion, Keyshot, Lumion</p>
       <p><strong>Languages:</strong> Arabic (native), English (fluent), Dutch (intermediate), German (beginner)</p>
-      
-      <h4>Contact</h4>
-      <p>📧 <a href="mailto:adam95darwesh@gmail.com" style="color:#FF3030;">adam95darwesh@gmail.com</a></p>
-      <p>🔗 <a href="https://www.linkedin.com/in/aladham/" target="_blank" style="color:#FF3030;">linkedin.com/in/aladham</a></p>
-      <p>📷 <a href="https://www.instagram.com/al_adhambinsinan/" target="_blank" style="color:#FF3030;">@al_adhambinsinan</a></p>
+      <h4 style="color:var(--accent); font-family:var(--mono);">Contact</h4>
+      <p>📧 <a href="mailto:adam95darwesh@gmail.com" style="color:var(--accent);">adam95darwesh@gmail.com</a></p>
+      <p>🔗 <a href="https://www.linkedin.com/in/aladham/" target="_blank" style="color:var(--accent);">linkedin.com/in/aladham</a></p>
+      <p>📷 <a href="https://www.instagram.com/al_adhambinsinan/" target="_blank" style="color:var(--accent);">@al_adhambinsinan</a></p>
     </div>
   </div>
 </div>
 
 <!-- RESULTS MODAL (for tag clicks) -->
-<div id="resultsModal" class="results-modal-overlay">
-  <div class="results-modal">
-    <div class="results-modal-header">
-      <h2 id="resultsTitle">Projects</h2>
-      <button class="results-close" id="closeResultsBtn">✕</button>
+<div id="resultsModal" class="results-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:5000; justify-content:center; align-items:center;">
+  <div class="results-modal" style="background:var(--modal-bg); width:85%; max-width:800px; height:85%; border-radius:16px; display:flex; flex-direction:column; border:0.5px solid var(--rule);">
+    <div class="results-modal-header" style="display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; border-bottom:0.5px solid var(--rule);">
+      <h2 id="resultsTitle" style="color:var(--accent); font-family:var(--serif);">Projects</h2>
+      <button class="results-close" id="closeResultsBtn" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--muted);">✕</button>
     </div>
-    <div class="results-grid" id="resultsGrid"></div>
+    <div class="results-grid" id="resultsGrid" style="flex:1; overflow-y:auto; padding:1.5rem; display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:1rem;"></div>
   </div>
 </div>
 
 <!-- SPLIT VIEW MODAL -->
-<div id="splitModal" class="results-modal-overlay">
-  <div class="split-view" id="splitView"></div>
+<div id="splitModal" class="split-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:5000; justify-content:center; align-items:center;">
+  <div class="split-view" id="splitView" style="display:flex; gap:20px; width:90%; max-width:1400px; height:85%; background:transparent;"></div>
 </div>
 
 <!-- NAVIGATION -->
@@ -1207,11 +673,8 @@
   </ul>
 </nav>
 
-
-  <!-- HERO SECTION: 75% Sticky Canvas / 25% Categories -->
 <!-- HERO SECTION WITH ENTRANCE ANIMATION -->
 <div class="hero" id="heroSection">
-  <!-- LEFT COLUMN (75%) - Entrance Content + Sticky Canvas -->
   <div class="hero-canvas">
     <!-- ENTRANCE CONTENT (visible on load, fades on scroll) -->
     <div class="hero-entrance-content" id="heroEntranceContent">
@@ -1250,7 +713,7 @@
     </div>
   </div>
 
-  <!-- RIGHT COLUMN (25%) - Category Filters (moved here after scroll) -->
+  <!-- RIGHT COLUMN (25%) - Category Filters -->
   <div class="hero-right">
     <ul class="category-filters" id="categoryFilters">
       <li data-category="all" class="active">All</li>
@@ -1269,91 +732,107 @@
 <div id="gridPlusContainer"></div>
 
 <!-- CONNECTOR LINES SVG -->
-<svg id="connectorSvg" style="position:fixed; top:0; left:0; width:100%; height:100vh; pointer-events:none; z-index:2;"></svg>
-
-<!-- RESEARCH SECTION - WHITE HORIZONTAL LINE APPEARS ABOVE THIS SECTION -->
+<svg id="connectorSvg"></svg>
+<!-- RESEARCH SECTION - WHITE HORIZONTAL LINE MAINTAINED -->
 <section id="research">
-  <div class="section-header">
-    <span class="section-label">Research & Publications</span>
-    <div class="section-rule"></div>
+  <div class="section-header" style="display:flex; align-items:center; gap:2rem; padding:4rem 3rem 2rem;">
+    <span class="section-label" style="font-family:var(--mono); font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); white-space:nowrap;">Research & Publications</span>
+    <div class="section-rule" style="flex:1; height:0.5px; background:var(--rule); transition:background 0.3s ease;"></div>
   </div>
-  <div class="writing-grid">
-    <div class="writing-item"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Dynamic Ruinations: Architecture Against Finality</h3><p class="writing-desc">Presented at "Co-producing Alternative Futures through Experimental Urbanism" Symposium, University of Pretoria, South Africa (April 2026).</p><p class="writing-date">2026 — Newcastle University</p></div>
-    <div class="writing-item"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Agential Cartographies</h3><p class="writing-desc">Presented at "Spectres of the Undercommons" Conference, The American University in Cairo (April 2026).</p><p class="writing-date">2026 — Extra-territorial Studio</p></div>
-    <div class="writing-item"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Spatio-territorial Examination of the Actively Deterritorialized</h3><p class="writing-desc">Presented at "Engineering Destruction" Conference, Birzeit University (June 2025).</p><p class="writing-date">2025 — Birzeit University</p></div>
-    <div class="writing-item"><p class="writing-type">Book Chapter</p><h3 class="writing-title">Re: Action — Urban Resilience in the post-Information Age</h3><p class="writing-desc">Published by Birkhäuser (2023). Edited by Hani Rashid.</p><p class="writing-date">2023 — Birkhäuser</p></div>
-    <div class="writing-item"><p class="writing-type">Research Proposal</p><h3 class="writing-title">Rubble Typology: Destruction Mode as a Material Determinant</h3><p class="writing-desc">A comparative framework for understanding how different destruction modes produce materially distinct waste streams.</p><p class="writing-date">2025 — The New Cairn Project</p></div>
-    <div class="writing-item"><p class="writing-type">Material Research</p><h3 class="writing-title">Compression-Only Logic in Heterogeneous Rubble Assemblies</h3><p class="writing-desc">Applying the Safe Theorem to mixed-material demolition waste for compression-only structural logic.</p><p class="writing-date">2025 — Fellowship Research</p></div>
+  <div class="writing-grid" style="padding:0 3rem; display:grid; grid-template-columns:repeat(3,1fr); gap:0;">
+    <div class="writing-item" style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
+      <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Conference Paper</p>
+      <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Dynamic Ruinations: Architecture Against Finality</h3>
+      <p class="writing-desc" style="font-family:var(--body-serif); font-size:0.9rem; line-height:1.7; color:var(--muted); transition:color 0.3s ease;">Presented at "Co-producing Alternative Futures through Experimental Urbanism" Symposium, University of Pretoria, South Africa (April 2026).</p>
+      <p class="writing-date" style="font-family:var(--mono); font-size:0.6rem; color:var(--accent); margin-top:1.5rem;">2026 — Newcastle University</p>
+    </div>
+    <div class="writing-item" style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
+      <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Conference Paper</p>
+      <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Agential Cartographies</h3>
+      <p class="writing-desc" style="font-family:var(--body-serif); font-size:0.9rem; line-height:1.7; color:var(--muted); transition:color 0.3s ease;">Presented at "Spectres of the Undercommons" Conference, The American University in Cairo (April 2026).</p>
+      <p class="writing-date" style="font-family:var(--mono); font-size:0.6rem; color:var(--accent); margin-top:1.5rem;">2026 — Extra-territorial Studio</p>
+    </div>
+    <div class="writing-item" style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
+      <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Conference Paper</p>
+      <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Spatio-territorial Examination of the Actively Deterritorialized</h3>
+      <p class="writing-desc" style="font-family:var(--body-serif); font-size:0.9rem; line-height:1.7; color:var(--muted); transition:color 0.3s ease;">Presented at "Engineering Destruction" Conference, Birzeit University (June 2025).</p>
+      <p class="writing-date" style="font-family:var(--mono); font-size:0.6rem; color:var(--accent); margin-top:1.5rem;">2025 — Birzeit University</p>
+    </div>
+    <div class="writing-item" style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
+      <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Book Chapter</p>
+      <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Re: Action — Urban Resilience in the post-Information Age</h3>
+      <p class="writing-desc" style="font-family:var(--body-serif); font-size:0.9rem; line-height:1.7; color:var(--muted); transition:color 0.3s ease;">Published by Birkhäuser (2023). Edited by Hani Rashid.</p>
+      <p class="writing-date" style="font-family:var(--mono); font-size:0.6rem; color:var(--accent); margin-top:1.5rem;">2023 — Birkhäuser</p>
+    </div>
+    <div class="writing-item" style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
+      <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Research Proposal</p>
+      <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Rubble Typology: Destruction Mode as a Material Determinant</h3>
+      <p class="writing-desc" style="font-family:var(--body-serif); font-size:0.9rem; line-height:1.7; color:var(--muted); transition:color 0.3s ease;">A comparative framework for understanding how different destruction modes produce materially distinct waste streams.</p>
+      <p class="writing-date" style="font-family:var(--mono); font-size:0.6rem; color:var(--accent); margin-top:1.5rem;">2025 — The New Cairn Project</p>
+    </div>
+    <div class="writing-item" style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
+      <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Material Research</p>
+      <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Compression-Only Logic in Heterogeneous Rubble Assemblies</h3>
+      <p class="writing-desc" style="font-family:var(--body-serif); font-size:0.9rem; line-height:1.7; color:var(--muted); transition:color 0.3s ease;">Applying the Safe Theorem to mixed-material demolition waste for compression-only structural logic.</p>
+      <p class="writing-date" style="font-family:var(--mono); font-size:0.6rem; color:var(--accent); margin-top:1.5rem;">2025 — Fellowship Research</p>
+    </div>
   </div>
 </section>
 
-<!-- CONTACT SECTION -->
+<!-- CONTACT SECTION (75/25 split) -->
 <section id="contact">
   <div class="contact-left">
-    <h2>Let's<br><em>work<br>together.</em></h2>
-    <p>Open to research collaborations, fellowship inquiries, exhibition commissions, and conversations about post-conflict material practice.</p>
+    <h2 style="font-family:var(--serif); font-size:clamp(2.5rem,4vw,4rem); font-weight:900; line-height:1; letter-spacing:-0.02em; margin-bottom:1.5rem; color:var(--text); transition:color 0.3s ease;">Let's<br><em style="font-style:italic; color:var(--accent);">work<br>together.</em></h2>
+    <p style="font-family:var(--body-serif); font-size:1.05rem; line-height:1.8; color:var(--muted); max-width:40ch; transition:color 0.3s ease;">Open to research collaborations, fellowship inquiries, exhibition commissions, and conversations about post-conflict material practice.</p>
   </div>
-  <div class="contact-links">
-    <a href="mailto:adam95darwesh@gmail.com" class="contact-link"><span class="contact-link-label">Email</span><span class="contact-link-val">adam95darwesh@gmail.com</span></a>
-    <a href="https://www.linkedin.com/in/aladham/" class="contact-link" target="_blank"><span class="contact-link-label">LinkedIn</span><span class="contact-link-val">in/aladham</span></a>
-    <a href="https://www.instagram.com/al_adhambinsinan/" class="contact-link" target="_blank"><span class="contact-link-label">Instagram</span><span class="contact-link-val">@al_adhambinsinan</span></a>
+  <div class="contact-links" style="display:flex; flex-direction:column; gap:1.5rem;">
+    <a href="mailto:adam95darwesh@gmail.com" class="contact-link" style="display:flex; flex-direction:column; gap:4px; text-decoration:none; padding-bottom:1.5rem; border-bottom:0.5px solid var(--rule); transition:border-color 0.2s;">
+      <span class="contact-link-label" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); transition:color 0.3s ease;">Email</span>
+      <span class="contact-link-val" style="font-family:var(--serif); font-size:1.1rem; color:var(--text); font-weight:700; transition:color 0.2s;">adam95darwesh@gmail.com</span>
+    </a>
+    <a href="https://www.linkedin.com/in/aladham/" class="contact-link" target="_blank" style="display:flex; flex-direction:column; gap:4px; text-decoration:none; padding-bottom:1.5rem; border-bottom:0.5px solid var(--rule); transition:border-color 0.2s;">
+      <span class="contact-link-label" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); transition:color 0.3s ease;">LinkedIn</span>
+      <span class="contact-link-val" style="font-family:var(--serif); font-size:1.1rem; color:var(--text); font-weight:700; transition:color 0.2s;">in/aladham</span>
+    </a>
+    <a href="https://www.instagram.com/al_adhambinsinan/" class="contact-link" target="_blank" style="display:flex; flex-direction:column; gap:4px; text-decoration:none; padding-bottom:1.5rem; border-bottom:0.5px solid var(--rule); transition:border-color 0.2s;">
+      <span class="contact-link-label" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); transition:color 0.3s ease;">Instagram</span>
+      <span class="contact-link-val" style="font-family:var(--serif); font-size:1.1rem; color:var(--text); font-weight:700; transition:color 0.2s;">@al_adhambinsinan</span>
+    </a>
   </div>
 </section>
 
-<footer>
-  <span>Ad(h)am Sinan — Architecture, Art & Research</span>
-  <span>© 2025</span>
+<footer style="background:var(--bg); border-top:0.5px solid var(--rule); padding:1.5rem 3rem; display:flex; justify-content:space-between; align-items:center; transition:background 0.3s ease, border-color 0.3s ease;">
+  <span style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; transition:color 0.3s ease;">Ad(h)am Sinan — Architecture, Art & Research</span>
+  <span style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; transition:color 0.3s ease;">© 2025</span>
 </footer>
-
   <script>
-// ========== PROJECT DATA - EXACTLY FROM INDEX (28).HTML ==========
-function detectImageCount(projectSlug) {
-  return 6;
-}
+// ========== PROJECT DATA ==========
+function detectImageCount(projectSlug) { return 6; }
 
 function buildProjectsWithDynamicImages() {
   const baseProjects = [
-    { id: "01", title: "Spiral Spines", slug: "spiral_spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", 
-      tags: ["Ecological", "Vernacular"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber." },
-    { id: "02", title: "Woven Realities", slug: "woven_realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", 
-      tags: ["Vernacular", "Digital Fabrication"], fullDesc: "A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice." },
-    { id: "03", title: "The New Cairn", slug: "new_cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", 
-      tags: ["Post-Conflict", "Material Research"], fullDesc: "Research project proposing un-crushed demolition rubble as masonry units." },
-    { id: "04", title: "Carbonfloss", slug: "carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", 
-      tags: ["Speculative", "Ecological"], fullDesc: "A political statement against absurd reluctance policies." },
-    { id: "05", title: "OUROBOS", slug: "ourobos", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", 
-      tags: ["Material Research", "Digital Fabrication"], fullDesc: "Exploration of residual morphogenesis using AI-driven workflows." },
-    { id: "06", title: "Agropraxis", slug: "agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", 
-      tags: ["Ecological", "Collective Practice"], fullDesc: "Intersection of agriculture and architectural practice." },
-    { id: "07", title: "Medius paedagogicus", slug: "medius", year: "2022", subtitle: "Published in Dazeen", category: "education", 
-      tags: ["Pedagogy", "Vernacular"], fullDesc: "A prototype tracing character from Diola compounds in Senegal." },
-    { id: "08", title: "Soft Unsealing", slug: "soft_unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", 
-      tags: ["Collective Practice", "Installation"], fullDesc: "Exploring softening boundaries in urban contexts." },
-    { id: "09", title: "Old Airfield", slug: "old_airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", 
-      tags: ["Collective Practice", "Installation"], fullDesc: "Acoustic mirror cultural gateway exploring sound and spatial memory." },
-    { id: "10", title: "Enkidu", slug: "enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", 
-      tags: ["Vernacular", "Ecological"], fullDesc: "Reviving vernacular Palestinian architecture in Dier Ghassaneh." },
-    { id: "11", title: "Aura", slug: "aura", year: "2022", subtitle: "Folly Project", category: "art", 
-      tags: ["Installation", "Speculative"], fullDesc: "Exploring atmospheric qualities of architectural space." },
-    { id: "12", title: "Liberation Fronts", slug: "liberation_fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", 
-      tags: ["Political", "Speculative"], fullDesc: "Exploring liberation fronts as spatial and political constructs." },
-    { id: "13", title: "Regutting", slug: "regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", 
-      tags: ["Residency", "Installation"], fullDesc: "Returns and remains through film, photography, and installation." },
-    { id: "14", title: "Agential Cartographies", slug: "agential_cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", 
-      tags: ["Exhibition", "Political"], fullDesc: "Experimental mappings across three spatial typologies." },
-    { id: "15", title: "PhD Research", slug: "phd_research", year: "2024+", subtitle: "Die Angewandte", category: "education", 
-      tags: ["Material Research", "Pedagogy"], fullDesc: "Post-conflict material practice and rubble reuse." },
-    { id: "16", title: "Teaching at AAUP", slug: "teaching_aaup", year: "2025+", subtitle: "Arab American University", category: "education", 
-      tags: ["Pedagogy", "Vernacular"], fullDesc: "Faculty member at the Faculty of Architecture, AAUP, Palestine." }
+    { id: "01", title: "Spiral Spines", slug: "spiral_spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", tags: ["Ecological", "Vernacular"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber." },
+    { id: "02", title: "Woven Realities", slug: "woven_realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", tags: ["Vernacular", "Digital Fabrication"], fullDesc: "A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice." },
+    { id: "03", title: "The New Cairn", slug: "new_cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", tags: ["Post-Conflict", "Material Research"], fullDesc: "Research project proposing un-crushed demolition rubble as masonry units." },
+    { id: "04", title: "Carbonfloss", slug: "carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", tags: ["Speculative", "Ecological"], fullDesc: "A political statement against absurd reluctance policies." },
+    { id: "05", title: "OUROBOS", slug: "ourobos", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", tags: ["Material Research", "Digital Fabrication"], fullDesc: "Exploration of residual morphogenesis using AI-driven workflows." },
+    { id: "06", title: "Agropraxis", slug: "agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", tags: ["Ecological", "Collective Practice"], fullDesc: "Intersection of agriculture and architectural practice." },
+    { id: "07", title: "Medius paedagogicus", slug: "medius", year: "2022", subtitle: "Published in Dazeen", category: "education", tags: ["Pedagogy", "Vernacular"], fullDesc: "A prototype tracing character from Diola compounds in Senegal." },
+    { id: "08", title: "Soft Unsealing", slug: "soft_unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", tags: ["Collective Practice", "Installation"], fullDesc: "Exploring softening boundaries in urban contexts." },
+    { id: "09", title: "Old Airfield", slug: "old_airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", tags: ["Collective Practice", "Installation"], fullDesc: "Acoustic mirror cultural gateway exploring sound and spatial memory." },
+    { id: "10", title: "Enkidu", slug: "enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", tags: ["Vernacular", "Ecological"], fullDesc: "Reviving vernacular Palestinian architecture in Dier Ghassaneh." },
+    { id: "11", title: "Aura", slug: "aura", year: "2022", subtitle: "Folly Project", category: "art", tags: ["Installation", "Speculative"], fullDesc: "Exploring atmospheric qualities of architectural space." },
+    { id: "12", title: "Liberation Fronts", slug: "liberation_fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", tags: ["Political", "Speculative"], fullDesc: "Exploring liberation fronts as spatial and political constructs." },
+    { id: "13", title: "Regutting", slug: "regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", tags: ["Residency", "Installation"], fullDesc: "Returns and remains through film, photography, and installation." },
+    { id: "14", title: "Agential Cartographies", slug: "agential_cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", tags: ["Exhibition", "Political"], fullDesc: "Experimental mappings across three spatial typologies." },
+    { id: "15", title: "PhD Research", slug: "phd_research", year: "2024+", subtitle: "Die Angewandte", category: "education", tags: ["Material Research", "Pedagogy"], fullDesc: "Post-conflict material practice and rubble reuse." },
+    { id: "16", title: "Teaching at AAUP", slug: "teaching_aaup", year: "2025+", subtitle: "Arab American University", category: "education", tags: ["Pedagogy", "Vernacular"], fullDesc: "Faculty member at the Faculty of Architecture, AAUP, Palestine." }
   ];
-
   const allProjects = [];
   for (const project of baseProjects) {
     const imageCount = detectImageCount(project.slug);
     const images = [];
-    for (let i = 1; i <= imageCount; i++) {
-      images.push(`${project.slug}_${i}.jpg`);
-    }
+    for (let i = 1; i <= imageCount; i++) images.push(`${project.slug}_${i}.jpg`);
     allProjects.push({ ...project, images });
   }
   return allProjects;
@@ -1365,7 +844,7 @@ let autoPlayIntervals = {};
 let activeFloatingWindows = [];
 let previewTimeout = null;
 
-// ========== STICKY NOTE MANAGER CLASS - FULL VERSION FROM INDEX (28).HTML ==========
+// ========== STICKY NOTE MANAGER CLASS ==========
 class StickyNoteManager {
   constructor() {
     this.notes = [];
@@ -1380,14 +859,10 @@ class StickyNoteManager {
     const gridSize = 20;
     const snappedX = Math.round(x / gridSize) * gridSize;
     const snappedY = Math.round(y / gridSize) * gridSize;
-    
-    const cornerOffsets = [
-      { dx: 0, dy: 0 }, { dx: 140, dy: 0 }, { dx: 0, dy: 140 }, { dx: 140, dy: 140 }
-    ];
+    const cornerOffsets = [{ dx: 0, dy: 0 }, { dx: 140, dy: 0 }, { dx: 0, dy: 140 }, { dx: 140, dy: 140 }];
     const corner = cornerOffsets[Math.floor(Math.random() * cornerOffsets.length)];
     const finalX = snappedX + corner.dx;
     const finalY = snappedY + corner.dy;
-
     const note = document.createElement('div');
     note.className = 'sticky-note';
     note.setAttribute('data-project-idx', index);
@@ -1396,9 +871,7 @@ class StickyNoteManager {
     note.style.left = `${finalX}px`;
     note.style.top = `${finalY}px`;
     note.style.zIndex = noteZIndex++;
-    
     let currentImageIndex = restoreData ? restoreData.lastImageIndex : 0;
-
     note.innerHTML = `
       <div class="sticky-title">${project.id} · ${project.title}</div>
       <div class="sticky-subtitle">${project.subtitle} (${project.year})</div>
@@ -1408,25 +881,16 @@ class StickyNoteManager {
             ${project.images.map(img => `<div class="sticky-preview-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/200x100/f5f5f5/999?text=${project.title}'"></div>`).join('')}
           </div>
         </div>
-        <div class="sticky-preview-tags">
-          ${project.tags.slice(0,3).map(t => `<span class="sticky-preview-tag">${t}</span>`).join('')}
-        </div>
+        <div class="sticky-preview-tags">${project.tags.slice(0,3).map(t => `<span class="sticky-preview-tag">${t}</span>`).join('')}</div>
       </div>
       <img class="frozen-image" id="frozen-img-${project.id}" src="" style="display: none;">
-      <div class="sticky-note-controls">
-        <button class="minimize-note" title="Minimize">−</button>
-        <button class="close-note" title="Send to sidebar">✕</button>
-      </div>
+      <div class="sticky-note-controls"><button class="minimize-note" title="Minimize">−</button><button class="close-note" title="Send to sidebar">✕</button></div>
     `;
-    
     if (restoreData && restoreData.lastImageIndex !== undefined) {
       currentImageIndex = restoreData.lastImageIndex;
       const slidesContainer = note.querySelector(`#preview-${project.id}`);
-      if (slidesContainer) {
-        slidesContainer.style.transform = `translateX(-${currentImageIndex * 100}%)`;
-      }
+      if (slidesContainer) slidesContainer.style.transform = `translateX(-${currentImageIndex * 100}%)`;
     }
-
     note.addEventListener('mouseenter', () => {
       if (note.classList.contains('frozen')) return;
       if (previewTimeout) clearTimeout(previewTimeout);
@@ -1434,7 +898,6 @@ class StickyNoteManager {
       note.classList.add('preview-active');
       this.startAutoPlay(project.id, note);
     });
-
     note.addEventListener('mouseleave', () => {
       if (note.classList.contains('frozen')) return;
       previewTimeout = setTimeout(() => {
@@ -1442,7 +905,6 @@ class StickyNoteManager {
         this.stopAutoPlay(project.id);
       }, 300);
     });
-   
     note.addEventListener('click', (e) => {
       if (this.isDraggingNote) return;
       if (e.target.closest('.sticky-note-controls')) return;
@@ -1450,7 +912,6 @@ class StickyNoteManager {
       const rect = note.getBoundingClientRect();
       this.openFloatingWindow(project, rect.left, rect.top, note);
     });
-
     note.addEventListener('touchend', (e) => {
       if (this.isDraggingNote) return;
       if (e.target.closest('.sticky-note-controls')) return;
@@ -1459,7 +920,6 @@ class StickyNoteManager {
       const rect = note.getBoundingClientRect();
       this.openFloatingWindow(project, rect.left, rect.top, note);
     });
-
     const minimizeBtn = note.querySelector('.minimize-note');
     minimizeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1472,21 +932,17 @@ class StickyNoteManager {
         note.style.width = '120px';
       }
     });
-
     const closeBtn = note.querySelector('.close-note');
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      
       const rect = note.getBoundingClientRect();
       const scrollX = window.scrollX || window.pageXOffset;
       const scrollY = window.scrollY || window.pageYOffset;
       const absoluteLeft = rect.left + scrollX;
       const absoluteTop = rect.top + scrollY;
-      
       note.style.position = 'absolute';
       note.style.left = absoluteLeft + 'px';
       note.style.top = absoluteTop + 'px';
-      
       const slidesContainer = note.querySelector(`#preview-${project.id}`);
       let lastImageIndex = 0;
       if (slidesContainer) {
@@ -1497,7 +953,6 @@ class StickyNoteManager {
       this.freezeNote(note, project, lastImageIndex);
       this.addToSidebar(project, index, rect, lastImageIndex, note);
     });
-
     document.getElementById('stickyCanvas').appendChild(note);
     this.notes.push(note);
     return note;
@@ -1506,21 +961,17 @@ class StickyNoteManager {
   freezeNote(note, project, lastImageIndex) {
     const currentLeft = note.style.left;
     const currentTop = note.style.top;
-    
     note.classList.add('frozen');
     note.style.border = '1px dashed var(--accent) !important';
     note.style.boxShadow = 'none';
-    
     note.style.left = currentLeft;
     note.style.top = currentTop;
-    
     const previewDiv = note.querySelector('.sticky-preview');
     if (previewDiv) previewDiv.style.display = 'none';
     const controls = note.querySelector('.sticky-note-controls');
     if (controls) controls.style.display = 'none';
     const subtitle = note.querySelector('.sticky-subtitle');
     if (subtitle) subtitle.style.display = 'none';
-    
     const frozenImg = note.querySelector('.frozen-image');
     if (frozenImg) {
       frozenImg.style.display = 'block';
@@ -1530,16 +981,11 @@ class StickyNoteManager {
       frozenImg.src = `images/${project.images[lastImageIndex]}`;
       frozenImg.onerror = () => { frozenImg.src = 'https://placehold.co/200x80/f5f5f5/999?text=Image'; };
     }
-    
     const scaleOptions = [1, 1.5, 2, 2.5];
     const randomScale = scaleOptions[Math.floor(Math.random() * scaleOptions.length)];
     const baseWidth = 160;
     const newWidth = baseWidth * randomScale;
-    
-    if (frozenImg) {
-      frozenImg.style.height = (80 * randomScale) + 'px';
-    }
-    
+    if (frozenImg) frozenImg.style.height = (80 * randomScale) + 'px';
     note.style.width = newWidth + 'px';
     note.style.cursor = 'default';
     note.setAttribute('data-frozen', 'true');
@@ -1552,7 +998,6 @@ class StickyNoteManager {
     note.style.border = '';
     note.style.boxShadow = '';
     note.style.cursor = 'pointer';
-    
     const previewDiv = note.querySelector('.sticky-preview');
     if (previewDiv) previewDiv.style.display = '';
     const controls = note.querySelector('.sticky-note-controls');
@@ -1564,13 +1009,9 @@ class StickyNoteManager {
       frozenImg.style.display = 'none';
       frozenImg.style.height = '80px';
     }
-    
     const lastIndex = parseInt(note.getAttribute('data-last-image-index')) || 0;
     const slidesContainer = note.querySelector(`#preview-${project.id}`);
-    if (slidesContainer) {
-      slidesContainer.style.transform = `translateX(-${lastIndex * 100}%)`;
-    }
-    
+    if (slidesContainer) slidesContainer.style.transform = `translateX(-${lastIndex * 100}%)`;
     note.removeAttribute('data-frozen');
     note.removeAttribute('data-frozen-scale');
     note.style.width = '160px';
@@ -1581,23 +1022,16 @@ class StickyNoteManager {
     if (!slidesContainer) return;
     const slideCount = slidesContainer.children.length;
     if (slideCount <= 1) return;
-    
-    if (autoPlayIntervals[projectId]) {
-      clearInterval(autoPlayIntervals[projectId]);
-      delete autoPlayIntervals[projectId];
-    }
-    
+    if (autoPlayIntervals[projectId]) clearInterval(autoPlayIntervals[projectId]);
     let currentIndex = 0;
     const transform = slidesContainer.style.transform;
     if (transform && transform !== 'none') {
       const match = transform.match(/translateX\(-([0-9]+)%/);
       if (match) currentIndex = parseInt(match[1]) / 100;
     }
-    
     autoPlayIntervals[projectId] = setInterval(() => {
       if (note.classList && note.classList.contains('frozen')) return;
       if (!note.classList.contains('preview-active')) return;
-      
       currentIndex = (currentIndex + 1) % slideCount;
       slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
       note.setAttribute('data-last-image-index', currentIndex);
@@ -1605,16 +1039,12 @@ class StickyNoteManager {
   }
 
   stopAutoPlay(projectId) {
-    if (autoPlayIntervals[projectId]) {
-      clearInterval(autoPlayIntervals[projectId]);
-      delete autoPlayIntervals[projectId];
-    }
+    if (autoPlayIntervals[projectId]) { clearInterval(autoPlayIntervals[projectId]); delete autoPlayIntervals[projectId]; }
   }
     makeDraggable(element, project) {
     let isDragging = false;
     let startX, startY, startLeft, startTop;
     let touchStartX, touchStartY;
-
     element.addEventListener('mousedown', (e) => {
       if (e.target.closest('.sticky-note-controls')) return;
       if (element.classList.contains('frozen')) return;
@@ -1628,7 +1058,6 @@ class StickyNoteManager {
       element.style.cursor = 'grabbing';
       e.preventDefault();
     });
-
     element.addEventListener('touchstart', (e) => {
       if (e.target.closest('.sticky-note-controls')) return;
       if (element.classList.contains('frozen')) return;
@@ -1643,31 +1072,23 @@ class StickyNoteManager {
       element.style.zIndex = 9998;
       element.style.cursor = 'grabbing';
     });
-
     const onMouseMove = (e) => {
       if (!isDragging) return;
       const container = document.getElementById('stickyCanvas');
       const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
       const maxX = containerWidth - element.offsetWidth - 10;
       const minX = 10;
-      
       let newLeft = startLeft + (e.clientX - startX);
       let newTop = startTop + (e.clientY - startY);
-      
       newLeft = Math.max(minX, Math.min(newLeft, maxX));
-      
       const containerRect = container ? container.getBoundingClientRect() : null;
       let maxTop = window.innerHeight - 150;
-      if (containerRect) {
-        maxTop = containerRect.bottom - element.offsetHeight - 60;
-      }
+      if (containerRect) maxTop = containerRect.bottom - element.offsetHeight - 60;
       newTop = Math.max(60, Math.min(newTop, maxTop));
-      
       element.style.left = `${newLeft}px`;
       element.style.top = `${newTop}px`;
       this.updateConnectorLineForNote(element);
     };
-    
     const onTouchMove = (e) => {
       if (!isDragging) return;
       e.preventDefault();
@@ -1675,34 +1096,19 @@ class StickyNoteManager {
       const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
       const maxX = containerWidth - element.offsetWidth - 10;
       const minX = 10;
-      
       const touch = e.touches[0];
       let newLeft = startLeft + (touch.clientX - touchStartX);
       let newTop = startTop + (touch.clientY - touchStartY);
-      
       newLeft = Math.max(minX, Math.min(newLeft, maxX));
-      
       const canvas = document.getElementById('stickyCanvas');
       const canvasMaxY = canvas ? canvas.offsetHeight - 180 : window.innerHeight - 200;
       newTop = Math.max(60, Math.min(newTop, canvasMaxY));
-      
       element.style.left = `${newLeft}px`;
       element.style.top = `${newTop}px`;
       this.updateConnectorLineForNote(element);
     };
-    
-    const onMouseUp = () => {
-      isDragging = false;
-      element.style.cursor = '';
-      setTimeout(() => { this.isDraggingNote = false; }, 50);
-    };
-    
-    const onTouchEnd = () => {
-      isDragging = false;
-      element.style.cursor = '';
-      setTimeout(() => { this.isDraggingNote = false; }, 50);
-    };
-    
+    const onMouseUp = () => { isDragging = false; element.style.cursor = ''; setTimeout(() => { this.isDraggingNote = false; }, 50); };
+    const onTouchEnd = () => { isDragging = false; element.style.cursor = ''; setTimeout(() => { this.isDraggingNote = false; }, 50); };
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
     document.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -1728,19 +1134,15 @@ class StickyNoteManager {
   drawLightConnectorLineFromNoteToTab(projectId, noteRect, tab) {
     const svg = document.getElementById('connectorSvg');
     const tabRect = tab.getBoundingClientRect();
-    
     const startX = noteRect.right;
     const startY = noteRect.top + noteRect.height / 2;
     const endX = tabRect.left;
     const endY = tabRect.top + tabRect.height / 2;
-    
     const existingLine = document.getElementById(`connector-${projectId}`);
     if (existingLine) existingLine.remove();
-    
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.id = `connector-${projectId}`;
     path.setAttribute('class', 'connector-line-tab');
-    
     const midX = startX + (endX - startX) * 0.3;
     const d = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
     path.setAttribute('d', d);
@@ -1755,11 +1157,9 @@ class StickyNoteManager {
       const svg = document.getElementById('connectorSvg');
       const existingLine = document.getElementById(`connector-window-${projectId}`);
       if (existingLine) existingLine.remove();
-      
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.id = `connector-window-${projectId}`;
       path.setAttribute('class', 'connector-line-tab');
-      
       const startX = winRect.right;
       const startY = winRect.top + winRect.height / 2;
       const endX = tabRect.left;
@@ -1778,172 +1178,92 @@ class StickyNoteManager {
 
   openFloatingWindow(project, clickX, clickY, note) {
     if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
-    
     const win = document.createElement('div');
     win.className = 'floating-window';
     win.setAttribute('data-id', project.id);
-    
     const rect = note.getBoundingClientRect();
     win.style.left = rect.left + 'px';
     win.style.top = rect.top + 'px';
     win.style.width = '500px';
     win.style.height = 'auto';
-    
     win.innerHTML = `
-      <div class="window-header">
-        <h3>${project.id} · ${project.title}</h3>
-        <div class="window-header-right">
-          <button class="window-minimize" title="Minimize">−</button>
-          <button class="window-close" title="Close">✕</button>
+      <div class="window-header" style="background:var(--accent); color:white; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; font-weight:500; border-radius:8px 8px 0 0;">
+        <h3 style="margin:0; font-size:0.85rem;">${project.id} · ${project.title}</h3>
+        <div class="window-header-right" style="display:flex; align-items:center;">
+          <button class="window-minimize" style="background:rgba(255,255,255,0.2); border:none; color:white; font-size:1rem; cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:4px; margin-right:8px;">−</button>
+          <button class="window-close" style="background:rgba(255,255,255,0.2); border:none; color:white; font-size:1rem; cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:4px;">✕</button>
         </div>
       </div>
-      <div class="window-body">
-        <div class="window-carousel">
-          <div class="window-slides" id="window-slides-${project.id}" style="display:flex;">
-            ${project.images.map(img => `<div class="window-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/500x280/f5f5f5/999?text=${encodeURIComponent(project.title)}'"></div>`).join('')}
+      <div class="window-body" style="flex:1; padding:1rem; overflow-y:auto; display:flex; flex-direction:column; gap:0.8rem; background:var(--modal-bg); color:var(--text);">
+        <div class="window-carousel" style="position:relative; width:100%; overflow:hidden; border-radius:8px; background:#f5f5f5;">
+          <div class="window-slides" id="window-slides-${project.id}" style="display:flex; transition:transform 0.3s ease;">
+            ${project.images.map(img => `<div class="window-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/500x280/f5f5f5/999?text=${encodeURIComponent(project.title)}'" style="width:100%; height:auto; max-height:280px; object-fit:contain; background:#f5f5f5;"></div>`).join('')}
           </div>
           <button class="window-prev" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; z-index:10;">‹</button>
           <button class="window-next" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; z-index:10;">›</button>
         </div>
-        <div class="window-tags">${project.tags.map(t => `<span class="window-tag">${t}</span>`).join('')}</div>
+        <div class="window-tags" style="display:flex; flex-wrap:wrap; gap:6px;">${project.tags.map(t => `<span class="window-tag" style="font-size:0.6rem; padding:4px 10px; background:var(--accent); color:white; border-radius:20px;">${t}</span>`).join('')}</div>
         <div style="color: var(--accent); font-style: italic; font-size: 0.75rem;">${project.subtitle} (${project.year})</div>
         <div style="font-size: 0.8rem; line-height: 1.5; color: var(--muted);">${project.fullDesc}</div>
       </div>
     `;
-    
     document.body.appendChild(win);
     activeFloatingWindows.push(win);
-    
     const projectId = project.id;
     const tab = document.getElementById(`tab-${projectId}`);
     if (tab) this.updateConnectorLineForWindow(win, projectId, tab);
-    
     const handles = ['top', 'right', 'bottom', 'left', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
     handles.forEach(handle => {
       const div = document.createElement('div');
       div.className = `resize-handle resize-${handle}`;
       win.appendChild(div);
-      
       div.addEventListener('mousedown', (e) => {
         e.stopPropagation();
         e.preventDefault();
-        
         const startX = e.clientX;
         const startY = e.clientY;
         const startWidth = win.offsetWidth;
         const startHeight = win.offsetHeight;
         const startLeft = win.offsetLeft;
         const startTop = win.offsetTop;
-        
         const onMouseMove = (moveEvent) => {
           const dx = moveEvent.clientX - startX;
           const dy = moveEvent.clientY - startY;
           if (handle.includes('right')) win.style.width = Math.max(300, startWidth + dx) + 'px';
-          if (handle.includes('left')) {
-            win.style.width = Math.max(300, startWidth - dx) + 'px';
-            win.style.left = startLeft + dx + 'px';
-          }
+          if (handle.includes('left')) { win.style.width = Math.max(300, startWidth - dx) + 'px'; win.style.left = startLeft + dx + 'px'; }
           if (handle.includes('bottom')) win.style.height = Math.max(200, startHeight + dy) + 'px';
-          if (handle.includes('top')) {
-            win.style.height = Math.max(200, startHeight - dy) + 'px';
-            win.style.top = startTop + dy + 'px';
-          }
+          if (handle.includes('top')) { win.style.height = Math.max(200, startHeight - dy) + 'px'; win.style.top = startTop + dy + 'px'; }
         };
-        
-        const onMouseUp = () => {
-          document.removeEventListener('mousemove', onMouseMove);
-          document.removeEventListener('mouseup', onMouseUp);
-        };
-        
+        const onMouseUp = () => { document.removeEventListener('mousemove', onMouseMove); document.removeEventListener('mouseup', onMouseUp); };
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
       });
     });
-    
     let winCurrentIndex = 0;
     const winSlides = win.querySelector('.window-slides');
     const winSlideCount = project.images.length;
     const winPrevBtn = win.querySelector('.window-prev');
     const winNextBtn = win.querySelector('.window-next');
-    
-    winPrevBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      winCurrentIndex = Math.max(0, winCurrentIndex - 1);
-      winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`;
-    });
-    
-    winNextBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      winCurrentIndex = Math.min(winSlideCount - 1, winCurrentIndex + 1);
-      winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`;
-    });
-    
+    winPrevBtn.addEventListener('click', (e) => { e.stopPropagation(); winCurrentIndex = Math.max(0, winCurrentIndex - 1); winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`; });
+    winNextBtn.addEventListener('click', (e) => { e.stopPropagation(); winCurrentIndex = Math.min(winSlideCount - 1, winCurrentIndex + 1); winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`; });
     let isDragging = false;
     let dragStartX, dragStartY, startLeft, startTop;
     let rafId = null;
-    
     win.addEventListener('mousedown', (e) => {
-      if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize') ||
-          e.target.classList.contains('window-prev') || e.target.classList.contains('window-next') ||
-          e.target.classList.contains('resize-handle')) return;
-      isDragging = true;
-      dragStartX = e.clientX;
-      dragStartY = e.clientY;
-      startLeft = win.offsetLeft;
-      startTop = win.offsetTop;
-      win.style.zIndex = 30000 + activeFloatingWindows.length;
-      e.preventDefault();
+      if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize') || e.target.classList.contains('window-prev') || e.target.classList.contains('window-next') || e.target.classList.contains('resize-handle')) return;
+      isDragging = true; dragStartX = e.clientX; dragStartY = e.clientY; startLeft = win.offsetLeft; startTop = win.offsetTop; win.style.zIndex = 30000 + activeFloatingWindows.length; e.preventDefault();
     });
-    
     win.addEventListener('touchstart', (e) => {
-      if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize') ||
-          e.target.classList.contains('window-prev') || e.target.classList.contains('window-next') ||
-          e.target.classList.contains('resize-handle')) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      isDragging = true;
-      dragStartX = touch.clientX;
-      dragStartY = touch.clientY;
-      startLeft = win.offsetLeft;
-      startTop = win.offsetTop;
-      win.style.zIndex = 30000 + activeFloatingWindows.length;
+      if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize') || e.target.classList.contains('window-prev') || e.target.classList.contains('window-next') || e.target.classList.contains('resize-handle')) return;
+      e.preventDefault(); const touch = e.touches[0]; isDragging = true; dragStartX = touch.clientX; dragStartY = touch.clientY; startLeft = win.offsetLeft; startTop = win.offsetTop; win.style.zIndex = 30000 + activeFloatingWindows.length;
     });
-    
-    const onWinMouseMove = (e) => {
-      if (!isDragging) return;
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        win.style.left = (startLeft + (e.clientX - dragStartX)) + 'px';
-        win.style.top = (startTop + (e.clientY - dragStartY)) + 'px';
-        this.updateConnectorLineForWindow(win, project.id);
-        rafId = null;
-      });
-    };
-    
-    const onWinTouchMove = (e) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const touch = e.touches[0];
-        win.style.left = (startLeft + (touch.clientX - dragStartX)) + 'px';
-        win.style.top = (startTop + (touch.clientY - dragStartY)) + 'px';
-        this.updateConnectorLineForWindow(win, project.id);
-        rafId = null;
-      });
-    };
-    
-    const onWinMouseUp = () => {
-      isDragging = false;
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = null;
-    };
-    
+    const onWinMouseMove = (e) => { if (!isDragging) return; if (rafId) cancelAnimationFrame(rafId); rafId = requestAnimationFrame(() => { win.style.left = (startLeft + (e.clientX - dragStartX)) + 'px'; win.style.top = (startTop + (e.clientY - dragStartY)) + 'px'; this.updateConnectorLineForWindow(win, project.id); rafId = null; }); };
+    const onWinTouchMove = (e) => { if (!isDragging) return; e.preventDefault(); if (rafId) cancelAnimationFrame(rafId); rafId = requestAnimationFrame(() => { const touch = e.touches[0]; win.style.left = (startLeft + (touch.clientX - dragStartX)) + 'px'; win.style.top = (startTop + (touch.clientY - dragStartY)) + 'px'; this.updateConnectorLineForWindow(win, project.id); rafId = null; }); };
+    const onWinMouseUp = () => { isDragging = false; if (rafId) cancelAnimationFrame(rafId); rafId = null; };
     document.addEventListener('mousemove', onWinMouseMove);
     document.addEventListener('mouseup', onWinMouseUp);
     document.addEventListener('touchmove', onWinTouchMove, { passive: false });
     document.addEventListener('touchend', onWinMouseUp);
-    
     win.querySelector('.window-minimize').addEventListener('click', () => {
       const noteEl = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
       if (noteEl && !noteEl.classList.contains('frozen')) {
@@ -1954,79 +1274,36 @@ class StickyNoteManager {
         win.style.width = noteRect.width + 'px';
         win.style.height = noteRect.height + 'px';
         win.style.opacity = '0';
-        setTimeout(() => {
-          win.remove();
-          activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
-          noteEl.style.transform = 'scale(1.02)';
-          setTimeout(() => { noteEl.style.transform = ''; }, 300);
-        }, 500);
-      } else {
-        win.remove();
-        activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
-      }
+        setTimeout(() => { win.remove(); activeFloatingWindows = activeFloatingWindows.filter(w => w !== win); noteEl.style.transform = 'scale(1.02)'; setTimeout(() => { noteEl.style.transform = ''; }, 300); }, 500);
+      } else { win.remove(); activeFloatingWindows = activeFloatingWindows.filter(w => w !== win); }
     });
-    
-    win.querySelector('.window-close').addEventListener('click', () => {
-      this.removeWindowConnector(project.id);
-      win.remove();
-      activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
-    });
-    
-    setTimeout(() => {
-      win.style.width = 'auto';
-      win.style.height = 'auto';
-    }, 10);
+    win.querySelector('.window-close').addEventListener('click', () => { this.removeWindowConnector(project.id); win.remove(); activeFloatingWindows = activeFloatingWindows.filter(w => w !== win); });
+    setTimeout(() => { win.style.width = 'auto'; win.style.height = 'auto'; }, 10);
   }
 
   addToSidebar(project, index, noteRect, lastImageIndex, noteElement) {
     const sidebar = document.getElementById('sidebarTabs');
     const existingTab = document.getElementById(`tab-${project.id}`);
     if (existingTab) return;
-
     const tab = document.createElement('div');
     tab.className = 'sidebar-tab';
     tab.id = `tab-${project.id}`;
     tab.setAttribute('data-project-id', project.id);
     tab.setAttribute('data-category', project.category);
     tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
-
     this.noteTabConnections.set(project.id, { tab, noteRect, lastImageIndex, noteElement });
     this.drawLightConnectorLineFromNoteToTab(project.id, noteRect, tab);
-    
     tab.addEventListener('click', () => {
       this.removeWindowConnector(project.id);
-      if (noteElement && noteElement.parentNode) {
-        this.unfreezeNote(noteElement, project, index);
-        const connectorLine = document.getElementById(`connector-${project.id}`);
-        if (connectorLine) connectorLine.remove();
-        this.noteTabConnections.delete(project.id);
-      } else {
-        const x = noteRect.left;
-        const y = noteRect.top;
-        this.createNote(project, index, x, y, { lastImageIndex: lastImageIndex || 0 });
-        const connectorLine = document.getElementById(`connector-${project.id}`);
-        if (connectorLine) connectorLine.remove();
-        this.noteTabConnections.delete(project.id);
-      }
-      tab.remove();
-      this.tabs = this.tabs.filter(t => t !== tab);
-      if (tab.categoryObserver) tab.categoryObserver.disconnect();
+      if (noteElement && noteElement.parentNode) { this.unfreezeNote(noteElement, project, index); const connectorLine = document.getElementById(`connector-${project.id}`); if (connectorLine) connectorLine.remove(); this.noteTabConnections.delete(project.id); }
+      else { const x = noteRect.left; const y = noteRect.top; this.createNote(project, index, x, y, { lastImageIndex: lastImageIndex || 0 }); const connectorLine = document.getElementById(`connector-${project.id}`); if (connectorLine) connectorLine.remove(); this.noteTabConnections.delete(project.id); }
+      tab.remove(); this.tabs = this.tabs.filter(t => t !== tab); if (tab.categoryObserver) tab.categoryObserver.disconnect();
     });
-    
-    const observeCategoryChange = () => {
-      const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all';
-      if (activeCategory === 'all' || project.category === activeCategory) {
-        tab.classList.remove('highlight');
-      } else {
-        tab.classList.add('highlight');
-      }
-    };
-    
+    const observeCategoryChange = () => { const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all'; if (activeCategory === 'all' || project.category === activeCategory) tab.classList.remove('highlight'); else tab.classList.add('highlight'); };
     const categoryObserver = new MutationObserver(observeCategoryChange);
     const categoryContainer = document.getElementById('categoryFilters');
     categoryObserver.observe(categoryContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
     tab.categoryObserver = categoryObserver;
-
     sidebar.appendChild(tab);
     this.tabs.push(tab);
     this.closedProjects.set(project.id, { project, index, noteRect, lastImageIndex, noteElement });
@@ -2035,32 +1312,24 @@ class StickyNoteManager {
     const sidebar = document.getElementById('sidebarTabs');
     const existingTab = document.getElementById(`tab-${project.id}`);
     if (existingTab) return;
-
     const tab = document.createElement('div');
     tab.className = 'sidebar-tab';
     tab.id = `tab-${project.id}`;
     tab.setAttribute('data-project-id', project.id);
     tab.setAttribute('data-category', project.category);
     tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
-    
     tab.setAttribute('data-saved-left', savedLeft);
     tab.setAttribute('data-saved-top', savedTop);
     tab.setAttribute('data-saved-image-index', lastImageIndex);
     tab.setAttribute('data-project-index', index);
-
     tab.addEventListener('click', () => {
       const restoreLeft = parseFloat(tab.getAttribute('data-saved-left'));
       const restoreTop = parseFloat(tab.getAttribute('data-saved-top'));
       const restoreImageIndex = parseInt(tab.getAttribute('data-saved-image-index')) || 0;
       const projectIndex = parseInt(tab.getAttribute('data-project-index'));
       const originalProject = allProjects[projectIndex];
-      
       const newNote = this.createNote(originalProject, projectIndex, restoreLeft, restoreTop, { lastImageIndex: restoreImageIndex });
-      if (newNote) {
-        this.makeDraggable(newNote, originalProject);
-        this.notes.push(newNote);
-      }
-      
+      if (newNote) { this.makeDraggable(newNote, originalProject); this.notes.push(newNote); }
       const connectorLine = document.getElementById(`connector-${project.id}`);
       if (connectorLine) connectorLine.remove();
       tab.remove();
@@ -2068,21 +1337,11 @@ class StickyNoteManager {
       if (tab.categoryObserver) tab.categoryObserver.disconnect();
       this.noteTabConnections.delete(project.id);
     });
-
-    const observeCategoryChange = () => {
-      const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all';
-      if (activeCategory === 'all' || project.category === activeCategory) {
-        tab.classList.remove('highlight');
-      } else {
-        tab.classList.add('highlight');
-      }
-    };
-    
+    const observeCategoryChange = () => { const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all'; if (activeCategory === 'all' || project.category === activeCategory) tab.classList.remove('highlight'); else tab.classList.add('highlight'); };
     const categoryObserver = new MutationObserver(observeCategoryChange);
     const categoryContainer = document.getElementById('categoryFilters');
     categoryObserver.observe(categoryContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
     tab.categoryObserver = categoryObserver;
-
     sidebar.appendChild(tab);
     this.tabs.push(tab);
     this.closedProjects.set(project.id, { project, index, noteRect: { left: savedLeft, top: savedTop }, lastImageIndex, noteElement });
@@ -2091,9 +1350,7 @@ class StickyNoteManager {
   updateAllConnectorLines() {
     this.noteTabConnections.forEach((value, projectId) => {
       const tab = document.getElementById(`tab-${projectId}`);
-      if (tab && value.noteRect) {
-        this.drawLightConnectorLineFromNoteToTab(projectId, value.noteRect, tab);
-      }
+      if (tab && value.noteRect) this.drawLightConnectorLineFromNoteToTab(projectId, value.noteRect, tab);
     });
   }
 
@@ -2118,40 +1375,26 @@ class StickyNoteManager {
     const startX = 30;
     const startY = 80;
     const cols = Math.floor((containerWidth - 60) / gridSize);
-    
     const visibleNotes = this.notes.filter(note => note.style.display !== 'none');
-    
     visibleNotes.forEach((note, i) => {
       const row = Math.floor(i / cols);
       const col = i % cols;
       const targetX = startX + (col * gridSize);
       const targetY = startY + (row * gridSize);
-      
       note.style.transition = 'left 0.4s cubic-bezier(0.4, 0, 0.2, 1), top 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
       note.style.left = targetX + 'px';
       note.style.top = targetY + 'px';
-      
-      setTimeout(() => {
-        note.style.transition = '';
-      }, 400);
-      
+      setTimeout(() => { note.style.transition = ''; }, 400);
       this.updateConnectorLineForNote(note);
     });
   }
 
   highlightByCategory(category) {
-    if (category === 'all') {
-      this.notes.forEach(n => n.classList.remove('blurred', 'highlight'));
-      this.tabs.forEach(t => t.classList.remove('highlight'));
-      return;
-    }
+    if (category === 'all') { this.notes.forEach(n => n.classList.remove('blurred', 'highlight')); this.tabs.forEach(t => t.classList.remove('highlight')); return; }
     this.notes.forEach(note => {
       const cat = note.getAttribute('data-category');
-      if (cat === category) {
-        note.classList.add('highlight'); note.classList.remove('blurred');
-      } else if (this.currentCategory === 'all') {
-        note.classList.add('blurred'); note.classList.remove('highlight');
-      }
+      if (cat === category) { note.classList.add('highlight'); note.classList.remove('blurred'); }
+      else if (this.currentCategory === 'all') { note.classList.add('blurred'); note.classList.remove('highlight'); }
     });
     this.tabs.forEach(tab => {
       const cat = tab.getAttribute('data-category');
@@ -2196,20 +1439,16 @@ class StickyNoteManager {
 
   closeAllNotes() {
     const notesToClose = [...this.notes];
-    
     notesToClose.forEach((note) => {
       if (note.classList.contains('frozen')) return;
-      
       const projectId = note.getAttribute('data-project-id');
       const project = allProjects.find(p => p.id === projectId);
       const index = parseInt(note.getAttribute('data-project-idx'));
-      
       const rect = note.getBoundingClientRect();
       const scrollX = window.scrollX || window.pageXOffset;
       const scrollY = window.scrollY || window.pageYOffset;
       const absoluteLeft = rect.left + scrollX;
       const absoluteTop = rect.top + scrollY;
-      
       const slidesContainer = note.querySelector(`#preview-${projectId}`);
       let lastImageIndex = 0;
       if (slidesContainer) {
@@ -2217,46 +1456,25 @@ class StickyNoteManager {
         const match = transform.match(/translateX\(-([0-9]+)%/);
         if (match) lastImageIndex = parseInt(match[1]) / 100;
       }
-      
       note.setAttribute('data-stored-left', absoluteLeft);
       note.setAttribute('data-stored-top', absoluteTop);
       note.setAttribute('data-stored-image-index', lastImageIndex);
-      
       this.addToSidebarWithPosition(project, index, absoluteLeft, absoluteTop, lastImageIndex, note);
-      
       note.remove();
     });
-    
     this.notes = [];
   }
 
-  hideAllLines() {
-    const svg = document.getElementById('connectorSvg');
-    svg.style.display = 'none';
-  }
-
-  showAllLines() {
-    const svg = document.getElementById('connectorSvg');
-    svg.style.display = 'block';
-    this.updateAllConnectorLines();
-    activeFloatingWindows.forEach(win => {
-      const projectId = win.getAttribute('data-id');
-      const tab = document.getElementById(`tab-${projectId}`);
-      if (tab) this.updateConnectorLineForWindow(win, projectId, tab);
-    });
-  }
+  hideAllLines() { const svg = document.getElementById('connectorSvg'); svg.style.display = 'none'; }
+  showAllLines() { const svg = document.getElementById('connectorSvg'); svg.style.display = 'block'; this.updateAllConnectorLines(); activeFloatingWindows.forEach(win => { const projectId = win.getAttribute('data-id'); const tab = document.getElementById(`tab-${projectId}`); if (tab) this.updateConnectorLineForWindow(win, projectId, tab); }); }
 }
 
 let manager;
-
-// ========== TAG FUNCTIONS ==========
+    
+  // ========== TAG FUNCTIONS ==========
 function createTagFilters() {
   const tagsBar = document.getElementById('canvasTagsBar');
-  const consolidatedTags = [
-    "Ecological", "Vernacular", "Digital Fabrication", "Post-Conflict", 
-    "Material Research", "Speculative", "Collective Practice", "Pedagogy", 
-    "Installation", "Political", "Residency", "Exhibition"
-  ];
+  const consolidatedTags = ["Ecological", "Vernacular", "Digital Fabrication", "Post-Conflict", "Material Research", "Speculative", "Collective Practice", "Pedagogy", "Installation", "Political", "Residency", "Exhibition"];
   tagsBar.innerHTML = '';
   consolidatedTags.forEach(tag => {
     const tagEl = document.createElement('div');
@@ -2279,127 +1497,47 @@ function showProjectsByTag(tag) {
   projects.forEach(project => {
     const card = document.createElement('div');
     card.className = 'result-card';
-    card.innerHTML = `
-      <div class="card-title">${project.id} · ${project.title}</div>
-      <div class="card-subtitle">${project.subtitle} (${project.year})</div>
-      <div class="card-tags">${project.tags.map(t => `<span style="background:var(--accent); color:white; padding:2px 8px; border-radius:12px; font-size:0.5rem;">${t}</span>`).join('')}</div>
-    `;
-    card.addEventListener('click', () => { 
-      closeResultsModal(); 
-      if (manager) {
-        const rect = card.getBoundingClientRect();
-        manager.openFloatingWindow(project, rect.left, rect.top);
-      }
-    });
+    card.style.background = 'var(--card-bg)';
+    card.style.border = '1px solid var(--rule)';
+    card.style.borderRadius = '8px';
+    card.style.padding = '0.8rem';
+    card.style.cursor = 'pointer';
+    card.style.transition = 'all 0.2s';
+    card.style.color = 'var(--text)';
+    card.innerHTML = `<div style="font-weight:bold;">${project.id} · ${project.title}</div><div style="font-size:0.8rem;">${project.subtitle} (${project.year})</div><div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;">${project.tags.map(t => `<span style="background:var(--accent); color:white; padding:2px 8px; border-radius:12px; font-size:0.5rem;">${t}</span>`).join('')}</div>`;
+    card.addEventListener('click', () => { closeResultsModal(); if (manager) { const rect = card.getBoundingClientRect(); manager.openFloatingWindow(project, rect.left, rect.top); } });
     resultsGrid.appendChild(card);
   });
   document.getElementById('resultsModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
 
-function closeResultsModal() {
-  document.getElementById('resultsModal').style.display = 'none';
-  document.body.style.overflow = 'auto';
-}
+function closeResultsModal() { document.getElementById('resultsModal').style.display = 'none'; document.body.style.overflow = 'auto'; }
 
 // ========== SPLIT VIEW FUNCTIONS ==========
 function openSplitViewForProject(index) {
   const project = allProjects[index];
   const splitView = document.getElementById('splitView');
-  splitView.innerHTML = `
-    <div class="split-pane">
-      <div style="background: var(--accent); padding: 0.8rem; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between;">
-        <h3 style="color: white; margin: 0; font-size: 0.7rem;">${project.id} · ${project.title}</h3>
-        <button onclick="closeSplitModal()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
-      </div>
-      <div style="padding: 1rem; overflow-y: auto; flex: 1;">
-        <div class="project-modal-carousel" style="position: relative;">
-          <div class="project-modal-slides" id="splitCarousel" style="display: flex; transition: transform 0.3s ease; overflow: hidden;">
-            ${project.images.map(img => `<div class="project-modal-slide" style="min-width: 100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'" style="width: 100%; height: auto; max-height: 400px; object-fit: contain; background: #f5f5f5;"></div>`).join('')}
-          </div>
-          <button class="project-modal-btn project-modal-prev" onclick="splitPrev()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">‹</button>
-          <button class="project-modal-btn project-modal-next" onclick="splitNext()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">›</button>
-        </div>
-        <div class="project-modal-tags" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">${project.tags.map(t => `<span style="background: var(--accent); color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.6rem;">${t}</span>`).join('')}</div>
-        <div class="project-modal-subtitle" style="color: var(--accent); font-style: italic; margin-top: 0.5rem;">${project.subtitle} (${project.year})</div>
-        <div class="project-modal-desc" style="margin-top: 1rem; font-size: 0.8rem; line-height: 1.5;">${project.fullDesc}</div>
-      </div>
-    </div>
-    <div class="split-pane" id="secondPane">
-      <div style="background: #ddd; padding: 0.8rem; border-radius: 12px 12px 0 0; text-align: center;">
-        <h3 style="color: #333; margin: 0; font-size: 0.7rem;">Select a project to compare</h3>
-      </div>
-      <div style="padding: 1rem; overflow-y: auto; flex: 1;">
-        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
-          ${allProjects.filter(p => p.id !== project.id).map(p => `
-            <div class="result-card" onclick="loadCompareProject(${allProjects.findIndex(proj => proj.id === p.id)})">
-              <div class="card-title">${p.id} · ${p.title}</div>
-              <div class="card-subtitle">${p.subtitle} (${p.year})</div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    </div>
-  `;
+  splitView.innerHTML = `<div class="split-pane" style="flex:1; background:var(--modal-bg); border-radius:12px; display:flex; flex-direction:column; border:1px solid var(--rule); overflow:hidden;"><div style="background:var(--accent); padding:0.8rem; border-radius:12px 12px 0 0; display:flex; justify-content:space-between;"><h3 style="color:white; margin:0; font-size:0.7rem;">${project.id} · ${project.title}</h3><button onclick="closeSplitModal()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">✕</button></div><div style="padding:1rem; overflow-y:auto; flex:1;"><div class="project-modal-carousel" style="position:relative;"><div class="project-modal-slides" id="splitCarousel" style="display:flex; transition:transform 0.3s ease; overflow:hidden;">${project.images.map(img => `<div class="project-modal-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'" style="width:100%; height:auto; max-height:400px; object-fit:contain; background:#f5f5f5;"></div>`).join('')}</div><button class="project-modal-btn project-modal-prev" onclick="splitPrev()" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer;">‹</button><button class="project-modal-btn project-modal-next" onclick="splitNext()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer;">›</button></div><div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem;">${project.tags.map(t => `<span style="background:var(--accent); color:white; padding:0.2rem 0.6rem; border-radius:12px; font-size:0.6rem;">${t}</span>`).join('')}</div><div style="color:var(--accent); font-style:italic; margin-top:0.5rem;">${project.subtitle} (${project.year})</div><div style="margin-top:1rem; font-size:0.8rem; line-height:1.5;">${project.fullDesc}</div></div></div><div class="split-pane" id="secondPane" style="flex:1; background:var(--modal-bg); border-radius:12px; display:flex; flex-direction:column; border:1px solid var(--rule); overflow:hidden;"><div style="background:#ddd; padding:0.8rem; border-radius:12px 12px 0 0; text-align:center;"><h3 style="color:#333; margin:0; font-size:0.7rem;">Select a project to compare</h3></div><div style="padding:1rem; overflow-y:auto; flex:1;"><div style="display:flex; flex-direction:column; gap:0.8rem;">${allProjects.filter(p => p.id !== project.id).map(p => `<div class="result-card" onclick="loadCompareProject(${allProjects.findIndex(proj => proj.id === p.id)})" style="background:var(--card-bg); border:1px solid var(--rule); border-radius:8px; padding:0.8rem; cursor:pointer;"><div style="font-weight:bold;">${p.id} · ${p.title}</div><div style="font-size:0.8rem;">${p.subtitle} (${p.year})</div></div>`).join('')}</div></div></div>`;
   document.getElementById('splitModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
   let splitCurrentIndex = 0;
-  window.splitPrev = () => {
-    const slides = document.getElementById('splitCarousel');
-    if (!slides) return;
-    splitCurrentIndex = Math.max(0, splitCurrentIndex - 1);
-    slides.style.transform = `translateX(-${splitCurrentIndex * 100}%)`;
-  };
-  window.splitNext = () => {
-    const slides = document.getElementById('splitCarousel');
-    if (!slides) return;
-    splitCurrentIndex = Math.min(project.images.length - 1, splitCurrentIndex + 1);
-    slides.style.transform = `translateX(-${splitCurrentIndex * 100}%)`;
-  };
+  window.splitPrev = () => { const slides = document.getElementById('splitCarousel'); if (!slides) return; splitCurrentIndex = Math.max(0, splitCurrentIndex - 1); slides.style.transform = `translateX(-${splitCurrentIndex * 100}%)`; };
+  window.splitNext = () => { const slides = document.getElementById('splitCarousel'); if (!slides) return; splitCurrentIndex = Math.min(project.images.length - 1, splitCurrentIndex + 1); slides.style.transform = `translateX(-${splitCurrentIndex * 100}%)`; };
 }
 
 function loadCompareProject(index) {
   const project = allProjects[index];
   const secondPane = document.getElementById('secondPane');
   if (secondPane) {
-    secondPane.innerHTML = `
-      <div style="background: var(--accent); padding: 0.8rem; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between;">
-        <h3 style="color: white; margin: 0; font-size: 0.7rem;">${project.id} · ${project.title}</h3>
-        <button onclick="closeSplitModal()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
-      </div>
-      <div style="padding: 1rem; overflow-y: auto; flex: 1;">
-        <div class="project-modal-carousel" style="position: relative;">
-          <div class="project-modal-slides" id="compareCarousel" style="display: flex; transition: transform 0.3s ease; overflow: hidden;">
-            ${project.images.map(img => `<div class="project-modal-slide" style="min-width: 100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'" style="width: 100%; height: auto; max-height: 400px; object-fit: contain; background: #f5f5f5;"></div>`).join('')}
-          </div>
-          <button class="project-modal-btn project-modal-prev" onclick="comparePrev()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">‹</button>
-          <button class="project-modal-btn project-modal-next" onclick="compareNext()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">›</button>
-        </div>
-        <div class="project-modal-tags" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">${project.tags.map(t => `<span style="background: var(--accent); color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.6rem;">${t}</span>`).join('')}</div>
-        <div class="project-modal-subtitle" style="color: var(--accent); font-style: italic; margin-top: 0.5rem;">${project.subtitle} (${project.year})</div>
-        <div class="project-modal-desc" style="margin-top: 1rem; font-size: 0.8rem; line-height: 1.5;">${project.fullDesc}</div>
-      </div>
-    `;
+    secondPane.innerHTML = `<div style="background:var(--accent); padding:0.8rem; border-radius:12px 12px 0 0; display:flex; justify-content:space-between;"><h3 style="color:white; margin:0; font-size:0.7rem;">${project.id} · ${project.title}</h3><button onclick="closeSplitModal()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">✕</button></div><div style="padding:1rem; overflow-y:auto; flex:1;"><div class="project-modal-carousel" style="position:relative;"><div class="project-modal-slides" id="compareCarousel" style="display:flex; transition:transform 0.3s ease; overflow:hidden;">${project.images.map(img => `<div class="project-modal-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'" style="width:100%; height:auto; max-height:400px; object-fit:contain; background:#f5f5f5;"></div>`).join('')}</div><button class="project-modal-btn project-modal-prev" onclick="comparePrev()" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer;">‹</button><button class="project-modal-btn project-modal-next" onclick="compareNext()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer;">›</button></div><div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem;">${project.tags.map(t => `<span style="background:var(--accent); color:white; padding:0.2rem 0.6rem; border-radius:12px; font-size:0.6rem;">${t}</span>`).join('')}</div><div style="color:var(--accent); font-style:italic; margin-top:0.5rem;">${project.subtitle} (${project.year})</div><div style="margin-top:1rem; font-size:0.8rem; line-height:1.5;">${project.fullDesc}</div></div>`;
   }
   let compareIndex = 0;
-  window.comparePrev = () => {
-    const slides = document.getElementById('compareCarousel');
-    if (!slides) return;
-    compareIndex = Math.max(0, compareIndex - 1);
-    slides.style.transform = `translateX(-${compareIndex * 100}%)`;
-  };
-  window.compareNext = () => {
-    const slides = document.getElementById('compareCarousel');
-    if (!slides) return;
-    compareIndex = Math.min(project.images.length - 1, compareIndex + 1);
-    slides.style.transform = `translateX(-${compareIndex * 100}%)`;
-  };
+  window.comparePrev = () => { const slides = document.getElementById('compareCarousel'); if (!slides) return; compareIndex = Math.max(0, compareIndex - 1); slides.style.transform = `translateX(-${compareIndex * 100}%)`; };
+  window.compareNext = () => { const slides = document.getElementById('compareCarousel'); if (!slides) return; compareIndex = Math.min(project.images.length - 1, compareIndex + 1); slides.style.transform = `translateX(-${compareIndex * 100}%)`; };
 }
 
-function closeSplitModal() {
-  const modal = document.getElementById('splitModal');
-  if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
-}
+function closeSplitModal() { const modal = document.getElementById('splitModal'); if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; } }
 
 // ========== GRID PLUS SIGNS ==========
 let gridPluses = [];
@@ -2430,106 +1568,45 @@ function initializeGridPluses() {
 }
 
 let scrollUpdateTimeout;
-window.addEventListener('scroll', () => {
-  clearTimeout(scrollUpdateTimeout);
-  scrollUpdateTimeout = setTimeout(initializeGridPluses, 50);
-}, { passive: true });
+window.addEventListener('scroll', () => { clearTimeout(scrollUpdateTimeout); scrollUpdateTimeout = setTimeout(initializeGridPluses, 50); }, { passive: true });
 
 function hideRandomPlusGroups() {
   if (hiddenGroupsInterval) clearInterval(hiddenGroupsInterval);
   hiddenGroupsInterval = setInterval(() => {
     gridPluses.forEach(p => p.classList.remove('hidden'));
-    
     const hidePercentage = Math.random() * 0.45 + 0.4;
     const hiddenCount = Math.floor(gridPluses.length * hidePercentage);
     const positions = [];
-    
-    gridPluses.forEach((plus, idx) => {
-      const rect = plus.getBoundingClientRect();
-      positions.push({ x: Math.round(rect.left), y: Math.round(rect.top), idx });
-    });
-    
+    gridPluses.forEach((plus, idx) => { const rect = plus.getBoundingClientRect(); positions.push({ x: Math.round(rect.left), y: Math.round(rect.top), idx }); });
     const patchCount = Math.floor(Math.random() * 18) + 8;
     let totalHidden = 0;
     const hiddenIndices = new Set();
-    
     for (let p = 0; p < patchCount && totalHidden < hiddenCount; p++) {
       const centerPlus = positions[Math.floor(Math.random() * positions.length)];
       const patchRadius = Math.random() * 230 + 20;
       const patchDensity = Math.random() * 0.7 + 0.2;
       const shapeType = Math.floor(Math.random() * 5);
-      
       positions.forEach(plus => {
         if (hiddenIndices.has(plus.idx) || totalHidden >= hiddenCount) return;
         const dx = plus.x - centerPlus.x, dy = plus.y - centerPlus.y;
         let falloff;
-        
-        if (shapeType === 0) {
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          falloff = Math.exp(-Math.pow(distance / patchRadius, 2));
-        } else if (shapeType === 1) {
-          const rx = patchRadius * (Math.random() * 0.6 + 0.7);
-          const ry = patchRadius * (Math.random() * 0.6 + 0.7);
-          const distance = Math.sqrt((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry));
-          falloff = Math.exp(-Math.pow(distance, 2));
-        } else if (shapeType === 2) {
-          const distance = Math.max(Math.abs(dx), Math.abs(dy));
-          falloff = Math.exp(-Math.pow(distance / patchRadius, 2));
-        } else if (shapeType === 3) {
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          const angle = Math.atan2(dy, dx);
-          const modulation = 0.5 + 0.5 * Math.cos(4 * angle);
-          falloff = Math.exp(-Math.pow(distance / (patchRadius * (0.6 + 0.4 * modulation)), 2));
-        } else {
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          const skew = Math.random() * 3 + 0.8;
-          falloff = Math.exp(-Math.pow(distance / patchRadius, skew));
-        }
-        
-        if (Math.random() < falloff * patchDensity) {
-          hiddenIndices.add(plus.idx);
-          gridPluses[plus.idx].classList.add('hidden');
-          totalHidden++;
-        }
+        if (shapeType === 0) { const distance = Math.sqrt(dx * dx + dy * dy); falloff = Math.exp(-Math.pow(distance / patchRadius, 2)); }
+        else if (shapeType === 1) { const rx = patchRadius * (Math.random() * 0.6 + 0.7); const ry = patchRadius * (Math.random() * 0.6 + 0.7); const distance = Math.sqrt((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry)); falloff = Math.exp(-Math.pow(distance, 2)); }
+        else if (shapeType === 2) { const distance = Math.max(Math.abs(dx), Math.abs(dy)); falloff = Math.exp(-Math.pow(distance / patchRadius, 2)); }
+        else if (shapeType === 3) { const distance = Math.sqrt(dx * dx + dy * dy); const angle = Math.atan2(dy, dx); const modulation = 0.5 + 0.5 * Math.cos(4 * angle); falloff = Math.exp(-Math.pow(distance / (patchRadius * (0.6 + 0.4 * modulation)), 2)); }
+        else { const distance = Math.sqrt(dx * dx + dy * dy); const skew = Math.random() * 3 + 0.8; falloff = Math.exp(-Math.pow(distance / patchRadius, skew)); }
+        if (Math.random() < falloff * patchDensity) { hiddenIndices.add(plus.idx); gridPluses[plus.idx].classList.add('hidden'); totalHidden++; }
       });
     }
-    
     const scatteredCount = Math.floor(gridPluses.length * 0.15);
-    for (let i = 0; i < scatteredCount && totalHidden < hiddenCount; i++) {
-      const randomIdx = Math.floor(Math.random() * gridPluses.length);
-      if (!hiddenIndices.has(randomIdx)) {
-        hiddenIndices.add(randomIdx);
-        gridPluses[randomIdx].classList.add('hidden');
-        totalHidden++;
-      }
-    }
-    
-    if (Math.random() < 0.3) {
-      const largeRadius = Math.random() * 300 + 100;
-      const largeCenter = positions[Math.floor(Math.random() * positions.length)];
-      positions.forEach(plus => {
-        if (hiddenIndices.has(plus.idx) || totalHidden >= hiddenCount) return;
-        const dx = plus.x - largeCenter.x, dy = plus.y - largeCenter.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < largeRadius && Math.random() < 0.7) {
-          hiddenIndices.add(plus.idx);
-          gridPluses[plus.idx].classList.add('hidden');
-          totalHidden++;
-        }
-      });
-    }
+    for (let i = 0; i < scatteredCount && totalHidden < hiddenCount; i++) { const randomIdx = Math.floor(Math.random() * gridPluses.length); if (!hiddenIndices.has(randomIdx)) { hiddenIndices.add(randomIdx); gridPluses[randomIdx].classList.add('hidden'); totalHidden++; } }
+    if (Math.random() < 0.3) { const largeRadius = Math.random() * 300 + 100; const largeCenter = positions[Math.floor(Math.random() * positions.length)]; positions.forEach(plus => { if (hiddenIndices.has(plus.idx) || totalHidden >= hiddenCount) return; const dx = plus.x - largeCenter.x, dy = plus.y - largeCenter.y; const distance = Math.sqrt(dx * dx + dy * dy); if (distance < largeRadius && Math.random() < 0.7) { hiddenIndices.add(plus.idx); gridPluses[plus.idx].classList.add('hidden'); totalHidden++; } }); }
   }, 800 + Math.random() * 3000);
 }
-
-// ========== CONNECTOR LINES FOR CATEGORY HOVER ==========
+    // ========== CONNECTOR LINES FOR CATEGORY HOVER ==========
 let activeHoverLines = [];
 
-function clearHoverLines() {
-  const svg = document.getElementById('connectorSvg');
-  const linesToRemove = svg.querySelectorAll('.connector-line');
-  linesToRemove.forEach(line => line.remove());
-  activeHoverLines = [];
-}
+function clearHoverLines() { const svg = document.getElementById('connectorSvg'); const linesToRemove = svg.querySelectorAll('.connector-line'); linesToRemove.forEach(line => line.remove()); activeHoverLines = []; }
 
 function drawFilletedLine(svg, x1, y1, x2, y2, opacity) {
   const gridSize = 20;
@@ -2584,13 +1661,9 @@ function drawCategoryHoverLines(categoryEl) {
       tagY = Math.round(tagY / gridSize) * gridSize;
       drawFilletedLine(svg, startX, startY, tagX, tagY, 0.55);
       drawFilletedLine(svg, tagX, tagY, endX, endY, 0.55);
-    } else {
-      drawFilletedLine(svg, startX, startY, endX, endY, 0.55);
-    }
+    } else { drawFilletedLine(svg, startX, startY, endX, endY, 0.55); }
   });
 }
-
-// ========== INITIALIZE ==========
 
 // ========== ENTRANCE ANIMATION ON SCROLL ==========
 function initEntranceAnimation() {
@@ -2601,192 +1674,66 @@ function initEntranceAnimation() {
   const heroRight = document.querySelector('.hero-right');
   const navName = document.querySelector('.nav-name');
   const scrollProgress = document.getElementById('scrollProgress');
-  
   if (navName) navName.textContent = 'Ad(h)am Sinan';
-  
   window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
     const maxScroll = 500;
     let progress = Math.min(scrollY / maxScroll, 1);
-    
     if (scrollProgress) scrollProgress.style.width = `${progress * 100}%`;
-    
-    if (entranceContent) {
-      entranceContent.style.opacity = Math.max(0, 1 - progress * 1.2);
-      entranceContent.style.transform = `translateY(-${progress * 40}px)`;
-      if (progress >= 0.8) entranceContent.style.pointerEvents = 'none';
-    }
-    
-    if (nameWrapper) {
-      nameWrapper.style.transform = `translateY(-${progress * 50}px)`;
-      nameWrapper.style.opacity = Math.max(0, 1 - progress * 1.1);
-      if (navName) {
-        if (progress > 0.3) {
-          navName.style.opacity = '1';
-          if (progress > 0.7) navName.classList.add('large');
-        } else {
-          navName.style.opacity = '0.7';
-        }
-      }
-    }
-    
-    if (heroSection) {
-      heroSection.style.minHeight = `${Math.max(0, 100 - progress * 100)}vh`;
-    }
-    
-    if (stickyWrapper) {
-      let canvasProgress = Math.max(0, (progress - 0.2) / 0.8);
-      stickyWrapper.style.opacity = Math.min(1, canvasProgress);
-      if (canvasProgress >= 0.9) stickyWrapper.classList.add('visible');
-    }
-    
-    if (heroRight) {
-      let rightProgress = Math.max(0, (progress - 0.3) / 0.7);
-      heroRight.style.opacity = Math.min(1, rightProgress);
-      if (rightProgress >= 0.8) heroRight.classList.add('visible');
-    }
-    
-    if (progress >= 0.9) {
-      heroSection.classList.add('collapsed');
-    } else {
-      heroSection.classList.remove('collapsed');
-    }
+    if (entranceContent) { entranceContent.style.opacity = Math.max(0, 1 - progress * 1.2); entranceContent.style.transform = `translateY(-${progress * 40}px)`; if (progress >= 0.8) entranceContent.style.pointerEvents = 'none'; }
+    if (nameWrapper) { nameWrapper.style.transform = `translateY(-${progress * 50}px)`; nameWrapper.style.opacity = Math.max(0, 1 - progress * 1.1); if (navName) { if (progress > 0.3) { navName.style.opacity = '1'; if (progress > 0.7) navName.classList.add('large'); } else { navName.style.opacity = '0.7'; } } }
+    if (heroSection) { const newMinHeight = Math.max(0, 100 - progress * 100); heroSection.style.minHeight = `${newMinHeight}vh`; }
+    if (stickyWrapper) { let canvasProgress = Math.max(0, (progress - 0.2) / 0.8); stickyWrapper.style.opacity = Math.min(1, canvasProgress); if (canvasProgress >= 0.9) stickyWrapper.classList.add('visible'); }
+    if (heroRight) { let rightProgress = Math.max(0, (progress - 0.3) / 0.7); heroRight.style.opacity = Math.min(1, rightProgress); if (rightProgress >= 0.8) heroRight.classList.add('visible'); }
+    if (progress >= 0.9) { heroSection.classList.add('collapsed'); } else { heroSection.classList.remove('collapsed'); }
   });
-  
-  setTimeout(() => {
-    window.dispatchEvent(new Event('scroll'));
-  }, 100);
+  setTimeout(() => { window.dispatchEvent(new Event('scroll')); }, 100);
 }
 
 // ========== INITIALIZE ==========
 function initialize() {
   allProjects = buildProjectsWithDynamicImages();
-  
   manager = new StickyNoteManager();
-  
   initEntranceAnimation();
-  
-  // Create all notes at temporary positions
-  allProjects.forEach((project, i) => {
-    manager.createNote(project, i, 0, 0);
-    const noteEl = document.querySelector(`.sticky-note[data-project-idx="${i}"]`);
-    if (noteEl) manager.makeDraggable(noteEl, project);
-  });
-  
-  setTimeout(() => {
-    manager.animateToGrid();
-  }, 100);
-  
+  allProjects.forEach((project, i) => { manager.createNote(project, i, 0, 0); const noteEl = document.querySelector(`.sticky-note[data-project-idx="${i}"]`); if (noteEl) manager.makeDraggable(noteEl, project); });
+  setTimeout(() => { manager.animateToGrid(); }, 100);
   setTimeout(createTagFilters, 800);
-  
   const filters = document.querySelectorAll('#categoryFilters li');
   filters.forEach(filter => {
-    filter.addEventListener('click', () => {
-      const category = filter.getAttribute('data-category');
-      filters.forEach(f => f.classList.remove('active'));
-      filter.classList.add('active');
-      manager.filterByCategory(category);
-      setTimeout(() => {
-        manager.animateToGrid();
-      }, 50);
-      clearHoverLines();
-    });
-    
-    filter.addEventListener('mouseenter', () => {
-      manager.highlightByCategory(filter.getAttribute('data-category'));
-      setTimeout(() => drawCategoryHoverLines(filter), 50);
-    });
-    
-    filter.addEventListener('mouseleave', () => {
-      if (document.getElementById('connectorSvg').style.display !== 'none') clearHoverLines();
-      const activeCategory = document.querySelector('#categoryFilters li.active').getAttribute('data-category');
-      manager.highlightByCategory(activeCategory);
-      setTimeout(() => { if (manager) manager.updateAllConnectorLines(); }, 100);
-    });
+    filter.addEventListener('click', () => { const category = filter.getAttribute('data-category'); filters.forEach(f => f.classList.remove('active')); filter.classList.add('active'); manager.filterByCategory(category); setTimeout(() => { manager.animateToGrid(); }, 50); clearHoverLines(); });
+    filter.addEventListener('mouseenter', () => { manager.highlightByCategory(filter.getAttribute('data-category')); setTimeout(() => drawCategoryHoverLines(filter), 50); });
+    filter.addEventListener('mouseleave', () => { if (document.getElementById('connectorSvg').style.display !== 'none') clearHoverLines(); const activeCategory = document.querySelector('#categoryFilters li.active').getAttribute('data-category'); manager.highlightByCategory(activeCategory); setTimeout(() => { if (manager) manager.updateAllConnectorLines(); }, 100); });
   });
-  
-  document.getElementById('openCvBtn').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('cvModal').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  });
-  document.getElementById('closeCvBtn').addEventListener('click', () => {
-    document.getElementById('cvModal').style.display = 'none';
-    document.body.style.overflow = 'auto';
-  });
-  document.getElementById('cvModal').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('cvModal')) {
-      document.getElementById('cvModal').style.display = 'none';
-      document.body.style.overflow = 'auto';
-    }
-  });
-  
+  document.getElementById('openCvBtn').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('cvModal').style.display = 'flex'; document.body.style.overflow = 'hidden'; });
+  document.getElementById('closeCvBtn').addEventListener('click', () => { document.getElementById('cvModal').style.display = 'none'; document.body.style.overflow = 'auto'; });
+  document.getElementById('cvModal').addEventListener('click', (e) => { if (e.target === document.getElementById('cvModal')) { document.getElementById('cvModal').style.display = 'none'; document.body.style.overflow = 'auto'; } });
   document.getElementById('closeResultsBtn').addEventListener('click', closeResultsModal);
-  document.getElementById('resultsModal').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('resultsModal')) closeResultsModal();
-  });
-  
-  document.getElementById('splitModal').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('splitModal')) closeSplitModal();
-  });
-  
+  document.getElementById('resultsModal').addEventListener('click', (e) => { if (e.target === document.getElementById('resultsModal')) closeResultsModal(); });
+  document.getElementById('splitModal').addEventListener('click', (e) => { if (e.target === document.getElementById('splitModal')) closeSplitModal(); });
   window.addEventListener('resize', () => { if (manager) manager.updateAllConnectorLines(); });
-  
   const gridBtn = document.getElementById('gridBtn');
   const randomizeBtn = document.getElementById('randomizeBtn');
   const hideLinesBtn = document.getElementById('hideLinesBtn');
   const showLinesBtn = document.getElementById('showLinesBtn');
-  
-  if (gridBtn) gridBtn.addEventListener('click', () => {
-    manager.animateToGrid();
-  });
+  if (gridBtn) gridBtn.addEventListener('click', () => { manager.animateToGrid(); });
   if (randomizeBtn) randomizeBtn.addEventListener('click', () => manager.randomizeArrangement());
   if (hideLinesBtn) hideLinesBtn.addEventListener('click', () => manager.hideAllLines());
   if (showLinesBtn) showLinesBtn.addEventListener('click', () => manager.showAllLines());
-  
   const themeBtn = document.getElementById('themeBtn');
   if (themeBtn) {
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      document.body.classList.add('dark-theme');
-      themeBtn.innerHTML = '☀️ Light';
-    } else {
-      themeBtn.innerHTML = '🌓 Dark';
-    }
-    themeBtn.addEventListener('click', () => {
-      document.body.classList.toggle('dark-theme');
-      if (document.body.classList.contains('dark-theme')) {
-        localStorage.setItem('theme', 'dark');
-        themeBtn.innerHTML = '☀️ Light';
-      } else {
-        localStorage.setItem('theme', 'light');
-        themeBtn.innerHTML = '🌓 Dark';
-      }
-    });
+    if (savedTheme === 'dark') { document.body.classList.add('dark-theme'); themeBtn.innerHTML = '☀️ Light'; }
+    else { themeBtn.innerHTML = '🌓 Dark'; }
+    themeBtn.addEventListener('click', () => { document.body.classList.toggle('dark-theme'); if (document.body.classList.contains('dark-theme')) { localStorage.setItem('theme', 'dark'); themeBtn.innerHTML = '☀️ Light'; } else { localStorage.setItem('theme', 'light'); themeBtn.innerHTML = '🌓 Dark'; } });
   }
-  
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeResultsModal();
-      closeSplitModal();
-      document.getElementById('cvModal').style.display = 'none';
-    }
-  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeResultsModal(); closeSplitModal(); document.getElementById('cvModal').style.display = 'none'; } });
 }
 
-window.addEventListener('load', () => {
-  initializeGridPluses();
-  hideRandomPlusGroups();
-  initialize();
-});
-
+window.addEventListener('load', () => { initializeGridPluses(); hideRandomPlusGroups(); initialize(); });
 window.addEventListener('resize', initializeGridPluses);
 window.openSplitViewForProject = openSplitViewForProject;
 window.loadCompareProject = loadCompareProject;
 window.closeSplitModal = closeSplitModal;
-    
-window.closeSplitModal = closeSplitModal;
 </script>
 </body>
 </html>
-  
