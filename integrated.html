@@ -2332,17 +2332,17 @@ function initialize() {
   
   manager = new StickyNoteManager();
 
-  allProjects.forEach((project, i) => {
-    const container = document.getElementById('stickyCanvas');
-    const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
-    const maxX = containerWidth - 180;
-    const maxY = window.innerHeight - 200;
-    const x = 20 + Math.random() * maxX;
-    const y = 150 + Math.random() * maxY;
-    manager.createNote(project, i, x, y);
-    const noteEl = document.querySelector(`.sticky-note[data-project-idx="${i}"]`);
-    if (noteEl) manager.makeDraggable(noteEl, project);
-  });
+// First create all notes at temporary positions
+allProjects.forEach((project, i) => {
+  manager.createNote(project, i, 0, 0);
+  const noteEl = document.querySelector(`.sticky-note[data-project-idx="${i}"]`);
+  if (noteEl) manager.makeDraggable(noteEl, project);
+});
+
+// Then arrange them in a grid layout immediately
+setTimeout(() => {
+  manager.animateToGrid();
+}, 100);
 
   setTimeout(createTagFilters, 800);
 
