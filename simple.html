@@ -122,22 +122,22 @@
     background: var(--accent-light);
   }
 
-  /* ========== HERO SECTION ========== */
+  /* HERO SECTION — redesigned with categories */
   .hero {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 5rem 3rem 3rem;
+    padding: 6rem 3rem 4rem;
   }
 
   .hero-name {
     font-family: var(--serif);
-    font-size: clamp(4rem, 8vw, 8rem);
+    font-size: clamp(4rem, 8vw, 7rem);
     font-weight: 900;
     line-height: 0.95;
     letter-spacing: -0.02em;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
   }
 
   .hero-name em {
@@ -145,60 +145,61 @@
     color: var(--accent);
   }
 
-  /* Category Grid */
-  .hero-categories {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4rem;
-    margin-bottom: 3rem;
+  /* Category Grid Layout — matches original structure but replaces project list */
+  .hero-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin: 2rem 0 2rem;
     border-top: 0.5px solid var(--rule);
     padding-top: 2.5rem;
   }
 
-  .category-block {
-    flex: 1;
-    min-width: 180px;
+  .category-card {
+    display: flex;
+    flex-direction: column;
   }
 
-  .category-main {
+  .category-main-title {
     font-family: var(--mono);
     font-size: 0.7rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
   }
 
-  .category-items {
+  .category-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.6rem;
   }
 
-  .cat-link {
-    display: inline-block;
+  .category-link {
     font-family: var(--body-serif);
     font-size: 1rem;
+    font-weight: 400;
     color: var(--text);
     text-decoration: none;
     transition: all 0.2s ease;
-    line-height: 1.4;
-    cursor: pointer;
+    display: inline-block;
     width: fit-content;
+    cursor: pointer;
+    line-height: 1.4;
   }
 
-  .cat-link:hover {
+  .category-link:hover {
     color: var(--accent);
     font-style: italic;
     font-weight: bold;
   }
 
-  .hero-bio-short {
+  .hero-short-bio {
     font-family: var(--body-serif);
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.7;
     color: var(--muted);
-    max-width: 60ch;
+    max-width: 55ch;
     border-top: 0.5px solid var(--rule);
     padding-top: 2rem;
     margin-top: 1rem;
@@ -225,9 +226,16 @@
     flex: 1;
     height: 0.5px;
     background: var(--rule);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.13s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   }
 
-  /* Project Grid (used for each category) */
+  .section-rule.animated {
+    transform: scaleX(1);
+  }
+
+  /* Project Grid (Art + Architecture) */
   .projects-grid {
     padding: 0 3rem 4rem;
     display: grid;
@@ -271,7 +279,7 @@
     font-style: italic;
   }
 
-  /* Research & Publications */
+  /* Research & Publications (same style) */
   .writing-grid {
     padding: 0 3rem 4rem;
     display: grid;
@@ -406,7 +414,6 @@
     text-transform: uppercase;
   }
 
-  /* Animations */
   .reveal {
     opacity: 0;
     transform: translateY(24px);
@@ -418,31 +425,29 @@
     transform: translateY(0);
   }
 
-  /* Line drawing animation for all separators and borders */
-  .line-draw {
-    position: relative;
+  /* Backdrop */
+  .backdrop-boundary {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
   }
-
-  .animated-border {
+  .backdrop-boundary img {
     width: 100%;
-    height: 0.5px;
-    background: var(--rule);
-    transform: scaleX(0);
-    transform-origin: left;
-    animation: drawLine 0.13s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+    height: 100%;
+    object-fit: cover;
+    filter: invert(1);
+    mix-blend-mode: multiply;
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
+  .backdrop-boundary img.active { opacity: 0.85; }
 
-  @keyframes drawLine {
-    0% { transform: scaleX(0); }
-    100% { transform: scaleX(1); }
-  }
-
-  /* Generic style for borders that need line draw */
-  .border-draw-target {
-    animation: borderFlash 0.13s ease-out forwards;
-  }
-
-  /* Modal styles */
+  /* Modals */
   .project-modal-overlay, .cv-modal-overlay {
     display: none;
     position: fixed;
@@ -587,39 +592,14 @@
     padding-bottom: 0.3rem;
   }
 
-  .cv-modal-body p, .cv-modal-body ul { color: var(--muted); }
-  .cv-modal-body a { color: var(--accent); }
-
   @media (max-width: 768px) {
-    .hero-categories { flex-direction: column; gap: 1.5rem; }
+    .hero-categories-grid { grid-template-columns: 1fr; gap: 2rem; }
     .projects-grid, .writing-grid { grid-template-columns: 1fr; }
     .project-item { border-right: none; border-bottom: 0.5px solid var(--rule); padding: 1.5rem !important; }
-    .project-item:nth-child(3n+2) { padding-left: 1.5rem !important; }
-    #contact { grid-template-columns: 1fr; }
-    nav { padding: 1rem 1.5rem; }
     .hero { padding: 5rem 1.5rem 2rem; }
+    #contact { grid-template-columns: 1fr; gap: 2rem; }
+    nav { padding: 1rem 1.5rem; }
   }
-
-  .backdrop-boundary {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 50%;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 1;
-    overflow: hidden;
-  }
-  .backdrop-boundary img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: invert(1);
-    mix-blend-mode: multiply;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  .backdrop-boundary img.active { opacity: 0.85; }
 </style>
 </head>
 <body>
@@ -638,54 +618,62 @@
   </ul>
 </nav>
 
-<!-- HERO with categories -->
+<!-- HERO: Research, Art, Architecture, Education as main categories -->
 <section class="hero">
   <h1 class="hero-name">Ad(h)am<br><em>Sinan</em></h1>
-  <div class="hero-categories">
-    <div class="category-block">
-      <div class="category-main">Research</div>
-      <div class="category-items">
-        <a class="cat-link" data-section="research">Rubble Typology & Destruction Modes</a>
-        <a class="cat-link" data-section="research">Agential Cartographies</a>
-        <a class="cat-link" data-section="research">Dynamic Ruinations</a>
+  
+  <div class="hero-categories-grid">
+    <!-- RESEARCH column -->
+    <div class="category-card">
+      <div class="category-main-title">Research</div>
+      <div class="category-list">
+        <a class="category-link" data-section="research">Rubble Typology & Destruction Modes</a>
+        <a class="category-link" data-section="research">Agential Cartographies</a>
+        <a class="category-link" data-section="research">Dynamic Ruinations</a>
+        <a class="category-link" data-section="research">Spatio-territorial Deterritorialized</a>
       </div>
     </div>
-    <div class="category-block">
-      <div class="category-main">Art</div>
-      <div class="category-items">
-        <a class="cat-link" data-section="art">Regutting (Wonder Cabinet)</a>
-        <a class="cat-link" data-section="art">Soft Unsealing</a>
-        <a class="cat-link" data-section="art">Old Airfield (Acoustic Mirror)</a>
+    <!-- ART column -->
+    <div class="category-card">
+      <div class="category-main-title">Art</div>
+      <div class="category-list">
+        <a class="category-link" data-section="art">Regutting (Wonder Cabinet)</a>
+        <a class="category-link" data-section="art">Soft Unsealing (IABR11)</a>
+        <a class="category-link" data-section="art">Old Airfield (Acoustic Mirror)</a>
+        <a class="category-link" data-section="art">Aura Folly Project</a>
       </div>
     </div>
-    <div class="category-block">
-      <div class="category-main">Architecture</div>
-      <div class="category-items">
-        <a class="cat-link" data-section="architecture">Spiral Spines</a>
-        <a class="cat-link" data-section="architecture">Woven Realities</a>
-        <a class="cat-link" data-section="architecture">The New Cairn</a>
-        <a class="cat-link" data-section="architecture">OUROBOS</a>
+    <!-- ARCHITECTURE column -->
+    <div class="category-card">
+      <div class="category-main-title">Architecture</div>
+      <div class="category-list">
+        <a class="category-link" data-section="architecture">Spiral Spines (Climate Biennale)</a>
+        <a class="category-link" data-section="architecture">Woven Realities (Afghan Homes)</a>
+        <a class="category-link" data-section="architecture">The New Cairn (Rubble Reuse)</a>
+        <a class="category-link" data-section="architecture">OUROBOS / Carbonfloss</a>
       </div>
     </div>
-    <div class="category-block">
-      <div class="category-main">Education</div>
-      <div class="category-items">
-        <a class="cat-link" data-section="education">PhD / DR.TECH — Die Angewandte</a>
-        <a class="cat-link" data-section="education">MArch — Die Angewandte</a>
-        <a class="cat-link" data-section="education">Faculty Member — AAUP</a>
+    <!-- EDUCATION column -->
+    <div class="category-card">
+      <div class="category-main-title">Education</div>
+      <div class="category-list">
+        <a class="category-link" data-section="education">PhD — Die Angewandte (Current)</a>
+        <a class="category-link" data-section="education">MArch — Die Angewandte (Honors)</a>
+        <a class="category-link" data-section="education">Faculty — AAUP Palestine</a>
+        <a class="category-link" data-section="education">Visiting Critic / Lecturer</a>
       </div>
     </div>
   </div>
-  <div class="hero-bio-short">
-    An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches. Enriched by interdisciplinary collaboration.
+  <div class="hero-short-bio">
+    Architect, artist, and researcher blending conceptual, theoretical & technical approaches. Interdisciplinary practice rooted in post‑conflict materiality.
   </div>
 </section>
 
-<!-- RESEARCH SECTION (Publications remain) -->
+<!-- RESEARCH SECTION (full publications) -->
 <section id="research-section" class="section-container">
   <div class="section-header">
     <span class="section-label">Research & Publications</span>
-    <div class="section-rule animated-border"></div>
+    <div class="section-rule" id="researchRule"></div>
   </div>
   <div class="writing-grid">
     <div class="writing-item"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Dynamic Ruinations: Architecture Against Finality</h3><p class="writing-desc">Presented at "Co-producing Alternative Futures through Experimental Urbanism" Symposium, University of Pretoria (April 2026).</p><p class="writing-date">2026 — Newcastle University</p></div>
@@ -693,7 +681,7 @@
     <div class="writing-item"><p class="writing-type">Conference Paper</p><h3 class="writing-title">Spatio-territorial Examination of the Actively Deterritorialized</h3><p class="writing-desc">Presented at "Engineering Destruction" Conference, Birzeit University (June 2025).</p><p class="writing-date">2025 — Birzeit University</p></div>
     <div class="writing-item"><p class="writing-type">Book Chapter</p><h3 class="writing-title">Re: Action — Urban Resilience in the post-Information Age</h3><p class="writing-desc">Published by Birkhäuser (2023). Edited by Hani Rashid.</p><p class="writing-date">2023 — Birkhäuser</p></div>
     <div class="writing-item"><p class="writing-type">Research Proposal</p><h3 class="writing-title">Rubble Typology: Destruction Mode as a Material Determinant</h3><p class="writing-desc">A comparative framework for understanding how different destruction modes produce materially distinct waste streams.</p><p class="writing-date">2025 — The New Cairn Project</p></div>
-    <div class="writing-item"><p class="writing-type">Material Research</p><h3 class="writing-title">Compression-Only Logic in Heterogeneous Rubble Assemblies</h3><p class="writing-desc">Applying the Safe Theorem to mixed-material demolition waste.</p><p class="writing-date">2025 — Fellowship Research</p></div>
+    <div class="writing-item"><p class="writing-type">Material Research</p><h3 class="writing-title">Compression-Only Logic in Heterogeneous Rubble Assemblies</h3><p class="writing-desc">Applying the Safe Theorem to mixed-material demolition waste for compression-only structural logic.</p><p class="writing-date">2025 — Fellowship Research</p></div>
   </div>
 </section>
 
@@ -701,27 +689,27 @@
 <section id="art-section" class="section-container">
   <div class="section-header">
     <span class="section-label">Art / Installations</span>
-    <div class="section-rule animated-border"></div>
+    <div class="section-rule" id="artRule"></div>
   </div>
-  <div class="projects-grid" id="art-grid"></div>
+  <div class="projects-grid" id="artGrid"></div>
 </section>
 
 <!-- ARCHITECTURE SECTION -->
 <section id="architecture-section" class="section-container">
   <div class="section-header">
     <span class="section-label">Architecture / Built Work</span>
-    <div class="section-rule animated-border"></div>
+    <div class="section-rule" id="archRule"></div>
   </div>
-  <div class="projects-grid" id="architecture-grid"></div>
+  <div class="projects-grid" id="architectureGrid"></div>
 </section>
 
-<!-- EDUCATION SECTION (Educational background & teaching) -->
+<!-- EDUCATION SECTION (expanded) -->
 <section id="education-section" class="section-container">
   <div class="section-header">
     <span class="section-label">Education & Pedagogy</span>
-    <div class="section-rule animated-border"></div>
+    <div class="section-rule" id="eduRule"></div>
   </div>
-  <div class="writing-grid" id="education-grid"></div>
+  <div class="writing-grid" id="educationGrid"></div>
 </section>
 
 <!-- CONTACT -->
@@ -747,118 +735,172 @@
 <div id="cvModal" class="cv-modal-overlay"><div class="cv-modal"><div class="cv-modal-header"><h2>CV / Resume</h2><button class="cv-modal-close" id="closeCvBtn">✕</button></div><div class="cv-modal-body"><h4>Profile</h4><p>Architect, artist, and researcher blending conceptual and technical approaches.</p><h4>Education</h4><p><strong>PhD / DR.TECH</strong> — Die Angewandte (2024–present)</p><p><strong>MArch</strong> — Die Angewandte, Magna cum laude (2020–2024)</p><p><strong>B.Sc Architecture</strong> — AABU, Jordan (2013–2020)</p><h4>Professional Experience</h4><p><strong>Faculty Member & Lecturer</strong> — AAUP, Palestine (2025–present)</p><p><strong>Researcher/Curator</strong> — CSRC at AAUP (2025–present)</p><p><strong>Architect</strong> — LAVA, Berlin (2024–2025)</p><h4>Contact</h4><p>📧 <a href="mailto:adam95darwesh@gmail.com">adam95darwesh@gmail.com</a></p></div></div></div>
 
 <script>
-// PROJECT DATA
-const allProjectsData = [
-  { id:"01", title:"Spiral Spines", slug:"spiral_spines", year:"2026", subtitle:"Climate Biennale Vienna", tags:["Regenerative","Vernacular"], fullDesc:"Transforms uprooted timber into structural columns.", category:"architecture" },
-  { id:"02", title:"Woven Realities", slug:"woven_realities", year:"2026", subtitle:"Afghan Homes", tags:["Circular","Modular"], fullDesc:"1:1 prototype translating Afghan dwelling.", category:"architecture" },
-  { id:"03", title:"The New Cairn", slug:"new_cairn", year:"Ongoing", subtitle:"Rubble Reuse", tags:["Post-Conflict","Compression"], fullDesc:"Reusing demolition rubble as masonry units.", category:"architecture" },
-  { id:"04", title:"Carbonfloss", slug:"carbonfloss", year:"2020", subtitle:"eVolo", tags:["Speculative"], fullDesc:"Skyscraper competition honorable mention.", category:"architecture" },
-  { id:"05", title:"OUROBOS", slug:"ourobos", year:"2022", subtitle:"Residual Morphogenesis", tags:["AI","Material"], fullDesc:"Residual morphogenesis using AI workflows.", category:"architecture" },
-  { id:"06", title:"Agropraxis", slug:"agropraxis", year:"2021", subtitle:"Dazeen", tags:["Agricultural"], fullDesc:"Agriculture + spatial practice.", category:"architecture" },
-  { id:"07", title:"Medius paedagogicus", slug:"medius", year:"2022", subtitle:"Pedagogical", tags:["Flat Hierarchy"], fullDesc:"School prototype inspired by Diola compounds.", category:"architecture" },
-  { id:"08", title:"Soft Unsealing", slug:"soft_unsealing", year:"2024", subtitle:"IABR11", tags:["Collective","Installation"], fullDesc:"Exploring urban boundaries.", category:"art" },
-  { id:"09", title:"Old Airfield", slug:"old_airfield", year:"Ongoing", subtitle:"CAB5", tags:["Acoustic","Landscape"], fullDesc:"Acoustic mirror cultural gateway.", category:"art" },
-  { id:"10", title:"Enkidu", slug:"enkidu", year:"In Dev", subtitle:"Vernacular Revival", tags:["Ecological"], fullDesc:"Reviving Palestinian vernacular.", category:"architecture" },
-  { id:"11", title:"Aura", slug:"aura", year:"2022", subtitle:"Folly", tags:["Installation"], fullDesc:"Atmospheric folly project.", category:"art" },
-  { id:"12", title:"Liberation Fronts", slug:"liberation_fronts", year:"2024", subtitle:"Thesis", tags:["Political"], fullDesc:"Diploma thesis with honors.", category:"architecture" },
-  { id:"13", title:"Regutting", slug:"regutting", year:"2025", subtitle:"Wonder Cabinet", tags:["Residency","Film"], fullDesc:"Installation at Wonder Cabinet.", category:"art" },
-  { id:"14", title:"Agential Cartographies", slug:"agential_cartographies", year:"2025", subtitle:"Dar Jacir", tags:["Exhibition"], fullDesc:"Mapping agency in occupied Palestine.", category:"art" }
+// ---------- PROJECT DATA (ART & ARCHITECTURE) ----------
+const projectsLibrary = [
+  { id:"01", title:"Spiral Spines", slug:"spiral_spines", year:"2026", subtitle:"Climate Biennale Vienna", tags:["Regenerative","Vernacular"], fullDesc:"A regenerative material practice transforming uprooted timber into structural columns using Afghan woodcarving techniques.", category:"architecture" },
+  { id:"02", title:"Woven Realities", slug:"woven_realities", year:"2026", subtitle:"The Diversity of Afghan Homes", tags:["Circular","Modular"], fullDesc:"1:1 prototype translating Afghan dwelling into circular material practice with reusable by-products.", category:"architecture" },
+  { id:"03", title:"The New Cairn", slug:"new_cairn", year:"Ongoing", subtitle:"Rubble Stacking", tags:["Post-Conflict","Compression"], fullDesc:"Un-crushed demolition rubble as masonry units for post-disaster contexts.", category:"architecture" },
+  { id:"04", title:"Carbonfloss", slug:"carbonfloss", year:"2020", subtitle:"eVolo Skyscraper", tags:["Speculative","Eco"], fullDesc:"eVolo Skyscraper Competition Honorable Mention.", category:"architecture" },
+  { id:"05", title:"OUROBOS", slug:"ourobos", year:"2022", subtitle:"Residual Morphogenesis", tags:["AI","Material"], fullDesc:"AI-driven residual morphogenesis and urban residue synthesis.", category:"architecture" },
+  { id:"06", title:"Agropraxis", slug:"agropraxis", year:"2021", subtitle:"Dazeen Published", tags:["Agricultural"], fullDesc:"Agriculture x spatial practice proposals.", category:"architecture" },
+  { id:"07", title:"Medius paedagogicus", slug:"medius", year:"2022", subtitle:"Pedagogical Space", tags:["Flat Hierarchy"], fullDesc:"School prototype based on Diola compounds.", category:"architecture" },
+  { id:"08", title:"Soft Unsealing", slug:"soft_unsealing", year:"2024", subtitle:"IABR11", tags:["Collective","Installation"], fullDesc:"Softening boundaries and unsealing latent spatial potentials.", category:"art" },
+  { id:"09", title:"Old Airfield", slug:"old_airfield", year:"Ongoing", subtitle:"Chicago Biennial", tags:["Acoustic","Landscape"], fullDesc:"Acoustic mirror cultural gateway at Tamale, Ghana.", category:"art" },
+  { id:"10", title:"Enkidu", slug:"enkidu", year:"In Dev", subtitle:"Vernacular Revival", tags:["Vernacular"], fullDesc:"Reviving Palestinian vernacular architecture.", category:"architecture" },
+  { id:"11", title:"Aura", slug:"aura", year:"2022", subtitle:"Folly Project", tags:["Installation"], fullDesc:"Atmospheric folly exploring material and light.", category:"art" },
+  { id:"12", title:"Liberation Fronts", slug:"liberation_fronts", year:"2024", subtitle:"Diploma Thesis", tags:["Political"], fullDesc:"Diploma thesis with honors on spatial agency.", category:"architecture" },
+  { id:"13", title:"Regutting", slug:"regutting", year:"2025", subtitle:"Wonder Cabinet", tags:["Residency","Film"], fullDesc:"Installation exploring returns and remains.", category:"art" },
+  { id:"14", title:"Agential Cartographies", slug:"agential_cartographies", year:"2025", subtitle:"Dar Jacir", tags:["Exhibition"], fullDesc:"Experimental mappings across camp, city, limbo.", category:"art" }
 ];
 
-const educationItems = [
-  { type:"Doctoral Research", title:"PhD / DR.TECH — Die Angewandte", desc:"Current research on rubble typology and post-destruction spatial practice (2024–present).", date:"Vienna" },
-  { type:"Postgraduate", title:"MArch — Die Angewandte, Magna cum laude", desc:"Diploma thesis 'Liberation Fronts' awarded honors.", date:"2020–2024" },
-  { type:"Teaching", title:"Faculty Member & Lecturer — AAUP, Palestine", desc:"Courses in architectural design, material culture, and research methodologies.", date:"2025–present" },
-  { type:"Guest Critic", title:"Visiting Critic — Various Institutions", desc:"Birzeit University, Angewandte, AABU", date:"2024–2025" }
+const educationEntries = [
+  { type:"Doctoral Research", title:"PhD / DR.TECH — Die Angewandte", desc:"Current research on rubble typology, destruction modes, and post-conflict spatial practice.", date:"Vienna, 2024–present" },
+  { type:"Postgraduate", title:"MArch — Die Angewandte, Magna cum laude", desc:"Diploma thesis 'Liberation Fronts' awarded honors. Focus on spatial agency and decolonial practice.", date:"Vienna, 2020–2024" },
+  { type:"Academic Appointment", title:"Faculty Member & Lecturer — AAUP, Palestine", desc:"Teaching architectural design, material culture, and research methodologies.", date:"2025–present" },
+  { type:"Pedagogical Research", title:"Researcher/Curator — CSRC at AAUP", desc:"Curatorial and research initiatives linking pedagogy with territorial practice.", date:"2025–present" },
+  { type:"Visiting Critic", title:"Guest Critic — Birzeit / Angewandte", desc:"Invited reviews and workshops on rubble reuse and collective forms.", date:"2024–2025" }
 ];
 
-function buildGrid() {
-  const artGrid = document.getElementById('art-grid');
-  const archGrid = document.getElementById('architecture-grid');
-  const eduGrid = document.getElementById('education-grid');
-  if(artGrid) artGrid.innerHTML = '';
-  if(archGrid) archGrid.innerHTML = '';
-  if(eduGrid) eduGrid.innerHTML = '';
+function buildCategoryGrids() {
+  const artContainer = document.getElementById('artGrid');
+  const archContainer = document.getElementById('architectureGrid');
+  const eduContainer = document.getElementById('educationGrid');
+  if(artContainer) artContainer.innerHTML = '';
+  if(archContainer) archContainer.innerHTML = '';
+  if(eduContainer) eduContainer.innerHTML = '';
   
-  allProjectsData.forEach(proj => {
-    const item = document.createElement('div');
-    item.className = 'project-item';
-    item.innerHTML = `<div class="project-year">${proj.year}</div><div class="project-title">${proj.title}</div><div class="project-sub">${proj.subtitle}</div>`;
-    item.onclick = () => openProjectModal(proj);
-    if(proj.category === 'art' && artGrid) artGrid.appendChild(item);
-    if(proj.category === 'architecture' && archGrid) archGrid.appendChild(item);
+  projectsLibrary.forEach(proj => {
+    const card = document.createElement('div');
+    card.className = 'project-item';
+    card.innerHTML = `<div class="project-year">${proj.year}</div><div class="project-title">${proj.title}</div><div class="project-sub">${proj.subtitle}</div>`;
+    card.onclick = () => openProjectModal(proj);
+    if(proj.category === 'art' && artContainer) artContainer.appendChild(card);
+    if(proj.category === 'architecture' && archContainer) archContainer.appendChild(card);
   });
   
-  educationItems.forEach(edu => {
-    const div = document.createElement('div');
-    div.className = 'writing-item';
-    div.innerHTML = `<div class="writing-type">${edu.type}</div><div class="writing-title">${edu.title}</div><div class="writing-desc">${edu.desc}</div><div class="writing-date">${edu.date}</div>`;
-    if(eduGrid) eduGrid.appendChild(div);
+  educationEntries.forEach(edu => {
+    const eduCard = document.createElement('div');
+    eduCard.className = 'writing-item';
+    eduCard.innerHTML = `<div class="writing-type">${edu.type}</div><div class="writing-title">${edu.title}</div><div class="writing-desc">${edu.desc}</div><div class="writing-date">${edu.date}</div>`;
+    if(eduContainer) eduContainer.appendChild(eduCard);
   });
 }
 
+// Modal & Carousel logic
+let currentModalProject = null;
+let carouselIndex = 0;
+
 function openProjectModal(project) {
+  currentModalProject = project;
+  carouselIndex = 0;
   document.getElementById('modalTitle').innerHTML = `${project.title} (${project.year})`;
   document.getElementById('modalSubtitle').innerHTML = project.subtitle;
   document.getElementById('modalDesc').innerHTML = project.fullDesc;
   document.getElementById('modalTags').innerHTML = project.tags.map(t => `<span class="modal-tag">${t}</span>`).join('');
-  const slides = document.getElementById('modalCarouselSlides');
-  slides.innerHTML = '';
-  for(let i=1;i<=5;i++){ let div=document.createElement('div'); div.className='modal-carousel-slide'; div.innerHTML=`<img src="images/${project.slug}_${i}.jpg" onerror="this.src='https://placehold.co/800x500/1a1a1a/FF3030?text=${project.title}'">`; slides.appendChild(div); }
-  document.getElementById('projectModal').style.display='flex';
-  window.modalIdx=0; updateCarousel();
+  
+  const slidesContainer = document.getElementById('modalCarouselSlides');
+  slidesContainer.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const slideDiv = document.createElement('div');
+    slideDiv.className = 'modal-carousel-slide';
+    const imgPath = `images/${project.slug}_${i}.jpg`;
+    slideDiv.innerHTML = `<img src="${imgPath}" onerror="this.src='https://placehold.co/800x500/1a1a1a/FF3030?text=${project.title}'" alt="${project.title}">`;
+    slidesContainer.appendChild(slideDiv);
+  }
+  const dotsContainer = document.getElementById('modalCarouselDots');
+  dotsContainer.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'modal-carousel-dot';
+    if (i === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => goToSlide(i));
+    dotsContainer.appendChild(dot);
+  }
+  updateCarousel();
+  document.getElementById('projectModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
 }
 
-let modalIdx=0;
-function updateCarousel(){ const slides=document.getElementById('modalCarouselSlides'); if(slides) slides.style.transform=`translateX(-${modalIdx*100}%)`; const dots=document.querySelectorAll('#modalCarouselDots .modal-carousel-dot'); dots.forEach((d,i)=>d.classList.toggle('active',i===modalIdx)); }
-function nextSlide(){ if(modalIdx<4){modalIdx++; updateCarousel();} }
-function prevSlide(){ if(modalIdx>0){modalIdx--; updateCarousel();} }
-function closeModal(){ document.getElementById('projectModal').style.display='none'; document.body.style.overflow='auto'; }
+function updateCarousel() {
+  const slides = document.getElementById('modalCarouselSlides');
+  if (slides) slides.style.transform = `translateX(-${carouselIndex * 100}%)`;
+  const dots = document.querySelectorAll('#modalCarouselDots .modal-carousel-dot');
+  dots.forEach((dot, i) => dot.classList.toggle('active', i === carouselIndex));
+}
+function goToSlide(idx) { carouselIndex = idx; updateCarousel(); }
+function nextSlide() { if (carouselIndex < 4) { carouselIndex++; updateCarousel(); } }
+function prevSlide() { if (carouselIndex > 0) { carouselIndex--; updateCarousel(); } }
+function closeModal() { document.getElementById('projectModal').style.display = 'none'; document.body.style.overflow = 'auto'; }
 
-// Category link scrolling & line animation
-document.querySelectorAll('.cat-link').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const section = link.getAttribute('data-section');
-    let targetId = '';
-    if(section === 'research') targetId = 'research-section';
-    else if(section === 'art') targetId = 'art-section';
-    else if(section === 'architecture') targetId = 'architecture-section';
-    else if(section === 'education') targetId = 'education-section';
-    if(targetId){
-      const el = document.getElementById(targetId);
-      if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+// line-animation on load for all section rules
+function animateAllDividers() {
+  const rules = document.querySelectorAll('.section-rule');
+  rules.forEach(rule => {
+    rule.style.transition = 'transform 0.13s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
+    rule.classList.add('animated');
+  });
+}
+
+// category links smooth scroll
+function setupCategoryLinks() {
+  document.querySelectorAll('.category-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetSection = link.getAttribute('data-section');
+      let element = null;
+      if (targetSection === 'research') element = document.getElementById('research-section');
+      else if (targetSection === 'art') element = document.getElementById('art-section');
+      else if (targetSection === 'architecture') element = document.getElementById('architecture-section');
+      else if (targetSection === 'education') element = document.getElementById('education-section');
+      if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
+// Hover backdrop effect for project items
+function initBackdropHover() {
+  const projectItems = document.querySelectorAll('.project-item');
+  projectItems.forEach((item, idx) => {
+    const allProjectsArray = projectsLibrary.filter(p => p.category === 'art' || p.category === 'architecture');
+    const proj = allProjectsArray[idx % allProjectsArray.length];
+    if (proj) {
+      item.addEventListener('mouseenter', () => {
+        const img = document.getElementById('backdropBoundaryImage');
+        if (img) img.src = `images/${proj.slug}_1.jpg`;
+        img?.classList.add('active');
+      });
+      item.addEventListener('mouseleave', () => {
+        document.getElementById('backdropBoundaryImage')?.classList.remove('active');
+      });
     }
   });
-});
-
-// Animate all borders on load
-function animateAllDividers(){
-  document.querySelectorAll('.animated-border').forEach(el => { el.style.transform = 'scaleX(1)'; });
-  const borders = document.querySelectorAll('.section-rule, .hero-categories, .hero-bio-short, .project-item, .writing-item, .contact-link, footer');
-  borders.forEach((el,idx) => { el.style.animation = 'none'; el.offsetHeight; el.style.animation = null; });
 }
 
-window.addEventListener('load', () => {
-  buildGrid();
+// reveal animation
+function initRevealObserver() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  buildCategoryGrids();
   animateAllDividers();
-  document.querySelectorAll('.section-rule').forEach(rule => rule.classList.add('animated-border'));
-  const observer = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }); },{threshold:0.1});
-  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
-  document.getElementById('closeModalBtn').onclick = closeModal;
-  document.getElementById('modalCarouselPrev').onclick = prevSlide;
-  document.getElementById('modalCarouselNext').onclick = nextSlide;
-  document.getElementById('projectModal').addEventListener('click', (e) => { if(e.target === document.getElementById('projectModal')) closeModal(); });
-  document.getElementById('openCvBtn').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('cvModal').style.display='flex'; document.body.style.overflow='hidden'; });
-  document.getElementById('closeCvBtn').onclick = () => { document.getElementById('cvModal').style.display='none'; document.body.style.overflow='auto'; };
-  document.getElementById('cvModal').addEventListener('click', (e) => { if(e.target === document.getElementById('cvModal')){ document.getElementById('cvModal').style.display='none'; document.body.style.overflow='auto'; } });
+  setupCategoryLinks();
+  initBackdropHover();
+  initRevealObserver();
   
-  // Backdrop hover effect for project items
-  document.querySelectorAll('.project-item').forEach((item, idx) => {
-    const proj = allProjectsData.filter(p => p.category === 'art' || p.category === 'architecture')[idx] || allProjectsData[0];
-    item.addEventListener('mouseenter', () => { const img = document.getElementById('backdropBoundaryImage'); if(img && proj) img.src = `images/${proj.slug}_1.jpg`; img.classList.add('active'); });
-    item.addEventListener('mouseleave', () => { document.getElementById('backdropBoundaryImage')?.classList.remove('active'); });
-  });
+  // Modal buttons
+  document.getElementById('closeModalBtn')?.addEventListener('click', closeModal);
+  document.getElementById('modalCarouselPrev')?.addEventListener('click', prevSlide);
+  document.getElementById('modalCarouselNext')?.addEventListener('click', nextSlide);
+  document.getElementById('projectModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('projectModal')) closeModal(); });
+  document.getElementById('openCvBtn')?.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('cvModal').style.display = 'flex'; document.body.style.overflow = 'hidden'; });
+  document.getElementById('closeCvBtn')?.addEventListener('click', () => { document.getElementById('cvModal').style.display = 'none'; document.body.style.overflow = 'auto'; });
+  document.getElementById('cvModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('cvModal')) { document.getElementById('cvModal').style.display = 'none'; document.body.style.overflow = 'auto'; } });
 });
 </script>
 </body>
