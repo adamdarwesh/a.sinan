@@ -60,6 +60,63 @@
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
     pointer-events: none; z-index: 1; overflow: visible;
   }
+   /* ========== NEW 75/25 LAYOUT WITH ANIMATED LINE ========== */
+  .hero {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    min-height: 100vh;
+    position: relative;
+    margin: 0;
+    padding: 0;
+  }
+
+  .hero-canvas {
+    position: relative;
+    background: var(--paper);
+    overflow: hidden;
+    min-height: 100vh;
+  }
+
+  /* Animated vertical divider line */
+  .hero-canvas::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 0%;
+    background-color: var(--rule);
+    z-index: 10;
+    animation: drawVerticalLine 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 0.2s;
+  }
+
+  @keyframes drawVerticalLine {
+    0% { height: 0%; opacity: 0; }
+    100% { height: 100%; opacity: 1; }
+  }
+
+  .hero-placeholder {
+    background: var(--paper);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+
+  /* Make sure sticky canvas works inside new layout */
+  .sticky-canvas {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+    padding: 175px 2rem 2rem;
+    z-index: 3;
+  }
 
   /* Plus signs - more subtle */
   .grid-plus {
@@ -827,6 +884,16 @@
 </style>
 </head>
 <body>
+ <!-- NEW 75/25 HERO SECTION -->
+<div class="hero">
+  <div class="hero-canvas">
+    <div class="sticky-canvas" id="stickyCanvas"></div>
+  </div>
+  <div class="hero-placeholder">
+    <p>✦ Future Content</p>
+    <p style="margin-top: 1rem; font-size: 0.7rem;">Coming soon...</p>
+  </div>
+</div>
 
 <div id="gridPlusContainer"></div>
 <svg id="connectorSvg"></svg>
@@ -897,7 +964,6 @@
 </div>
 
 <div class="tags-container" id="tagsBar"></div>
-<div class="sticky-canvas" id="stickyCanvas"></div>
 <div class="sidebar-tabs" id="sidebarTabs"></div>
 
 <section id="contact">
