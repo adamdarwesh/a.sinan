@@ -97,6 +97,31 @@
       radial-gradient(circle at 0 0, var(--accent) 1.5px, transparent 1.5px);
   }
 
+  /* Plus signs container */
+  #gridPlusContainer {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    pointer-events: none; z-index: 1; overflow: visible;
+  }
+
+  .grid-plus {
+    position: absolute;
+    color: #000000;
+    font-size: 11px;
+    font-weight: 100;
+    pointer-events: none;
+    opacity: 0.3;
+    transition: opacity 0.5s ease;
+    line-height: 1;
+    transform: translate(-50%, -50%);
+    width: 12px; height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  body.dark-theme .grid-plus { color: #aaaaaa; }
+  .grid-plus.hidden { opacity: 0; }
+
   nav, .hero, section, footer, .sticky-canvas, .sidebar-tabs, .control-panel {
     position: relative;
     z-index: 1;
@@ -273,7 +298,8 @@
   }
 
   .sticky-note-controls button:hover { color: var(--accent); border-color: var(--accent); }
-    /* ========== FROZEN NOTES ========== */
+
+  /* ========== FROZEN NOTES ========== */
   .sticky-note.frozen {
     border: 1px dashed var(--accent) !important;
     box-shadow: none !important;
@@ -360,8 +386,7 @@
 
   .sidebar-tab:hover { border-color: var(--accent); color: var(--accent); }
   .sidebar-tab.highlight { border-color: var(--accent); background: var(--accent); color: white; }
-
-  /* ========== CATEGORY FILTERS (right column) ========== */
+    /* ========== CATEGORY FILTERS (right column) ========== */
   .category-filters {
     list-style: none;
     display: flex;
@@ -435,6 +460,27 @@
 
   .tag-filter:hover { background: var(--accent-light); opacity: 0.9; }
 
+  .tag-filter::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: white;
+    font-size: 0.45rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 200;
+    margin-top: 5px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .tag-filter:hover::after { opacity: 1; }
+
   body.dark-theme .tag-filter {
     background: #555555;
     color: #1a1a1a;
@@ -448,6 +494,14 @@
   #connectorSvg {
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
     pointer-events: none; z-index: 2; overflow: visible;
+  }
+
+  .connector-line {
+    stroke: var(--accent);
+    stroke-width: 1.2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .connector-line-tab {
@@ -541,7 +595,8 @@
     color: var(--accent);
     margin-top: 1.5rem;
   }
-    /* ========== CONTACT SECTION (75/25 split) ========== */
+
+  /* ========== CONTACT SECTION (75/25 split) ========== */
   #contact {
     background: var(--bg);
     border-top: 0.5px solid var(--rule);
@@ -623,7 +678,7 @@
   }
 
   /* ========== MODALS ========== */
-  .cv-modal-overlay, .results-modal-overlay {
+  .cv-modal-overlay, .results-modal-overlay, .split-modal-overlay {
     display: none;
     position: fixed;
     top: 0;
@@ -708,6 +763,25 @@
   }
   .result-card:hover { border-color: var(--accent); transform: translateY(-2px); }
 
+  /* Split View Modal */
+  .split-view {
+    display: flex;
+    gap: 20px;
+    width: 90%;
+    max-width: 1400px;
+    height: 85%;
+    background: transparent;
+  }
+  .split-pane {
+    flex: 1;
+    background: var(--modal-bg);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--rule);
+    overflow: hidden;
+  }
+
   /* ========== CONTROL PANEL ========== */
   .control-panel {
     position: fixed;
@@ -737,13 +811,94 @@
     background: var(--modal-bg);
     border: 0.5px solid var(--rule);
     border-radius: 8px;
-    width: 400px;
+    min-width: 400px;
+    max-width: 600px;
     z-index: 30000;
     box-shadow: 0 20px 45px rgba(0,0,0,0.5);
     transition: background 0.3s ease, border-color 0.3s ease;
   }
 
-  /* ========== RESPONSIVE ========== */
+  .window-header {
+    background: var(--accent);
+    color: white;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .window-header h3 { margin: 0; font-size: 0.85rem; }
+  .window-close, .window-minimize {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+  }
+  .window-minimize { margin-right: 8px; }
+  .window-close:hover, .window-minimize:hover { background: rgba(255,255,255,0.4); }
+
+  .window-header-right { display: flex; align-items: center; }
+
+  .window-body {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    background: var(--modal-bg);
+    color: var(--text);
+  }
+
+  .window-carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f5f5f5;
+  }
+  .window-slides { display: flex; transition: transform 0.3s ease; }
+  .window-slide { min-width: 100%; }
+  .window-slide img {
+    width: 100%;
+    height: auto;
+    max-height: 280px;
+    object-fit: contain;
+    background: #f5f5f5;
+  }
+  .window-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .window-tag {
+    font-size: 0.6rem;
+    padding: 4px 10px;
+    background: var(--accent);
+    color: white;
+    border-radius: 20px;
+  }
+
+  .resize-handle {
+    position: absolute;
+    background: transparent;
+    z-index: 20001;
+  }
+  .resize-top { top: -5px; left: 0; width: 100%; height: 10px; cursor: ns-resize; }
+  .resize-right { top: 0; right: -5px; width: 10px; height: 100%; cursor: ew-resize; }
+  .resize-bottom { bottom: -5px; left: 0; width: 100%; height: 10px; cursor: ns-resize; }
+  .resize-left { top: 0; left: -5px; width: 10px; height: 100%; cursor: ew-resize; }
+  .resize-top-left { top: -5px; left: -5px; width: 15px; height: 15px; cursor: nw-resize; }
+  .resize-top-right { top: -5px; right: -5px; width: 15px; height: 15px; cursor: ne-resize; }
+  .resize-bottom-left { bottom: -5px; left: -5px; width: 15px; height: 15px; cursor: sw-resize; }
+  .resize-bottom-right { bottom: -5px; right: -5px; width: 15px; height: 15px; cursor: nw-resize; }
+
   @media (max-width: 768px) {
     .hero { grid-template-columns: 1fr; }
     .hero-right { border-left: none; border-top: 0.5px solid var(--rule); }
@@ -755,11 +910,12 @@
     .canvas-tags-bar { right: 100px; }
     .control-panel { bottom: 15px; left: 15px; }
     .ctrl-btn { padding: 6px 10px; font-size: 0.45rem; }
+    .floating-window { width: 95% !important; left: 2.5% !important; min-width: unset; }
   }
 </style>
 </head>
 <body>
-  <!-- CV MODAL -->
+<!-- CV MODAL -->
 <div id="cvModal" class="cv-modal-overlay">
   <div class="cv-modal">
     <div class="cv-modal-header">
@@ -782,8 +938,8 @@
       <p><strong>Freelance Architect</strong> — Worldwide (2022–present)</p>
       
       <h4>Skills</h4>
-      <p><strong>3D Modelling:</strong> Rhino3D, Archicad, Blender3D, Maya, Sketchup</p>
-      <p><strong>Visualisation:</strong> Vray, Cycles, D5 Render, Twinmotion, Keyshot, Lumion</p>
+      <p><strong>3D Modelling (5/5):</strong> Rhino3D, Archicad, Blender3D, Maya, Sketchup</p>
+      <p><strong>Visualisation (4/5):</strong> Vray, Cycles, D5 Render, Twinmotion, Keyshot, Lumion</p>
       <p><strong>Languages:</strong> Arabic (native), English (fluent), Dutch (intermediate), German (beginner)</p>
       
       <h4>Contact</h4>
@@ -803,6 +959,11 @@
     </div>
     <div class="results-grid" id="resultsGrid"></div>
   </div>
+</div>
+
+<!-- SPLIT VIEW MODAL -->
+<div id="splitModal" class="results-modal-overlay">
+  <div class="split-view" id="splitView"></div>
 </div>
 
 <!-- NAVIGATION -->
@@ -831,6 +992,9 @@
     </ul>
   </div>
 </div>
+
+<!-- GRID PLUS CONTAINER -->
+<div id="gridPlusContainer"></div>
 
 <!-- CONNECTOR LINES SVG -->
 <svg id="connectorSvg" style="position:fixed; top:0; left:0; width:100%; height:100vh; pointer-events:none; z-index:2;"></svg>
@@ -877,27 +1041,343 @@
   <button class="ctrl-btn" id="showLinesBtn" title="Show connector lines">Show Lines</button>
   <button class="ctrl-btn" id="themeBtn" title="Switch theme">🌓 Theme</button>
 </div>
+  <script>
+// ========== PROJECT DATA - EXACTLY FROM INDEX (28).HTML ==========
+function detectImageCount(projectSlug) {
+  return 6;
+}
+
+function buildProjectsWithDynamicImages() {
+  const baseProjects = [
+    { id: "01", title: "Spiral Spines", slug: "spiral_spines", year: "2026", subtitle: "Climate Biennale Vienna", category: "architecture", 
+      tags: ["Ecological", "Vernacular"], fullDesc: "A regenerative material practice that transforms uprooted and discarded timber." },
+    { id: "02", title: "Woven Realities", slug: "woven_realities", year: "2026", subtitle: "Afghan House Pavilion", category: "architecture", 
+      tags: ["Vernacular", "Digital Fabrication"], fullDesc: "A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice." },
+    { id: "03", title: "The New Cairn", slug: "new_cairn", year: "Ongoing", subtitle: "Rubble Stacking", category: "research", 
+      tags: ["Post-Conflict", "Material Research"], fullDesc: "Research project proposing un-crushed demolition rubble as masonry units." },
+    { id: "04", title: "Carbonfloss", slug: "carbonfloss", year: "2020", subtitle: "eVolo Competition", category: "architecture", 
+      tags: ["Speculative", "Ecological"], fullDesc: "A political statement against absurd reluctance policies." },
+    { id: "05", title: "OUROBOS", slug: "ourobos", year: "2022", subtitle: "Residual Morphogenesis", category: "architecture", 
+      tags: ["Material Research", "Digital Fabrication"], fullDesc: "Exploration of residual morphogenesis using AI-driven workflows." },
+    { id: "06", title: "Agropraxis", slug: "agropraxis", year: "2021", subtitle: "Published in Dazeen", category: "architecture", 
+      tags: ["Ecological", "Collective Practice"], fullDesc: "Intersection of agriculture and architectural practice." },
+    { id: "07", title: "Medius paedagogicus", slug: "medius", year: "2022", subtitle: "Published in Dazeen", category: "education", 
+      tags: ["Pedagogy", "Vernacular"], fullDesc: "A prototype tracing character from Diola compounds in Senegal." },
+    { id: "08", title: "Soft Unsealing", slug: "soft_unsealing", year: "2024", subtitle: "IABR11 Rotterdam", category: "art", 
+      tags: ["Collective Practice", "Installation"], fullDesc: "Exploring softening boundaries in urban contexts." },
+    { id: "09", title: "Old Airfield", slug: "old_airfield", year: "Ongoing", subtitle: "Chicago Biennial", category: "art", 
+      tags: ["Collective Practice", "Installation"], fullDesc: "Acoustic mirror cultural gateway exploring sound and spatial memory." },
+    { id: "10", title: "Enkidu", slug: "enkidu", year: "In Dev", subtitle: "Vernacular Revival", category: "architecture", 
+      tags: ["Vernacular", "Ecological"], fullDesc: "Reviving vernacular Palestinian architecture in Dier Ghassaneh." },
+    { id: "11", title: "Aura", slug: "aura", year: "2022", subtitle: "Folly Project", category: "art", 
+      tags: ["Installation", "Speculative"], fullDesc: "Exploring atmospheric qualities of architectural space." },
+    { id: "12", title: "Liberation Fronts", slug: "liberation_fronts", year: "2024", subtitle: "Diploma Thesis", category: "research", 
+      tags: ["Political", "Speculative"], fullDesc: "Exploring liberation fronts as spatial and political constructs." },
+    { id: "13", title: "Regutting", slug: "regutting", year: "2025", subtitle: "Wonder Cabinet", category: "art", 
+      tags: ["Residency", "Installation"], fullDesc: "Returns and remains through film, photography, and installation." },
+    { id: "14", title: "Agential Cartographies", slug: "agential_cartographies", year: "2025", subtitle: "Dar Jacir", category: "research", 
+      tags: ["Exhibition", "Political"], fullDesc: "Experimental mappings across three spatial typologies." },
+    { id: "15", title: "PhD Research", slug: "phd_research", year: "2024+", subtitle: "Die Angewandte", category: "education", 
+      tags: ["Material Research", "Pedagogy"], fullDesc: "Post-conflict material practice and rubble reuse." },
+    { id: "16", title: "Teaching at AAUP", slug: "teaching_aaup", year: "2025+", subtitle: "Arab American University", category: "education", 
+      tags: ["Pedagogy", "Vernacular"], fullDesc: "Faculty member at the Faculty of Architecture, AAUP, Palestine." }
+  ];
+
+  const allProjects = [];
+  for (const project of baseProjects) {
+    const imageCount = detectImageCount(project.slug);
+    const images = [];
+    for (let i = 1; i <= imageCount; i++) {
+      images.push(`${project.slug}_${i}.jpg`);
+    }
+    allProjects.push({ ...project, images });
+  }
+  return allProjects;
+}
+
+let allProjects = [];
+let noteZIndex = 100;
+let autoPlayIntervals = {};
+let activeFloatingWindows = [];
+let previewTimeout = null;
+
+// ========== STICKY NOTE MANAGER CLASS - FULL VERSION FROM INDEX (28).HTML ==========
+class StickyNoteManager {
+  constructor() {
+    this.notes = [];
+    this.tabs = [];
+    this.currentCategory = 'all';
+    this.closedProjects = new Map();
+    this.noteTabConnections = new Map();
+    this.isDraggingNote = false;
+  }
+
+  createNote(project, index, x, y, restoreData = null) {
+    const gridSize = 20;
+    const snappedX = Math.round(x / gridSize) * gridSize;
+    const snappedY = Math.round(y / gridSize) * gridSize;
+    
+    const cornerOffsets = [
+      { dx: 0, dy: 0 }, { dx: 140, dy: 0 }, { dx: 0, dy: 140 }, { dx: 140, dy: 140 }
+    ];
+    const corner = cornerOffsets[Math.floor(Math.random() * cornerOffsets.length)];
+    const finalX = snappedX + corner.dx;
+    const finalY = snappedY + corner.dy;
+
+    const note = document.createElement('div');
+    note.className = 'sticky-note';
+    note.setAttribute('data-project-idx', index);
+    note.setAttribute('data-category', project.category);
+    note.setAttribute('data-project-id', project.id);
+    note.style.left = `${finalX}px`;
+    note.style.top = `${finalY}px`;
+    note.style.zIndex = noteZIndex++;
+    
+    let currentImageIndex = restoreData ? restoreData.lastImageIndex : 0;
+
+    note.innerHTML = `
+      <div class="sticky-title">${project.id} · ${project.title}</div>
+      <div class="sticky-subtitle">${project.subtitle} (${project.year})</div>
+      <div class="sticky-preview">
+        <div class="sticky-preview-carousel">
+          <div class="sticky-preview-slides" id="preview-${project.id}" style="transform: translateX(0%);">
+            ${project.images.map(img => `<div class="sticky-preview-slide"><img src="images/${img}" onerror="this.src='https://placehold.co/200x100/f5f5f5/999?text=${project.title}'"></div>`).join('')}
+          </div>
+        </div>
+        <div class="sticky-preview-tags">
+          ${project.tags.slice(0,3).map(t => `<span class="sticky-preview-tag">${t}</span>`).join('')}
+        </div>
+      </div>
+      <img class="frozen-image" id="frozen-img-${project.id}" src="" style="display: none;">
+      <div class="sticky-note-controls">
+        <button class="minimize-note" title="Minimize">−</button>
+        <button class="close-note" title="Send to sidebar">✕</button>
+      </div>
+    `;
+    
+    if (restoreData && restoreData.lastImageIndex !== undefined) {
+      currentImageIndex = restoreData.lastImageIndex;
+      const slidesContainer = note.querySelector(`#preview-${project.id}`);
+      if (slidesContainer) {
+        slidesContainer.style.transform = `translateX(-${currentImageIndex * 100}%)`;
+      }
+    }
+
+    note.addEventListener('mouseenter', () => {
+      if (note.classList.contains('frozen')) return;
+      if (previewTimeout) clearTimeout(previewTimeout);
+      note.style.zIndex = 9999;
+      note.classList.add('preview-active');
+      this.startAutoPlay(project.id, note);
+    });
+
+    note.addEventListener('mouseleave', () => {
+      if (note.classList.contains('frozen')) return;
+      previewTimeout = setTimeout(() => {
+        note.classList.remove('preview-active');
+        this.stopAutoPlay(project.id);
+      }, 300);
+    });
+   
+    note.addEventListener('click', (e) => {
+      if (this.isDraggingNote) return;
+      if (e.target.closest('.sticky-note-controls')) return;
+      if (note.classList.contains('frozen')) return;
+      const rect = note.getBoundingClientRect();
+      this.openFloatingWindow(project, rect.left, rect.top, note);
+    });
+
+    note.addEventListener('touchend', (e) => {
+      if (this.isDraggingNote) return;
+      if (e.target.closest('.sticky-note-controls')) return;
+      if (note.classList.contains('frozen')) return;
+      e.preventDefault();
+      const rect = note.getBoundingClientRect();
+      this.openFloatingWindow(project, rect.left, rect.top, note);
+    });
+
+    const minimizeBtn = note.querySelector('.minimize-note');
+    minimizeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (note.classList.contains('frozen')) return;
+      if (note.classList.contains('minimized')) {
+        note.classList.remove('minimized');
+        note.style.width = '160px';
+      } else {
+        note.classList.add('minimized');
+        note.style.width = '120px';
+      }
+    });
+
+    const closeBtn = note.querySelector('.close-note');
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      
+      const rect = note.getBoundingClientRect();
+      const scrollX = window.scrollX || window.pageXOffset;
+      const scrollY = window.scrollY || window.pageYOffset;
+      const absoluteLeft = rect.left + scrollX;
+      const absoluteTop = rect.top + scrollY;
+      
+      note.style.position = 'absolute';
+      note.style.left = absoluteLeft + 'px';
+      note.style.top = absoluteTop + 'px';
+      
+      const slidesContainer = note.querySelector(`#preview-${project.id}`);
+      let lastImageIndex = 0;
+      if (slidesContainer) {
+        const transform = slidesContainer.style.transform;
+        const match = transform.match(/translateX\(-([0-9]+)%/);
+        if (match) lastImageIndex = parseInt(match[1]) / 100;
+      }
+      this.freezeNote(note, project, lastImageIndex);
+      this.addToSidebar(project, index, rect, lastImageIndex, note);
+    });
+
+    document.getElementById('stickyCanvas').appendChild(note);
+    this.notes.push(note);
+    return note;
+  }
+
+  freezeNote(note, project, lastImageIndex) {
+    const currentLeft = note.style.left;
+    const currentTop = note.style.top;
+    
+    note.classList.add('frozen');
+    note.style.border = '1px dashed var(--accent) !important';
+    note.style.boxShadow = 'none';
+    
+    note.style.left = currentLeft;
+    note.style.top = currentTop;
+    
+    const previewDiv = note.querySelector('.sticky-preview');
+    if (previewDiv) previewDiv.style.display = 'none';
+    const controls = note.querySelector('.sticky-note-controls');
+    if (controls) controls.style.display = 'none';
+    const subtitle = note.querySelector('.sticky-subtitle');
+    if (subtitle) subtitle.style.display = 'none';
+    
+    const frozenImg = note.querySelector('.frozen-image');
+    if (frozenImg) {
+      frozenImg.style.display = 'block';
+      frozenImg.style.width = '100%';
+      frozenImg.style.objectFit = 'cover';
+      frozenImg.style.marginBottom = '4px';
+      frozenImg.src = `images/${project.images[lastImageIndex]}`;
+      frozenImg.onerror = () => { frozenImg.src = 'https://placehold.co/200x80/f5f5f5/999?text=Image'; };
+    }
+    
+    const scaleOptions = [1, 1.5, 2, 2.5];
+    const randomScale = scaleOptions[Math.floor(Math.random() * scaleOptions.length)];
+    const baseWidth = 160;
+    const newWidth = baseWidth * randomScale;
+    
+    if (frozenImg) {
+      frozenImg.style.height = (80 * randomScale) + 'px';
+    }
+    
+    note.style.width = newWidth + 'px';
+    note.style.cursor = 'default';
+    note.setAttribute('data-frozen', 'true');
+    note.setAttribute('data-last-image-index', lastImageIndex);
+    note.setAttribute('data-frozen-scale', randomScale);
+  }
+
+  unfreezeNote(note, project, index) {
+    note.classList.remove('frozen');
+    note.style.border = '';
+    note.style.boxShadow = '';
+    note.style.cursor = 'pointer';
+    
+    const previewDiv = note.querySelector('.sticky-preview');
+    if (previewDiv) previewDiv.style.display = '';
+    const controls = note.querySelector('.sticky-note-controls');
+    if (controls) controls.style.display = '';
+    const subtitle = note.querySelector('.sticky-subtitle');
+    if (subtitle) subtitle.style.display = '';
+    const frozenImg = note.querySelector('.frozen-image');
+    if (frozenImg) {
+      frozenImg.style.display = 'none';
+      frozenImg.style.height = '80px';
+    }
+    
+    const lastIndex = parseInt(note.getAttribute('data-last-image-index')) || 0;
+    const slidesContainer = note.querySelector(`#preview-${project.id}`);
+    if (slidesContainer) {
+      slidesContainer.style.transform = `translateX(-${lastIndex * 100}%)`;
+    }
+    
+    note.removeAttribute('data-frozen');
+    note.removeAttribute('data-frozen-scale');
+    note.style.width = '160px';
+  }
+
+  startAutoPlay(projectId, note) {
+    const slidesContainer = note.querySelector(`#preview-${projectId}`);
+    if (!slidesContainer) return;
+    const slideCount = slidesContainer.children.length;
+    if (slideCount <= 1) return;
+    
+    if (autoPlayIntervals[projectId]) {
+      clearInterval(autoPlayIntervals[projectId]);
+      delete autoPlayIntervals[projectId];
+    }
+    
+    let currentIndex = 0;
+    const transform = slidesContainer.style.transform;
+    if (transform && transform !== 'none') {
+      const match = transform.match(/translateX\(-([0-9]+)%/);
+      if (match) currentIndex = parseInt(match[1]) / 100;
+    }
+    
+    autoPlayIntervals[projectId] = setInterval(() => {
+      if (note.classList && note.classList.contains('frozen')) return;
+      if (!note.classList.contains('preview-active')) return;
+      
+      currentIndex = (currentIndex + 1) % slideCount;
+      slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+      note.setAttribute('data-last-image-index', currentIndex);
+    }, 2000);
+  }
+
+  stopAutoPlay(projectId) {
+    if (autoPlayIntervals[projectId]) {
+      clearInterval(autoPlayIntervals[projectId]);
+      delete autoPlayIntervals[projectId];
+    }
+  }
     makeDraggable(element, project) {
-    let isDragging = false, startX, startY, startLeft, startTop;
+    let isDragging = false;
+    let startX, startY, startLeft, startTop;
     let touchStartX, touchStartY;
 
     element.addEventListener('mousedown', (e) => {
-      if (e.target.closest('.sticky-note-controls') || element.classList.contains('frozen')) return;
-      isDragging = true; this.isDraggingNote = true;
-      startX = e.clientX; startY = e.clientY;
-      startLeft = parseInt(element.style.left); startTop = parseInt(element.style.top);
-      element.style.zIndex = 9998; element.style.cursor = 'grabbing';
+      if (e.target.closest('.sticky-note-controls')) return;
+      if (element.classList.contains('frozen')) return;
+      isDragging = true;
+      this.isDraggingNote = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      startLeft = parseInt(element.style.left);
+      startTop = parseInt(element.style.top);
+      element.style.zIndex = 9998;
+      element.style.cursor = 'grabbing';
       e.preventDefault();
     });
 
     element.addEventListener('touchstart', (e) => {
-      if (e.target.closest('.sticky-note-controls') || element.classList.contains('frozen')) return;
+      if (e.target.closest('.sticky-note-controls')) return;
+      if (element.classList.contains('frozen')) return;
       e.preventDefault();
       const touch = e.touches[0];
-      isDragging = true; this.isDraggingNote = true;
-      touchStartX = touch.clientX; touchStartY = touch.clientY;
-      startLeft = parseInt(element.style.left); startTop = parseInt(element.style.top);
-      element.style.zIndex = 9998; element.style.cursor = 'grabbing';
+      isDragging = true;
+      this.isDraggingNote = true;
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      startLeft = parseInt(element.style.left);
+      startTop = parseInt(element.style.top);
+      element.style.zIndex = 9998;
+      element.style.cursor = 'grabbing';
     });
 
     const onMouseMove = (e) => {
@@ -905,36 +1385,59 @@
       const container = document.getElementById('stickyCanvas');
       const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
       const maxX = containerWidth - element.offsetWidth - 10;
+      const minX = 10;
+      
       let newLeft = startLeft + (e.clientX - startX);
       let newTop = startTop + (e.clientY - startY);
-      newLeft = Math.max(10, Math.min(newLeft, maxX));
-      const containerRect = container?.getBoundingClientRect();
+      
+      newLeft = Math.max(minX, Math.min(newLeft, maxX));
+      
+      const containerRect = container ? container.getBoundingClientRect() : null;
       let maxTop = window.innerHeight - 150;
-      if (containerRect) maxTop = containerRect.bottom - element.offsetHeight - 60;
+      if (containerRect) {
+        maxTop = containerRect.bottom - element.offsetHeight - 60;
+      }
       newTop = Math.max(60, Math.min(newTop, maxTop));
-      element.style.left = `${newLeft}px`; element.style.top = `${newTop}px`;
+      
+      element.style.left = `${newLeft}px`;
+      element.style.top = `${newTop}px`;
       this.updateConnectorLineForNote(element);
     };
-
+    
     const onTouchMove = (e) => {
       if (!isDragging) return;
       e.preventDefault();
       const container = document.getElementById('stickyCanvas');
       const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
       const maxX = containerWidth - element.offsetWidth - 10;
+      const minX = 10;
+      
       const touch = e.touches[0];
       let newLeft = startLeft + (touch.clientX - touchStartX);
       let newTop = startTop + (touch.clientY - touchStartY);
-      newLeft = Math.max(10, Math.min(newLeft, maxX));
+      
+      newLeft = Math.max(minX, Math.min(newLeft, maxX));
+      
       const canvas = document.getElementById('stickyCanvas');
       const canvasMaxY = canvas ? canvas.offsetHeight - 180 : window.innerHeight - 200;
       newTop = Math.max(60, Math.min(newTop, canvasMaxY));
-      element.style.left = `${newLeft}px`; element.style.top = `${newTop}px`;
+      
+      element.style.left = `${newLeft}px`;
+      element.style.top = `${newTop}px`;
       this.updateConnectorLineForNote(element);
     };
-
-    const onMouseUp = () => { isDragging = false; element.style.cursor = ''; setTimeout(() => this.isDraggingNote = false, 50); };
-    const onTouchEnd = () => { isDragging = false; element.style.cursor = ''; setTimeout(() => this.isDraggingNote = false, 50); };
+    
+    const onMouseUp = () => {
+      isDragging = false;
+      element.style.cursor = '';
+      setTimeout(() => { this.isDraggingNote = false; }, 50);
+    };
+    
+    const onTouchEnd = () => {
+      isDragging = false;
+      element.style.cursor = '';
+      setTimeout(() => { this.isDraggingNote = false; }, 50);
+    };
     
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
@@ -945,47 +1448,389 @@
   updateConnectorLineForNote(note) {
     const projectId = note.getAttribute('data-project-id');
     const tab = document.getElementById(`tab-${projectId}`);
-    if (tab) this.drawConnectorLine(projectId, note.getBoundingClientRect(), tab.getBoundingClientRect());
+    if (tab) {
+      const noteRect = note.getBoundingClientRect();
+      if (this.noteTabConnections.has(projectId)) {
+        const value = this.noteTabConnections.get(projectId);
+        value.noteRect = noteRect;
+        this.noteTabConnections.set(projectId, value);
+      } else {
+        this.noteTabConnections.set(projectId, { tab, noteRect });
+      }
+      this.drawLightConnectorLineFromNoteToTab(projectId, noteRect, tab);
+    }
   }
 
-  drawConnectorLine(projectId, noteRect, tabRect) {
+  drawLightConnectorLineFromNoteToTab(projectId, noteRect, tab) {
     const svg = document.getElementById('connectorSvg');
-    const existing = document.getElementById(`connector-${projectId}`);
-    if (existing) existing.remove();
+    const tabRect = tab.getBoundingClientRect();
+    
+    const startX = noteRect.right;
+    const startY = noteRect.top + noteRect.height / 2;
+    const endX = tabRect.left;
+    const endY = tabRect.top + tabRect.height / 2;
+    
+    const existingLine = document.getElementById(`connector-${projectId}`);
+    if (existingLine) existingLine.remove();
+    
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.id = `connector-${projectId}`;
     path.setAttribute('class', 'connector-line-tab');
-    const startX = noteRect.right, startY = noteRect.top + noteRect.height/2;
-    const endX = tabRect.left, endY = tabRect.top + tabRect.height/2;
+    
     const midX = startX + (endX - startX) * 0.3;
-    path.setAttribute('d', `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`);
+    const d = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
+    path.setAttribute('d', d);
     svg.appendChild(path);
+  }
+
+  updateConnectorLineForWindow(win, projectId, tab) {
+    if (!tab) tab = document.getElementById(`tab-${projectId}`);
+    if (tab && document.getElementById('connectorSvg').style.display !== 'none') {
+      const winRect = win.getBoundingClientRect();
+      const tabRect = tab.getBoundingClientRect();
+      const svg = document.getElementById('connectorSvg');
+      const existingLine = document.getElementById(`connector-window-${projectId}`);
+      if (existingLine) existingLine.remove();
+      
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.id = `connector-window-${projectId}`;
+      path.setAttribute('class', 'connector-line-tab');
+      
+      const startX = winRect.right;
+      const startY = winRect.top + winRect.height / 2;
+      const endX = tabRect.left;
+      const endY = tabRect.top + tabRect.height / 2;
+      const midX = startX + (endX - startX) * 0.3;
+      const d = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
+      path.setAttribute('d', d);
+      svg.appendChild(path);
+    }
+  }
+
+  removeWindowConnector(projectId) {
+    const line = document.getElementById(`connector-window-${projectId}`);
+    if (line) line.remove();
+  }
+
+  openFloatingWindow(project, clickX, clickY, note) {
+    if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
+    
+    const win = document.createElement('div');
+    win.className = 'floating-window';
+    win.setAttribute('data-id', project.id);
+    
+    const rect = note.getBoundingClientRect();
+    win.style.left = rect.left + 'px';
+    win.style.top = rect.top + 'px';
+    win.style.width = '500px';
+    win.style.height = 'auto';
+    
+    win.innerHTML = `
+      <div class="window-header">
+        <h3>${project.id} · ${project.title}</h3>
+        <div class="window-header-right">
+          <button class="window-minimize" title="Minimize">−</button>
+          <button class="window-close" title="Close">✕</button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="window-carousel">
+          <div class="window-slides" id="window-slides-${project.id}" style="display:flex;">
+            ${project.images.map(img => `<div class="window-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/500x280/f5f5f5/999?text=${encodeURIComponent(project.title)}'"></div>`).join('')}
+          </div>
+          <button class="window-prev" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; z-index:10;">‹</button>
+          <button class="window-next" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; z-index:10;">›</button>
+        </div>
+        <div class="window-tags">${project.tags.map(t => `<span class="window-tag">${t}</span>`).join('')}</div>
+        <div style="color: var(--accent); font-style: italic; font-size: 0.75rem;">${project.subtitle} (${project.year})</div>
+        <div style="font-size: 0.8rem; line-height: 1.5; color: var(--muted);">${project.fullDesc}</div>
+      </div>
+    `;
+    
+    document.body.appendChild(win);
+    activeFloatingWindows.push(win);
+    
+    const projectId = project.id;
+    const tab = document.getElementById(`tab-${projectId}`);
+    if (tab) this.updateConnectorLineForWindow(win, projectId, tab);
+    
+    const handles = ['top', 'right', 'bottom', 'left', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
+    handles.forEach(handle => {
+      const div = document.createElement('div');
+      div.className = `resize-handle resize-${handle}`;
+      win.appendChild(div);
+      
+      div.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const startWidth = win.offsetWidth;
+        const startHeight = win.offsetHeight;
+        const startLeft = win.offsetLeft;
+        const startTop = win.offsetTop;
+        
+        const onMouseMove = (moveEvent) => {
+          const dx = moveEvent.clientX - startX;
+          const dy = moveEvent.clientY - startY;
+          if (handle.includes('right')) win.style.width = Math.max(300, startWidth + dx) + 'px';
+          if (handle.includes('left')) {
+            win.style.width = Math.max(300, startWidth - dx) + 'px';
+            win.style.left = startLeft + dx + 'px';
+          }
+          if (handle.includes('bottom')) win.style.height = Math.max(200, startHeight + dy) + 'px';
+          if (handle.includes('top')) {
+            win.style.height = Math.max(200, startHeight - dy) + 'px';
+            win.style.top = startTop + dy + 'px';
+          }
+        };
+        
+        const onMouseUp = () => {
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+        };
+        
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      });
+    });
+    
+    let winCurrentIndex = 0;
+    const winSlides = win.querySelector('.window-slides');
+    const winSlideCount = project.images.length;
+    const winPrevBtn = win.querySelector('.window-prev');
+    const winNextBtn = win.querySelector('.window-next');
+    
+    winPrevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      winCurrentIndex = Math.max(0, winCurrentIndex - 1);
+      winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`;
+    });
+    
+    winNextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      winCurrentIndex = Math.min(winSlideCount - 1, winCurrentIndex + 1);
+      winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`;
+    });
+    
+    let isDragging = false;
+    let dragStartX, dragStartY, startLeft, startTop;
+    let rafId = null;
+    
+    win.addEventListener('mousedown', (e) => {
+      if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize') ||
+          e.target.classList.contains('window-prev') || e.target.classList.contains('window-next') ||
+          e.target.classList.contains('resize-handle')) return;
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      startLeft = win.offsetLeft;
+      startTop = win.offsetTop;
+      win.style.zIndex = 30000 + activeFloatingWindows.length;
+      e.preventDefault();
+    });
+    
+    win.addEventListener('touchstart', (e) => {
+      if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize') ||
+          e.target.classList.contains('window-prev') || e.target.classList.contains('window-next') ||
+          e.target.classList.contains('resize-handle')) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      isDragging = true;
+      dragStartX = touch.clientX;
+      dragStartY = touch.clientY;
+      startLeft = win.offsetLeft;
+      startTop = win.offsetTop;
+      win.style.zIndex = 30000 + activeFloatingWindows.length;
+    });
+    
+    const onWinMouseMove = (e) => {
+      if (!isDragging) return;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        win.style.left = (startLeft + (e.clientX - dragStartX)) + 'px';
+        win.style.top = (startTop + (e.clientY - dragStartY)) + 'px';
+        this.updateConnectorLineForWindow(win, project.id);
+        rafId = null;
+      });
+    };
+    
+    const onWinTouchMove = (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const touch = e.touches[0];
+        win.style.left = (startLeft + (touch.clientX - dragStartX)) + 'px';
+        win.style.top = (startTop + (touch.clientY - dragStartY)) + 'px';
+        this.updateConnectorLineForWindow(win, project.id);
+        rafId = null;
+      });
+    };
+    
+    const onWinMouseUp = () => {
+      isDragging = false;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = null;
+    };
+    
+    document.addEventListener('mousemove', onWinMouseMove);
+    document.addEventListener('mouseup', onWinMouseUp);
+    document.addEventListener('touchmove', onWinTouchMove, { passive: false });
+    document.addEventListener('touchend', onWinMouseUp);
+    
+    win.querySelector('.window-minimize').addEventListener('click', () => {
+      const noteEl = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
+      if (noteEl && !noteEl.classList.contains('frozen')) {
+        const noteRect = noteEl.getBoundingClientRect();
+        win.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        win.style.left = noteRect.left + 'px';
+        win.style.top = noteRect.top + 'px';
+        win.style.width = noteRect.width + 'px';
+        win.style.height = noteRect.height + 'px';
+        win.style.opacity = '0';
+        setTimeout(() => {
+          win.remove();
+          activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
+          noteEl.style.transform = 'scale(1.02)';
+          setTimeout(() => { noteEl.style.transform = ''; }, 300);
+        }, 500);
+      } else {
+        win.remove();
+        activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
+      }
+    });
+    
+    win.querySelector('.window-close').addEventListener('click', () => {
+      this.removeWindowConnector(project.id);
+      win.remove();
+      activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
+    });
+    
+    setTimeout(() => {
+      win.style.width = 'auto';
+      win.style.height = 'auto';
+    }, 10);
   }
 
   addToSidebar(project, index, noteRect, lastImageIndex, noteElement) {
     const sidebar = document.getElementById('sidebarTabs');
-    if (document.getElementById(`tab-${project.id}`)) return;
+    const existingTab = document.getElementById(`tab-${project.id}`);
+    if (existingTab) return;
+
     const tab = document.createElement('div');
     tab.className = 'sidebar-tab';
     tab.id = `tab-${project.id}`;
     tab.setAttribute('data-project-id', project.id);
     tab.setAttribute('data-category', project.category);
     tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
-    this.drawConnectorLine(project.id, noteRect, tab.getBoundingClientRect());
+
+    this.noteTabConnections.set(project.id, { tab, noteRect, lastImageIndex, noteElement });
+    this.drawLightConnectorLineFromNoteToTab(project.id, noteRect, tab);
+    
     tab.addEventListener('click', () => {
+      this.removeWindowConnector(project.id);
       if (noteElement && noteElement.parentNode) {
         this.unfreezeNote(noteElement, project, index);
-        document.getElementById(`connector-${project.id}`)?.remove();
+        const connectorLine = document.getElementById(`connector-${project.id}`);
+        if (connectorLine) connectorLine.remove();
+        this.noteTabConnections.delete(project.id);
       } else {
-        const newNote = this.createNote(project, index, noteRect.left, noteRect.top, { lastImageIndex: lastImageIndex || 0 });
-        this.makeDraggable(newNote, project);
+        const x = noteRect.left;
+        const y = noteRect.top;
+        this.createNote(project, index, x, y, { lastImageIndex: lastImageIndex || 0 });
+        const connectorLine = document.getElementById(`connector-${project.id}`);
+        if (connectorLine) connectorLine.remove();
+        this.noteTabConnections.delete(project.id);
       }
       tab.remove();
       this.tabs = this.tabs.filter(t => t !== tab);
-      this.noteTabConnections.delete(project.id);
+      if (tab.categoryObserver) tab.categoryObserver.disconnect();
     });
+    
+    const observeCategoryChange = () => {
+      const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all';
+      if (activeCategory === 'all' || project.category === activeCategory) {
+        tab.classList.remove('highlight');
+      } else {
+        tab.classList.add('highlight');
+      }
+    };
+    
+    const categoryObserver = new MutationObserver(observeCategoryChange);
+    const categoryContainer = document.getElementById('categoryFilters');
+    categoryObserver.observe(categoryContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
+    tab.categoryObserver = categoryObserver;
+
     sidebar.appendChild(tab);
     this.tabs.push(tab);
+    this.closedProjects.set(project.id, { project, index, noteRect, lastImageIndex, noteElement });
+  }
+    addToSidebarWithPosition(project, index, savedLeft, savedTop, lastImageIndex, noteElement) {
+    const sidebar = document.getElementById('sidebarTabs');
+    const existingTab = document.getElementById(`tab-${project.id}`);
+    if (existingTab) return;
+
+    const tab = document.createElement('div');
+    tab.className = 'sidebar-tab';
+    tab.id = `tab-${project.id}`;
+    tab.setAttribute('data-project-id', project.id);
+    tab.setAttribute('data-category', project.category);
+    tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
+    
+    tab.setAttribute('data-saved-left', savedLeft);
+    tab.setAttribute('data-saved-top', savedTop);
+    tab.setAttribute('data-saved-image-index', lastImageIndex);
+    tab.setAttribute('data-project-index', index);
+
+    tab.addEventListener('click', () => {
+      const restoreLeft = parseFloat(tab.getAttribute('data-saved-left'));
+      const restoreTop = parseFloat(tab.getAttribute('data-saved-top'));
+      const restoreImageIndex = parseInt(tab.getAttribute('data-saved-image-index')) || 0;
+      const projectIndex = parseInt(tab.getAttribute('data-project-index'));
+      const originalProject = allProjects[projectIndex];
+      
+      const newNote = this.createNote(originalProject, projectIndex, restoreLeft, restoreTop, { lastImageIndex: restoreImageIndex });
+      if (newNote) {
+        this.makeDraggable(newNote, originalProject);
+        this.notes.push(newNote);
+      }
+      
+      const connectorLine = document.getElementById(`connector-${project.id}`);
+      if (connectorLine) connectorLine.remove();
+      tab.remove();
+      this.tabs = this.tabs.filter(t => t !== tab);
+      if (tab.categoryObserver) tab.categoryObserver.disconnect();
+      this.noteTabConnections.delete(project.id);
+    });
+
+    const observeCategoryChange = () => {
+      const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all';
+      if (activeCategory === 'all' || project.category === activeCategory) {
+        tab.classList.remove('highlight');
+      } else {
+        tab.classList.add('highlight');
+      }
+    };
+    
+    const categoryObserver = new MutationObserver(observeCategoryChange);
+    const categoryContainer = document.getElementById('categoryFilters');
+    categoryObserver.observe(categoryContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
+    tab.categoryObserver = categoryObserver;
+
+    sidebar.appendChild(tab);
+    this.tabs.push(tab);
+    this.closedProjects.set(project.id, { project, index, noteRect: { left: savedLeft, top: savedTop }, lastImageIndex, noteElement });
+  }
+
+  updateAllConnectorLines() {
+    this.noteTabConnections.forEach((value, projectId) => {
+      const tab = document.getElementById(`tab-${projectId}`);
+      if (tab && value.noteRect) {
+        this.drawLightConnectorLineFromNoteToTab(projectId, value.noteRect, tab);
+      }
+    });
   }
 
   filterByCategory(category) {
@@ -999,140 +1844,613 @@
       const cat = tab.getAttribute('data-category');
       tab.style.display = (category === 'all' || cat === category) ? 'flex' : 'none';
     });
+    this.updateAllConnectorLines();
   }
 
   animateToGrid() {
     const container = document.getElementById('stickyCanvas');
     const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
-    const gridSize = 200, startX = 30, startY = 100;
+    const gridSize = 200;
+    const startX = 30;
+    const startY = 200;
     const cols = Math.floor((containerWidth - 60) / gridSize);
-    const visibleNotes = this.notes.filter(n => n.style.display !== 'none');
+    
+    const visibleNotes = this.notes.filter(note => note.style.display !== 'none');
+    
     visibleNotes.forEach((note, i) => {
-      const row = Math.floor(i / cols), col = i % cols;
-      note.style.transition = 'left 0.4s ease, top 0.4s ease';
-      note.style.left = `${startX + (col * gridSize)}px`;
-      note.style.top = `${startY + (row * gridSize)}px`;
-      setTimeout(() => note.style.transition = '', 400);
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      const targetX = startX + (col * gridSize);
+      const targetY = startY + (row * gridSize);
+      
+      note.style.transition = 'left 0.4s cubic-bezier(0.4, 0, 0.2, 1), top 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+      note.style.left = targetX + 'px';
+      note.style.top = targetY + 'px';
+      
+      setTimeout(() => {
+        note.style.transition = '';
+      }, 400);
+      
+      this.updateConnectorLineForNote(note);
+    });
+  }
+
+  highlightByCategory(category) {
+    if (category === 'all') {
+      this.notes.forEach(n => n.classList.remove('blurred', 'highlight'));
+      this.tabs.forEach(t => t.classList.remove('highlight'));
+      return;
+    }
+    this.notes.forEach(note => {
+      const cat = note.getAttribute('data-category');
+      if (cat === category) {
+        note.classList.add('highlight'); note.classList.remove('blurred');
+      } else if (this.currentCategory === 'all') {
+        note.classList.add('blurred'); note.classList.remove('highlight');
+      }
+    });
+    this.tabs.forEach(tab => {
+      const cat = tab.getAttribute('data-category');
+      if (cat === category) tab.classList.add('highlight');
+      else if (this.currentCategory === 'all') tab.classList.remove('highlight');
+    });
+    this.updateAllConnectorLines();
+  }
+
+  arrangeGrid() {
+    const container = document.getElementById('stickyCanvas');
+    const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+    const gridSize = 200;
+    const startX = 30;
+    const startY = 200;
+    const cols = Math.floor((containerWidth - 60) / gridSize);
+    this.notes.forEach((note, i) => {
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      const newX = startX + (col * gridSize);
+      const newY = startY + (row * gridSize);
+      note.style.left = `${newX}px`;
+      note.style.top = `${newY}px`;
+      this.updateConnectorLineForNote(note);
     });
   }
 
   randomizeArrangement() {
     const container = document.getElementById('stickyCanvas');
     const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
-    const maxX = containerWidth - 180, maxY = window.innerHeight - 200;
-    this.notes.forEach(note => {
-      note.style.left = `${20 + Math.random() * maxX}px`;
-      note.style.top = `${100 + Math.random() * maxY}px`;
+    const padding = 20;
+    const maxX = containerWidth - 180;
+    const maxY = window.innerHeight - 150;
+    this.notes.forEach((note) => {
+      const newX = padding + Math.random() * (maxX - padding);
+      const newY = 120 + Math.random() * (maxY - 120);
+      note.style.left = `${newX}px`;
+      note.style.top = `${newY}px`;
+      this.updateConnectorLineForNote(note);
     });
   }
 
-  hideAllLines() { document.getElementById('connectorSvg').style.display = 'none'; }
-  showAllLines() { document.getElementById('connectorSvg').style.display = 'block'; }
+  closeAllNotes() {
+    const notesToClose = [...this.notes];
+    
+    notesToClose.forEach((note) => {
+      if (note.classList.contains('frozen')) return;
+      
+      const projectId = note.getAttribute('data-project-id');
+      const project = allProjects.find(p => p.id === projectId);
+      const index = parseInt(note.getAttribute('data-project-idx'));
+      
+      const rect = note.getBoundingClientRect();
+      const scrollX = window.scrollX || window.pageXOffset;
+      const scrollY = window.scrollY || window.pageYOffset;
+      const absoluteLeft = rect.left + scrollX;
+      const absoluteTop = rect.top + scrollY;
+      
+      const slidesContainer = note.querySelector(`#preview-${projectId}`);
+      let lastImageIndex = 0;
+      if (slidesContainer) {
+        const transform = slidesContainer.style.transform;
+        const match = transform.match(/translateX\(-([0-9]+)%/);
+        if (match) lastImageIndex = parseInt(match[1]) / 100;
+      }
+      
+      note.setAttribute('data-stored-left', absoluteLeft);
+      note.setAttribute('data-stored-top', absoluteTop);
+      note.setAttribute('data-stored-image-index', lastImageIndex);
+      
+      this.addToSidebarWithPosition(project, index, absoluteLeft, absoluteTop, lastImageIndex, note);
+      
+      note.remove();
+    });
+    
+    this.notes = [];
+  }
+
+  hideAllLines() {
+    const svg = document.getElementById('connectorSvg');
+    svg.style.display = 'none';
+  }
+
+  showAllLines() {
+    const svg = document.getElementById('connectorSvg');
+    svg.style.display = 'block';
+    this.updateAllConnectorLines();
+    activeFloatingWindows.forEach(win => {
+      const projectId = win.getAttribute('data-id');
+      const tab = document.getElementById(`tab-${projectId}`);
+      if (tab) this.updateConnectorLineForWindow(win, projectId, tab);
+    });
+  }
 }
 
-// ========== TAG FILTERS ==========
+let manager;
+
+// ========== TAG FUNCTIONS ==========
 function createTagFilters() {
   const tagsBar = document.getElementById('canvasTagsBar');
-  const allTags = ["Ecological", "Vernacular", "Digital Fabrication", "Post-Conflict", "Material Research", "Speculative", "Collective Practice", "Pedagogy", "Installation", "Political", "Residency", "Exhibition"];
+  const consolidatedTags = [
+    "Ecological", "Vernacular", "Digital Fabrication", "Post-Conflict", 
+    "Material Research", "Speculative", "Collective Practice", "Pedagogy", 
+    "Installation", "Political", "Residency", "Exhibition"
+  ];
   tagsBar.innerHTML = '';
-  allTags.forEach(tag => {
+  consolidatedTags.forEach(tag => {
     const tagEl = document.createElement('div');
     tagEl.className = 'tag-filter';
     tagEl.textContent = tag;
-    tagEl.addEventListener('click', () => {
-      const projects = allProjects.filter(p => p.tags.includes(tag));
-      const grid = document.getElementById('resultsGrid');
-      document.getElementById('resultsTitle').textContent = `"${tag}" — ${projects.length} projects`;
-      grid.innerHTML = projects.map(p => `<div class="result-card" data-project-idx="${allProjects.indexOf(p)}"><strong>${p.id} · ${p.title}</strong><br>${p.subtitle} (${p.year})</div>`).join('');
-      document.querySelectorAll('.result-card').forEach(card => {
-        card.addEventListener('click', () => {
-          const idx = parseInt(card.getAttribute('data-project-idx'));
-          const rect = card.getBoundingClientRect();
-          if (manager) manager.openFloatingWindow?.(allProjects[idx], rect.left, rect.top);
-          document.getElementById('resultsModal').style.display = 'none';
-        });
-      });
-      document.getElementById('resultsModal').style.display = 'flex';
-    });
+    tagEl.setAttribute('data-tag', tag);
+    const projectsWithTag = allProjects.filter(p => p.tags.includes(tag));
+    const titles = projectsWithTag.map(p => `${p.id}. ${p.title}`).join(' · ');
+    tagEl.setAttribute('data-tooltip', titles);
+    tagEl.addEventListener('click', () => showProjectsByTag(tag));
     tagsBar.appendChild(tagEl);
   });
 }
 
-// ========== FLOATING WINDOW ==========
-StickyNoteManager.prototype.openFloatingWindow = function(project, clickX, clickY) {
-  if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
-  const win = document.createElement('div');
-  win.className = 'floating-window';
-  win.setAttribute('data-id', project.id);
-  win.style.position = 'fixed';
-  win.style.left = `${clickX}px`;
-  win.style.top = `${clickY}px`;
-  win.style.background = 'var(--modal-bg)';
-  win.style.border = '0.5px solid var(--rule)';
-  win.style.borderRadius = '8px';
-  win.style.width = '400px';
-  win.style.zIndex = '30000';
-  win.innerHTML = `<div style="background:var(--accent); padding:10px; display:flex; justify-content:space-between; border-radius:8px 8px 0 0;"><strong style="color:white;">${project.id} · ${project.title}</strong><button class="win-close" style="background:none; border:none; color:white; cursor:pointer; font-size:1.2rem;">✕</button></div><div style="padding:1rem;"><img src="images/${project.images[0]}" style="width:100%; border-radius:4px;" onerror="this.src='https://placehold.co/400x200/1a1a1a/FF3030?text=${project.title}'"><p style="margin-top:0.5rem; color:var(--muted);">${project.fullDesc}</p><div style="display:flex; gap:0.5rem; margin-top:0.5rem; flex-wrap:wrap;">${project.tags.map(t => `<span style="background:var(--accent); padding:2px 8px; border-radius:12px; font-size:0.6rem; color:white;">${t}</span>`).join('')}</div></div>`;
-  win.querySelector('.win-close').addEventListener('click', () => win.remove());
-  document.body.appendChild(win);
-};
+function showProjectsByTag(tag) {
+  const projects = allProjects.filter(p => p.tags.includes(tag));
+  const resultsGrid = document.getElementById('resultsGrid');
+  document.getElementById('resultsTitle').textContent = `"${tag}" — ${projects.length} projects`;
+  resultsGrid.innerHTML = '';
+  projects.forEach(project => {
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = `
+      <div class="card-title">${project.id} · ${project.title}</div>
+      <div class="card-subtitle">${project.subtitle} (${project.year})</div>
+      <div class="card-tags">${project.tags.map(t => `<span style="background:var(--accent); color:white; padding:2px 8px; border-radius:12px; font-size:0.5rem;">${t}</span>`).join('')}</div>
+    `;
+    card.addEventListener('click', () => { 
+      closeResultsModal(); 
+      if (manager) {
+        const rect = card.getBoundingClientRect();
+        manager.openFloatingWindow(project, rect.left, rect.top);
+      }
+    });
+    resultsGrid.appendChild(card);
+  });
+  document.getElementById('resultsModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeResultsModal() {
+  document.getElementById('resultsModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// ========== SPLIT VIEW FUNCTIONS ==========
+function openSplitViewForProject(index) {
+  const project = allProjects[index];
+  const splitView = document.getElementById('splitView');
+  splitView.innerHTML = `
+    <div class="split-pane">
+      <div style="background: var(--accent); padding: 0.8rem; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between;">
+        <h3 style="color: white; margin: 0; font-size: 0.7rem;">${project.id} · ${project.title}</h3>
+        <button onclick="closeSplitModal()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
+      </div>
+      <div style="padding: 1rem; overflow-y: auto; flex: 1;">
+        <div class="project-modal-carousel" style="position: relative;">
+          <div class="project-modal-slides" id="splitCarousel" style="display: flex; transition: transform 0.3s ease; overflow: hidden;">
+            ${project.images.map(img => `<div class="project-modal-slide" style="min-width: 100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'" style="width: 100%; height: auto; max-height: 400px; object-fit: contain; background: #f5f5f5;"></div>`).join('')}
+          </div>
+          <button class="project-modal-btn project-modal-prev" onclick="splitPrev()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">‹</button>
+          <button class="project-modal-btn project-modal-next" onclick="splitNext()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">›</button>
+        </div>
+        <div class="project-modal-tags" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">${project.tags.map(t => `<span style="background: var(--accent); color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.6rem;">${t}</span>`).join('')}</div>
+        <div class="project-modal-subtitle" style="color: var(--accent); font-style: italic; margin-top: 0.5rem;">${project.subtitle} (${project.year})</div>
+        <div class="project-modal-desc" style="margin-top: 1rem; font-size: 0.8rem; line-height: 1.5;">${project.fullDesc}</div>
+      </div>
+    </div>
+    <div class="split-pane" id="secondPane">
+      <div style="background: #ddd; padding: 0.8rem; border-radius: 12px 12px 0 0; text-align: center;">
+        <h3 style="color: #333; margin: 0; font-size: 0.7rem;">Select a project to compare</h3>
+      </div>
+      <div style="padding: 1rem; overflow-y: auto; flex: 1;">
+        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+          ${allProjects.filter(p => p.id !== project.id).map(p => `
+            <div class="result-card" onclick="loadCompareProject(${allProjects.findIndex(proj => proj.id === p.id)})">
+              <div class="card-title">${p.id} · ${p.title}</div>
+              <div class="card-subtitle">${p.subtitle} (${p.year})</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('splitModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  let splitCurrentIndex = 0;
+  window.splitPrev = () => {
+    const slides = document.getElementById('splitCarousel');
+    if (!slides) return;
+    splitCurrentIndex = Math.max(0, splitCurrentIndex - 1);
+    slides.style.transform = `translateX(-${splitCurrentIndex * 100}%)`;
+  };
+  window.splitNext = () => {
+    const slides = document.getElementById('splitCarousel');
+    if (!slides) return;
+    splitCurrentIndex = Math.min(project.images.length - 1, splitCurrentIndex + 1);
+    slides.style.transform = `translateX(-${splitCurrentIndex * 100}%)`;
+  };
+}
+
+function loadCompareProject(index) {
+  const project = allProjects[index];
+  const secondPane = document.getElementById('secondPane');
+  if (secondPane) {
+    secondPane.innerHTML = `
+      <div style="background: var(--accent); padding: 0.8rem; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between;">
+        <h3 style="color: white; margin: 0; font-size: 0.7rem;">${project.id} · ${project.title}</h3>
+        <button onclick="closeSplitModal()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
+      </div>
+      <div style="padding: 1rem; overflow-y: auto; flex: 1;">
+        <div class="project-modal-carousel" style="position: relative;">
+          <div class="project-modal-slides" id="compareCarousel" style="display: flex; transition: transform 0.3s ease; overflow: hidden;">
+            ${project.images.map(img => `<div class="project-modal-slide" style="min-width: 100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'" style="width: 100%; height: auto; max-height: 400px; object-fit: contain; background: #f5f5f5;"></div>`).join('')}
+          </div>
+          <button class="project-modal-btn project-modal-prev" onclick="comparePrev()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">‹</button>
+          <button class="project-modal-btn project-modal-next" onclick="compareNext()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">›</button>
+        </div>
+        <div class="project-modal-tags" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">${project.tags.map(t => `<span style="background: var(--accent); color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.6rem;">${t}</span>`).join('')}</div>
+        <div class="project-modal-subtitle" style="color: var(--accent); font-style: italic; margin-top: 0.5rem;">${project.subtitle} (${project.year})</div>
+        <div class="project-modal-desc" style="margin-top: 1rem; font-size: 0.8rem; line-height: 1.5;">${project.fullDesc}</div>
+      </div>
+    `;
+  }
+  let compareIndex = 0;
+  window.comparePrev = () => {
+    const slides = document.getElementById('compareCarousel');
+    if (!slides) return;
+    compareIndex = Math.max(0, compareIndex - 1);
+    slides.style.transform = `translateX(-${compareIndex * 100}%)`;
+  };
+  window.compareNext = () => {
+    const slides = document.getElementById('compareCarousel');
+    if (!slides) return;
+    compareIndex = Math.min(project.images.length - 1, compareIndex + 1);
+    slides.style.transform = `translateX(-${compareIndex * 100}%)`;
+  };
+}
+
+function closeSplitModal() {
+  const modal = document.getElementById('splitModal');
+  if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
+}
+
+// ========== GRID PLUS SIGNS ==========
+let gridPluses = [];
+let hiddenGroupsInterval;
+
+function initializeGridPluses() {
+  const container = document.getElementById('gridPlusContainer');
+  container.innerHTML = '';
+  gridPluses = [];
+  const scrollX = window.scrollX || window.pageXOffset;
+  const scrollY = window.scrollY || window.pageYOffset;
+  const gridSize = 20, padding = 200;
+  const startX = Math.floor((scrollX - padding) / gridSize) * gridSize;
+  const startY = Math.floor((scrollY - padding) / gridSize) * gridSize;
+  const endX = scrollX + window.innerWidth + padding;
+  const endY = scrollY + window.innerHeight + padding;
+  for (let x = startX; x < endX; x += gridSize * 2) {
+    for (let y = startY; y < endY; y += gridSize * 2) {
+      const plus = document.createElement('div');
+      plus.className = 'grid-plus';
+      plus.textContent = '+';
+      plus.style.left = `${x - scrollX}px`;
+      plus.style.top = `${y - scrollY}px`;
+      container.appendChild(plus);
+      gridPluses.push(plus);
+    }
+  }
+}
+
+let scrollUpdateTimeout;
+window.addEventListener('scroll', () => {
+  clearTimeout(scrollUpdateTimeout);
+  scrollUpdateTimeout = setTimeout(initializeGridPluses, 50);
+}, { passive: true });
+
+function hideRandomPlusGroups() {
+  if (hiddenGroupsInterval) clearInterval(hiddenGroupsInterval);
+  hiddenGroupsInterval = setInterval(() => {
+    gridPluses.forEach(p => p.classList.remove('hidden'));
+    
+    const hidePercentage = Math.random() * 0.45 + 0.4;
+    const hiddenCount = Math.floor(gridPluses.length * hidePercentage);
+    const positions = [];
+    
+    gridPluses.forEach((plus, idx) => {
+      const rect = plus.getBoundingClientRect();
+      positions.push({ x: Math.round(rect.left), y: Math.round(rect.top), idx });
+    });
+    
+    const patchCount = Math.floor(Math.random() * 18) + 8;
+    let totalHidden = 0;
+    const hiddenIndices = new Set();
+    
+    for (let p = 0; p < patchCount && totalHidden < hiddenCount; p++) {
+      const centerPlus = positions[Math.floor(Math.random() * positions.length)];
+      const patchRadius = Math.random() * 230 + 20;
+      const patchDensity = Math.random() * 0.7 + 0.2;
+      const shapeType = Math.floor(Math.random() * 5);
+      
+      positions.forEach(plus => {
+        if (hiddenIndices.has(plus.idx) || totalHidden >= hiddenCount) return;
+        const dx = plus.x - centerPlus.x, dy = plus.y - centerPlus.y;
+        let falloff;
+        
+        if (shapeType === 0) {
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          falloff = Math.exp(-Math.pow(distance / patchRadius, 2));
+        } else if (shapeType === 1) {
+          const rx = patchRadius * (Math.random() * 0.6 + 0.7);
+          const ry = patchRadius * (Math.random() * 0.6 + 0.7);
+          const distance = Math.sqrt((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry));
+          falloff = Math.exp(-Math.pow(distance, 2));
+        } else if (shapeType === 2) {
+          const distance = Math.max(Math.abs(dx), Math.abs(dy));
+          falloff = Math.exp(-Math.pow(distance / patchRadius, 2));
+        } else if (shapeType === 3) {
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const angle = Math.atan2(dy, dx);
+          const modulation = 0.5 + 0.5 * Math.cos(4 * angle);
+          falloff = Math.exp(-Math.pow(distance / (patchRadius * (0.6 + 0.4 * modulation)), 2));
+        } else {
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const skew = Math.random() * 3 + 0.8;
+          falloff = Math.exp(-Math.pow(distance / patchRadius, skew));
+        }
+        
+        if (Math.random() < falloff * patchDensity) {
+          hiddenIndices.add(plus.idx);
+          gridPluses[plus.idx].classList.add('hidden');
+          totalHidden++;
+        }
+      });
+    }
+    
+    const scatteredCount = Math.floor(gridPluses.length * 0.15);
+    for (let i = 0; i < scatteredCount && totalHidden < hiddenCount; i++) {
+      const randomIdx = Math.floor(Math.random() * gridPluses.length);
+      if (!hiddenIndices.has(randomIdx)) {
+        hiddenIndices.add(randomIdx);
+        gridPluses[randomIdx].classList.add('hidden');
+        totalHidden++;
+      }
+    }
+    
+    if (Math.random() < 0.3) {
+      const largeRadius = Math.random() * 300 + 100;
+      const largeCenter = positions[Math.floor(Math.random() * positions.length)];
+      positions.forEach(plus => {
+        if (hiddenIndices.has(plus.idx) || totalHidden >= hiddenCount) return;
+        const dx = plus.x - largeCenter.x, dy = plus.y - largeCenter.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < largeRadius && Math.random() < 0.7) {
+          hiddenIndices.add(plus.idx);
+          gridPluses[plus.idx].classList.add('hidden');
+          totalHidden++;
+        }
+      });
+    }
+  }, 800 + Math.random() * 3000);
+}
+
+// ========== CONNECTOR LINES FOR CATEGORY HOVER ==========
+let activeHoverLines = [];
+
+function clearHoverLines() {
+  const svg = document.getElementById('connectorSvg');
+  const linesToRemove = svg.querySelectorAll('.connector-line');
+  linesToRemove.forEach(line => line.remove());
+  activeHoverLines = [];
+}
+
+function drawFilletedLine(svg, x1, y1, x2, y2, opacity) {
+  const gridSize = 20;
+  const snappedX1 = Math.round(x1 / gridSize) * gridSize;
+  const snappedY1 = Math.round(y1 / gridSize) * gridSize;
+  const snappedX2 = Math.round(x2 / gridSize) * gridSize;
+  const snappedY2 = Math.round(y2 / gridSize) * gridSize;
+  const midY1 = snappedY1 + (snappedY2 - snappedY1) * 0.3;
+  const midY2 = snappedY1 + (snappedY2 - snappedY1) * 0.7;
+  const d = `M ${snappedX1} ${snappedY1} C ${snappedX1} ${midY1}, ${(snappedX1 + snappedX2) / 2} ${midY1}, ${(snappedX1 + snappedX2) / 2} ${(snappedY1 + snappedY2) / 2} C ${(snappedX1 + snappedX2) / 2} ${midY2}, ${snappedX2} ${midY2}, ${snappedX2} ${snappedY2}`;
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('class', 'connector-line');
+  path.setAttribute('d', d);
+  path.setAttribute('stroke-opacity', opacity);
+  svg.appendChild(path);
+  activeHoverLines.push(path);
+}
+
+function drawCategoryHoverLines(categoryEl) {
+  clearHoverLines();
+  const svg = document.getElementById('connectorSvg');
+  const gridSize = 20;
+  const category = categoryEl.getAttribute('data-category');
+  const catRect = categoryEl.getBoundingClientRect();
+  let startX = catRect.left + catRect.width / 2;
+  let startY = catRect.bottom + 3;
+  startX = Math.round(startX / gridSize) * gridSize;
+  startY = Math.round(startY / gridSize) * gridSize;
+  const notes = document.querySelectorAll('.sticky-note:not(.frozen)');
+  const tagFilters = document.querySelectorAll('.tag-filter');
+  notes.forEach(note => {
+    if (note.style.display === 'none') return;
+    const noteCat = note.getAttribute('data-category');
+    if (category !== 'all' && noteCat !== category) return;
+    const projectIdx = parseInt(note.getAttribute('data-project-idx'));
+    let matchingTags = [];
+    if (projectIdx >= 0 && projectIdx < allProjects.length) {
+      const project = allProjects[projectIdx];
+      matchingTags = Array.from(tagFilters).filter(tagEl => project.tags.includes(tagEl.textContent.trim()));
+    }
+    const noteRect = note.getBoundingClientRect();
+    let endX = noteRect.left + noteRect.width / 2;
+    let endY = noteRect.top - 3;
+    endX = Math.round(endX / gridSize) * gridSize;
+    endY = Math.round(endY / gridSize) * gridSize;
+    if (matchingTags.length > 0) {
+      const tagEl = matchingTags[0];
+      const tagRect = tagEl.getBoundingClientRect();
+      let tagX = tagRect.left + tagRect.width / 2;
+      let tagY = tagRect.bottom + 5;
+      tagX = Math.round(tagX / gridSize) * gridSize;
+      tagY = Math.round(tagY / gridSize) * gridSize;
+      drawFilletedLine(svg, startX, startY, tagX, tagY, 0.55);
+      drawFilletedLine(svg, tagX, tagY, endX, endY, 0.55);
+    } else {
+      drawFilletedLine(svg, startX, startY, endX, endY, 0.55);
+    }
+  });
+}
 
 // ========== INITIALIZE ==========
 function initialize() {
-  allProjects = buildProjects();
+  allProjects = buildProjectsWithDynamicImages();
+  
   manager = new StickyNoteManager();
+
   allProjects.forEach((project, i) => {
-    const maxX = document.getElementById('stickyCanvas').offsetWidth - 200;
-    const maxY = window.innerHeight - 300;
-    manager.createNote(project, i, 20 + Math.random() * maxX, 100 + Math.random() * maxY);
+    const container = document.getElementById('stickyCanvas');
+    const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+    const maxX = containerWidth - 180;
+    const maxY = window.innerHeight - 200;
+    const x = 20 + Math.random() * maxX;
+    const y = 150 + Math.random() * maxY;
+    manager.createNote(project, i, x, y);
     const noteEl = document.querySelector(`.sticky-note[data-project-idx="${i}"]`);
     if (noteEl) manager.makeDraggable(noteEl, project);
   });
-  createTagFilters();
+
+  setTimeout(createTagFilters, 800);
 
   const filters = document.querySelectorAll('#categoryFilters li');
-  filters.forEach(f => {
-    f.addEventListener('click', () => {
-      filters.forEach(f2 => f2.classList.remove('active'));
-      f.classList.add('active');
-      manager.filterByCategory(f.getAttribute('data-category'));
+  filters.forEach(filter => {
+    filter.addEventListener('click', () => {
+      const category = filter.getAttribute('data-category');
+      filters.forEach(f => f.classList.remove('active'));
+      filter.classList.add('active');
+      manager.filterByCategory(category);
+      setTimeout(() => {
+        manager.animateToGrid();
+      }, 50);
+      clearHoverLines();
+    });
+
+    filter.addEventListener('mouseenter', () => {
+      manager.highlightByCategory(filter.getAttribute('data-category'));
+      setTimeout(() => drawCategoryHoverLines(filter), 50);
+    });
+
+    filter.addEventListener('mouseleave', () => {
+      if (document.getElementById('connectorSvg').style.display !== 'none') clearHoverLines();
+      const activeCategory = document.querySelector('#categoryFilters li.active').getAttribute('data-category');
+      manager.highlightByCategory(activeCategory);
+      setTimeout(() => { if (manager) manager.updateAllConnectorLines(); }, 100);
     });
   });
 
-  document.getElementById('gridBtn').addEventListener('click', () => manager.animateToGrid());
-  document.getElementById('randomizeBtn').addEventListener('click', () => manager.randomizeArrangement());
-  document.getElementById('hideLinesBtn').addEventListener('click', () => manager.hideAllLines());
-  document.getElementById('showLinesBtn').addEventListener('click', () => manager.showAllLines());
-  
-  document.getElementById('openCvBtn').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('cvModal').style.display = 'flex'; document.body.style.overflow = 'hidden'; });
-  document.getElementById('closeCvBtn').addEventListener('click', () => { document.getElementById('cvModal').style.display = 'none'; document.body.style.overflow = 'auto'; });
-  document.getElementById('closeResultsBtn').addEventListener('click', () => { document.getElementById('resultsModal').style.display = 'none'; document.body.style.overflow = 'auto'; });
-  
-  // Dark/Light Theme Toggle - applies to entire site
-  const themeBtn = document.getElementById('themeBtn');
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark') {
-    document.body.classList.add('dark-theme');
-    themeBtn.innerHTML = '☀️ Light';
-  } else {
-    themeBtn.innerHTML = '🌓 Dark';
-  }
-  themeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('dark-theme');
-    if (document.body.classList.contains('dark-theme')) {
-      localStorage.setItem('theme', 'dark');
-      themeBtn.innerHTML = '☀️ Light';
-    } else {
-      localStorage.setItem('theme', 'light');
-      themeBtn.innerHTML = '🌓 Dark';
+  document.getElementById('openCvBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('cvModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  });
+  document.getElementById('closeCvBtn').addEventListener('click', () => {
+    document.getElementById('cvModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+  });
+  document.getElementById('cvModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('cvModal')) {
+      document.getElementById('cvModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
     }
   });
+
+  document.getElementById('closeResultsBtn').addEventListener('click', closeResultsModal);
+  document.getElementById('resultsModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('resultsModal')) closeResultsModal();
+  });
+
+  document.getElementById('splitModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('splitModal')) closeSplitModal();
+  });
   
-  window.addEventListener('click', (e) => { if (e.target === document.getElementById('cvModal')) { document.getElementById('cvModal').style.display = 'none'; document.body.style.overflow = 'auto'; } });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { document.getElementById('cvModal').style.display = 'none'; document.getElementById('resultsModal').style.display = 'none'; document.body.style.overflow = 'auto'; } });
+  window.addEventListener('resize', () => { if (manager) manager.updateAllConnectorLines(); });
+
+  const gridBtn = document.getElementById('gridBtn');
+  const randomizeBtn = document.getElementById('randomizeBtn');
+  const hideLinesBtn = document.getElementById('hideLinesBtn');
+  const showLinesBtn = document.getElementById('showLinesBtn');
+  
+  if (gridBtn) gridBtn.addEventListener('click', () => {
+    manager.animateToGrid();
+  });
+  if (randomizeBtn) randomizeBtn.addEventListener('click', () => manager.randomizeArrangement());
+  if (hideLinesBtn) hideLinesBtn.addEventListener('click', () => manager.hideAllLines());
+  if (showLinesBtn) showLinesBtn.addEventListener('click', () => manager.showAllLines());
+
+  const themeBtn = document.getElementById('themeBtn');
+  if (themeBtn) {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-theme');
+      themeBtn.innerHTML = '☀️ Light';
+    } else {
+      themeBtn.innerHTML = '🌓 Dark';
+    }
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-theme');
+      if (document.body.classList.contains('dark-theme')) {
+        localStorage.setItem('theme', 'dark');
+        themeBtn.innerHTML = '☀️ Light';
+      } else {
+        localStorage.setItem('theme', 'light');
+        themeBtn.innerHTML = '🌓 Dark';
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeResultsModal();
+      closeSplitModal();
+      document.getElementById('cvModal').style.display = 'none';
+    }
+  });
 }
 
-window.addEventListener('load', initialize);
+window.addEventListener('load', () => {
+  initializeGridPluses();
+  hideRandomPlusGroups();
+  initialize();
+});
+
+window.addEventListener('resize', initializeGridPluses);
+window.openSplitViewForProject = openSplitViewForProject;
+window.loadCompareProject = loadCompareProject;
+window.closeSplitModal = closeSplitModal;
 </script>
 </body>
 </html>
