@@ -1731,10 +1731,12 @@ let previewTimeout = null;
 
   // Animate filtered notes into smooth grid layout
   animateToGrid() {
-    const gridSize = 220;
-    const startX = 50;
+    const container = document.getElementById('stickyCanvas');
+    const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+    const gridSize = 200;
+    const startX = 30;
     const startY = 200;
-    const cols = Math.floor((window.innerWidth - 100) / gridSize);
+    const cols = Math.floor((containerWidth - 60) / gridSize);
     
     const visibleNotes = this.notes.filter(note => note.style.display !== 'none');
     
@@ -1755,7 +1757,6 @@ let previewTimeout = null;
       this.updateConnectorLineForNote(note);
     });
   }
-
   highlightByCategory(category) {
     if (category === 'all') {
       this.notes.forEach(n => n.classList.remove('blurred', 'highlight'));
@@ -1780,10 +1781,12 @@ let previewTimeout = null;
 
   // CONTROL BUTTON FUNCTIONS
   arrangeGrid() {
+    const container = document.getElementById('stickyCanvas');
+    const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
     const gridSize = 200;
-    const startX = 50;
+    const startX = 30;
     const startY = 200;
-    const cols = Math.floor((window.innerWidth - 100) / gridSize);
+    const cols = Math.floor((containerWidth - 60) / gridSize);
     this.notes.forEach((note, i) => {
       const row = Math.floor(i / cols);
       const col = i % cols;
@@ -1796,9 +1799,9 @@ let previewTimeout = null;
   }
 
   randomizeArrangement() {
-    const padding = 20;
     const container = document.getElementById('stickyCanvas');
     const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+    const padding = 20;
     const maxX = containerWidth - 180;
     const maxY = window.innerHeight - 150;
     this.notes.forEach((note) => {
