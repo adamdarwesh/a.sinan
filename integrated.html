@@ -944,7 +944,7 @@ class StickyNoteManager {
       const rect = note.getBoundingClientRect();
       this.openFloatingWindow(project, rect.left, rect.top, note);
     });
-     const expandBtn = note.querySelector('.expand-note');
+    const expandBtn = note.querySelector('.expand-note');
     expandBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (note.classList.contains('frozen')) return;
@@ -966,14 +966,16 @@ class StickyNoteManager {
     const closeBtn = note.querySelector('.close-note');
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      
+      // Get the EXACT current position WITHOUT changing the note's style
       const rect = note.getBoundingClientRect();
       const scrollX = window.scrollX || window.pageXOffset;
       const scrollY = window.scrollY || window.pageYOffset;
-      const absoluteLeft = rect.left + scrollX;
-      const absoluteTop = rect.top + scrollY;
-      note.style.position = 'absolute';
-      note.style.left = absoluteLeft + 'px';
-      note.style.top = absoluteTop + 'px';
+      
+      // Store position as data attributes (do NOT modify note.style.left/top)
+      note.setAttribute('data-stored-left', rect.left + scrollX);
+      note.setAttribute('data-stored-top', rect.top + scrollY);
+      
       const slidesContainer = note.querySelector(`#preview-${project.id}`);
       let lastImageIndex = 0;
       if (slidesContainer) {
@@ -981,28 +983,29 @@ class StickyNoteManager {
         const match = transform.match(/translateX\(-([0-9]+)%/);
         if (match) lastImageIndex = parseInt(match[1]) / 100;
       }
-      this.freezeNote(note, project, lastImageIndex);
-      this.addToSidebar(project, index, rect, lastImageIndex, note);
+      
+      // Freeze the note IN PLACE (without moving it)
+      this.freezeNoteInPlace(note, project, lastImageIndex);
+      this.addToSidebarWithPosition(project, index, parseFloat(note.getAttribute('data-stored-left')), parseFloat(note.getAttribute('data-stored-top')), lastImageIndex, note);
     });
     document.getElementById('stickyCanvas').appendChild(note);
     this.notes.push(note);
     return note;
   }
 
-  freezeNote(note, project, lastImageIndex) {
-    const currentLeft = note.style.left;
-    const currentTop = note.style.top;
+  freezeNoteInPlace(note, project, lastImageIndex) {
+    // Do NOT change left/top - keep the existing position
     note.classList.add('frozen');
     note.style.border = '1px dashed var(--accent) !important';
     note.style.boxShadow = 'none';
-    note.style.left = currentLeft;
-    note.style.top = currentTop;
+    
     const previewDiv = note.querySelector('.sticky-preview');
     if (previewDiv) previewDiv.style.display = 'none';
     const controls = note.querySelector('.sticky-note-controls');
     if (controls) controls.style.display = 'none';
     const subtitle = note.querySelector('.sticky-subtitle');
     if (subtitle) subtitle.style.display = 'none';
+    
     const frozenImg = note.querySelector('.frozen-image');
     if (frozenImg) {
       frozenImg.style.display = 'block';
@@ -1012,6 +1015,19 @@ class StickyNoteManager {
       frozenImg.src = `images/${project.images[lastImageIndex]}`;
       frozenImg.onerror = () => { frozenImg.src = 'https://placehold.co/200x80/f5f5f5/999?text=Image'; };
     }
+    
+    const scaleOptions = [1, 1.5, 2, 2.5];
+    const randomScale = scaleOptions[Math.floor(Math.random() * scaleOptions.length)];
+    const baseWidth = 160;
+    const newWidth = baseWidth * randomScale;
+    if (frozenImg) frozenImg.style.height = (80 * randomScale) + 'px';
+    
+    note.style.width = newWidth + 'px';
+    note.style.cursor = 'default';
+    note.setAttribute('data-frozen', 'true');
+    note.setAttribute('data-last-image-index', lastImageIndex);
+    note.setAttribute('data-frozen-scale', randomScale);
+  }
     const scaleOptions = [1, 1.5, 2, 2.5];
     const randomScale = scaleOptions[Math.floor(Math.random() * scaleOptions.length)];
     const baseWidth = 160;
@@ -1373,6 +1389,68 @@ class StickyNoteManager {
     const categoryContainer = document.getElementById('categoryFilters');
     categoryObserver.observe(categoryContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
     tab.categoryObserver = categoryObserver;
+    sidebar.appendChild(tab);
+    this.tabs.push(tab);
+    this.closedProjects.set(project.id, { project, index, noteRect: { left: savedLeft, top: savedTop }, lastImageIndex, noteElement });
+  }
+      addToSidebarWithPosition(project, index, savedLeft, savedTop, lastImageIndex, noteElement) {
+    const sidebar = document.getElementById('sidebarTabs');
+    const existingTab = document.getElementById(`tab-${project.id}`);
+    if (existingTab) return;
+
+    const tab = document.createElement('div');
+    tab.className = 'sidebar-tab';
+    tab.id = `tab-${project.id}`;
+    tab.setAttribute('data-project-id', project.id);
+    tab.setAttribute('data-category', project.category);
+    tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
+    
+    tab.setAttribute('data-saved-left', savedLeft);
+    tab.setAttribute('data-saved-top', savedTop);
+    tab.setAttribute('data-saved-image-index', lastImageIndex);
+    tab.setAttribute('data-project-index', index);
+
+    tab.addEventListener('click', () => {
+      const restoreLeft = parseFloat(tab.getAttribute('data-saved-left'));
+      const restoreTop = parseFloat(tab.getAttribute('data-saved-top'));
+      const restoreImageIndex = parseInt(tab.getAttribute('data-saved-image-index')) || 0;
+      const projectIndex = parseInt(tab.getAttribute('data-project-index'));
+      const originalProject = allProjects[projectIndex];
+      
+      // Remove the frozen note first
+      if (noteElement && noteElement.parentNode) {
+        noteElement.remove();
+      }
+      
+      // Create a NEW note at the EXACT saved position
+      const newNote = this.createNote(originalProject, projectIndex, restoreLeft, restoreTop, { lastImageIndex: restoreImageIndex });
+      if (newNote) {
+        this.makeDraggable(newNote, originalProject);
+        this.notes.push(newNote);
+      }
+      
+      const connectorLine = document.getElementById(`connector-${project.id}`);
+      if (connectorLine) connectorLine.remove();
+      tab.remove();
+      this.tabs = this.tabs.filter(t => t !== tab);
+      if (tab.categoryObserver) tab.categoryObserver.disconnect();
+      this.noteTabConnections.delete(project.id);
+    });
+
+    const observeCategoryChange = () => {
+      const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all';
+      if (activeCategory === 'all' || project.category === activeCategory) {
+        tab.classList.remove('highlight');
+      } else {
+        tab.classList.add('highlight');
+      }
+    };
+    
+    const categoryObserver = new MutationObserver(observeCategoryChange);
+    const categoryContainer = document.getElementById('categoryFilters');
+    categoryObserver.observe(categoryContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
+    tab.categoryObserver = categoryObserver;
+
     sidebar.appendChild(tab);
     this.tabs.push(tab);
     this.closedProjects.set(project.id, { project, index, noteRect: { left: savedLeft, top: savedTop }, lastImageIndex, noteElement });
