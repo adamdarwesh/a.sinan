@@ -11,39 +11,41 @@
   /* ========== RESET & ROOT VARIABLES ========== */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* Light Theme (default) */
+   /* Light Theme (default) */
   :root {
-    --bg: #000000;
-    --text: #ffffff;
+    --bg: #ffffff;
+    --text: #111111;
     --accent: #FF3030;
     --accent-light: #ff5555;
-    --muted: #aaaaaa;
-    --rule: rgba(255,255,255,0.2);
-    --grid-line: rgba(255,255,255,0.03);
+    --muted: #666666;
+    --rule: #e0e0e0;
+    --grid-line: #777777;
+    --grid-line-small: #eeeeee;
     --serif: 'Playfair Display', Georgia, serif;
     --body-serif: 'Cormorant Garamond', Georgia, serif;
     --mono: 'DM Mono', monospace;
     --paper: #fefefe;
     --ink: #111111;
     --warm-mid: #999999;
-    --grid-line-small: rgba(255,255,255,0.05);
-    --sidebar-bg: rgba(0,0,0,0.8);
+    --sidebar-bg: rgba(255,255,255,0.95);
     --modal-bg: #0a0a0a;
-    --card-bg: #1a1a1a;
-    --tag-bg: #555555;
-    --tag-text: #1a1a1a;
+    --card-bg: #fafafa;
+    --tag-bg: #FF3030;
+    --tag-text: white;
     --sticky-bg: #fefefe;
     --sticky-border: #e0e0e0;
     --sticky-title: #FF3030;
     --sticky-subtitle: #999999;
   }
 
-  /* Dark Theme - applies to everything */
+  /* Dark Theme */
   body.dark-theme {
     --bg: #000000;
     --text: #e0e0e0;
-    --rule: rgba(255,255,255,0.15);
-    --grid-line: rgba(255,255,255,0.05);
+    --muted: #aaaaaa;
+    --rule: #444444;
+    --grid-line: #444444;
+    --grid-line-small: #2a2a2a;
     --paper: #2d2d2d;
     --ink: #e0e0e0;
     --warm-mid: #888888;
@@ -51,7 +53,7 @@
     --modal-bg: #1a1a1a;
     --card-bg: #2d2d2d;
     --tag-bg: #555555;
-    --tag-text: #e0e0e0;
+    --tag-text: #1a1a1a;
     --sticky-bg: #2d2d2d;
     --sticky-border: #444444;
     --sticky-title: #cccccc;
@@ -70,6 +72,7 @@
   }
 
   /* Background grid from simple.html - adapts to theme */
+  /* Background grid - adapts to theme */
   body::before {
     content: "";
     position: fixed;
@@ -2340,11 +2343,6 @@ allProjects.forEach((project, i) => {
 });
 
 // Arrange them in grid immediately on load
-setTimeout(() => {
-  manager.animateToGrid();
-}, 100);
-
-// Then arrange them in a grid layout immediately
 setTimeout(() => {
   manager.animateToGrid();
 }, 100);
