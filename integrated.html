@@ -198,16 +198,16 @@
   }
 
   /* ========== STICKY CANVAS STYLES - NO SCROLL (overflow: hidden) ========== */
-  .sticky-canvas {
-    position: relative;
-    width: 100%;
-    min-height: 600px;
-    height: 600px;
-    overflow: hidden;
-    padding: 80px 80px 1rem 20px;
-    z-index: 3;
-    transition: background 0.3s ease;
-  }
+.sticky-canvas {
+  position: relative;
+  width: 100%;
+  min-height: 800px;
+  height: 800px;
+  overflow: hidden;
+  padding: 60px 80px 1rem 20px;
+  z-index: 3;
+  transition: background 0.3s ease;
+}
 
   .sticky-note {
     position: absolute;
@@ -1852,7 +1852,7 @@ class StickyNoteManager {
     const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
     const gridSize = 200;
     const startX = 30;
-    const startY = 200;
+    const startY = 80;
     const cols = Math.floor((containerWidth - 60) / gridSize);
     
     const visibleNotes = this.notes.filter(note => note.style.display !== 'none');
@@ -1902,7 +1902,7 @@ class StickyNoteManager {
     const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
     const gridSize = 200;
     const startX = 30;
-    const startY = 200;
+    const startY = 80;
     const cols = Math.floor((containerWidth - 60) / gridSize);
     this.notes.forEach((note, i) => {
       const row = Math.floor(i / cols);
@@ -2332,12 +2332,17 @@ function initialize() {
   
   manager = new StickyNoteManager();
 
-// First create all notes at temporary positions
+// Create all notes at temporary positions
 allProjects.forEach((project, i) => {
   manager.createNote(project, i, 0, 0);
   const noteEl = document.querySelector(`.sticky-note[data-project-idx="${i}"]`);
   if (noteEl) manager.makeDraggable(noteEl, project);
 });
+
+// Arrange them in grid immediately on load
+setTimeout(() => {
+  manager.animateToGrid();
+}, 100);
 
 // Then arrange them in a grid layout immediately
 setTimeout(() => {
