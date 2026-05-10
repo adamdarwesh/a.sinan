@@ -442,10 +442,11 @@
   .sticky-note.highlight { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
 
   /* ========== SIDEBAR TABS - inside canvas, right edge ========== */
+  /* ========== SIDEBAR TABS - inside canvas, above control panel, appears after scroll ========== */
   .sidebar-tabs {
     position: absolute;
-    right: 10px;
-    top: 80px;
+    right: 0;
+    bottom: 140px;
     width: 100px;
     background: var(--sidebar-bg);
     backdrop-filter: blur(8px);
@@ -456,12 +457,19 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
-    max-height: 500px;
+    max-height: 300px;
     overflow-y: auto;
     pointer-events: auto;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
   }
 
+  /* Show sidebar tabs after scroll */
+  .sidebar-tabs.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
   .sidebar-tab {
     padding: 5px 8px;
     font-size: 0.45rem;
