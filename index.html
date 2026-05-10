@@ -1309,103 +1309,105 @@ let previewTimeout = null;
     }
   }
 
-  makeDraggable(element, project) {
-    let isDragging = false;
-    let startX, startY, startLeft, startTop;
-    let touchStartX, touchStartY;
+makeDraggable(element, project) {
+  let isDragging = false;
+  let startX, startY, startLeft, startTop;
+  let touchStartX, touchStartY;
 
-    element.addEventListener('mousedown', (e) => {
-      if (e.target.closest('.sticky-note-controls')) return;
-      if (element.classList.contains('frozen')) return;
-      isDragging = true;
-      this.isDraggingNote = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      startLeft = parseInt(element.style.left);
-      startTop = parseInt(element.style.top);
-      element.style.zIndex = 9998;
-      element.style.cursor = 'grabbing';
-      e.preventDefault();
-    });
+  element.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.sticky-note-controls')) return;
+    if (element.classList.contains('frozen')) return;
+    isDragging = true;
+    this.isDraggingNote = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = parseInt(element.style.left);
+    startTop = parseInt(element.style.top);
+    element.style.zIndex = 9998;
+    element.style.cursor = 'grabbing';
+    e.preventDefault();
+  });
 
-    element.addEventListener('touchstart', (e) => {
-      if (e.target.closest('.sticky-note-controls')) return;
-      if (element.classList.contains('frozen')) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      isDragging = true;
-      this.isDraggingNote = true;
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
-      startLeft = parseInt(element.style.left);
-      startTop = parseInt(element.style.top);
-      element.style.zIndex = 9998;
-      element.style.cursor = 'grabbing';
-    });
+  element.addEventListener('touchstart', (e) => {
+    if (e.target.closest('.sticky-note-controls')) return;
+    if (element.classList.contains('frozen')) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    isDragging = true;
+    this.isDraggingNote = true;
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    startLeft = parseInt(element.style.left);
+    startTop = parseInt(element.style.top);
+    element.style.zIndex = 9998;
+    element.style.cursor = 'grabbing';
+  });
 
-    const onMouseMove = (e) => {
-      if (!isDragging) return;
-      const container = document.getElementById('stickyCanvas');
-      const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
-      const maxX = containerWidth - element.offsetWidth - 10;
-      const minX = 10;
-      
-      let newLeft = startLeft + (e.clientX - startX);
-      let newTop = startTop + (e.clientY - startY);
-      
-      newLeft = Math.max(minX, Math.min(newLeft, maxX));
-      const container = document.getElementById('stickyCanvas');
-const containerRect = container ? container.getBoundingClientRect() : null;
-let maxTop = window.innerHeight - 150;
-if (containerRect) {
-  maxTop = containerRect.bottom - element.offsetHeight - 60;
+  const onMouseMove = (e) => {
+    if (!isDragging) return;
+    const container = document.getElementById('stickyCanvas');
+    const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+    const maxX = containerWidth - element.offsetWidth - 10;
+    const minX = 10;
+    
+    let newLeft = startLeft + (e.clientX - startX);
+    let newTop = startTop + (e.clientY - startY);
+    
+    newLeft = Math.max(minX, Math.min(newLeft, maxX));
+    
+    // Fix: Use containerRect for maxTop calculation
+    const containerRect = container ? container.getBoundingClientRect() : null;
+    let maxTop = window.innerHeight - 150;
+    if (containerRect) {
+      maxTop = containerRect.bottom - element.offsetHeight - 60;
+    }
+    newTop = Math.max(60, Math.min(newTop, maxTop));
+    
+    element.style.left = `${newLeft}px`;
+    element.style.top = `${newTop}px`;
+    this.updateConnectorLineForNote(element);
+  };
+  
+  const onTouchMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const container = document.getElementById('stickyCanvas');
+    const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
+    const maxX = containerWidth - element.offsetWidth - 10;
+    const minX = 10;
+    
+    const touch = e.touches[0];
+    let newLeft = startLeft + (touch.clientX - touchStartX);
+    let newTop = startTop + (touch.clientY - touchStartY);
+    
+    newLeft = Math.max(minX, Math.min(newLeft, maxX));
+    
+    const canvas = document.getElementById('stickyCanvas');
+    const canvasMaxY = canvas ? canvas.offsetHeight - 180 : window.innerHeight - 200;
+    newTop = Math.max(60, Math.min(newTop, canvasMaxY));
+    
+    element.style.left = `${newLeft}px`;
+    element.style.top = `${newTop}px`;
+    this.updateConnectorLineForNote(element);
+  };
+  
+  const onMouseUp = () => {
+    isDragging = false;
+    element.style.cursor = '';
+    setTimeout(() => { this.isDraggingNote = false; }, 50);
+  };
+  
+  const onTouchEnd = () => {
+    isDragging = false;
+    element.style.cursor = '';
+    setTimeout(() => { this.isDraggingNote = false; }, 50);
+  };
+  
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+  document.addEventListener('touchmove', onTouchMove, { passive: false });
+  document.addEventListener('touchend', onTouchEnd);
 }
-newTop = Math.max(60, Math.min(newTop, maxTop));
-      
-      element.style.left = `${newLeft}px`;
-      element.style.top = `${newTop}px`;
-      this.updateConnectorLineForNote(element);
-    };
-    
-    const onTouchMove = (e) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      const container = document.getElementById('stickyCanvas');
-      const containerWidth = container ? container.offsetWidth : window.innerWidth * 0.75;
-      const maxX = containerWidth - element.offsetWidth - 10;
-      const minX = 10;
-      
-      const touch = e.touches[0];
-      let newLeft = startLeft + (touch.clientX - touchStartX);
-      let newTop = startTop + (touch.clientY - touchStartY);
-      
-      newLeft = Math.max(minX, Math.min(newLeft, maxX));
- const canvas = document.getElementById('stickyCanvas');
-const canvasMaxY = canvas ? canvas.offsetHeight - 180 : window.innerHeight - 200;
-newTop = Math.max(60, Math.min(newTop, canvasMaxY));
-      
-      element.style.left = `${newLeft}px`;
-      element.style.top = `${newTop}px`;
-      this.updateConnectorLineForNote(element);
-    };
-    
-    const onMouseUp = () => {
-      isDragging = false;
-      element.style.cursor = '';
-      setTimeout(() => { this.isDraggingNote = false; }, 50);
-    };
-    
-    const onTouchEnd = () => {
-      isDragging = false;
-      element.style.cursor = '';
-      setTimeout(() => { this.isDraggingNote = false; }, 50);
-    };
-    
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-    document.addEventListener('touchmove', onTouchMove, { passive: false });
-    document.addEventListener('touchend', onTouchEnd);
-  }
 
   updateConnectorLineForNote(note) {
     const projectId = note.getAttribute('data-project-id');
