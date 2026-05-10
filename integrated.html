@@ -1705,6 +1705,7 @@ function initEntranceAnimation() {
   const heroRight = document.querySelector('.hero-right');
   const navName = document.querySelector('.nav-name');
   const scrollProgress = document.getElementById('scrollProgress');
+  const sidebarTabs = document.querySelector('.sidebar-tabs');
   if (navName) navName.textContent = 'Ad(h)am Sinan';
   window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
@@ -1716,6 +1717,13 @@ function initEntranceAnimation() {
     if (heroSection) { const newMinHeight = Math.max(0, 100 - progress * 100); heroSection.style.minHeight = `${newMinHeight}vh`; }
     if (stickyWrapper) { let canvasProgress = Math.max(0, (progress - 0.2) / 0.8); stickyWrapper.style.opacity = Math.min(1, canvasProgress); if (canvasProgress >= 0.9) stickyWrapper.classList.add('visible'); }
     if (heroRight) { let rightProgress = Math.max(0, (progress - 0.3) / 0.7); heroRight.style.opacity = Math.min(1, rightProgress); if (rightProgress >= 0.8) heroRight.classList.add('visible'); }
+        if (sidebarTabs) {
+      if (progress >= 0.9) {
+        sidebarTabs.classList.add('visible');
+      } else {
+        sidebarTabs.classList.remove('visible');
+      }
+    }
     if (progress >= 0.9) { heroSection.classList.add('collapsed'); } else { heroSection.classList.remove('collapsed'); }
   });
   setTimeout(() => { window.dispatchEvent(new Event('scroll')); }, 100);
