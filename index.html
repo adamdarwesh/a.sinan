@@ -1354,7 +1354,13 @@ let previewTimeout = null;
       let newTop = startTop + (e.clientY - startY);
       
       newLeft = Math.max(minX, Math.min(newLeft, maxX));
-      newTop = Math.max(60, Math.min(newTop, window.innerHeight - 100));
+      const container = document.getElementById('stickyCanvas');
+const containerRect = container ? container.getBoundingClientRect() : null;
+let maxTop = window.innerHeight - 150;
+if (containerRect) {
+  maxTop = containerRect.bottom - element.offsetHeight - 60;
+}
+newTop = Math.max(60, Math.min(newTop, maxTop));
       
       element.style.left = `${newLeft}px`;
       element.style.top = `${newTop}px`;
