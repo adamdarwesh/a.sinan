@@ -389,6 +389,47 @@
 
   .sidebar-tab:hover { border-color: var(--accent); color: var(--accent); }
   .sidebar-tab.highlight { border-color: var(--accent); background: var(--accent); color: white; }
+    /* ========== CONTROL PANEL INSIDE CANVAS (matching sidebar tabs style) ========== */
+  .canvas-control-panel {
+    position: absolute;
+    right: 10px;
+    bottom: 20px;
+    width: 100px;
+    background: var(--sidebar-bg);
+    backdrop-filter: blur(8px);
+    border-left: 1px solid var(--accent);
+    border-radius: 8px 0 0 8px;
+    padding: 0.5rem;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    pointer-events: auto;
+    transition: background 0.3s ease;
+  }
+
+  .canvas-control-panel .ctrl-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 0.45rem;
+    cursor: pointer;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background 0.2s ease;
+    width: 100%;
+  }
+
+  .canvas-control-panel .ctrl-btn:hover {
+    background: var(--accent-light);
+  }
+
+  body.dark-theme .canvas-control-panel {
+    background: rgba(30,30,30,0.95);
+  }
     /* ========== CATEGORY FILTERS (right column) ========== */
   .category-filters {
     list-style: none;
@@ -995,6 +1036,30 @@
     </ul>
   </div>
 </div>
+  <!-- HERO SECTION: 75% Sticky Canvas / 25% Categories -->
+<div class="hero">
+  <div class="hero-canvas">
+    <div class="sticky-canvas" id="stickyCanvas"></div>
+    <div class="sidebar-tabs" id="sidebarTabs"></div>
+    <div class="canvas-tags-bar" id="canvasTagsBar"></div>
+    <div class="canvas-control-panel" id="canvasControlPanel">
+      <button class="ctrl-btn" id="gridBtn" title="Arrange sticky notes in grid">Grid</button>
+      <button class="ctrl-btn" id="randomizeBtn" title="Randomize notes">Randomize</button>
+      <button class="ctrl-btn" id="hideLinesBtn" title="Hide connector lines">Hide Lines</button>
+      <button class="ctrl-btn" id="showLinesBtn" title="Show connector lines">Show Lines</button>
+      <button class="ctrl-btn" id="themeBtn" title="Switch theme">🌓 Theme</button>
+    </div>
+  </div>
+  <div class="hero-right">
+    <ul class="category-filters" id="categoryFilters">
+      <li data-category="all" class="active">All</li>
+      <li data-category="architecture">Architecture</li>
+      <li data-category="art">Art</li>
+      <li data-category="research">Research</li>
+      <li data-category="education">Education</li>
+    </ul>
+  </div>
+</div>
 
 <!-- GRID PLUS CONTAINER -->
 <div id="gridPlusContainer"></div>
@@ -1036,14 +1101,6 @@
   <span>© 2025</span>
 </footer>
 
-<!-- CONTROL PANEL -->
-<div class="control-panel">
-  <button class="ctrl-btn" id="gridBtn" title="Arrange sticky notes in grid">Grid</button>
-  <button class="ctrl-btn" id="randomizeBtn" title="Randomize notes">Randomize</button>
-  <button class="ctrl-btn" id="hideLinesBtn" title="Hide connector lines">Hide Lines</button>
-  <button class="ctrl-btn" id="showLinesBtn" title="Show connector lines">Show Lines</button>
-  <button class="ctrl-btn" id="themeBtn" title="Switch theme">🌓 Theme</button>
-</div>
   <script>
 // ========== PROJECT DATA - EXACTLY FROM INDEX (28).HTML ==========
 function detectImageCount(projectSlug) {
