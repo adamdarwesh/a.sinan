@@ -1756,34 +1756,89 @@ function initEntranceAnimation() {
   const navName = document.querySelector('.nav-name');
   const scrollProgress = document.getElementById('scrollProgress');
   const sidebarTabs = document.querySelector('.sidebar-tabs');
+  const tagsBar = document.querySelector('.canvas-tags-bar');
+  
   if (navName) navName.textContent = 'Ad(h)am Sinan';
+  
   window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
     const maxScroll = 500;
     let progress = Math.min(scrollY / maxScroll, 1);
+    
     if (scrollProgress) scrollProgress.style.width = `${progress * 100}%`;
-    if (entranceContent) { entranceContent.style.opacity = Math.max(0, 1 - progress * 1.2); entranceContent.style.transform = `translateY(-${progress * 40}px)`; if (progress >= 0.8) entranceContent.style.pointerEvents = 'none'; }
-    if (nameWrapper) { nameWrapper.style.transform = `translateY(-${progress * 50}px)`; nameWrapper.style.opacity = Math.max(0, 1 - progress * 1.1); if (navName) { if (progress > 0.3) { navName.style.opacity = '1'; if (progress > 0.7) navName.classList.add('large'); } else { navName.style.opacity = '0.7'; } } }
-    if (heroSection) { const newMinHeight = Math.max(0, 100 - progress * 100); heroSection.style.minHeight = `${newMinHeight}vh`; }
-    if (stickyWrapper) { let canvasProgress = Math.max(0, (progress - 0.2) / 0.8); stickyWrapper.style.opacity = Math.min(1, canvasProgress); if (canvasProgress >= 0.9) stickyWrapper.classList.add('visible'); }
-    if (heroRight) { let rightProgress = Math.max(0, (progress - 0.3) / 0.7); heroRight.style.opacity = Math.min(1, rightProgress); if (rightProgress >= 0.8) heroRight.classList.add('visible'); }
-        if (sidebarTabs) {
-      if (progress >= 0.9) {
+    
+    // Entrance content fades out
+    if (entranceContent) { 
+      entranceContent.style.opacity = Math.max(0, 1 - progress * 1.2); 
+      entranceContent.style.transform = `translateY(-${progress * 40}px)`; 
+      if (progress >= 0.8) entranceContent.style.pointerEvents = 'none'; 
+    }
+    
+    // Name wrapper animation
+    if (nameWrapper) { 
+      nameWrapper.style.transform = `translateY(-${progress * 50}px)`; 
+      nameWrapper.style.opacity = Math.max(0, 1 - progress * 1.1); 
+      if (navName) { 
+        if (progress > 0.3) { 
+          navName.style.opacity = '1'; 
+          if (progress > 0.7) navName.classList.add('large'); 
+        } else { 
+          navName.style.opacity = '0.7'; 
+        } 
+      } 
+    }
+    
+    // Hero section min-height
+    if (heroSection) { 
+      const newMinHeight = Math.max(0, 100 - progress * 100); 
+      heroSection.style.minHeight = `${newMinHeight}vh`; 
+    }
+    
+    // FIXED: Sticky wrapper appears at 10% scroll, fully visible by 60%
+    if (stickyWrapper) { 
+      let canvasProgress = Math.max(0, (progress - 0.1) / 0.5);
+      canvasProgress = Math.min(1, canvasProgress);
+      stickyWrapper.style.opacity = canvasProgress;
+      // Make sure it becomes visible even if progress < 0.9
+      if (canvasProgress > 0.05) {
+        stickyWrapper.classList.add('visible');
+      }
+    }
+    
+    // Right column appears
+    if (heroRight) { 
+      let rightProgress = Math.max(0, (progress - 0.2) / 0.6);
+      rightProgress = Math.min(1, rightProgress);
+      heroRight.style.opacity = rightProgress; 
+      if (rightProgress > 0.05) heroRight.classList.add('visible'); 
+    }
+    
+    // Sidebar tabs
+    if (sidebarTabs) {
+      if (progress >= 0.7) {
         sidebarTabs.classList.add('visible');
       } else {
         sidebarTabs.classList.remove('visible');
       }
     }
-    const tagsBar = document.querySelector('.canvas-tags-bar');
-if (tagsBar) {
-    if (progress >= 0.85) {
+    
+    // Tags bar
+    if (tagsBar) {
+      if (progress >= 0.65) {
         tagsBar.style.opacity = '1';
-    } else {
+      } else {
         tagsBar.style.opacity = '0';
+      }
     }
-}
-    if (progress >= 0.9) { heroSection.classList.add('collapsed'); } else { heroSection.classList.remove('collapsed'); }
+    
+    if (progress >= 0.9) { 
+      heroSection.classList.add('collapsed'); 
+    } else { 
+      heroSection.classList.remove('collapsed'); 
+    }
   });
+  
+  // Trigger initial scroll to set proper state
   setTimeout(() => { window.dispatchEvent(new Event('scroll')); }, 100);
 }
 
