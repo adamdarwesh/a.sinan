@@ -492,7 +492,7 @@
   .sidebar-tab.highlight { border-color: var(--accent); background: var(--accent); color: white; }
 
   /* ========== CONTROL PANEL INSIDE CANVAS ========== */
-  .canvas-control-panel {
+.canvas-control-panel {
     position: absolute;
     right: 10px;
     bottom: 20px;
@@ -508,7 +508,7 @@
     gap: 5px;
     pointer-events: auto;
     transition: background 0.3s ease;
-  }
+}
   .canvas-control-panel .ctrl-btn {
     background: var(--accent);
     color: white;
@@ -554,22 +554,23 @@
   body.dark-theme .category-filters li.active { color: #ffffff; }
 
   /* ========== TAGS BAR (inside sticky canvas, top) ========== */
-  .canvas-tags-bar {
+.canvas-tags-bar {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 120px;
+    top: 60px;
+    left: 20px;
+    right: 140px;
     background: rgba(0,0,0,0.7);
     backdrop-filter: blur(8px);
     border-radius: 8px;
-    padding: 0.5rem;
+    padding: 0.5rem 1rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
-    z-index: 50;
+    gap: 0.5rem;
+    z-index: 200;
     pointer-events: auto;
-    transition: background 0.3s ease;
-  }
+    transition: opacity 0.4s ease, background 0.3s ease;
+    opacity: 0;
+}
   body.dark-theme .canvas-tags-bar { background: rgba(30,30,30,0.8); }
 
   .tag-filter {
@@ -728,10 +729,10 @@
 
     <!-- STICKY CANVAS WRAPPER (hidden on load, appears on scroll) -->
     <div class="sticky-canvas-wrapper" id="stickyCanvasWrapper">
+            <div class="canvas-tags-bar" id="canvasTagsBar"></div>
+      <div class="canvas-control-panel" id="canvasControlPanel">
       <div class="sticky-canvas" id="stickyCanvas"></div>
       <div class="sidebar-tabs" id="sidebarTabs"></div>
-      <div class="canvas-tags-bar" id="canvasTagsBar"></div>
-      <div class="canvas-control-panel" id="canvasControlPanel">
         <button class="ctrl-btn" id="gridBtn" title="Arrange sticky notes in grid">Grid</button>
         <button class="ctrl-btn" id="randomizeBtn" title="Randomize notes">Randomize</button>
         <button class="ctrl-btn" id="hideLinesBtn" title="Hide connector lines">Hide Lines</button>
@@ -1773,6 +1774,14 @@ function initEntranceAnimation() {
         sidebarTabs.classList.remove('visible');
       }
     }
+    const tagsBar = document.querySelector('.canvas-tags-bar');
+if (tagsBar) {
+    if (progress >= 0.85) {
+        tagsBar.style.opacity = '1';
+    } else {
+        tagsBar.style.opacity = '0';
+    }
+}
     if (progress >= 0.9) { heroSection.classList.add('collapsed'); } else { heroSection.classList.remove('collapsed'); }
   });
   setTimeout(() => { window.dispatchEvent(new Event('scroll')); }, 100);
