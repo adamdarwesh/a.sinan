@@ -1214,16 +1214,22 @@ class StickyNoteManager {
     if (line) line.remove();
   }
 
-  openFloatingWindow(project, clickX, clickY, note) {
-    if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
-    const win = document.createElement('div');
-    win.className = 'floating-window';
-    win.setAttribute('data-id', project.id);
-    const rect = note.getBoundingClientRect();
-    win.style.left = rect.left + 'px';
-    win.style.top = rect.top + 'px';
-    win.style.width = '500px';
-    win.style.height = 'auto';
+openFloatingWindow(project, clickX, clickY, note) {
+  if (document.querySelector(`.floating-window[data-id="${project.id}"]`)) return;
+  const win = document.createElement('div');
+  win.className = 'floating-window';
+  win.setAttribute('data-id', project.id);
+  
+  // Get the note's position relative to the document (not viewport)
+  const rect = note.getBoundingClientRect();
+  const scrollX = window.scrollX || window.pageXOffset;
+  const scrollY = window.scrollY || window.pageYOffset;
+  
+  // Add scroll offset to position the window correctly
+  win.style.left = (rect.left + scrollX) + 'px';
+  win.style.top = (rect.top + scrollY) + 'px';
+  win.style.width = '500px';
+  win.style.height = 'auto';
     win.innerHTML = `
       <div class="window-header" style="background:var(--accent); color:white; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; font-weight:500; border-radius:8px 8px 0 0;">
         <h3 style="margin:0; font-size:0.85rem;">${project.id} · ${project.title}</h3>
