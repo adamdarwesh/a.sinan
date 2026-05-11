@@ -962,18 +962,7 @@ class StickyNoteManager {
         note.classList.add('minimized');
         note.style.width = '120px';
       }
-    });    const minimizeBtn = note.querySelector('.minimize-note');
-    minimizeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (note.classList.contains('frozen')) return;
-      if (note.classList.contains('minimized')) {
-        note.classList.remove('minimized');
-        note.style.width = '160px';
-      } else {
-        note.classList.add('minimized');
-        note.style.width = '120px';
-      }
-    });
+    }); 
     const closeBtn = note.querySelector('.close-note');
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
