@@ -492,7 +492,7 @@
   .sidebar-tab.highlight { border-color: var(--accent); background: var(--accent); color: white; }
 
   /* ========== CONTROL PANEL INSIDE CANVAS ========== */
-.canvas-control-panel {
+  .canvas-control-panel {
     position: absolute;
     right: 10px;
     bottom: 20px;
@@ -508,7 +508,7 @@
     gap: 5px;
     pointer-events: auto;
     transition: background 0.3s ease;
-}
+  }
   .canvas-control-panel .ctrl-btn {
     background: var(--accent);
     color: white;
@@ -554,23 +554,22 @@
   body.dark-theme .category-filters li.active { color: #ffffff; }
 
   /* ========== TAGS BAR (inside sticky canvas, top) ========== */
-.canvas-tags-bar {
+  .canvas-tags-bar {
     position: absolute;
-    top: 60px;
-    left: 20px;
-    right: 140px;
+    top: 10px;
+    left: 10px;
+    right: 120px;
     background: rgba(0,0,0,0.7);
     backdrop-filter: blur(8px);
     border-radius: 8px;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    z-index: 200;
+    gap: 0.4rem;
+    z-index: 50;
     pointer-events: auto;
-    transition: opacity 0.4s ease, background 0.3s ease;
-    opacity: 0;
-}
+    transition: background 0.3s ease;
+  }
   body.dark-theme .canvas-tags-bar { background: rgba(30,30,30,0.8); }
 
   .tag-filter {
@@ -631,18 +630,6 @@
     stroke-dasharray: 4 3;
     opacity: 0.6;
   }
-   /* ========== FLOATING WINDOW ========== */
-  .floating-window {
-    position: fixed;
-    background: var(--modal-bg);
-    border: 0.5px solid var(--rule);
-    border-radius: 8px;
-    min-width: 400px;
-    max-width: 600px;
-    z-index: 30000;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.5);
-    transition: background 0.3s ease, border-color 0.3s ease;
-  } 
 </style>
 </head>
 <body>
@@ -728,9 +715,10 @@
     </div>
 
     <!-- STICKY CANVAS WRAPPER (hidden on load, appears on scroll) -->
-<div class="sticky-canvas-wrapper" id="stickyCanvasWrapper">
-      <div class="canvas-tags-bar" id="canvasTagsBar"></div>
+    <div class="sticky-canvas-wrapper" id="stickyCanvasWrapper">
       <div class="sticky-canvas" id="stickyCanvas"></div>
+      <div class="sidebar-tabs" id="sidebarTabs"></div>
+      <div class="canvas-tags-bar" id="canvasTagsBar"></div>
       <div class="canvas-control-panel" id="canvasControlPanel">
         <button class="ctrl-btn" id="gridBtn" title="Arrange sticky notes in grid">Grid</button>
         <button class="ctrl-btn" id="randomizeBtn" title="Randomize notes">Randomize</button>
@@ -738,8 +726,9 @@
         <button class="ctrl-btn" id="showLinesBtn" title="Show connector lines">Show Lines</button>
         <button class="ctrl-btn" id="themeBtn" title="Switch theme">🌓 Theme</button>
       </div>
-      <div class="sidebar-tabs" id="sidebarTabs"></div>
     </div>
+  </div>
+
   <!-- RIGHT COLUMN (25%) - Category Filters -->
   <div class="hero-right">
     <ul class="category-filters" id="categoryFilters">
@@ -1231,13 +1220,14 @@ openFloatingWindow(project, clickX, clickY, note) {
   win.className = 'floating-window';
   win.setAttribute('data-id', project.id);
   
-  // Use viewport coordinates with position: fixed
+  // Get the note's position relative to the document (not viewport)
   const rect = note.getBoundingClientRect();
+  const scrollX = window.scrollX || window.pageXOffset;
+  const scrollY = window.scrollY || window.pageYOffset;
   
-  // Position using viewport coordinates (no scroll offset needed for fixed positioning)
-  win.style.position = 'fixed';
-  win.style.left = rect.left + 'px';
-  win.style.top = rect.top + 'px';
+  // Add scroll offset to position the window correctly
+  win.style.left = (rect.left + scrollX) + 'px';
+  win.style.top = (rect.top + scrollY) + 'px';
   win.style.width = '500px';
   win.style.height = 'auto';
     win.innerHTML = `
@@ -1754,89 +1744,26 @@ function initEntranceAnimation() {
   const navName = document.querySelector('.nav-name');
   const scrollProgress = document.getElementById('scrollProgress');
   const sidebarTabs = document.querySelector('.sidebar-tabs');
-  const tagsBar = document.querySelector('.canvas-tags-bar');
-  
   if (navName) navName.textContent = 'Ad(h)am Sinan';
-  
   window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
     const maxScroll = 500;
     let progress = Math.min(scrollY / maxScroll, 1);
-    
     if (scrollProgress) scrollProgress.style.width = `${progress * 100}%`;
-    
-    // Entrance content fades out
-    if (entranceContent) { 
-      entranceContent.style.opacity = Math.max(0, 1 - progress * 1.2); 
-      entranceContent.style.transform = `translateY(-${progress * 40}px)`; 
-      if (progress >= 0.8) entranceContent.style.pointerEvents = 'none'; 
-    }
-    
-    // Name wrapper animation
-    if (nameWrapper) { 
-      nameWrapper.style.transform = `translateY(-${progress * 50}px)`; 
-      nameWrapper.style.opacity = Math.max(0, 1 - progress * 1.1); 
-      if (navName) { 
-        if (progress > 0.3) { 
-          navName.style.opacity = '1'; 
-          if (progress > 0.7) navName.classList.add('large'); 
-        } else { 
-          navName.style.opacity = '0.7'; 
-        } 
-      } 
-    }
-    
-    // Hero section min-height
-    if (heroSection) { 
-      const newMinHeight = Math.max(0, 100 - progress * 100); 
-      heroSection.style.minHeight = `${newMinHeight}vh`; 
-    }
-    
-    // FIXED: Sticky wrapper appears at 10% scroll, fully visible by 60%
-    if (stickyWrapper) { 
-      let canvasProgress = Math.max(0, (progress - 0.1) / 0.5);
-      canvasProgress = Math.min(1, canvasProgress);
-      stickyWrapper.style.opacity = canvasProgress;
-      // Make sure it becomes visible even if progress < 0.9
-      if (canvasProgress > 0.05) {
-        stickyWrapper.classList.add('visible');
-      }
-    }
-    
-    // Right column appears
-    if (heroRight) { 
-      let rightProgress = Math.max(0, (progress - 0.2) / 0.6);
-      rightProgress = Math.min(1, rightProgress);
-      heroRight.style.opacity = rightProgress; 
-      if (rightProgress > 0.05) heroRight.classList.add('visible'); 
-    }
-    
-    // Sidebar tabs
-    if (sidebarTabs) {
-      if (progress >= 0.7) {
+    if (entranceContent) { entranceContent.style.opacity = Math.max(0, 1 - progress * 1.2); entranceContent.style.transform = `translateY(-${progress * 40}px)`; if (progress >= 0.8) entranceContent.style.pointerEvents = 'none'; }
+    if (nameWrapper) { nameWrapper.style.transform = `translateY(-${progress * 50}px)`; nameWrapper.style.opacity = Math.max(0, 1 - progress * 1.1); if (navName) { if (progress > 0.3) { navName.style.opacity = '1'; if (progress > 0.7) navName.classList.add('large'); } else { navName.style.opacity = '0.7'; } } }
+    if (heroSection) { const newMinHeight = Math.max(0, 100 - progress * 100); heroSection.style.minHeight = `${newMinHeight}vh`; }
+    if (stickyWrapper) { let canvasProgress = Math.max(0, (progress - 0.2) / 0.8); stickyWrapper.style.opacity = Math.min(1, canvasProgress); if (canvasProgress >= 0.9) stickyWrapper.classList.add('visible'); }
+    if (heroRight) { let rightProgress = Math.max(0, (progress - 0.3) / 0.7); heroRight.style.opacity = Math.min(1, rightProgress); if (rightProgress >= 0.8) heroRight.classList.add('visible'); }
+        if (sidebarTabs) {
+      if (progress >= 0.9) {
         sidebarTabs.classList.add('visible');
       } else {
         sidebarTabs.classList.remove('visible');
       }
     }
-    
-    // Tags bar
-    if (tagsBar) {
-      if (progress >= 0.65) {
-        tagsBar.style.opacity = '1';
-      } else {
-        tagsBar.style.opacity = '0';
-      }
-    }
-    
-    if (progress >= 0.9) { 
-      heroSection.classList.add('collapsed'); 
-    } else { 
-      heroSection.classList.remove('collapsed'); 
-    }
+    if (progress >= 0.9) { heroSection.classList.add('collapsed'); } else { heroSection.classList.remove('collapsed'); }
   });
-  
-  // Trigger initial scroll to set proper state
   setTimeout(() => { window.dispatchEvent(new Event('scroll')); }, 100);
 }
 
