@@ -945,11 +945,24 @@ class StickyNoteManager {
     const expandBtn = note.querySelector('.expand-note');
     expandBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      e.preventDefault();
       if (note.classList.contains('frozen')) return;
       const rect = note.getBoundingClientRect();
       this.openFloatingWindow(project, rect.left, rect.top, note);
     });
     const minimizeBtn = note.querySelector('.minimize-note');
+    minimizeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (note.classList.contains('frozen')) return;
+      if (note.classList.contains('minimized')) {
+        note.classList.remove('minimized');
+        note.style.width = '160px';
+      } else {
+        note.classList.add('minimized');
+        note.style.width = '120px';
+      }
+    });    const minimizeBtn = note.querySelector('.minimize-note');
     minimizeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (note.classList.contains('frozen')) return;
@@ -964,6 +977,7 @@ class StickyNoteManager {
     const closeBtn = note.querySelector('.close-note');
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      e.preventDefault();
       
       // Get the EXACT current position WITHOUT changing the note's style
       const rect = note.getBoundingClientRect();
@@ -1142,8 +1156,8 @@ class StickyNoteManager {
       element.style.top = `${newTop}px`;
       this.updateConnectorLineForNote(element);
     };
-    const onMouseUp = () => { isDragging = false; element.style.cursor = ''; setTimeout(() => { this.isDraggingNote = false; }, 50); };
-    const onTouchEnd = () => { isDragging = false; element.style.cursor = ''; setTimeout(() => { this.isDraggingNote = false; }, 50); };
+    const onMouseUp = () => { isDragging = false; element.style.cursor = ''; this.isDraggingNote = false; };
+    const onTouchEnd = () => { isDragging = false; element.style.cursor = ''; this.isDraggingNote = false; };
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
     document.addEventListener('touchmove', onTouchMove, { passive: false });
