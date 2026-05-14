@@ -1248,110 +1248,205 @@ openFloatingWindow(project, clickX, clickY, note) {
   win.className = 'floating-window';
   win.setAttribute('data-id', project.id);
   
-  // Get the note's position relative to the document (not viewport)
+  // Get position - use click position from the note
   const rect = note.getBoundingClientRect();
   const scrollX = window.scrollX || window.pageXOffset;
   const scrollY = window.scrollY || window.pageYOffset;
   
-  // Add scroll offset to position the window correctly
+  // Position window at the note's location with scroll offset
+  win.style.position = 'fixed';
   win.style.left = (rect.left + scrollX) + 'px';
   win.style.top = (rect.top + scrollY) + 'px';
   win.style.width = '500px';
   win.style.height = 'auto';
-    win.innerHTML = `
-      <div class="window-header" style="background:var(--accent); color:white; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; font-weight:500; border-radius:8px 8px 0 0;">
-        <h3 style="margin:0; font-size:0.85rem;">${project.id} · ${project.title}</h3>
-        <div class="window-header-right" style="display:flex; align-items:center;">
-          <button class="window-minimize" style="background:rgba(255,255,255,0.2); border:none; color:white; font-size:1rem; cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:4px; margin-right:8px;">−</button>
-          <button class="window-close" style="background:rgba(255,255,255,0.2); border:none; color:white; font-size:1rem; cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:4px;">✕</button>
-        </div>
+  win.style.background = 'var(--modal-bg)';
+  win.style.borderRadius = '12px';
+  win.style.boxShadow = '0 10px 40px rgba(0,0,0,0.3)';
+  win.style.border = '1px solid var(--rule)';
+  win.style.overflow = 'hidden';
+  win.style.zIndex = '30000';
+  
+  win.innerHTML = `
+    <div class="window-header" style="background:var(--accent); color:white; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; font-weight:500; cursor:move; user-select:none;">
+      <h3 style="margin:0; font-size:0.85rem;">${project.id} · ${project.title}</h3>
+      <div class="window-header-right" style="display:flex; align-items:center;">
+        <button class="window-minimize" style="background:rgba(255,255,255,0.2); border:none; color:white; font-size:1rem; cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:4px; margin-right:8px;">−</button>
+        <button class="window-close" style="background:rgba(255,255,255,0.2); border:none; color:white; font-size:1rem; cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:4px;">✕</button>
       </div>
-      <div class="window-body" style="flex:1; padding:1rem; overflow-y:auto; display:flex; flex-direction:column; gap:0.8rem; background:var(--modal-bg); color:var(--text);">
-        <div class="window-carousel" style="position:relative; width:100%; overflow:hidden; border-radius:8px; background:#f5f5f5;">
-          <div class="window-slides" id="window-slides-${project.id}" style="display:flex; transition:transform 0.3s ease;">
-            ${project.images.map(img => `<div class="window-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/500x280/f5f5f5/999?text=${encodeURIComponent(project.title)}'" style="width:100%; height:auto; max-height:280px; object-fit:contain; background:#f5f5f5;"></div>`).join('')}
-          </div>
-          <button class="window-prev" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; z-index:10;">‹</button>
-          <button class="window-next" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; z-index:10;">›</button>
+    </div>
+    <div class="window-body" style="flex:1; padding:1rem; overflow-y:auto; display:flex; flex-direction:column; gap:0.8rem; background:var(--modal-bg); color:var(--text);">
+      <div class="window-carousel" style="position:relative; width:100%; overflow:hidden; border-radius:8px; background:#f5f5f5;">
+        <div class="window-slides" id="window-slides-${project.id}" style="display:flex; transition:transform 0.3s ease;">
+          ${project.images.map(img => `<div class="window-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/500x280/f5f5f5/999?text=${encodeURIComponent(project.title)}'" style="width:100%; height:auto; max-height:280px; object-fit:contain; background:#f5f5f5;"></div>`).join('')}
         </div>
-        <div class="window-tags" style="display:flex; flex-wrap:wrap; gap:6px;">${project.tags.map(t => `<span class="window-tag" style="font-size:0.6rem; padding:4px 10px; background:var(--accent); color:white; border-radius:20px;">${t}</span>`).join('')}</div>
-        <div style="color: var(--accent); font-style: italic; font-size: 0.75rem;">${project.subtitle} (${project.year})</div>
-        <div style="font-size: 0.8rem; line-height: 1.5; color: var(--muted);">${project.fullDesc}</div>
+        <button class="window-prev" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; z-index:10;">‹</button>
+        <button class="window-next" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; z-index:10;">›</button>
       </div>
-    `;
-    document.body.appendChild(win);
-    activeFloatingWindows.push(win);
-    const projectId = project.id;
-    const tab = document.getElementById(`tab-${projectId}`);
-    if (tab) this.updateConnectorLineForWindow(win, projectId, tab);
-    const handles = ['top', 'right', 'bottom', 'left', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
-    handles.forEach(handle => {
-      const div = document.createElement('div');
-      div.className = `resize-handle resize-${handle}`;
-      win.appendChild(div);
-      div.addEventListener('mousedown', (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        const startX = e.clientX;
-        const startY = e.clientY;
-        const startWidth = win.offsetWidth;
-        const startHeight = win.offsetHeight;
-        const startLeft = win.offsetLeft;
-        const startTop = win.offsetTop;
-        const onMouseMove = (moveEvent) => {
-          const dx = moveEvent.clientX - startX;
-          const dy = moveEvent.clientY - startY;
-          if (handle.includes('right')) win.style.width = Math.max(300, startWidth + dx) + 'px';
-          if (handle.includes('left')) { win.style.width = Math.max(300, startWidth - dx) + 'px'; win.style.left = startLeft + dx + 'px'; }
-          if (handle.includes('bottom')) win.style.height = Math.max(200, startHeight + dy) + 'px';
-          if (handle.includes('top')) { win.style.height = Math.max(200, startHeight - dy) + 'px'; win.style.top = startTop + dy + 'px'; }
-        };
-        const onMouseUp = () => { document.removeEventListener('mousemove', onMouseMove); document.removeEventListener('mouseup', onMouseUp); };
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-      });
+      <div class="window-tags" style="display:flex; flex-wrap:wrap; gap:6px;">${project.tags.map(t => `<span class="window-tag" style="font-size:0.6rem; padding:4px 10px; background:var(--accent); color:white; border-radius:20px;">${t}</span>`).join('')}</div>
+      <div style="color: var(--accent); font-style: italic; font-size: 0.75rem;">${project.subtitle} (${project.year})</div>
+      <div style="font-size: 0.8rem; line-height: 1.5; color: var(--muted);">${project.fullDesc}</div>
+    </div>
+  `;
+  
+  document.body.appendChild(win);
+  activeFloatingWindows.push(win);
+  
+  const projectId = project.id;
+  const tab = document.getElementById(`tab-${projectId}`);
+  if (tab) this.updateConnectorLineForWindow(win, projectId, tab);
+  
+  // Add resize handles
+  const handles = ['top', 'right', 'bottom', 'left', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
+  handles.forEach(handle => {
+    const div = document.createElement('div');
+    div.className = `resize-handle resize-${handle}`;
+    div.style.position = 'absolute';
+    if (handle === 'top') { div.style.top = '0'; div.style.left = '0'; div.style.right = '0'; div.style.height = '8px'; div.style.cursor = 'ns-resize'; }
+    else if (handle === 'bottom') { div.style.bottom = '0'; div.style.left = '0'; div.style.right = '0'; div.style.height = '8px'; div.style.cursor = 'ns-resize'; }
+    else if (handle === 'left') { div.style.left = '0'; div.style.top = '0'; div.style.bottom = '0'; div.style.width = '8px'; div.style.cursor = 'ew-resize'; }
+    else if (handle === 'right') { div.style.right = '0'; div.style.top = '0'; div.style.bottom = '0'; div.style.width = '8px'; div.style.cursor = 'ew-resize'; }
+    else if (handle === 'top-left') { div.style.top = '0'; div.style.left = '0'; div.style.width = '12px'; div.style.height = '12px'; div.style.cursor = 'nw-resize'; }
+    else if (handle === 'top-right') { div.style.top = '0'; div.style.right = '0'; div.style.width = '12px'; div.style.height = '12px'; div.style.cursor = 'ne-resize'; }
+    else if (handle === 'bottom-left') { div.style.bottom = '0'; div.style.left = '0'; div.style.width = '12px'; div.style.height = '12px'; div.style.cursor = 'sw-resize'; }
+    else if (handle === 'bottom-right') { div.style.bottom = '0'; div.style.right = '0'; div.style.width = '12px'; div.style.height = '12px'; div.style.cursor = 'se-resize'; }
+    win.appendChild(div);
+    
+    div.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const startWidth = win.offsetWidth;
+      const startHeight = win.offsetHeight;
+      const startLeft = win.offsetLeft;
+      const startTop = win.offsetTop;
+      const onMouseMove = (moveEvent) => {
+        const dx = moveEvent.clientX - startX;
+        const dy = moveEvent.clientY - startY;
+        if (handle.includes('right')) win.style.width = Math.max(300, startWidth + dx) + 'px';
+        if (handle.includes('left')) { win.style.width = Math.max(300, startWidth - dx) + 'px'; win.style.left = startLeft + dx + 'px'; }
+        if (handle.includes('bottom')) win.style.height = Math.max(200, startHeight + dy) + 'px';
+        if (handle.includes('top')) { win.style.height = Math.max(200, startHeight - dy) + 'px'; win.style.top = startTop + dy + 'px'; }
+        this.updateConnectorLineForWindow(win, project.id);
+      };
+      const onMouseUp = () => { document.removeEventListener('mousemove', onMouseMove); document.removeEventListener('mouseup', onMouseUp); };
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
     });
-    let winCurrentIndex = 0;
-    const winSlides = win.querySelector('.window-slides');
-    const winSlideCount = project.images.length;
-    const winPrevBtn = win.querySelector('.window-prev');
-    const winNextBtn = win.querySelector('.window-next');
-    winPrevBtn.addEventListener('click', (e) => { e.stopPropagation(); winCurrentIndex = Math.max(0, winCurrentIndex - 1); winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`; });
-    winNextBtn.addEventListener('click', (e) => { e.stopPropagation(); winCurrentIndex = Math.min(winSlideCount - 1, winCurrentIndex + 1); winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`; });
-    let isDragging = false;
-    let dragStartX, dragStartY, startLeft, startTop;
-    let rafId = null;
-    win.addEventListener('mousedown', (e) => {
-      if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize') || e.target.classList.contains('window-prev') || e.target.classList.contains('window-next') || e.target.classList.contains('resize-handle')) return;
-      isDragging = true; dragStartX = e.clientX; dragStartY = e.clientY; startLeft = win.offsetLeft; startTop = win.offsetTop; win.style.zIndex = 30000 + activeFloatingWindows.length; e.preventDefault();
+  });
+  
+  // Carousel functionality
+  let winCurrentIndex = 0;
+  const winSlides = win.querySelector('.window-slides');
+  const winSlideCount = project.images.length;
+  const winPrevBtn = win.querySelector('.window-prev');
+  const winNextBtn = win.querySelector('.window-next');
+  winPrevBtn.addEventListener('click', (e) => { e.stopPropagation(); winCurrentIndex = Math.max(0, winCurrentIndex - 1); winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`; });
+  winNextBtn.addEventListener('click', (e) => { e.stopPropagation(); winCurrentIndex = Math.min(winSlideCount - 1, winCurrentIndex + 1); winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`; });
+  
+  // Dragging functionality (only via header)
+  let isDragging = false;
+  let dragStartX, dragStartY, startLeft, startTop;
+  let rafId = null;
+  const header = win.querySelector('.window-header');
+  
+  const onMouseMove = (e) => {
+    if (!isDragging) return;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() => {
+      let newLeft = startLeft + (e.clientX - dragStartX);
+      let newTop = startTop + (e.clientY - dragStartY);
+      win.style.left = newLeft + 'px';
+      win.style.top = newTop + 'px';
+      this.updateConnectorLineForWindow(win, project.id);
+      rafId = null;
     });
-    win.addEventListener('touchstart', (e) => {
-      if (e.target.classList.contains('window-close') || e.target.classList.contains('window-minimize') || e.target.classList.contains('window-prev') || e.target.classList.contains('window-next') || e.target.classList.contains('resize-handle')) return;
-      e.preventDefault(); const touch = e.touches[0]; isDragging = true; dragStartX = touch.clientX; dragStartY = touch.clientY; startLeft = win.offsetLeft; startTop = win.offsetTop; win.style.zIndex = 30000 + activeFloatingWindows.length;
+  };
+  
+  const onTouchMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() => {
+      const touch = e.touches[0];
+      let newLeft = startLeft + (touch.clientX - dragStartX);
+      let newTop = startTop + (touch.clientY - dragStartY);
+      win.style.left = newLeft + 'px';
+      win.style.top = newTop + 'px';
+      this.updateConnectorLineForWindow(win, project.id);
+      rafId = null;
     });
-    const onWinMouseMove = (e) => { if (!isDragging) return; if (rafId) cancelAnimationFrame(rafId); rafId = requestAnimationFrame(() => { win.style.left = (startLeft + (e.clientX - dragStartX)) + 'px'; win.style.top = (startTop + (e.clientY - dragStartY)) + 'px'; this.updateConnectorLineForWindow(win, project.id); rafId = null; }); };
-    const onWinTouchMove = (e) => { if (!isDragging) return; e.preventDefault(); if (rafId) cancelAnimationFrame(rafId); rafId = requestAnimationFrame(() => { const touch = e.touches[0]; win.style.left = (startLeft + (touch.clientX - dragStartX)) + 'px'; win.style.top = (startTop + (touch.clientY - dragStartY)) + 'px'; this.updateConnectorLineForWindow(win, project.id); rafId = null; }); };
-    const onWinMouseUp = () => { isDragging = false; if (rafId) cancelAnimationFrame(rafId); rafId = null; };
-    document.addEventListener('mousemove', onWinMouseMove);
-    document.addEventListener('mouseup', onWinMouseUp);
-    document.addEventListener('touchmove', onWinTouchMove, { passive: false });
-    document.addEventListener('touchend', onWinMouseUp);
-    win.querySelector('.window-minimize').addEventListener('click', () => {
-      const noteEl = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
-      if (noteEl && !noteEl.classList.contains('frozen')) {
-        const noteRect = noteEl.getBoundingClientRect();
-        win.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-        win.style.left = noteRect.left + 'px';
-        win.style.top = noteRect.top + 'px';
-        win.style.width = noteRect.width + 'px';
-        win.style.height = noteRect.height + 'px';
-        win.style.opacity = '0';
-        setTimeout(() => { win.remove(); activeFloatingWindows = activeFloatingWindows.filter(w => w !== win); noteEl.style.transform = 'scale(1.02)'; setTimeout(() => { noteEl.style.transform = ''; }, 300); }, 500);
-      } else { win.remove(); activeFloatingWindows = activeFloatingWindows.filter(w => w !== win); }
-    });
-    win.querySelector('.window-close').addEventListener('click', () => { this.removeWindowConnector(project.id); win.remove(); activeFloatingWindows = activeFloatingWindows.filter(w => w !== win); });
-    setTimeout(() => { win.style.width = 'auto'; win.style.height = 'auto'; }, 10);
-  }
+  };
+  
+  const onMouseUp = () => { isDragging = false; if (rafId) cancelAnimationFrame(rafId); rafId = null; };
+  
+  header.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.window-close') || e.target.closest('.window-minimize')) return;
+    isDragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    startLeft = parseFloat(win.style.left);
+    startTop = parseFloat(win.style.top);
+    win.style.zIndex = 30000 + activeFloatingWindows.length;
+    e.preventDefault();
+  });
+  
+  header.addEventListener('touchstart', (e) => {
+    if (e.target.closest('.window-close') || e.target.closest('.window-minimize')) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    isDragging = true;
+    dragStartX = touch.clientX;
+    dragStartY = touch.clientY;
+    startLeft = parseFloat(win.style.left);
+    startTop = parseFloat(win.style.top);
+    win.style.zIndex = 30000 + activeFloatingWindows.length;
+  });
+  
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+  document.addEventListener('touchmove', onTouchMove, { passive: false });
+  document.addEventListener('touchend', onMouseUp);
+  
+  // Minimize button
+  win.querySelector('.window-minimize').addEventListener('click', () => {
+    const noteEl = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
+    if (noteEl && !noteEl.classList.contains('frozen')) {
+      const noteRect = noteEl.getBoundingClientRect();
+      const scrollX = window.scrollX || window.pageXOffset;
+      const scrollY = window.scrollY || window.pageYOffset;
+      win.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+      win.style.left = (noteRect.left + scrollX) + 'px';
+      win.style.top = (noteRect.top + scrollY) + 'px';
+      win.style.width = noteRect.width + 'px';
+      win.style.height = noteRect.height + 'px';
+      win.style.opacity = '0';
+      setTimeout(() => { 
+        win.remove(); 
+        activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
+        if (noteEl) {
+          noteEl.style.transform = 'scale(1.02)';
+          setTimeout(() => { if (noteEl) noteEl.style.transform = ''; }, 300);
+        }
+      }, 400);
+    } else { 
+      win.remove(); 
+      activeFloatingWindows = activeFloatingWindows.filter(w => w !== win); 
+    }
+  });
+  
+  // Close button
+  win.querySelector('.window-close').addEventListener('click', () => { 
+    this.removeWindowConnector(project.id); 
+    win.remove(); 
+    activeFloatingWindows = activeFloatingWindows.filter(w => w !== win); 
+  });
+  
+  // Bring to front on click
+  win.addEventListener('mousedown', () => {
+    win.style.zIndex = 30000 + activeFloatingWindows.length;
+  });
+}
 
   addToSidebar(project, index, noteRect, lastImageIndex, noteElement) {
     const sidebar = document.getElementById('sidebarTabs');
