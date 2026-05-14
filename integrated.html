@@ -993,32 +993,27 @@ class StickyNoteManager {
         note.style.width = '120px';
       }
     }); 
-    const closeBtn = note.querySelector('.close-note');
-    closeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      
-      // Get the EXACT current position WITHOUT changing the note's style
-      const rect = note.getBoundingClientRect();
-      const scrollX = window.scrollX || window.pageXOffset;
-      const scrollY = window.scrollY || window.pageYOffset;
-      
-      // Store position as data attributes (do NOT modify note.style.left/top)
-      note.setAttribute('data-stored-left', rect.left + scrollX);
-      note.setAttribute('data-stored-top', rect.top + scrollY);
-      
-      const slidesContainer = note.querySelector(`#preview-${project.id}`);
-      let lastImageIndex = 0;
-      if (slidesContainer) {
-        const transform = slidesContainer.style.transform;
-        const match = transform.match(/translateX\(-([0-9]+)%/);
-        if (match) lastImageIndex = parseInt(match[1]) / 100;
-      }
-      
-      // Freeze the note IN PLACE (without moving it)
-      this.freezeNoteInPlace(note, project, lastImageIndex);
-      this.addToSidebarWithPosition(project, index, parseFloat(note.getAttribute('data-stored-left')), parseFloat(note.getAttribute('data-stored-top')), lastImageIndex, note);
-    });
+const closeBtn = note.querySelector('.close-note');
+closeBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+  
+  // Get the note's CURRENT position from its style (more accurate)
+  const currentLeft = note.style.left;
+  const currentTop = note.style.top;
+  
+  const slidesContainer = note.querySelector(`#preview-${project.id}`);
+  let lastImageIndex = 0;
+  if (slidesContainer) {
+    const transform = slidesContainer.style.transform;
+    const match = transform.match(/translateX\(-([0-9]+)%/);
+    if (match) lastImageIndex = parseInt(match[1]) / 100;
+  }
+  
+  // Freeze the note IN PLACE
+  this.freezeNoteInPlace(note, project, lastImageIndex);
+  this.addToSidebarWithPosition(project, index, parseFloat(currentLeft), parseFloat(currentTop), lastImageIndex, note);
+});
     document.getElementById('stickyCanvas').appendChild(note);
     this.notes.push(note);
     return note;
@@ -1476,68 +1471,76 @@ openFloatingWindow(project, clickX, clickY, note) {
     this.closedProjects.set(project.id, { project, index, noteRect, lastImageIndex, noteElement });
   }
   
-      addToSidebarWithPosition(project, index, savedLeft, savedTop, lastImageIndex, noteElement) {
-    const sidebar = document.getElementById('sidebarTabs');
-    const existingTab = document.getElementById(`tab-${project.id}`);
-    if (existingTab) return;
+addToSidebarWithPosition(project, index, savedLeft, savedTop, lastImageIndex, noteElement) {
+  const sidebar = document.getElementById('sidebarTabs');
+  const existingTab = document.getElementById(`tab-${project.id}`);
+  if (existingTab) return;
 
-    const tab = document.createElement('div');
-    tab.className = 'sidebar-tab';
-    tab.id = `tab-${project.id}`;
-    tab.setAttribute('data-project-id', project.id);
-    tab.setAttribute('data-category', project.category);
-    tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
+  // CRITICAL: Store the EXACT position where the note currently is
+  // Get the note's current position from its style (not from savedLeft/savedTop)
+  const currentLeft = noteElement.style.left;
+  const currentTop = noteElement.style.top;
+  
+  const tab = document.createElement('div');
+  tab.className = 'sidebar-tab';
+  tab.id = `tab-${project.id}`;
+  tab.setAttribute('data-project-id', project.id);
+  tab.setAttribute('data-category', project.category);
+  tab.textContent = `${project.id} · ${project.title.substring(0, 10)}`;
+  
+  // Store the EXACT current position from the note's actual style
+  tab.setAttribute('data-saved-left', currentLeft);
+  tab.setAttribute('data-saved-top', currentTop);
+  tab.setAttribute('data-saved-image-index', lastImageIndex);
+  tab.setAttribute('data-project-index', index);
+
+  tab.addEventListener('click', () => {
+    const restoreLeft = tab.getAttribute('data-saved-left');
+    const restoreTop = tab.getAttribute('data-saved-top');
+    const restoreImageIndex = parseInt(tab.getAttribute('data-saved-image-index')) || 0;
+    const projectIndex = parseInt(tab.getAttribute('data-project-index'));
+    const originalProject = allProjects[projectIndex];
     
-    tab.setAttribute('data-saved-left', savedLeft);
-    tab.setAttribute('data-saved-top', savedTop);
-    tab.setAttribute('data-saved-image-index', lastImageIndex);
-    tab.setAttribute('data-project-index', index);
-
-    tab.addEventListener('click', () => {
-      const restoreLeft = parseFloat(tab.getAttribute('data-saved-left'));
-      const restoreTop = parseFloat(tab.getAttribute('data-saved-top'));
-      const restoreImageIndex = parseInt(tab.getAttribute('data-saved-image-index')) || 0;
-      const projectIndex = parseInt(tab.getAttribute('data-project-index'));
-      const originalProject = allProjects[projectIndex];
-      
-      // Remove the frozen note first
-      if (noteElement && noteElement.parentNode) {
-        noteElement.remove();
-      }
-      
-      // Create a NEW note at the EXACT saved position
-      const newNote = this.createNote(originalProject, projectIndex, restoreLeft, restoreTop, { lastImageIndex: restoreImageIndex });
-      if (newNote) {
-        this.makeDraggable(newNote, originalProject);
-        this.notes.push(newNote);
-      }
-      
-      const connectorLine = document.getElementById(`connector-${project.id}`);
-      if (connectorLine) connectorLine.remove();
-      tab.remove();
-      this.tabs = this.tabs.filter(t => t !== tab);
-      if (tab.categoryObserver) tab.categoryObserver.disconnect();
-      this.noteTabConnections.delete(project.id);
-    });
-
-    const observeCategoryChange = () => {
-      const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all';
-      if (activeCategory === 'all' || project.category === activeCategory) {
-        tab.classList.remove('highlight');
-      } else {
-        tab.classList.add('highlight');
-      }
-    };
+    // Remove the frozen note first
+    if (noteElement && noteElement.parentNode) {
+      noteElement.remove();
+    }
     
-    const categoryObserver = new MutationObserver(observeCategoryChange);
-    const categoryContainer = document.getElementById('categoryFilters');
-    categoryObserver.observe(categoryContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
-    tab.categoryObserver = categoryObserver;
+    // Create a NEW note at the EXACT stored position (parse the px values)
+    const newNote = this.createNote(originalProject, projectIndex, 
+      parseFloat(restoreLeft), parseFloat(restoreTop), 
+      { lastImageIndex: restoreImageIndex });
+    if (newNote) {
+      this.makeDraggable(newNote, originalProject);
+      this.notes.push(newNote);
+    }
+    
+    const connectorLine = document.getElementById(`connector-${project.id}`);
+    if (connectorLine) connectorLine.remove();
+    tab.remove();
+    this.tabs = this.tabs.filter(t => t !== tab);
+    if (tab.categoryObserver) tab.categoryObserver.disconnect();
+    this.noteTabConnections.delete(project.id);
+  });
 
-    sidebar.appendChild(tab);
-    this.tabs.push(tab);
-    this.closedProjects.set(project.id, { project, index, noteRect: { left: savedLeft, top: savedTop }, lastImageIndex, noteElement });
-  }
+  const observeCategoryChange = () => {
+    const activeCategory = document.querySelector('#categoryFilters li.active')?.getAttribute('data-category') || 'all';
+    if (activeCategory === 'all' || project.category === activeCategory) {
+      tab.classList.remove('highlight');
+    } else {
+      tab.classList.add('highlight');
+    }
+  };
+  
+  const categoryObserver = new MutationObserver(observeCategoryChange);
+  const categoryContainer = document.getElementById('categoryFilters');
+  categoryObserver.observe(categoryContainer, { attributes: true, subtree: true, attributeFilter: ['class'] });
+  tab.categoryObserver = categoryObserver;
+
+  sidebar.appendChild(tab);
+  this.tabs.push(tab);
+  this.closedProjects.set(project.id, { project, index, noteRect: { left: parseFloat(currentLeft), top: parseFloat(currentTop) }, lastImageIndex, noteElement });
+}
 
   updateAllConnectorLines() {
     this.noteTabConnections.forEach((value, projectId) => {
