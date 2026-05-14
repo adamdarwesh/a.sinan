@@ -1248,15 +1248,13 @@ openFloatingWindow(project, clickX, clickY, note) {
   win.className = 'floating-window';
   win.setAttribute('data-id', project.id);
   
-  // Get position - use click position from the note
+  // Get the note's position relative to the VIEWPORT (not document)
   const rect = note.getBoundingClientRect();
-  const scrollX = window.scrollX || window.pageXOffset;
-  const scrollY = window.scrollY || window.pageYOffset;
   
-  // Position window at the note's location with scroll offset
+  // Position window using viewport coordinates (since position is fixed)
   win.style.position = 'fixed';
-  win.style.left = (rect.left + scrollX) + 'px';
-  win.style.top = (rect.top + scrollY) + 'px';
+  win.style.left = rect.left + 'px';
+  win.style.top = rect.top + 'px';
   win.style.width = '500px';
   win.style.height = 'auto';
   win.style.background = 'var(--modal-bg)';
