@@ -557,27 +557,29 @@
   body.dark-theme .category-filters li.active { color: #ffffff; }
 
   /* ========== TAGS BAR (inside sticky canvas, top) ========== */
-  .canvas-tags-bar {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 120px;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(8px);
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    z-index: 50;
-    pointer-events: auto;
-    transition: background 0.3s ease, opacity 0.4s ease, transform 0.4s ease;
+.canvas-tags-bar {
+  position: absolute;
+  top: -5px;  /* Changed from 10px to -5px - moves it higher */
+  left: 10px;
+  right: 120px;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-wrap: nowrap;  /* Changed from wrap to nowrap - keeps tags in one line */
+  gap: 0.5rem;
+  z-index: 50;
+  pointer-events: auto;
+  transition: background 0.3s ease, opacity 0.4s ease, transform 0.4s ease;
+  overflow-x: auto;  /* Adds horizontal scroll if too many tags */
+  overflow-y: hidden;
     
     /* START hidden - will fade in on scroll */
-    opacity: 0;
-    transform: translateY(-10px);
-    visibility: hidden;
-  }
+  opacity: 0;
+  transform: translateY(-10px);
+  visibility: hidden;
+}
 
   /* Visible state when scrolled to sticky notes */
   .canvas-tags-bar.visible {
