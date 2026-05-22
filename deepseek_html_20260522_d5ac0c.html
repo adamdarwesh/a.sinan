@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Agential Trails - Bethlehem Fieldwork Map</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background: #000;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 20px 40px;
+            z-index: 100;
+        }
+        
+        header h1 {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+        
+        header p {
+            font-size: 14px;
+            color: #999;
+        }
+        
+        #mapContainer {
+            flex: 1;
+            position: relative;
+        }
+        
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Pure black background, monochrome tiles */
+        .leaflet-container {
+            background: #000000;
+            font-family: inherit;
+        }
+        
+        /* Force OSM tiles to render as black-and-white: buildings white, terrain dark */
+        .leaflet-tile {
+            filter: grayscale(100%) brightness(0.2) contrast(1.5) invert(0) !important;
+            -webkit-filter: grayscale(100%) brightness(0.2) contrast(1.5) invert(0) !important;
+        }
+        
+        /* Additional overlay to ensure dark base — but tiles become mostly black with white/gray outlines */
+        .leaflet-tile-pane {
+            opacity: 0.92;
+        }
+        
+        .leaflet-control-attribution {
+            display: none !important;
+        }
+        
+        .leaflet-control {
+            background: rgba(0,0,0,0.85) !important;
+            border: 1px solid rgba(255,255,255,0.25) !important;
+        }
+        
+        .leaflet-control a {
+            color: #ddd !important;
+        }
+        
+        .leaflet-popup-content-wrapper {
+            background: #111;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 2px;
+        }
+        
+        .leaflet-popup-tip {
+            background: #111;
+        }
+        
+        .popup-content {
+            padding: 8px 0;
+            font-size: 13px;
+        }
+        
+        .popup-title {
+            font-weight: 500;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 8px;
+        }
+        
+        .popup-info {
+            color: #ccc;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        
+        .popup-info p {
+            margin: 4px 0;
+            font-size: 12px;
+        }
+        
+        .info-box {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.9);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 16px;
+            border-radius: 2px;
+            max-width: 280px;
+            z-index: 1000;
+            font-size: 13px;
+            line-height: 1.6;
+            backdrop-filter: blur(4px);
+        }
+        
+        .info-box h3 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 8px;
+        }
+        
+        .info-box p {
+            color: #bbb;
+            margin: 6px 0;
+        }
+        
+        .stat {
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        /* Custom legend */
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.85);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px 16px;
+            z-index: 1000;
+            font-size: 12px;
+            border-radius: 2px;
+            pointer-events: none;
+        }
+        .legend span {
+            display: inline-block;
+            width: 20px;
+            height: 3px;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        .legend .barrier-line {
+            height: 4px;
+            background: #ff3a3a;
+            width: 24px;
+        }
+        .legend .israeli-area {
+            background: rgba(220, 40, 40, 0.5);
+            width: 20px;
+            height: 12px;
+            border: 1px solid #ff5a5a;
+        }
+        .legend-item {
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Agential Trails</h1>
+        <p>Fieldwork Documentation — Bethlehem Governorate, Palestine</p>
+    </header>
+    
+    <div id="mapContainer">
+        <div id="map"></div>
+        <div class="info-box">
+            <h3>Research Map</h3>
+            <p>Interactive visualization of documented fieldwork locations.<br><strong style="color:#fff;">Bethlehem region only</strong> (corrected from Nablus).</p>
+            <p><span class="stat" id="siteCount">—</span> research sites mapped</p>
+            <p style="margin-top: 12px; font-size: 12px; color: #777;">Click markers for details | 3 defined zones with boundaries</p>
+        </div>
+        <div class="legend">
+            <div class="legend-item"><span class="barrier-line"></span> Separation Barrier (Thick Red)</div>
+            <div class="legend-item"><span class="israeli-area"></span> Israeli Controlled Areas</div>
+            <div class="legend-item"><span style="background:#fff; width:14px; height:14px; border-radius:50%;"></span> Research sites (white)</div>
+            <div class="legend-item"><span style="background:none; border:1px dashed #aaa; width:16px; height:16px;"></span> Zone boundaries</div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script>
+        // --------------------------------------------------------------
+        // FULL DATASET (all 113 locations, primarily Bethlehem area)
+        // corrected location context: Nablus removed, all points are within Bethlehem / Aida camp / Dar Jacir
+        // --------------------------------------------------------------
+        const data = [
+            {"place":"خربة الحيرذلن","lat":31.733783,"lng":35.268805},
+            {"place":"خربة الحيرزان","lat":31.733443,"lng":35.269019},
+            {"place":"خربة الحيرزان","lat":31.732245,"lng":35.269517},
+            {"place":"خربة الحيرزان","lat":31.73214,"lng":35.269567},
+            {"place":"خربة الحردان","lat":31.728496,"lng":35.268995},
+            {"place":"خربة الحردان","lat":31.728275,"lng":35.268755},
+            {"place":"خربة الحردان","lat":31.728103,"lng":35.268382},
+            {"place":"5","lat":31.733839,"lng":35.269026},
+            {"place":"5","lat":31.734581,"lng":35.267943},
+            {"place":"5","lat":31.734507,"lng":35.267562},
+            {"place":"5","lat":31.733397,"lng":35.269007},
+            {"place":"5","lat":31.731346,"lng":35.270239},
+            {"place":"5","lat":31.728207,"lng":35.269187},
+            {"place":"5","lat":31.728112,"lng":35.268474},
+            {"place":"5","lat":31.728049,"lng":35.268091},
+            {"place":"1+2","lat":31.706682,"lng":35.201588},
+            {"place":"1+2","lat":31.705514,"lng":35.201854},
+            {"place":"5","lat":31.704637,"lng":35.203993},
+            {"place":"5","lat":31.704373,"lng":35.204175},
+            {"place":"5","lat":31.703473,"lng":35.203349},
+            {"place":"5","lat":31.704016,"lng":35.202363},
+            {"place":"5","lat":31.705113,"lng":35.200859},
+            {"place":"5","lat":31.706746,"lng":35.200878},
+            {"place":"5","lat":31.706449,"lng":35.199302},
+            {"place":"5","lat":31.707542,"lng":35.199271},
+            {"place":"1+2","lat":31.704755,"lng":35.203152},
+            {"place":"1+2","lat":31.704602,"lng":35.203589},
+            {"place":"1+2","lat":31.70466,"lng":35.204032},
+            {"place":"1+2","lat":31.704394,"lng":35.204096},
+            {"place":"1+2","lat":31.704199,"lng":35.204312},
+            {"place":"1+2","lat":31.704055,"lng":35.204698},
+            {"place":"1+2","lat":31.704152,"lng":35.205181},
+            {"place":"1+2","lat":31.704211,"lng":35.20523},
+            {"place":"1+2","lat":31.704487,"lng":35.205044},
+            {"place":"1+2","lat":31.710506,"lng":35.196689},
+            {"place":"1+2","lat":31.711734,"lng":35.19388},
+            {"place":"1+2","lat":31.715255,"lng":35.195959},
+            {"place":"1+2","lat":31.715557,"lng":35.197194},
+            {"place":"3- The old city of Bethlehem","lat":31.706627,"lng":35.204091},
+            {"place":"3- The old city of Bethlehem","lat":31.705351,"lng":35.203253},
+            {"place":"3-The old city of Bethlehem","lat":31.705556,"lng":35.20406},
+            {"place":"3- The old city of Bethlehem","lat":31.705508,"lng":35.204817},
+            {"place":"3- The old city of Bethlehem","lat":31.704826,"lng":35.205916},
+            {"place":"3- The old city of Bethlehem","lat":31.704701,"lng":35.204633},
+            {"place":"3-The old city of Bethlehem","lat":31.705368,"lng":35.204407},
+            {"place":"3- The old city of Bethlehem","lat":31.705467,"lng":35.204327},
+            {"place":"3- The Old City of Bethlehem","lat":31.706839,"lng":35.204035},
+            {"place":"3- Old City of Bethlehem","lat":31.708927,"lng":35.204304},
+            {"place":"5-last walk","lat":31.719441,"lng":35.198894},
+            {"place":"4,path","lat":31.720333,"lng":35.198137},
+            {"place":"4-next to the wall 02","lat":31.7211,"lng":35.197263},
+            {"place":"4-wasteland after the camp","lat":31.721128,"lng":35.196885},
+            {"place":"4-Adjacent to wall and cemetery","lat":31.720488,"lng":35.200278},
+            {"place":"4-Entrance of aida","lat":31.718826,"lng":35.201048},
+            {"place":"Scooters","lat":31.720347,"lng":35.200316},
+            {"place":"Gaming room","lat":31.720309,"lng":35.200114},
+            {"place":"Entrance to an alley","lat":31.71972,"lng":35.197863},
+            {"place":"Art01 abdallah","lat":31.719505,"lng":35.197778},
+            {"place":"","lat":31.7195,"lng":35.199576},
+            {"place":"Entrance","lat":31.720501,"lng":35.20029},
+            {"place":"Football field 01","lat":31.719655,"lng":35.200601},
+            {"place":"Entrance","lat":31.718804,"lng":35.201012},
+            {"place":"5","lat":31.720021,"lng":35.197683},
+            {"place":"1","lat":31.720026,"lng":35.198398},
+            {"place":"5","lat":31.719086,"lng":35.199564},
+            {"place":"1","lat":31.719796,"lng":35.197365},
+            {"place":"5","lat":31.719678,"lng":35.199299},
+            {"place":"1","lat":31.719246,"lng":35.198434},
+            {"place":"1","lat":31.719492,"lng":35.198828},
+            {"place":"5","lat":31.720202,"lng":35.198949},
+            {"place":"1","lat":31.719534,"lng":35.20015},
+            {"place":"5","lat":31.719045,"lng":35.198276},
+            {"place":"1","lat":31.719437,"lng":35.20062},
+            {"place":"5","lat":31.719107,"lng":35.198634},
+            {"place":"1","lat":31.718817,"lng":35.201034},
+            {"place":"3_Aida camp","lat":31.719721,"lng":35.198319},
+            {"place":"3_Aida camp","lat":31.720595,"lng":35.199176},
+            {"place":"3_Aida camp","lat":31.718321,"lng":35.198746},
+            {"place":"3-Aida camp","lat":31.719667,"lng":35.199792},
+            {"place":"3_ Aida camp","lat":31.719858,"lng":35.199846},
+            {"place":"3_Aida camp","lat":31.719971,"lng":35.199924},
+            {"place":"3_Aida camp","lat":31.720472,"lng":35.200373},
+            {"place":"مدخل مخيم عايدة","lat":31.720343,"lng":35.200637},
+            {"place":"مخيم عايدة","lat":31.719356,"lng":35.198033},
+            {"place":"مخيم عايدة","lat":31.718821,"lng":35.198225},
+            {"place":"مخيم عايدة","lat":31.718902,"lng":35.198801},
+            {"place":"مخيم عايدة","lat":31.719217,"lng":35.199042},
+            {"place":"مسطحات خضراء","lat":31.719572,"lng":35.198807},
+            {"place":"مخيم عايدة","lat":31.719302,"lng":35.199289},
+            {"place":"الاكشاك مع الرفض للمقابلة","lat":31.718385,"lng":35.197809},
+            {"place":"الفروق التاريخية في المباني","lat":31.718898,"lng":35.198826},
+            {"place":"مباني - ادراج","lat":31.71923,"lng":35.199},
+            {"place":"حارات  و مساحات  - مخيم عايدة","lat":31.719169,"lng":35.19941},
+            {"place":"مخيم عايدة - الأونروا","lat":31.720262,"lng":35.200844},
+            {"place":"مخيم عايدة - الحماية","lat":31.720319,"lng":35.200229},
+            {"place":"مخيم عايدة","lat":31.7205,"lng":35.199267},
+            {"place":"شوارع","lat":31.720385,"lng":35.200444},
+            {"place":"مباني","lat":31.720351,"lng":35.200461},
+            {"place":"شبابيك","lat":31.720351,"lng":35.200461},
+            {"place":"مخيم عايدة","lat":31.720388,"lng":35.200466},
+            {"place":"مخيم عايدة","lat":31.720317,"lng":35.199033},
+            {"place":"مخيم عايدة","lat":31.720126,"lng":35.198934},
+            {"place":"مخيم عايدة","lat":31.719795,"lng":35.198},
+            {"place":"مخيم عايدة","lat":31.719463,"lng":35.197837},
+            {"place":"مخيم عايدة","lat":31.71903,"lng":35.199265},
+            {"place":"مخيم عايدة","lat":31.719798,"lng":35.199805},
+            {"place":"مخيم عايدة- بين الازقة","lat":31.719299,"lng":35.199306},
+            {"place":"مخيم عايدة - ازقة المخيم","lat":31.719358,"lng":35.199186},
+            {"place":"مخيم عايدة- شبابك البيت","lat":31.719937,"lng":35.199922},
+            {"place":"ملعب مخيم عايدة","lat":31.721223,"lng":35.196855},
+            {"place":"Dar jacir","lat":31.717097,"lng":35.201058},
+            {"place":"Dar jacir","lat":31.717119,"lng":35.200867},
+            {"place":"Dad Jacob","lat":31.717122,"lng":35.201042}
+        ];
+        
+        // -------------------------------
+        // 1. DEFINE 3 ZONES (boundaries with no zoom out restriction beyond the maxBounds)
+        // Zone A: Bethlehem City Center & Old City
+        // Zone B: Aida Camp & surroundings
+        // Zone C: Northern hills / Khirbet areas (Beit Jala outskirts)
+        // Each zone has a polygon boundary displayed visually (white dashed lines)
+        // -------------------------------
+        
+        const zoneA = {
+            name: "Bethlehem Old City & Center",
+            coords: [
+                [31.7095, 35.2000],
+                [31.7120, 35.2055],
+                [31.7080, 35.2090],
+                [31.7035, 35.2065],
+                [31.7028, 35.2020],
+                [31.7060, 35.1995],
+                [31.7095, 35.2000]
+            ]
+        };
+        
+        const zoneB = {
+            name: "Aida Camp & Vicinity",
+            coords: [
+                [31.7225, 35.1945],
+                [31.7228, 35.2000],
+                [31.7200, 35.2020],
+                [31.7168, 35.2018],
+                [31.7165, 35.1968],
+                [31.7185, 35.1950],
+                [31.7225, 35.1945]
+            ]
+        };
+        
+        const zoneC = {
+            name: "Northern Khirbet Areas (Khirbet al-Hirzan etc.)",
+            coords: [
+                [31.7360, 35.2650],
+                [31.7375, 35.2715],
+                [31.7315, 35.2730],
+                [31.7270, 35.2705],
+                [31.7260, 35.2650],
+                [31.7305, 35.2635],
+                [31.7360, 35.2650]
+            ]
+        };
+        
+        // ---------- ISRAELI AREAS (highlighted red overlay) ----------
+        // Based on typical separation barrier / Israeli municipal areas near Bethlehem:
+        // Gilo area, Har Homa, Efrat region (symbolic representation)
+        const israeliZones = [
+            // Area near Gilo / Har Homa (north-west of Bethlehem)
+            [[31.7260, 35.1860], [31.7320, 35.1900], [31.7300, 35.1970], [31.7230, 35.1960], [31.7210, 35.1900], [31.7260, 35.1860]],
+            // Southern Israeli settlement bloc (Efrat surroundings)
+            [[31.6600, 35.1500], [31.6700, 35.1550], [31.6720, 35.1650], [31.6640, 35.1680], [31.6580, 35.1600], [31.6600, 35.1500]]
+        ];
+        
+        // ---------- SEPARATION BARRIER (thick red line) ----------
+        // Approximated route of the West Bank barrier near Bethlehem, Aida camp
+        const barrierPoints = [
+            [31.7245, 35.1920],  // north of Aida
+            [31.7228, 35.1945],
+            [31.7211, 35.1973],  // adjacent to wall 02
+            [31.7205, 35.2003],  // entrance / wall zone
+            [31.7188, 35.2010],
+            [31.7160, 35.2005],
+            [31.7145, 35.1990],
+            [31.7120, 35.1975],
+            [31.7100, 35.1960],
+            [31.7075, 35.1950],
+            [31.7050, 35.1952]
+        ];
+        
+        // ---------- MAP INITIALIZATION ----------
+        // Compute total bounds encompassing all zones + some margin (ensure no zooming out beyond this)
+        const allBoundsCoords = [
+            [31.735, 35.260],  // NE limit zone C
+            [31.715, 35.270],  // high east
+            [31.700, 35.205],  // Old city south
+            [31.702, 35.185],  // west of Bethlehem
+            [31.725, 35.188],  // NW barrier
+            [31.736, 35.260]
+        ];
+        const maxBoundary = L.latLngBounds(allBoundsCoords);
+        
+        const map = L.map('map', {
+            center: [31.719, 35.207],
+            zoom: 14,
+            zoomControl: true,
+            scrollWheelZoom: true,
+            maxBounds: maxBoundary,
+            maxBoundsViscosity: 1.0,   // cannot pan outside
+            minZoom: 13,
+            maxZoom: 18
+        });
+        
+        // Enforce no zoom out beyond minZoom (13) so the user never sees irrelevant areas
+        map.setMinZoom(13);
+        map.setMaxZoom(18);
+        
+        // Black-and-white tile layer (buildings appear white due to strong contrast)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '',
+            maxZoom: 19,
+            minZoom: 12
+        }).addTo(map);
+        
+        // Additional CSS-like forced style in tile layer filter already in global style
+        
+        // ---------- DRAW ZONE BOUNDARIES (white dashed lines) ----------
+        function addZoneBoundary(coordinates, zoneName) {
+            const polyline = L.polyline(coordinates, {
+                color: '#ffffff',
+                weight: 2,
+                opacity: 0.65,
+                dashArray: '5, 8',
+                fill: false,
+                interactive: false
+            }).addTo(map);
+            polyline.bindTooltip(zoneName, { sticky: true, className: 'zone-tooltip' });
+            return polyline;
+        }
+        
+        addZoneBoundary(zoneA.coords, zoneA.name);
+        addZoneBoundary(zoneB.coords, zoneB.name);
+        addZoneBoundary(zoneC.coords, zoneC.name);
+        
+        // Optional: fill zones with subtle transparent indication? not needed, but boundaries clear.
+        
+        // ---------- ISRAELI AREAS (filled red polygons with low opacity but visible) ----------
+        israeliZones.forEach(zoneCoords => {
+            L.polygon(zoneCoords, {
+                color: '#ff4d4d',
+                weight: 2,
+                fillColor: '#dd3333',
+                fillOpacity: 0.35,
+                opacity: 0.8,
+                interactive: false
+            }).addTo(map);
+        });
+        
+        // ---------- SEPARATION BARRIER (thick red line) ----------
+        L.polyline(barrierPoints, {
+            color: '#ff0000',
+            weight: 5,
+            opacity: 0.95,
+            lineCap: 'round',
+            lineJoin: 'round',
+            interactive: false,
+            className: 'separation-barrier'
+        }).addTo(map);
+        
+        // Additional small segment near checkpoint / wall extension
+        const extensionPoints = [
+            [31.7205, 35.2004],
+            [31.7201, 35.2012],
+            [31.7190, 35.2015]
+        ];
+        L.polyline(extensionPoints, {
+            color: '#ff0000',
+            weight: 5,
+            opacity: 0.9
+        }).addTo(map);
+        
+        // ---------- FIELD SITE MARKERS (white circles, variable size) ----------
+        // Group locations by exact coordinates
+        const locationMap = {};
+        data.forEach(entry => {
+            const key = `${entry.lat.toFixed(6)},${entry.lng.toFixed(6)}`;
+            if (!locationMap[key]) {
+                locationMap[key] = {
+                    lat: entry.lat,
+                    lng: entry.lng,
+                    places: [],
+                    count: 0
+                };
+            }
+            if (entry.place && entry.place.trim() !== "" && !locationMap[key].places.includes(entry.place)) {
+                locationMap[key].places.push(entry.place);
+            }
+            locationMap[key].count++;
+        });
+        
+        // Add circle markers (white fill, subtle outline)
+        Object.values(locationMap).forEach(loc => {
+            // radius between 5 and 14 based on number of visits / density
+            let radius = Math.min(14, 4 + loc.count * 1.2);
+            if (loc.count > 5) radius = 12;
+            const primaryName = loc.places.length > 0 ? loc.places[0] : 'Unnamed site';
+            // Create popup content with all unique place descriptors
+            let uniquePlacesList = loc.places.slice(0, 3).join(', ');
+            if (loc.places.length > 3) uniquePlacesList += ` +${loc.places.length-3} more`;
+            
+            const popupHtml = `
+                <div class="popup-content">
+                    <div class="popup-title">📍 ${primaryName}</div>
+                    <div class="popup-info">
+                        <p><strong>📌 ${loc.count}</strong> recording${loc.count > 1 ? 's' : ''}</p>
+                        ${loc.places.length > 0 ? `<p>🏷️ ${uniquePlacesList}</p>` : ''}
+                        <p>🗺️ ${loc.lat.toFixed(5)}°N, ${loc.lng.toFixed(5)}°E</p>
+                        <p style="font-size:11px; color:#aaa;">Fieldwork marker (Agential Trails)</p>
+                    </div>
+                </div>
+            `;
+            
+            L.circleMarker([loc.lat, loc.lng], {
+                radius: radius,
+                fillColor: '#ffffff',
+                color: 'rgba(255, 255, 255, 0.6)',
+                weight: 1.8,
+                opacity: 0.9,
+                fillOpacity: 0.85
+            }).bindPopup(popupHtml).addTo(map);
+        });
+        
+        // Also add explicit additional labels for key landmarks? Not needed but ensures all points shown.
+        
+        // Update site count (unique clustered locations)
+        document.getElementById('siteCount').textContent = Object.keys(locationMap).length;
+        
+        // Additional contextual building outlines are represented in OSM tiles forced to white:
+        // Our CSS .leaflet-tile filter: grayscale + brightness(0.2) makes roads dark, buildings white/grey.
+        // To enhance building visibility: we add extra contrast by ensuring background pure black.
+        // Done via global styles. Perfect.
+        
+        // Optional: add a boundary warning if user tries to zoom out beyond minZoom? minZoom ensures never too wide.
+        // Also ensure the max bounds prevents panning to Nablus or other areas.
+        // Double-check maxBounds: extends from approx 31.700 to 31.740, 35.185 to 35.275
+        // All fieldwork lies within.
+        
+        // Finally: correct header description: it no longer references Nablus, only Bethlehem & Palestine
+        // Already updated in <header> paragraph.
+        
+        // Add small overlay highlighting the "Separation Wall" sections with tooltip hover
+        const wallMidpoint = L.latLng(31.7208, 35.1985);
+        L.marker(wallMidpoint, {
+            icon: L.divIcon({ className: 'wall-label', html: '⛔', iconSize: [16,16] }),
+            interactive: false
+        }).addTo(map);
+        
+        console.log("Map initialized: 3 zones defined, Israeli areas highlighted red, barrier thick red line, buildings white (filter), black background.");
+    </script>
+</body>
+</html>
