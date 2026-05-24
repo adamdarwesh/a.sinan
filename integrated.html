@@ -11,6 +11,161 @@
     .sticky-canvas-wrapper {
     position: relative;
   }
+
+  /* ========== MOVING TEXT BORDER ========== */
+  .moving-text-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+    overflow: visible;
+  }
+
+  .moving-text-line {
+    position: absolute;
+    white-space: nowrap;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    opacity: 0.65;
+    text-transform: uppercase;
+    animation: moveTextHorizontal 50s linear infinite;
+  }
+
+  .moving-text-line:nth-child(2) {
+    animation: moveTextHorizontal 50s linear infinite reverse;
+  }
+
+  @keyframes moveTextHorizontal {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100vw); }
+  }
+
+  body.dark-theme .moving-text-line {
+    color: var(--accent-light);
+    opacity: 0.55;
+  }
+
+  /* ========== PUBLICATION SLIDING PANEL ========== */
+  .publication-slide-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 600px;
+    height: 100vh;
+    background: var(--bg);
+    border-left: 0.5px solid var(--rule);
+    z-index: 200;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+  }
+
+  .publication-slide-panel.active {
+    transform: translateX(0);
+  }
+
+  body.dark-theme .publication-slide-panel {
+    box-shadow: -10px 0 40px rgba(0,0,0,0.4);
+  }
+
+  .publication-panel-header {
+    padding: 2rem;
+    border-bottom: 0.5px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .publication-panel-back {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease;
+    font-family: var(--mono);
+  }
+
+  .publication-panel-back:hover {
+    color: var(--text);
+  }
+
+  .publication-panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+  }
+
+  .publication-panel-title {
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .publication-panel-type {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .publication-panel-meta {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  .publication-panel-description {
+    font-family: var(--body-serif);
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 2rem;
+  }
+
+  .publication-panel-details {
+    font-family: var(--body-serif);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  /* ========== WRITING ITEMS CLICKABLE ========== */
+  .writing-item {
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.3s ease;
+  }
+
+  .writing-item:hover {
+    background: var(--card-bg);
+  }
+
+  .writing-item:hover .writing-title {
+    color: var(--accent);
+  }
+
   /* ========== RESET & ROOT VARIABLES ========== */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -74,58 +229,30 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* Background grid */
+  /* Background grid with sub-grid - now deformable */
   body::before {
     content: "";
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: 
-      linear-gradient(var(--grid-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
-      radial-gradient(circle at 0 0, var(--accent) 1.5px, transparent 1.5px);
-    background-size: 40px 40px, 40px 40px, 40px 40px;
-    background-position: 0 0, 0 0, 0 0;
-    background-repeat: repeat, repeat, repeat;
+    background: transparent;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.25;
-    transition: opacity 0.3s ease;
+    display: none; /* Hidden, will be replaced by canvas */
   }
 
-  body.dark-theme::before {
-    background-image: 
-      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px),
-      radial-gradient(circle at 0 0, var(--accent) 1.5px, transparent 1.5px);
-  }
-
-  /* Plus signs container */
-  #gridPlusContainer {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-    pointer-events: none; z-index: 1; overflow: visible;
-  }
-
-  .grid-plus {
-    position: absolute;
-    color: #000000;
-    font-size: 11px;
-    font-weight: 100;
+  /* Grid canvas for deformation */
+  #gridCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     pointer-events: none;
-    opacity: 0.3;
-    transition: opacity 0.5s ease;
-    line-height: 1;
-    transform: translate(-50%, -50%);
-    width: 12px; height: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    z-index: 0;
   }
-
-  body.dark-theme .grid-plus { color: #aaaaaa; }
-  .grid-plus.hidden { opacity: 0; }
 
   nav, .hero, section, footer, .sticky-canvas, .sidebar-tabs, .control-panel {
     position: relative;
@@ -663,6 +790,9 @@
 </style>
 </head>
 <body>
+  <!-- Deformable Grid Canvas -->
+  <canvas id="gridCanvas"></canvas>
+
   <!-- CV MODAL -->
 <div id="cvModal" class="cv-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:5000; justify-content:center; align-items:center;">
   <div class="cv-modal" style="background:var(--modal-bg); width:85%; max-width:800px; height:85%; border-radius:16px; display:flex; flex-direction:column; border:0.5px solid var(--rule);">
@@ -746,6 +876,16 @@
 
     <!-- STICKY CANVAS WRAPPER (hidden on load, appears on scroll) -->
 <div class="sticky-canvas-wrapper" id="stickyCanvasWrapper">
+  <!-- Moving text borders -->
+  <div class="moving-text-border">
+    <div class="moving-text-line" style="top: 2%;">
+      • Design • Development • Creative Coding • Portfolio • Ad(h)am Sinan • Interaction Design • UI/UX • Web Design • 
+    </div>
+    <div class="moving-text-line" style="top: 98%;">
+      • Sticky Notes • Motion Graphics • User Experience • Digital Art • Creative Studio • Art Direction • Visual Design •
+    </div>
+  </div>
+
   <div class="sticky-canvas" id="stickyCanvas"></div>
   <div class="canvas-tags-bar" id="canvasTagsBar"></div>
   <div class="sidebar-tabs" id="sidebarTabs"></div>
@@ -774,9 +914,6 @@
 <!-- Scroll Progress Bar -->
 <div class="scroll-progress" id="scrollProgress"></div>
 
-<!-- GRID PLUS CONTAINER -->
-<div id="gridPlusContainer"></div>
-
 <!-- CONNECTOR LINES SVG -->
 <svg id="connectorSvg"></svg>
 <!-- RESEARCH SECTION - WHITE HORIZONTAL LINE MAINTAINED -->
@@ -786,37 +923,37 @@
     <div class="section-rule" style="flex:1; height:0.5px; background:var(--rule); transition:background 0.3s ease;"></div>
   </div>
   <div class="writing-grid" style="padding:0 3rem; display:grid; grid-template-columns:repeat(3,1fr); gap:0;">
-    <div class="writing-item" style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
+    <div class="writing-item" onclick="openPublication(this)" data-type="Conference Paper" data-title="Dynamic Ruinations: Architecture Against Finality" data-institution="2026 — Newcastle University" data-description="Presented at 'Co-producing Alternative Futures through Experimental Urbanism' Symposium, University of Pretoria, South Africa (April 2026)." data-details="This conference paper explores the theoretical framework of dynamic ruinations as a counter-narrative to architectural finality and permanence. It examines how experimental urbanism can produce alternative futures through processes of creative destruction and material transformation." style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
       <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Conference Paper</p>
       <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Dynamic Ruinations: Architecture Against Finality</h3>
       <p class="writing-desc" style="font-family:var(--body-serif); font-size:0.9rem; line-height:1.7; color:var(--muted); transition:color 0.3s ease;">Presented at "Co-producing Alternative Futures through Experimental Urbanism" Symposium, University of Pretoria, South Africa (April 2026).</p>
       <p class="writing-date" style="font-family:var(--mono); font-size:0.6rem; color:var(--accent); margin-top:1.5rem;">2026 — Newcastle University</p>
     </div>
-    <div class="writing-item" style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
+    <div class="writing-item" onclick="openPublication(this)" data-type="Conference Paper" data-title="Agential Cartographies" data-institution="2026 — Extra-territorial Studio" data-description="Presented at 'Spectres of the Undercommons' Conference, The American University in Cairo (April 2026)." data-details="This paper investigates how cartographic practices can become agential tools for urban resistance and alternative spatial imaginaries. It proposes mapping as a form of knowledge production that centers marginalized voices and deterritorialized communities." style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
       <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Conference Paper</p>
       <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Agential Cartographies</h3>
       <p class="writing-desc" style="font-family:var(--body-serif); font-size:0.9rem; line-height:1.7; color:var(--muted); transition:color 0.3s ease;">Presented at "Spectres of the Undercommons" Conference, The American University in Cairo (April 2026).</p>
       <p class="writing-date" style="font-family:var(--mono); font-size:0.6rem; color:var(--accent); margin-top:1.5rem;">2026 — Extra-territorial Studio</p>
     </div>
-    <div class="writing-item" style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
+    <div class="writing-item" onclick="openPublication(this)" data-type="Conference Paper" data-title="Spatio-territorial Examination of the Actively Deterritorialized" data-institution="2025 — Birzeit University" data-description="Presented at 'Engineering Destruction' Conference, Birzeit University (June 2025)." data-details="This paper critically examines the spatio-territorial dimensions of deterritorialization, analyzing how destruction and displacement produce new forms of spatial agency. It applies contemporary theory to the Palestinian context, exploring material and immaterial forms of territorial resistance." style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
       <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Conference Paper</p>
       <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Spatio-territorial Examination of the Actively Deterritorialized</h3>
       <p class="writing-desc" style="font-family:var(--body-serif); font-size:0.9rem; line-height:1.7; color:var(--muted); transition:color 0.3s ease;">Presented at "Engineering Destruction" Conference, Birzeit University (June 2025).</p>
       <p class="writing-date" style="font-family:var(--mono); font-size:0.6rem; color:var(--accent); margin-top:1.5rem;">2025 — Birzeit University</p>
     </div>
-    <div class="writing-item" style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
+    <div class="writing-item" onclick="openPublication(this)" data-type="Book Chapter" data-title="Re: Action — Urban Resilience in the post-Information Age" data-institution="2023 — Birkhäuser" data-description="Published by Birkhäuser (2023). Edited by Hani Rashid." data-details="A comprehensive book chapter exploring how urban systems can develop resilience strategies in an era of information saturation and digital transformation. The work proposes frameworks for responsive urban design that balance technological integration with human-centered spatial interventions." style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
       <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Book Chapter</p>
       <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Re: Action — Urban Resilience in the post-Information Age</h3>
       <p class="writing-desc" style="font-family:var(--body-serif); font-size:0.9rem; line-height:1.7; color:var(--muted); transition:color 0.3s ease;">Published by Birkhäuser (2023). Edited by Hani Rashid.</p>
       <p class="writing-date" style="font-family:var(--mono); font-size:0.6rem; color:var(--accent); margin-top:1.5rem;">2023 — Birkhäuser</p>
     </div>
-    <div class="writing-item" style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
+    <div class="writing-item" onclick="openPublication(this)" data-type="Research Proposal" data-title="Rubble Typology: Destruction Mode as a Material Determinant" data-institution="2025 — The New Cairn Project" data-description="A comparative framework for understanding how different destruction modes produce materially distinct waste streams." data-details="This research proposal develops a comprehensive typology of rubble based on the modes and mechanisms of destruction. It argues that material properties of demolition waste are not incidental, but are actively determined by the specific destructive processes that produce them. The framework enables the design and engineering of new structures using un-crushed rubble as intentional masonry units, transforming waste into a deliberate material resource." style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
       <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Research Proposal</p>
       <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Rubble Typology: Destruction Mode as a Material Determinant</h3>
       <p class="writing-desc" style="font-family:var(--body-serif); font-size:0.9rem; line-height:1.7; color:var(--muted); transition:color 0.3s ease;">A comparative framework for understanding how different destruction modes produce materially distinct waste streams.</p>
       <p class="writing-date" style="font-family:var(--mono); font-size:0.6rem; color:var(--accent); margin-top:1.5rem;">2025 — The New Cairn Project</p>
     </div>
-    <div class="writing-item" style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
+    <div class="writing-item" onclick="openPublication(this)" data-type="Material Research" data-title="Compression-Only Logic in Heterogeneous Rubble Assemblies" data-institution="2025 — Fellowship Research" data-description="Applying the Safe Theorem to mixed-material demolition waste for compression-only structural logic." data-details="This research investigates how heterogeneous rubble assemblies can be engineered to work under compression-only loads, drawing on principles from the Safe Theorem in structural mechanics. By understanding the mechanical properties of mixed rubble materials, we can design load-bearing structures that harness the random geometry and material composition as structural assets rather than liabilities. This opens possibilities for resilient, economical construction methods in post-conflict and post-disaster contexts." style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
       <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Material Research</p>
       <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Compression-Only Logic in Heterogeneous Rubble Assemblies</h3>
       <p class="writing-desc" style="font-family:var(--body-serif); font-size:0.9rem; line-height:1.7; color:var(--muted); transition:color 0.3s ease;">Applying the Safe Theorem to mixed-material demolition waste for compression-only structural logic.</p>
@@ -851,6 +988,21 @@
   <span style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; transition:color 0.3s ease;">Ad(h)am Sinan — Architecture, Art & Research</span>
   <span style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; transition:color 0.3s ease;">© 2025</span>
 </footer>
+
+<!-- PUBLICATION SLIDING PANEL -->
+<div class="publication-slide-panel" id="publicationPanel">
+  <div class="publication-panel-header">
+    <button class="publication-panel-back" id="publicationPanelBack">← Back</button>
+  </div>
+  <div class="publication-panel-content">
+    <div class="publication-panel-type" id="panelType"></div>
+    <h1 class="publication-panel-title" id="panelTitle"></h1>
+    <div class="publication-panel-meta" id="panelMeta"></div>
+    <div class="publication-panel-description" id="panelDescription"></div>
+    <div class="publication-panel-details" id="panelDetails"></div>
+  </div>
+</div>
+
   <script>
 // ========== PROJECT DATA ==========
 function detectImageCount(projectSlug) { return 6; }
@@ -1734,70 +1886,6 @@ function loadCompareProject(index) {
 
 function closeSplitModal() { const modal = document.getElementById('splitModal'); if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; } }
 
-// ========== GRID PLUS SIGNS ==========
-let gridPluses = [];
-let hiddenGroupsInterval;
-
-function initializeGridPluses() {
-  const container = document.getElementById('gridPlusContainer');
-  container.innerHTML = '';
-  gridPluses = [];
-  const scrollX = window.scrollX || window.pageXOffset;
-  const scrollY = window.scrollY || window.pageYOffset;
-  const gridSize = 20, padding = 200;
-  const startX = Math.floor((scrollX - padding) / gridSize) * gridSize;
-  const startY = Math.floor((scrollY - padding) / gridSize) * gridSize;
-  const endX = scrollX + window.innerWidth + padding;
-  const endY = scrollY + window.innerHeight + padding;
-  for (let x = startX; x < endX; x += gridSize * 2) {
-    for (let y = startY; y < endY; y += gridSize * 2) {
-      const plus = document.createElement('div');
-      plus.className = 'grid-plus';
-      plus.textContent = '+';
-      plus.style.left = `${x - scrollX}px`;
-      plus.style.top = `${y - scrollY}px`;
-      container.appendChild(plus);
-      gridPluses.push(plus);
-    }
-  }
-}
-
-let scrollUpdateTimeout;
-window.addEventListener('scroll', () => { clearTimeout(scrollUpdateTimeout); scrollUpdateTimeout = setTimeout(initializeGridPluses, 50); }, { passive: true });
-
-function hideRandomPlusGroups() {
-  if (hiddenGroupsInterval) clearInterval(hiddenGroupsInterval);
-  hiddenGroupsInterval = setInterval(() => {
-    gridPluses.forEach(p => p.classList.remove('hidden'));
-    const hidePercentage = Math.random() * 0.45 + 0.4;
-    const hiddenCount = Math.floor(gridPluses.length * hidePercentage);
-    const positions = [];
-    gridPluses.forEach((plus, idx) => { const rect = plus.getBoundingClientRect(); positions.push({ x: Math.round(rect.left), y: Math.round(rect.top), idx }); });
-    const patchCount = Math.floor(Math.random() * 18) + 8;
-    let totalHidden = 0;
-    const hiddenIndices = new Set();
-    for (let p = 0; p < patchCount && totalHidden < hiddenCount; p++) {
-      const centerPlus = positions[Math.floor(Math.random() * positions.length)];
-      const patchRadius = Math.random() * 230 + 20;
-      const patchDensity = Math.random() * 0.7 + 0.2;
-      const shapeType = Math.floor(Math.random() * 5);
-      positions.forEach(plus => {
-        if (hiddenIndices.has(plus.idx) || totalHidden >= hiddenCount) return;
-        const dx = plus.x - centerPlus.x, dy = plus.y - centerPlus.y;
-        let falloff;
-        if (shapeType === 0) { const distance = Math.sqrt(dx * dx + dy * dy); falloff = Math.exp(-Math.pow(distance / patchRadius, 2)); }
-        else if (shapeType === 1) { const rx = patchRadius * (Math.random() * 0.6 + 0.7); const ry = patchRadius * (Math.random() * 0.6 + 0.7); const distance = Math.sqrt((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry)); falloff = Math.exp(-Math.pow(distance, 2)); }
-        else if (shapeType === 2) { const distance = Math.max(Math.abs(dx), Math.abs(dy)); falloff = Math.exp(-Math.pow(distance / patchRadius, 2)); }
-        else if (shapeType === 3) { const distance = Math.sqrt(dx * dx + dy * dy); const angle = Math.atan2(dy, dx); const modulation = 0.5 + 0.5 * Math.cos(4 * angle); falloff = Math.exp(-Math.pow(distance / (patchRadius * (0.6 + 0.4 * modulation)), 2)); }
-        else { const distance = Math.sqrt(dx * dx + dy * dy); const skew = Math.random() * 3 + 0.8; falloff = Math.exp(-Math.pow(distance / patchRadius, skew)); }
-        if (Math.random() < falloff * patchDensity) { hiddenIndices.add(plus.idx); gridPluses[plus.idx].classList.add('hidden'); totalHidden++; }
-      });
-    }
-    const scatteredCount = Math.floor(gridPluses.length * 0.15);
-    for (let i = 0; i < scatteredCount && totalHidden < hiddenCount; i++) { const randomIdx = Math.floor(Math.random() * gridPluses.length); if (!hiddenIndices.has(randomIdx)) { hiddenIndices.add(randomIdx); gridPluses[randomIdx].classList.add('hidden'); totalHidden++; } }
-    if (Math.random() < 0.3) { const largeRadius = Math.random() * 300 + 100; const largeCenter = positions[Math.floor(Math.random() * positions.length)]; positions.forEach(plus => { if (hiddenIndices.has(plus.idx) || totalHidden >= hiddenCount) return; const dx = plus.x - largeCenter.x, dy = plus.y - largeCenter.y; const distance = Math.sqrt(dx * dx + dy * dy); if (distance < largeRadius && Math.random() < 0.7) { hiddenIndices.add(plus.idx); gridPluses[plus.idx].classList.add('hidden'); totalHidden++; } }); }
-  }, 800 + Math.random() * 3000);
-}
     // ========== CONNECTOR LINES FOR CATEGORY HOVER ==========
 let activeHoverLines = [];
 
@@ -1903,6 +1991,311 @@ function initEntranceAnimation() {
   setTimeout(() => { window.dispatchEvent(new Event('scroll')); }, 100);
 }
 
+// ========== PUBLICATION PANEL FUNCTIONS ==========
+function openPublication(element) {
+  const type = element.getAttribute('data-type');
+  const title = element.getAttribute('data-title');
+  const institution = element.getAttribute('data-institution');
+  const description = element.getAttribute('data-description');
+  const details = element.getAttribute('data-details');
+
+  document.getElementById('panelType').textContent = type;
+  document.getElementById('panelTitle').textContent = title;
+  document.getElementById('panelMeta').textContent = institution;
+  document.getElementById('panelDescription').textContent = description;
+  document.getElementById('panelDetails').textContent = details;
+
+  document.getElementById('publicationPanel').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePublication() {
+  document.getElementById('publicationPanel').classList.remove('active');
+  document.body.style.overflow = 'auto';
+}
+
+// ========== SPACETIME GRID DEFORMATION ==========
+let gridCanvas, gridCtx;
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+let ripples = [];
+let time = 0;
+
+const GRID_SIZE = 40;
+const SUB_GRID_SIZE = 10;
+const DEFORM_RADIUS = 300;
+
+class Ripple {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.radius = 0;
+    this.maxRadius = 600;
+    this.expandSpeed = 4;
+    this.opacity = 1;
+    this.waveWidth = 40; // Width of the wave crest
+  }
+  
+  update() {
+    this.radius += this.expandSpeed;
+    this.opacity = Math.max(0, 1 - (this.radius / this.maxRadius));
+    return this.opacity > 0;
+  }
+}
+
+function initGridCanvas() {
+  gridCanvas = document.getElementById('gridCanvas');
+  if (!gridCanvas) {
+    console.error('Grid canvas not found');
+    return;
+  }
+  
+  gridCtx = gridCanvas.getContext('2d');
+  if (!gridCtx) {
+    console.error('Could not get canvas context');
+    return;
+  }
+  
+  const dpr = window.devicePixelRatio || 1;
+  gridCanvas.width = window.innerWidth * dpr;
+  gridCanvas.height = window.innerHeight * dpr;
+  gridCanvas.style.width = window.innerWidth + 'px';
+  gridCanvas.style.height = window.innerHeight + 'px';
+  gridCtx.scale(dpr, dpr);
+  
+  // Get theme colors
+  const isDarkTheme = document.body.classList.contains('dark-theme');
+  gridCanvas.dataset.isDarkTheme = isDarkTheme ? 'true' : 'false';
+  
+  // Start animation loop
+  animateGrid();
+}
+
+function animateGrid() {
+  drawDeformedGrid();
+  time += 0.016; // ~60fps
+  requestAnimationFrame(animateGrid);
+}
+
+function drawDeformedGrid() {
+  if (!gridCtx) return;
+  
+  const isDarkTheme = gridCanvas.dataset.isDarkTheme === 'true';
+  const width = gridCanvas.width / (window.devicePixelRatio || 1);
+  const height = gridCanvas.height / (window.devicePixelRatio || 1);
+  
+  // Clear canvas
+  gridCtx.clearRect(0, 0, width, height);
+  
+  // Draw main grid (40px)
+  gridCtx.strokeStyle = isDarkTheme ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.25)';
+  gridCtx.lineWidth = 1.5;
+  
+  // Draw vertical lines (main grid)
+  for (let x = -GRID_SIZE; x < width + GRID_SIZE; x += GRID_SIZE) {
+    gridCtx.beginPath();
+    
+    let lastY = 0;
+    let lastX = x;
+    
+    for (let y = 0; y <= height; y += 5) {
+      // Calculate deformation at this point
+      const deformedX = getDeformedX(x, y, mouseX, mouseY, ripples);
+      const deformedY = getDeformedY(x, y, mouseX, mouseY, ripples);
+      
+      if (y === 0) {
+        gridCtx.moveTo(deformedX, deformedY);
+      } else {
+        gridCtx.lineTo(deformedX, deformedY);
+      }
+    }
+    gridCtx.stroke();
+  }
+  
+  // Draw horizontal lines (main grid)
+  for (let y = -GRID_SIZE; y < height + GRID_SIZE; y += GRID_SIZE) {
+    gridCtx.beginPath();
+    
+    for (let x = 0; x <= width; x += 5) {
+      // Calculate deformation at this point
+      const deformedX = getDeformedX(x, y, mouseX, mouseY, ripples);
+      const deformedY = getDeformedY(x, y, mouseX, mouseY, ripples);
+      
+      if (x === 0) {
+        gridCtx.moveTo(deformedX, deformedY);
+      } else {
+        gridCtx.lineTo(deformedX, deformedY);
+      }
+    }
+    gridCtx.stroke();
+  }
+  
+  // Draw sub-grid (10px)
+  gridCtx.strokeStyle = isDarkTheme ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.12)';
+  gridCtx.lineWidth = 0.5;
+  
+  // Draw vertical sub-grid lines
+  for (let x = -SUB_GRID_SIZE; x < width + SUB_GRID_SIZE; x += SUB_GRID_SIZE) {
+    gridCtx.beginPath();
+    
+    for (let y = 0; y <= height; y += 10) {
+      const deformedX = getDeformedX(x, y, mouseX, mouseY, ripples);
+      const deformedY = getDeformedY(x, y, mouseX, mouseY, ripples);
+      
+      if (y === 0) {
+        gridCtx.moveTo(deformedX, deformedY);
+      } else {
+        gridCtx.lineTo(deformedX, deformedY);
+      }
+    }
+    gridCtx.stroke();
+  }
+  
+  // Draw horizontal sub-grid lines
+  for (let y = -SUB_GRID_SIZE; y < height + SUB_GRID_SIZE; y += SUB_GRID_SIZE) {
+    gridCtx.beginPath();
+    
+    for (let x = 0; x <= width; x += 10) {
+      const deformedX = getDeformedX(x, y, mouseX, mouseY, ripples);
+      const deformedY = getDeformedY(x, y, mouseX, mouseY, ripples);
+      
+      if (x === 0) {
+        gridCtx.moveTo(deformedX, deformedY);
+      } else {
+        gridCtx.lineTo(deformedX, deformedY);
+      }
+    }
+    gridCtx.stroke();
+  }
+  
+  // Update and remove dead ripples
+  ripples = ripples.filter(ripple => ripple.update());
+}
+
+function getDeformedX(x, y, mouseX, mouseY, ripples) {
+  let displacement = 0;
+  
+  // Gravity well deformation (cursor pull) - 3x more intense
+  const dx = x - mouseX;
+  const dy = y - mouseY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  
+  if (dist < DEFORM_RADIUS) {
+    const influence = Math.pow(1 - dist / DEFORM_RADIUS, 2);
+    const pull = influence * (mouseX - x) * 0.24;
+    displacement += pull;
+  }
+  
+  // Ripple deformations - gentle water-like ripple effect
+  for (let ripple of ripples) {
+    const rippleDx = x - ripple.x;
+    const rippleDy = y - ripple.y;
+    const rippleDist = Math.sqrt(rippleDx * rippleDx + rippleDy * rippleDy);
+    
+    // Smooth sine wave at ripple radius
+    const waveDist = Math.abs(rippleDist - ripple.radius);
+    if (waveDist < ripple.waveWidth) {
+      // Smooth wave envelope using sine
+      const waveStrength = Math.sin((1 - waveDist / ripple.waveWidth) * Math.PI) * ripple.opacity;
+      
+      // Gentle radial displacement
+      const radialDisplacement = waveStrength * 3;
+      const direction = rippleDx / (rippleDist || 1);
+      displacement += direction * radialDisplacement;
+    }
+  }
+  
+  return x + displacement;
+}
+
+function getDeformedY(x, y, mouseX, mouseY, ripples) {
+  let displacement = 0;
+  
+  // Gravity well deformation (cursor pull) - 3x more intense
+  const dx = x - mouseX;
+  const dy = y - mouseY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  
+  if (dist < DEFORM_RADIUS) {
+    const influence = Math.pow(1 - dist / DEFORM_RADIUS, 2);
+    const pull = influence * (mouseY - y) * 0.24;
+    displacement += pull;
+  }
+  
+  // Ripple deformations - gentle water-like ripple effect
+  for (let ripple of ripples) {
+    const rippleDx = x - ripple.x;
+    const rippleDy = y - ripple.y;
+    const rippleDist = Math.sqrt(rippleDx * rippleDx + rippleDy * rippleDy);
+    
+    // Smooth sine wave at ripple radius
+    const waveDist = Math.abs(rippleDist - ripple.radius);
+    if (waveDist < ripple.waveWidth) {
+      // Smooth wave envelope using sine
+      const waveStrength = Math.sin((1 - waveDist / ripple.waveWidth) * Math.PI) * ripple.opacity;
+      
+      // Gentle radial displacement
+      const radialDisplacement = waveStrength * 3;
+      const direction = rippleDy / (rippleDist || 1);
+      displacement += direction * radialDisplacement;
+    }
+  }
+  
+  return y + displacement;
+}
+
+// Track mouse movement
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+// Track touch movement
+document.addEventListener('touchmove', (e) => {
+  if (e.touches.length > 0) {
+    mouseX = e.touches[0].clientX;
+    mouseY = e.touches[0].clientY;
+  }
+}, { passive: true });
+
+// Click to create ripples
+document.addEventListener('click', (e) => {
+  ripples.push(new Ripple(e.clientX, e.clientY));
+  ripples.push(new Ripple(e.clientX, e.clientY));
+  ripples.push(new Ripple(e.clientX, e.clientY));
+});
+
+document.addEventListener('touchend', (e) => {
+  if (e.changedTouches.length > 0) {
+    const touch = e.changedTouches[0];
+    ripples.push(new Ripple(touch.clientX, touch.clientY));
+    ripples.push(new Ripple(touch.clientX, touch.clientY));
+    ripples.push(new Ripple(touch.clientX, touch.clientY));
+  }
+});
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  if (gridCanvas && gridCtx) {
+    const dpr = window.devicePixelRatio || 1;
+    gridCanvas.width = window.innerWidth * dpr;
+    gridCanvas.height = window.innerHeight * dpr;
+    gridCanvas.style.width = window.innerWidth + 'px';
+    gridCanvas.style.height = window.innerHeight + 'px';
+    gridCtx.scale(dpr, dpr);
+  }
+});
+
+// Handle theme changes
+const originalToggle = document.body.classList.toggle;
+document.body.classList.toggle = function(className) {
+  const result = originalToggle.call(this, className);
+  if (className === 'dark-theme' && gridCanvas) {
+    gridCanvas.dataset.isDarkTheme = this.classList.contains('dark-theme') ? 'true' : 'false';
+  }
+  return result;
+};
+
 // ========== INITIALIZE ==========
 function initialize() {
   allProjects = buildProjectsWithDynamicImages();
@@ -1939,11 +2332,17 @@ function initialize() {
     else { themeBtn.innerHTML = '🌓 Dark'; }
     themeBtn.addEventListener('click', () => { document.body.classList.toggle('dark-theme'); if (document.body.classList.contains('dark-theme')) { localStorage.setItem('theme', 'dark'); themeBtn.innerHTML = '☀️ Light'; } else { localStorage.setItem('theme', 'light'); themeBtn.innerHTML = '🌓 Dark'; } });
   }
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeResultsModal(); closeSplitModal(); document.getElementById('cvModal').style.display = 'none'; } });
+  
+  // Publication panel back button
+  const publicationPanelBack = document.getElementById('publicationPanelBack');
+  if (publicationPanelBack) {
+    publicationPanelBack.addEventListener('click', closePublication);
+  }
+  
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeResultsModal(); closeSplitModal(); closePublication(); document.getElementById('cvModal').style.display = 'none'; } });
 }
 
-window.addEventListener('load', () => { initializeGridPluses(); hideRandomPlusGroups(); initialize(); });
-window.addEventListener('resize', initializeGridPluses);
+window.addEventListener('load', () => { initGridCanvas(); initialize(); });
 window.openSplitViewForProject = openSplitViewForProject;
 window.loadCompareProject = loadCompareProject;
 window.closeSplitModal = closeSplitModal;
