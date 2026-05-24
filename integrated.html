@@ -57,11 +57,11 @@
     top: 0;
     right: 0;
     width: 100%;
-    max-width: 600px;
+    max-width: 100%;
     height: 100vh;
     background: var(--bg);
-    border-left: 0.5px solid var(--rule);
-    z-index: 200;
+    border-left: none;
+    z-index: 5100;
     transform: translateX(100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
@@ -79,10 +79,11 @@
   }
 
   .publication-panel-header {
-    padding: 2rem;
+    padding: 1.5rem 3rem;
     border-bottom: 0.5px solid var(--rule);
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 1rem;
   }
 
@@ -90,7 +91,7 @@
     background: none;
     border: none;
     color: var(--accent);
-    font-size: 1.5rem;
+    font-size: 1rem;
     cursor: pointer;
     padding: 0.5rem;
     display: flex;
@@ -98,6 +99,8 @@
     justify-content: center;
     transition: color 0.3s ease;
     font-family: var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
   .publication-panel-back:hover {
@@ -107,16 +110,19 @@
   .publication-panel-content {
     flex: 1;
     overflow-y: auto;
-    padding: 2rem;
+    padding: 4rem 3rem;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
   }
 
   .publication-panel-title {
     font-family: var(--serif);
-    font-size: 2rem;
+    font-size: clamp(2rem, 4vw, 3.5rem);
     font-weight: 700;
     margin-bottom: 1rem;
     color: var(--text);
-    line-height: 1.2;
+    line-height: 1.1;
   }
 
   .publication-panel-type {
@@ -139,18 +145,85 @@
 
   .publication-panel-description {
     font-family: var(--body-serif);
-    font-size: 1rem;
-    line-height: 1.8;
+    font-size: 1.15rem;
+    line-height: 1.9;
     color: var(--text);
     margin-bottom: 2rem;
   }
 
   .publication-panel-details {
     font-family: var(--body-serif);
-    font-size: 0.95rem;
-    line-height: 1.7;
+    font-size: 1.05rem;
+    line-height: 1.8;
     color: var(--muted);
   }
+
+  /* ========== TAG STICKY NOTES OVERLAY ========== */
+  #tagNotesOverlay {
+    position: fixed;
+    left: 0;
+    width: 75%;
+    pointer-events: none;
+    z-index: 4000;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 20px;
+    top: 0;
+    height: 212px;
+  }
+
+  #tagNotesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+    pointer-events: auto;
+    width: 100%;
+  }
+
+  .tag-sticky-note {
+    background: var(--sticky-bg);
+    border: 1px solid var(--sticky-border);
+    padding: 8px 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    cursor: pointer;
+    font-size: 0.6rem;
+    width: 160px;
+    color: var(--ink);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    transform: translateY(100px);
+    opacity: 0;
+    animation: tagNoteRise 0.35s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+
+  .tag-sticky-note:hover {
+    transform: translateY(-4px) !important;
+    border-color: var(--accent);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.13);
+    z-index: 10;
+    position: relative;
+  }
+
+  @keyframes tagNoteRise {
+    from { transform: translateY(100px); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+  }
+
+  .tag-sticky-title {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .tag-sticky-subtitle {
+    font-size: 0.5rem;
+    color: var(--sticky-subtitle);
+    line-height: 1.4;
+  }
+
+  body.dark-theme .tag-sticky-note .tag-sticky-title { color: var(--sticky-title); }
 
   /* ========== WRITING ITEMS CLICKABLE ========== */
   .writing-item {
@@ -669,10 +742,27 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     cursor: pointer;
-    padding: 0.3rem 0;
+    padding: 0.3rem 0 0.3rem 1rem;
     transition: all 0.3s ease;
     color: var(--muted);
     position: relative;
+  }
+  /* The | pipe that marks the connector origin */
+  .category-filters li::before {
+    content: '|';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-weight: 400;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    font-style: normal;
+  }
+  .category-filters li:hover::before,
+  .category-filters li.active::before {
+    opacity: 1;
   }
   .category-filters li:hover, .category-filters li.active {
     color: var(--accent);
@@ -682,40 +772,37 @@
   body.dark-theme .category-filters li { color: #999999; }
   body.dark-theme .category-filters li:hover,
   body.dark-theme .category-filters li.active { color: #ffffff; }
+  body.dark-theme .category-filters li::before { color: #ffffff; }
 
-  /* ========== TAGS BAR (inside sticky canvas, top) ========== */
+  /* ========== TAGS BAR — anchored above bottom moving text ========== */
 .canvas-tags-bar {
   position: absolute;
-  top: -5px;  /* Changed from 10px to -5px - moves it higher */
+  bottom: calc(2% + 28px); /* sits just above the bottom moving-text line */
   left: 10px;
   right: 120px;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(8px);
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
+  background: rgba(0,0,0,0.0); /* transparent — no background panel */
+  padding: 0.5rem 0.5rem;
   display: flex;
-  flex-wrap: nowrap;  /* Changed from wrap to nowrap - keeps tags in one line */
+  flex-wrap: wrap;        /* wrap onto multiple rows, never scroll */
   gap: 0.5rem;
-  z-index: 50;
+  z-index: 60;            /* above the moving text (z-index 5) */
   pointer-events: auto;
-  transition: background 0.3s ease, opacity 0.4s ease, transform 0.4s ease;
-  overflow-x: auto;  /* Adds horizontal scroll if too many tags */
-  overflow-y: hidden;
-    
-    /* START hidden - will fade in on scroll */
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  overflow: visible;
+
+  /* START hidden */
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(10px);
   visibility: hidden;
 }
 
-  /* Visible state when scrolled to sticky notes */
   .canvas-tags-bar.visible {
     opacity: 1;
     transform: translateY(0);
     visibility: visible;
   }
 
-  body.dark-theme .canvas-tags-bar { background: rgba(30,30,30,0.8); }
+  body.dark-theme .canvas-tags-bar { background: rgba(0,0,0,0.0); }
 
   .tag-filter {
     font-family: var(--mono);
@@ -745,7 +832,8 @@
   .tag-filter::after {
     content: attr(data-tooltip);
     position: absolute;
-    top: 100%;
+    bottom: calc(100% + 6px);
+    top: auto;
     left: 50%;
     transform: translateX(-50%);
     background: var(--accent);
@@ -755,7 +843,6 @@
     border-radius: 4px;
     white-space: nowrap;
     z-index: 200;
-    margin-top: 5px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s;
@@ -989,10 +1076,16 @@
   <span style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; transition:color 0.3s ease;">© 2025</span>
 </footer>
 
+<!-- TAG STICKY NOTES OVERLAY -->
+<div id="tagNotesOverlay">
+  <div id="tagNotesContainer"></div>
+</div>
+
 <!-- PUBLICATION SLIDING PANEL -->
 <div class="publication-slide-panel" id="publicationPanel">
   <div class="publication-panel-header">
-    <button class="publication-panel-back" id="publicationPanelBack">← Back</button>
+    <button class="publication-panel-back" id="publicationPanelBack">← Close</button>
+    <span id="panelHeaderType" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent);"></span>
   </div>
   <div class="publication-panel-content">
     <div class="publication-panel-type" id="panelType"></div>
@@ -1396,23 +1489,27 @@ openFloatingWindow(project, clickX, clickY, note) {
   const win = document.createElement('div');
   win.className = 'floating-window';
   win.setAttribute('data-id', project.id);
-  
-  // Get the note's position relative to the VIEWPORT (not document)
+
+  // Use ABSOLUTE positioning so the window stays anchored in page space
+  // and does NOT move when the user scrolls.
   const rect = note.getBoundingClientRect();
-  
-  // Position window using viewport coordinates (since position is fixed)
-  win.style.position = 'fixed';
-  win.style.left = rect.left + 'px';
-  win.style.top = rect.top + 'px';
-  win.style.width = '500px';
+  const scrollX = window.scrollX || window.pageXOffset;
+  const scrollY = window.scrollY || window.pageYOffset;
+  const absLeft = rect.left + scrollX;
+  const absTop  = rect.top  + scrollY;
+
+  win.style.position = 'absolute';
+  win.style.left   = absLeft + 'px';
+  win.style.top    = absTop  + 'px';
+  win.style.width  = '500px';
   win.style.height = 'auto';
-  win.style.background = 'var(--modal-bg)';
+  win.style.background   = 'var(--modal-bg)';
   win.style.borderRadius = '12px';
-  win.style.boxShadow = '0 10px 40px rgba(0,0,0,0.3)';
-  win.style.border = '1px solid var(--rule)';
-  win.style.overflow = 'hidden';
-  win.style.zIndex = '30000';
-  
+  win.style.boxShadow    = '0 10px 40px rgba(0,0,0,0.3)';
+  win.style.border       = '1px solid var(--rule)';
+  win.style.overflow     = 'hidden';
+  win.style.zIndex       = '30000';
+
   win.innerHTML = `
     <div class="window-header" style="background:var(--accent); color:white; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; font-weight:500; cursor:move; user-select:none;">
       <h3 style="margin:0; font-size:0.85rem;">${project.id} · ${project.title}</h3>
@@ -1434,165 +1531,163 @@ openFloatingWindow(project, clickX, clickY, note) {
       <div style="font-size: 0.8rem; line-height: 1.5; color: var(--muted);">${project.fullDesc}</div>
     </div>
   `;
-  
+
   document.body.appendChild(win);
   activeFloatingWindows.push(win);
-  
+
   const projectId = project.id;
   const tab = document.getElementById(`tab-${projectId}`);
   if (tab) this.updateConnectorLineForWindow(win, projectId, tab);
-  
+
+  // Helper: restore the note's connector line (note→tab or standalone highlight)
+  const restoreNoteConnector = () => {
+    this.removeWindowConnector(projectId);
+    // Re-draw the note→tab connector if the note is still frozen/tabbed
+    const existingTab = document.getElementById(`tab-${projectId}`);
+    if (existingTab && this.noteTabConnections.has(projectId)) {
+      const { noteRect } = this.noteTabConnections.get(projectId);
+      this.drawLightConnectorLineFromNoteToTab(projectId, noteRect, existingTab);
+    }
+    // Also update all live connector lines so nothing is left dangling
+    setTimeout(() => { if (manager) manager.updateAllConnectorLines(); }, 50);
+  };
+
   // Add resize handles
   const handles = ['top', 'right', 'bottom', 'left', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
   handles.forEach(handle => {
     const div = document.createElement('div');
     div.className = `resize-handle resize-${handle}`;
     div.style.position = 'absolute';
-    if (handle === 'top') { div.style.top = '0'; div.style.left = '0'; div.style.right = '0'; div.style.height = '8px'; div.style.cursor = 'ns-resize'; }
-    else if (handle === 'bottom') { div.style.bottom = '0'; div.style.left = '0'; div.style.right = '0'; div.style.height = '8px'; div.style.cursor = 'ns-resize'; }
-    else if (handle === 'left') { div.style.left = '0'; div.style.top = '0'; div.style.bottom = '0'; div.style.width = '8px'; div.style.cursor = 'ew-resize'; }
-    else if (handle === 'right') { div.style.right = '0'; div.style.top = '0'; div.style.bottom = '0'; div.style.width = '8px'; div.style.cursor = 'ew-resize'; }
-    else if (handle === 'top-left') { div.style.top = '0'; div.style.left = '0'; div.style.width = '12px'; div.style.height = '12px'; div.style.cursor = 'nw-resize'; }
-    else if (handle === 'top-right') { div.style.top = '0'; div.style.right = '0'; div.style.width = '12px'; div.style.height = '12px'; div.style.cursor = 'ne-resize'; }
+    if (handle === 'top')          { div.style.top = '0'; div.style.left = '0'; div.style.right = '0'; div.style.height = '8px'; div.style.cursor = 'ns-resize'; }
+    else if (handle === 'bottom')  { div.style.bottom = '0'; div.style.left = '0'; div.style.right = '0'; div.style.height = '8px'; div.style.cursor = 'ns-resize'; }
+    else if (handle === 'left')    { div.style.left = '0'; div.style.top = '0'; div.style.bottom = '0'; div.style.width = '8px'; div.style.cursor = 'ew-resize'; }
+    else if (handle === 'right')   { div.style.right = '0'; div.style.top = '0'; div.style.bottom = '0'; div.style.width = '8px'; div.style.cursor = 'ew-resize'; }
+    else if (handle === 'top-left')    { div.style.top = '0'; div.style.left = '0'; div.style.width = '12px'; div.style.height = '12px'; div.style.cursor = 'nw-resize'; }
+    else if (handle === 'top-right')   { div.style.top = '0'; div.style.right = '0'; div.style.width = '12px'; div.style.height = '12px'; div.style.cursor = 'ne-resize'; }
     else if (handle === 'bottom-left') { div.style.bottom = '0'; div.style.left = '0'; div.style.width = '12px'; div.style.height = '12px'; div.style.cursor = 'sw-resize'; }
-    else if (handle === 'bottom-right') { div.style.bottom = '0'; div.style.right = '0'; div.style.width = '12px'; div.style.height = '12px'; div.style.cursor = 'se-resize'; }
+    else if (handle === 'bottom-right'){ div.style.bottom = '0'; div.style.right = '0'; div.style.width = '12px'; div.style.height = '12px'; div.style.cursor = 'se-resize'; }
     win.appendChild(div);
-    
+
     div.addEventListener('mousedown', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      const startX = e.clientX;
-      const startY = e.clientY;
-      const startWidth = win.offsetWidth;
-      const startHeight = win.offsetHeight;
-      const startLeft = win.offsetLeft;
-      const startTop = win.offsetTop;
-      const onMouseMove = (moveEvent) => {
-        const dx = moveEvent.clientX - startX;
-        const dy = moveEvent.clientY - startY;
-        if (handle.includes('right')) win.style.width = Math.max(300, startWidth + dx) + 'px';
-        if (handle.includes('left')) { win.style.width = Math.max(300, startWidth - dx) + 'px'; win.style.left = startLeft + dx + 'px'; }
+      e.stopPropagation(); e.preventDefault();
+      const startX = e.clientX, startY = e.clientY;
+      const startWidth = win.offsetWidth, startHeight = win.offsetHeight;
+      const startLeft = parseFloat(win.style.left), startTop = parseFloat(win.style.top);
+      const onMM = (me) => {
+        const dx = me.clientX - startX, dy = me.clientY - startY;
+        if (handle.includes('right'))  win.style.width  = Math.max(300, startWidth  + dx) + 'px';
+        if (handle.includes('left'))  { win.style.width  = Math.max(300, startWidth  - dx) + 'px'; win.style.left = startLeft + dx + 'px'; }
         if (handle.includes('bottom')) win.style.height = Math.max(200, startHeight + dy) + 'px';
-        if (handle.includes('top')) { win.style.height = Math.max(200, startHeight - dy) + 'px'; win.style.top = startTop + dy + 'px'; }
+        if (handle.includes('top'))   { win.style.height = Math.max(200, startHeight - dy) + 'px'; win.style.top  = startTop  + dy + 'px'; }
         this.updateConnectorLineForWindow(win, project.id);
       };
-      const onMouseUp = () => { document.removeEventListener('mousemove', onMouseMove); document.removeEventListener('mouseup', onMouseUp); };
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
+      const onMU = () => { document.removeEventListener('mousemove', onMM); document.removeEventListener('mouseup', onMU); };
+      document.addEventListener('mousemove', onMM);
+      document.addEventListener('mouseup', onMU);
     });
   });
-  
-  // Carousel functionality
+
+  // Carousel
   let winCurrentIndex = 0;
-  const winSlides = win.querySelector('.window-slides');
+  const winSlides   = win.querySelector('.window-slides');
   const winSlideCount = project.images.length;
-  const winPrevBtn = win.querySelector('.window-prev');
-  const winNextBtn = win.querySelector('.window-next');
-  winPrevBtn.addEventListener('click', (e) => { e.stopPropagation(); winCurrentIndex = Math.max(0, winCurrentIndex - 1); winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`; });
-  winNextBtn.addEventListener('click', (e) => { e.stopPropagation(); winCurrentIndex = Math.min(winSlideCount - 1, winCurrentIndex + 1); winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`; });
-  
-  // Dragging functionality (only via header)
+  win.querySelector('.window-prev').addEventListener('click', (e) => { e.stopPropagation(); winCurrentIndex = Math.max(0, winCurrentIndex - 1); winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`; });
+  win.querySelector('.window-next').addEventListener('click', (e) => { e.stopPropagation(); winCurrentIndex = Math.min(winSlideCount - 1, winCurrentIndex + 1); winSlides.style.transform = `translateX(-${winCurrentIndex * 100}%)`; });
+
+  // Dragging — absolute coords: add scroll offset on drag start, then just add delta
   let isDragging = false;
   let dragStartX, dragStartY, startLeft, startTop;
   let rafId = null;
   const header = win.querySelector('.window-header');
-  
+
   const onMouseMove = (e) => {
     if (!isDragging) return;
     if (rafId) cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
-      let newLeft = startLeft + (e.clientX - dragStartX);
-      let newTop = startTop + (e.clientY - dragStartY);
-      win.style.left = newLeft + 'px';
-      win.style.top = newTop + 'px';
+      win.style.left = (startLeft + e.clientX - dragStartX) + 'px';
+      win.style.top  = (startTop  + e.clientY - dragStartY) + 'px';
       this.updateConnectorLineForWindow(win, project.id);
       rafId = null;
     });
   };
-  
+
   const onTouchMove = (e) => {
     if (!isDragging) return;
     e.preventDefault();
     if (rafId) cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
-      const touch = e.touches[0];
-      let newLeft = startLeft + (touch.clientX - dragStartX);
-      let newTop = startTop + (touch.clientY - dragStartY);
-      win.style.left = newLeft + 'px';
-      win.style.top = newTop + 'px';
+      const t = e.touches[0];
+      win.style.left = (startLeft + t.clientX - dragStartX) + 'px';
+      win.style.top  = (startTop  + t.clientY - dragStartY) + 'px';
       this.updateConnectorLineForWindow(win, project.id);
       rafId = null;
     });
   };
-  
+
   const onMouseUp = () => { isDragging = false; if (rafId) cancelAnimationFrame(rafId); rafId = null; };
-  
+
   header.addEventListener('mousedown', (e) => {
     if (e.target.closest('.window-close') || e.target.closest('.window-minimize')) return;
     isDragging = true;
     dragStartX = e.clientX;
     dragStartY = e.clientY;
-    startLeft = parseFloat(win.style.left);
-    startTop = parseFloat(win.style.top);
+    startLeft  = parseFloat(win.style.left);
+    startTop   = parseFloat(win.style.top);
     win.style.zIndex = 30000 + activeFloatingWindows.length;
     e.preventDefault();
   });
-  
+
   header.addEventListener('touchstart', (e) => {
     if (e.target.closest('.window-close') || e.target.closest('.window-minimize')) return;
     e.preventDefault();
-    const touch = e.touches[0];
+    const t = e.touches[0];
     isDragging = true;
-    dragStartX = touch.clientX;
-    dragStartY = touch.clientY;
-    startLeft = parseFloat(win.style.left);
-    startTop = parseFloat(win.style.top);
+    dragStartX = t.clientX; dragStartY = t.clientY;
+    startLeft  = parseFloat(win.style.left);
+    startTop   = parseFloat(win.style.top);
     win.style.zIndex = 30000 + activeFloatingWindows.length;
   });
-  
+
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
   document.addEventListener('touchmove', onTouchMove, { passive: false });
   document.addEventListener('touchend', onMouseUp);
-  
-  // Minimize button
+
+  // ---- MINIMIZE: animate back to note, restore connector lines ----
   win.querySelector('.window-minimize').addEventListener('click', () => {
     const noteEl = document.querySelector(`.sticky-note[data-project-id="${project.id}"]`);
     if (noteEl && !noteEl.classList.contains('frozen')) {
       const noteRect = noteEl.getBoundingClientRect();
-      const scrollX = window.scrollX || window.pageXOffset;
-      const scrollY = window.scrollY || window.pageYOffset;
+      const sx = window.scrollX || window.pageXOffset;
+      const sy = window.scrollY || window.pageYOffset;
       win.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-      win.style.left = (noteRect.left + scrollX) + 'px';
-      win.style.top = (noteRect.top + scrollY) + 'px';
-      win.style.width = noteRect.width + 'px';
-      win.style.height = noteRect.height + 'px';
+      win.style.left    = (noteRect.left + sx) + 'px';
+      win.style.top     = (noteRect.top  + sy) + 'px';
+      win.style.width   = noteRect.width  + 'px';
+      win.style.height  = noteRect.height + 'px';
       win.style.opacity = '0';
-      setTimeout(() => { 
-        win.remove(); 
+      setTimeout(() => {
+        win.remove();
         activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
-        if (noteEl) {
-          noteEl.style.transform = 'scale(1.02)';
-          setTimeout(() => { if (noteEl) noteEl.style.transform = ''; }, 300);
-        }
+        restoreNoteConnector();
+        if (noteEl) { noteEl.style.transform = 'scale(1.02)'; setTimeout(() => { if (noteEl) noteEl.style.transform = ''; }, 300); }
       }, 400);
-    } else { 
-      win.remove(); 
-      activeFloatingWindows = activeFloatingWindows.filter(w => w !== win); 
+    } else {
+      win.remove();
+      activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
+      restoreNoteConnector();
     }
   });
-  
-  // Close button
-  win.querySelector('.window-close').addEventListener('click', () => { 
-    this.removeWindowConnector(project.id); 
-    win.remove(); 
-    activeFloatingWindows = activeFloatingWindows.filter(w => w !== win); 
+
+  // ---- CLOSE: remove window, restore connector lines ----
+  win.querySelector('.window-close').addEventListener('click', () => {
+    win.remove();
+    activeFloatingWindows = activeFloatingWindows.filter(w => w !== win);
+    restoreNoteConnector();
   });
-  
+
   // Bring to front on click
-  win.addEventListener('mousedown', () => {
-    win.style.zIndex = 30000 + activeFloatingWindows.length;
-  });
+  win.addEventListener('mousedown', () => { win.style.zIndex = 30000 + activeFloatingWindows.length; });
 }
 
   addToSidebar(project, index, noteRect, lastImageIndex, noteElement) {
@@ -1836,26 +1931,73 @@ function createTagFilters() {
   });
 }
 
+let activeTagNotes = [];
+
+function updateTagOverlayPosition() {
+  const overlay = document.getElementById('tagNotesOverlay');
+  const wrapper = document.getElementById('stickyCanvasWrapper');
+  if (!overlay || !wrapper) return;
+  const rect = wrapper.getBoundingClientRect();
+  // The bottom moving text line sits at 98% of the wrapper height
+  const bottomTextY = rect.top + rect.height * 0.98;
+  // Place the overlay so its bottom edge is right at the text line
+  const overlayHeight = 212;
+  overlay.style.top = (bottomTextY - overlayHeight) + 'px';
+}
+
+function clearTagNotes() {
+  const container = document.getElementById('tagNotesContainer');
+  if (container) container.innerHTML = '';
+  activeTagNotes = [];
+}
+
 function showProjectsByTag(tag) {
+  clearTagNotes();
+  updateTagOverlayPosition();
   const projects = allProjects.filter(p => p.tags.includes(tag));
-  const resultsGrid = document.getElementById('resultsGrid');
-  document.getElementById('resultsTitle').textContent = `"${tag}" — ${projects.length} projects`;
-  resultsGrid.innerHTML = '';
-  projects.forEach(project => {
-    const card = document.createElement('div');
-    card.className = 'result-card';
-    card.style.background = 'var(--card-bg)';
-    card.style.border = '1px solid var(--rule)';
-    card.style.borderRadius = '8px';
-    card.style.padding = '0.8rem';
-    card.style.cursor = 'pointer';
-    card.style.transition = 'all 0.2s';
-    card.style.color = 'var(--text)';
-    card.innerHTML = `<div style="font-weight:bold;">${project.id} · ${project.title}</div><div style="font-size:0.8rem;">${project.subtitle} (${project.year})</div><div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;">${project.tags.map(t => `<span style="background:var(--accent); color:white; padding:2px 8px; border-radius:12px; font-size:0.5rem;">${t}</span>`).join('')}</div>`;
-    card.addEventListener('click', () => { closeResultsModal(); if (manager) { const rect = card.getBoundingClientRect(); manager.openFloatingWindow(project, rect.left, rect.top); } });
-    resultsGrid.appendChild(card);
+  const container = document.getElementById('tagNotesContainer');
+  if (!container) return;
+
+  projects.forEach((project, i) => {
+    const note = document.createElement('div');
+    note.className = 'tag-sticky-note';
+    note.style.animationDelay = (i * 0.06) + 's';
+    note.innerHTML = `
+      <div class="tag-sticky-title">${project.id} · ${project.title}</div>
+      <div class="tag-sticky-subtitle">${project.subtitle}<br>${project.year}</div>
+    `;
+    note.addEventListener('click', () => {
+      clearTagNotes();
+      openProjectAsPanel(project);
+    });
+    container.appendChild(note);
+    activeTagNotes.push(note);
   });
-  document.getElementById('resultsModal').style.display = 'flex';
+
+  // Click outside to dismiss
+  setTimeout(() => {
+    document.addEventListener('click', dismissTagNotesOutside);
+  }, 100);
+}
+
+function dismissTagNotesOutside(e) {
+  const container = document.getElementById('tagNotesContainer');
+  const tagsBar = document.getElementById('canvasTagsBar');
+  if (!container) return;
+  if (!container.contains(e.target) && (!tagsBar || !tagsBar.contains(e.target))) {
+    clearTagNotes();
+    document.removeEventListener('click', dismissTagNotesOutside);
+  }
+}
+
+function openProjectAsPanel(project) {
+  document.getElementById('panelType').textContent = project.tags.join(' · ');
+  document.getElementById('panelHeaderType').textContent = project.tags.join(' · ');
+  document.getElementById('panelTitle').textContent = project.title;
+  document.getElementById('panelMeta').textContent = project.subtitle + ' — ' + project.year;
+  document.getElementById('panelDescription').textContent = project.fullDesc;
+  document.getElementById('panelDetails').textContent = '';
+  document.getElementById('publicationPanel').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
 
@@ -1897,9 +2039,10 @@ function drawFilletedLine(svg, x1, y1, x2, y2, opacity) {
   const snappedY1 = Math.round(y1 / gridSize) * gridSize;
   const snappedX2 = Math.round(x2 / gridSize) * gridSize;
   const snappedY2 = Math.round(y2 / gridSize) * gridSize;
-  const midY1 = snappedY1 + (snappedY2 - snappedY1) * 0.3;
-  const midY2 = snappedY1 + (snappedY2 - snappedY1) * 0.7;
-  const d = `M ${snappedX1} ${snappedY1} C ${snappedX1} ${midY1}, ${(snappedX1 + snappedX2) / 2} ${midY1}, ${(snappedX1 + snappedX2) / 2} ${(snappedY1 + snappedY2) / 2} C ${(snappedX1 + snappedX2) / 2} ${midY2}, ${snappedX2} ${midY2}, ${snappedX2} ${snappedY2}`;
+  // Horizontal S-curve: control points pull horizontally so the line
+  // leaves x1 going left and arrives at x2 from the right
+  const midX = snappedX1 + (snappedX2 - snappedX1) * 0.5;
+  const d = `M ${snappedX1} ${snappedY1} C ${midX} ${snappedY1}, ${midX} ${snappedY2}, ${snappedX2} ${snappedY2}`;
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   path.setAttribute('class', 'connector-line');
   path.setAttribute('d', d);
@@ -1914,10 +2057,13 @@ function drawCategoryHoverLines(categoryEl) {
   const gridSize = 20;
   const category = categoryEl.getAttribute('data-category');
   const catRect = categoryEl.getBoundingClientRect();
-  let startX = catRect.left + catRect.width / 2;
-  let startY = catRect.bottom + 3;
+
+  // Start from the LEFT edge of the li — where the | pipe indicator sits
+  let startX = catRect.left + 4; // +4px to land on the pipe glyph centre
+  let startY = catRect.top + catRect.height / 2;
   startX = Math.round(startX / gridSize) * gridSize;
   startY = Math.round(startY / gridSize) * gridSize;
+
   const notes = document.querySelectorAll('.sticky-note:not(.frozen)');
   const tagFilters = document.querySelectorAll('.tag-filter');
   notes.forEach(note => {
@@ -1931,20 +2077,23 @@ function drawCategoryHoverLines(categoryEl) {
       matchingTags = Array.from(tagFilters).filter(tagEl => project.tags.includes(tagEl.textContent.trim()));
     }
     const noteRect = note.getBoundingClientRect();
-    let endX = noteRect.left + noteRect.width / 2;
-    let endY = noteRect.top - 3;
+    // Connect to the right edge of the sticky note (closest side to the category list)
+    let endX = noteRect.right;
+    let endY = noteRect.top + noteRect.height / 2;
     endX = Math.round(endX / gridSize) * gridSize;
     endY = Math.round(endY / gridSize) * gridSize;
     if (matchingTags.length > 0) {
       const tagEl = matchingTags[0];
       const tagRect = tagEl.getBoundingClientRect();
       let tagX = tagRect.left + tagRect.width / 2;
-      let tagY = tagRect.bottom + 5;
+      let tagY = tagRect.top + tagRect.height / 2;
       tagX = Math.round(tagX / gridSize) * gridSize;
       tagY = Math.round(tagY / gridSize) * gridSize;
       drawFilletedLine(svg, startX, startY, tagX, tagY, 0.55);
       drawFilletedLine(svg, tagX, tagY, endX, endY, 0.55);
-    } else { drawFilletedLine(svg, startX, startY, endX, endY, 0.55); }
+    } else {
+      drawFilletedLine(svg, startX, startY, endX, endY, 0.55);
+    }
   });
 }
 
@@ -2000,6 +2149,7 @@ function openPublication(element) {
   const details = element.getAttribute('data-details');
 
   document.getElementById('panelType').textContent = type;
+  document.getElementById('panelHeaderType').textContent = type;
   document.getElementById('panelTitle').textContent = title;
   document.getElementById('panelMeta').textContent = institution;
   document.getElementById('panelDescription').textContent = description;
@@ -2012,6 +2162,7 @@ function openPublication(element) {
 function closePublication() {
   document.getElementById('publicationPanel').classList.remove('active');
   document.body.style.overflow = 'auto';
+  clearTagNotes();
 }
 
 // ========== SPACETIME GRID DEFORMATION ==========
@@ -2024,6 +2175,40 @@ let time = 0;
 const GRID_SIZE = 40;
 const SUB_GRID_SIZE = 10;
 const DEFORM_RADIUS = 300;
+
+// ========== CURSOR TRAIL ==========
+const TRAIL_LIFETIME = 7000;
+const TRAIL_MAX_POINTS = 800;
+let cursorTrail = [];
+
+function addTrailPoint(x, y) {
+  const now = performance.now();
+  cursorTrail.push({ x, y, t: now });
+  if (cursorTrail.length > TRAIL_MAX_POINTS) cursorTrail.shift();
+}
+
+function drawCursorTrail(ctx, isDarkTheme) {
+  const now = performance.now();
+  cursorTrail = cursorTrail.filter(p => now - p.t < TRAIL_LIFETIME);
+  if (cursorTrail.length < 2) return;
+  for (let i = 1; i < cursorTrail.length; i++) {
+    const prev = cursorTrail[i - 1];
+    const curr = cursorTrail[i];
+    const age = now - curr.t;
+    const alpha = Math.max(0, 1 - age / TRAIL_LIFETIME);
+    const width = alpha * 2.2;
+    if (alpha < 0.01) continue;
+    const g = isDarkTheme ? 80 : 48;
+    ctx.beginPath();
+    ctx.strokeStyle = `rgba(255,${g},${g},${alpha * 0.75})`;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.moveTo(prev.x, prev.y);
+    ctx.lineTo(curr.x, curr.y);
+    ctx.stroke();
+  }
+}
 
 class Ripple {
   constructor(x, y) {
@@ -2170,6 +2355,9 @@ function drawDeformedGrid() {
   
   // Update and remove dead ripples
   ripples = ripples.filter(ripple => ripple.update());
+
+  // Draw cursor trail on top of grid
+  drawCursorTrail(gridCtx, isDarkTheme);
 }
 
 function getDeformedX(x, y, mouseX, mouseY, ripples) {
@@ -2248,6 +2436,7 @@ function getDeformedY(x, y, mouseX, mouseY, ripples) {
 document.addEventListener('mousemove', (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
+  addTrailPoint(e.clientX, e.clientY);
 });
 
 // Track touch movement
@@ -2255,6 +2444,7 @@ document.addEventListener('touchmove', (e) => {
   if (e.touches.length > 0) {
     mouseX = e.touches[0].clientX;
     mouseY = e.touches[0].clientY;
+    addTrailPoint(e.touches[0].clientX, e.touches[0].clientY);
   }
 }, { passive: true });
 
