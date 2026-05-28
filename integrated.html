@@ -12,44 +12,7 @@
     position: relative;
   }
 
-  /* ========== MOVING TEXT BORDER ========== */
-  .moving-text-border {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 5;
-    overflow: visible;
-  }
-
-  .moving-text-line {
-    position: absolute;
-    white-space: nowrap;
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--accent);
-    letter-spacing: 0.25em;
-    opacity: 0.65;
-    text-transform: uppercase;
-    animation: moveTextHorizontal 50s linear infinite;
-  }
-
-  .moving-text-line:nth-child(2) {
-    animation: moveTextHorizontal 50s linear infinite reverse;
-  }
-
-  @keyframes moveTextHorizontal {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100vw); }
-  }
-
-  body.dark-theme .moving-text-line {
-    color: var(--accent-light);
-    opacity: 0.55;
-  }
+  /* ========== MOVING TEXT BORDER - REMOVED ========== */
 
   /* ========== PUBLICATION SLIDING PANEL ========== */
   .publication-slide-panel {
@@ -185,7 +148,7 @@
     background: var(--sticky-bg);
     border: 1px solid var(--sticky-border);
     padding: 8px 10px;
-    border-radius: 4px;
+    border-radius: 0px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     cursor: pointer;
     font-size: 0.6rem;
@@ -317,15 +280,7 @@
   }
 
   /* Grid canvas for deformation */
-  #gridCanvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 0;
-  }
+  /* #gridCanvas - REMOVED */
 
   nav, .hero, section, footer, .sticky-canvas, .sidebar-tabs, .control-panel {
     position: relative;
@@ -341,14 +296,14 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.2rem 3rem;
-    background: rgba(0,0,0,0.95);
-    backdrop-filter: blur(10px);
+    background: #000000;
+    backdrop-filter: none;
     border-bottom: 0.5px solid var(--rule);
     transition: background 0.3s ease, border-color 0.3s ease;
   }
 
   body.dark-theme nav {
-    background: rgba(30,30,30,0.95);
+    background: #000000;
     border-bottom-color: #444444;
   }
 
@@ -357,7 +312,7 @@
     font-size: 0.75rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--text);
+    color: #ffffff;
     text-decoration: none;
     transition: color 0.3s ease;
   }
@@ -368,7 +323,7 @@
     font-size: 0.7rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: #ffffff;
     text-decoration: none;
     transition: color 0.2s;
   }
@@ -448,13 +403,13 @@
     text-transform: uppercase;
     cursor: pointer;
     padding: 0.4rem 1rem;
-    border: 1px solid var(--rule);
-    border-radius: 30px;
-    color: var(--text);
-    background: transparent;
+    border: 1px solid white;
+    border-radius: 0px;
+    color: white;
+    background: #000;
     transition: all 0.2s ease;
   }
-  .hero-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .hero-chip:hover { background: white; color: #000; border-color: white; }
 
   .hero-cta {
     display: inline-block;
@@ -532,10 +487,10 @@
 
   .sticky-note {
     position: absolute;
-    background: var(--sticky-bg);
-    border: 1px solid var(--sticky-border);
+    background: #000;
+    border: 1px solid #000;
     padding: 8px 10px;
-    border-radius: 4px;
+    border-radius: 0px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     cursor: pointer;
     font-size: 0.6rem;
@@ -562,7 +517,7 @@
   .sticky-note.preview-active .sticky-preview { display: block; }
   .sticky-note .sticky-preview { display: none; margin-top: 8px; }
 
-  .sticky-preview-carousel { position: relative; width: 100%; overflow: hidden; border-radius: 4px; margin-bottom: 6px; }
+  .sticky-preview-carousel { position: relative; width: 100%; overflow: hidden; border-radius: 0px; margin-bottom: 6px; }
   .sticky-preview-slides { display: flex; transition: transform 0.5s ease; }
   .sticky-preview-slide { min-width: 100%; }
   .sticky-preview-slide img {
@@ -576,7 +531,8 @@
   body.dark-theme .sticky-preview-slide img { background: #1a1a1a; }
 
   .sticky-preview-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-  .sticky-preview-tag { font-size: 0.5rem; padding: 3px 6px; border-radius: 2px; color: white; background: var(--accent); font-weight: 500; }
+  .sticky-preview-tag { font-size: 0.5rem; padding: 3px 6px; border-radius: 0px; color: white; background: #000; border: 1px solid white; font-weight: 500; transition: all 0.2s ease; cursor: pointer; }
+  .sticky-preview-tag:hover { background: white; color: #000; }
 
   .sticky-note .sticky-title {
     color: var(--accent);
@@ -600,7 +556,7 @@
   .sticky-note-controls button {
     background: rgba(0,0,0,0.05);
     border: 1px solid var(--rule);
-    border-radius: 3px;
+    border-radius: 0px;
     font-size: 0.6rem;
     cursor: pointer;
     color: var(--muted);
@@ -738,11 +694,11 @@
   }
   .category-filters li {
     font-family: var(--mono);
-    font-size: 0.65rem;
+    font-size: 1.2rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     cursor: pointer;
-    padding: 0.3rem 0 0.3rem 1rem;
+    padding: 0.5rem 0 0.5rem 1.5rem;
     transition: all 0.3s ease;
     color: var(--muted);
     position: relative;
@@ -811,10 +767,10 @@
     text-transform: uppercase;
     cursor: pointer;
     padding: 0.35rem 0.8rem;
-    border: none;
-    border-radius: 20px;
+    border: 1px solid white;
+    border-radius: 0px;
     color: white;
-    background: var(--accent);
+    background: #000;
     transition: all 0.2s ease;
     position: relative;
     
@@ -827,7 +783,7 @@
     white-space: nowrap;
   }
   
-  .tag-filter:hover { background: var(--accent-light); opacity: 0.9; }
+  .tag-filter:hover { background: white; color: #000; border-color: white; }
   
   .tag-filter::after {
     content: attr(data-tooltip);
@@ -836,11 +792,12 @@
     top: auto;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--accent);
+    background: #000;
     color: white;
     font-size: 0.45rem;
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: 0px;
+    border: 1px solid white;
     white-space: nowrap;
     z-index: 200;
     opacity: 0;
@@ -850,8 +807,9 @@
   
   .tag-filter:hover::after { opacity: 1; }
   
-  body.dark-theme .tag-filter { background: #555555; color: #e0e0e0; }
-  body.dark-theme .tag-filter:hover { background: #777777; }
+  body.dark-theme .tag-filter { background: #000; color: white; border-color: white; }
+  body.dark-theme .tag-filter:hover { background: white; color: #000; }
+
 
   /* ========== CONNECTOR LINES SVG ========== */
   #connectorSvg {
@@ -877,13 +835,12 @@
 </style>
 </head>
 <body>
-  <!-- Deformable Grid Canvas -->
-  <canvas id="gridCanvas"></canvas>
+  <!-- Grid Canvas - REMOVED -->
 
   <!-- CV MODAL -->
 <div id="cvModal" class="cv-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:5000; justify-content:center; align-items:center;">
   <div class="cv-modal" style="background:var(--modal-bg); width:85%; max-width:800px; height:85%; border-radius:16px; display:flex; flex-direction:column; border:0.5px solid var(--rule);">
-    <div class="cv-modal-header" style="display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; border-bottom:0.5px solid var(--rule);">
+    <div class="cv-modal-header" style="display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; border-bottom:1px solid white;">
       <h2 style="color:var(--accent); font-family:var(--serif);">CV / Resume</h2>
       <button class="cv-modal-close" id="closeCvBtn" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--muted);">✕</button>
     </div>
@@ -914,7 +871,7 @@
 <!-- RESULTS MODAL (for tag clicks) -->
 <div id="resultsModal" class="results-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:5000; justify-content:center; align-items:center;">
   <div class="results-modal" style="background:var(--modal-bg); width:85%; max-width:800px; height:85%; border-radius:16px; display:flex; flex-direction:column; border:0.5px solid var(--rule);">
-    <div class="results-modal-header" style="display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; border-bottom:0.5px solid var(--rule);">
+    <div class="results-modal-header" style="display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; border-bottom:1px solid white;">
       <h2 id="resultsTitle" style="color:var(--accent); font-family:var(--serif);">Projects</h2>
       <button class="results-close" id="closeResultsBtn" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--muted);">✕</button>
     </div>
@@ -948,40 +905,17 @@
       <div class="hero-bio">
         An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches. My work is enriched by interdisciplinary collaboration and strong research foundations.
       </div>
-      <div class="hero-category-wrapper">
-        <div class="hero-category-label">Explore by category:</div>
-        <div class="hero-category-chips">
-          <span class="hero-chip" data-category="all">All</span>
-          <span class="hero-chip" data-category="architecture">Architecture</span>
-          <span class="hero-chip" data-category="art">Art</span>
-          <span class="hero-chip" data-category="research">Research</span>
-          <span class="hero-chip" data-category="education">Education</span>
-        </div>
-      </div>
-      <a href="#research" class="hero-cta">View Research</a>
     </div>
 
     <!-- STICKY CANVAS WRAPPER (hidden on load, appears on scroll) -->
 <div class="sticky-canvas-wrapper" id="stickyCanvasWrapper">
   <!-- Moving text borders -->
-  <div class="moving-text-border">
-    <div class="moving-text-line" style="top: 2%;">
-      • Design • Development • Creative Coding • Portfolio • Ad(h)am Sinan • Interaction Design • UI/UX • Web Design • 
-    </div>
-    <div class="moving-text-line" style="top: 98%;">
-      • Sticky Notes • Motion Graphics • User Experience • Digital Art • Creative Studio • Art Direction • Visual Design •
-    </div>
-  </div>
 
   <div class="sticky-canvas" id="stickyCanvas"></div>
   <div class="canvas-tags-bar" id="canvasTagsBar"></div>
   <div class="sidebar-tabs" id="sidebarTabs"></div>
   <div class="canvas-control-panel" id="canvasControlPanel">
-    <button class="ctrl-btn" id="gridBtn" title="Arrange sticky notes in grid">Grid</button>
-    <button class="ctrl-btn" id="randomizeBtn" title="Randomize notes">Randomize</button>
-    <button class="ctrl-btn" id="hideLinesBtn" title="Hide connector lines">Hide Lines</button>
-    <button class="ctrl-btn" id="showLinesBtn" title="Show connector lines">Show Lines</button>
-    <button class="ctrl-btn" id="themeBtn" title="Switch theme">🌓 Theme</button>
+
   </div>
 </div>
   </div>
@@ -1003,13 +937,16 @@
 
 <!-- CONNECTOR LINES SVG -->
 <svg id="connectorSvg"></svg>
+
 <!-- RESEARCH SECTION - WHITE HORIZONTAL LINE MAINTAINED -->
-<section id="research">
-  <div class="section-header" style="display:flex; align-items:center; gap:2rem; padding:4rem 3rem 2rem;">
-    <span class="section-label" style="font-family:var(--mono); font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); white-space:nowrap;">Research & Publications</span>
-    <div class="section-rule" style="flex:1; height:0.5px; background:var(--rule); transition:background 0.3s ease;"></div>
+<div style="width:100%; height:1px; background:white; margin:4rem 0 0;"></div>
+<section id="research" style="position:relative; border-left:2px solid white; border-right:2px solid white; padding:0;">
+  <div style="position:absolute; left:0; top:-500px; width:0.5px; height:500px; background:var(--rule);"></div>
+  <div class="section-header" style="display:flex; align-items:center; gap:2rem; padding:0 3rem; background:black; cursor:pointer; transition: all 0.3s ease;" onclick="toggleResearchItems()" onmouseover="this.style.fontStyle='italic'" onmouseout="this.style.fontStyle='normal'">
+    <span class="section-label" style="font-family:var(--serif); font-size:2.5rem; font-weight:900; letter-spacing:-0.02em; color:white; white-space:nowrap; transition: all 0.3s ease; line-height:1;">Research & Publications</span>
   </div>
-  <div class="writing-grid" style="padding:0 3rem; display:grid; grid-template-columns:repeat(3,1fr); gap:0;">
+<div style="width:100%; height:1px; background:white;"></div>
+  <div class="writing-grid" id="researchItems" style="padding:0 3rem; display:none; grid-template-columns:repeat(3,1fr); gap:0;">
     <div class="writing-item" onclick="openPublication(this)" data-type="Conference Paper" data-title="Dynamic Ruinations: Architecture Against Finality" data-institution="2026 — Newcastle University" data-description="Presented at 'Co-producing Alternative Futures through Experimental Urbanism' Symposium, University of Pretoria, South Africa (April 2026)." data-details="This conference paper explores the theoretical framework of dynamic ruinations as a counter-narrative to architectural finality and permanence. It examines how experimental urbanism can produce alternative futures through processes of creative destruction and material transformation." style="padding:2.5rem 2.5rem 2.5rem 0; border-right:0.5px solid var(--rule); transition:background 0.2s, border-color 0.3s ease;">
       <p class="writing-type" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin-bottom:1rem;">Conference Paper</p>
       <h3 class="writing-title" style="font-family:var(--serif); font-size:1.2rem; font-weight:700; line-height:1.25; margin-bottom:0.75rem; color:var(--text); transition:color 0.3s ease;">Dynamic Ruinations: Architecture Against Finality</h3>
@@ -1049,29 +986,31 @@
   </div>
 </section>
 
+<div style="width:100%; height:1px; background:white; margin:0 0 4rem;"></div>
+
 <!-- CONTACT SECTION (75/25 split) -->
-<section id="contact">
+<section id="contact" style="position:relative; border-left:2px solid white; border-right:2px solid white; border-bottom:2px solid white; padding:4rem 3rem;">
   <div class="contact-left">
     <h2 style="font-family:var(--serif); font-size:clamp(2.5rem,4vw,4rem); font-weight:900; line-height:1; letter-spacing:-0.02em; margin-bottom:1.5rem; color:var(--text); transition:color 0.3s ease;">Let's<br><em style="font-style:italic; color:var(--accent);">work<br>together.</em></h2>
     <p style="font-family:var(--body-serif); font-size:1.05rem; line-height:1.8; color:var(--muted); max-width:40ch; transition:color 0.3s ease;">Open to research collaborations, fellowship inquiries, exhibition commissions, and conversations about post-conflict material practice.</p>
   </div>
   <div class="contact-links" style="display:flex; flex-direction:column; gap:1.5rem;">
-    <a href="mailto:adam95darwesh@gmail.com" class="contact-link" style="display:flex; flex-direction:column; gap:4px; text-decoration:none; padding-bottom:1.5rem; border-bottom:0.5px solid var(--rule); transition:border-color 0.2s;">
+    <a href="mailto:adam95darwesh@gmail.com" class="contact-link" style="display:flex; flex-direction:column; gap:4px; text-decoration:none; padding-bottom:1.5rem; border-bottom:1px solid white; transition:border-color 0.2s;">
       <span class="contact-link-label" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); transition:color 0.3s ease;">Email</span>
       <span class="contact-link-val" style="font-family:var(--serif); font-size:1.1rem; color:var(--text); font-weight:700; transition:color 0.2s;">adam95darwesh@gmail.com</span>
     </a>
-    <a href="https://www.linkedin.com/in/aladham/" class="contact-link" target="_blank" style="display:flex; flex-direction:column; gap:4px; text-decoration:none; padding-bottom:1.5rem; border-bottom:0.5px solid var(--rule); transition:border-color 0.2s;">
+    <a href="https://www.linkedin.com/in/aladham/" class="contact-link" target="_blank" style="display:flex; flex-direction:column; gap:4px; text-decoration:none; padding-bottom:1.5rem; border-bottom:1px solid white; transition:border-color 0.2s;">
       <span class="contact-link-label" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); transition:color 0.3s ease;">LinkedIn</span>
       <span class="contact-link-val" style="font-family:var(--serif); font-size:1.1rem; color:var(--text); font-weight:700; transition:color 0.2s;">in/aladham</span>
     </a>
-    <a href="https://www.instagram.com/al_adhambinsinan/" class="contact-link" target="_blank" style="display:flex; flex-direction:column; gap:4px; text-decoration:none; padding-bottom:1.5rem; border-bottom:0.5px solid var(--rule); transition:border-color 0.2s;">
+    <a href="https://www.instagram.com/al_adhambinsinan/" class="contact-link" target="_blank" style="display:flex; flex-direction:column; gap:4px; text-decoration:none; padding-bottom:1.5rem; border-bottom:1px solid white; transition:border-color 0.2s;">
       <span class="contact-link-label" style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); transition:color 0.3s ease;">Instagram</span>
       <span class="contact-link-val" style="font-family:var(--serif); font-size:1.1rem; color:var(--text); font-weight:700; transition:color 0.2s;">@al_adhambinsinan</span>
     </a>
   </div>
 </section>
 
-<footer style="background:var(--bg); border-top:0.5px solid var(--rule); padding:1.5rem 3rem; display:flex; justify-content:space-between; align-items:center; transition:background 0.3s ease, border-color 0.3s ease;">
+<footer style="background:var(--bg); border-top:2px solid white; border-left:2px solid white; border-right:2px solid white; border-bottom:2px solid white; padding:1.5rem 3rem; display:flex; justify-content:space-between; align-items:center; transition:background 0.3s ease, border-color 0.3s ease;">
   <span style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; transition:color 0.3s ease;">Ad(h)am Sinan — Architecture, Art & Research</span>
   <span style="font-family:var(--mono); font-size:0.6rem; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; transition:color 0.3s ease;">© 2025</span>
 </footer>
@@ -1511,22 +1450,22 @@ openFloatingWindow(project, clickX, clickY, note) {
   win.style.zIndex       = '30000';
 
   win.innerHTML = `
-    <div class="window-header" style="background:var(--accent); color:white; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; font-weight:500; cursor:move; user-select:none;">
+    <div class="window-header" style="background:#000; color:white; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; font-weight:500; cursor:move; user-select:none;">
       <h3 style="margin:0; font-size:0.85rem;">${project.id} · ${project.title}</h3>
       <div class="window-header-right" style="display:flex; align-items:center;">
-        <button class="window-minimize" style="background:rgba(255,255,255,0.2); border:none; color:white; font-size:1rem; cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:4px; margin-right:8px;">−</button>
-        <button class="window-close" style="background:rgba(255,255,255,0.2); border:none; color:white; font-size:1rem; cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:4px;">✕</button>
+        <button class="window-minimize" style="background:rgba(255,255,255,0.2); border:none; color:white; font-size:1rem; cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:0px; margin-right:8px;">−</button>
+        <button class="window-close" style="background:rgba(255,255,255,0.2); border:none; color:white; font-size:1rem; cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:0px;">✕</button>
       </div>
     </div>
     <div class="window-body" style="flex:1; padding:1rem; overflow-y:auto; display:flex; flex-direction:column; gap:0.8rem; background:var(--modal-bg); color:var(--text);">
-      <div class="window-carousel" style="position:relative; width:100%; overflow:hidden; border-radius:8px; background:#f5f5f5;">
+      <div class="window-carousel" style="position:relative; width:100%; overflow:hidden; border-radius:0px; background:#f5f5f5;">
         <div class="window-slides" id="window-slides-${project.id}" style="display:flex; transition:transform 0.3s ease;">
           ${project.images.map(img => `<div class="window-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/500x280/f5f5f5/999?text=${encodeURIComponent(project.title)}'" style="width:100%; height:auto; max-height:280px; object-fit:contain; background:#f5f5f5;"></div>`).join('')}
         </div>
         <button class="window-prev" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; z-index:10;">‹</button>
         <button class="window-next" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; z-index:10;">›</button>
       </div>
-      <div class="window-tags" style="display:flex; flex-wrap:wrap; gap:6px;">${project.tags.map(t => `<span class="window-tag" style="font-size:0.6rem; padding:4px 10px; background:var(--accent); color:white; border-radius:20px;">${t}</span>`).join('')}</div>
+      <div class="window-tags" style="display:flex; flex-wrap:wrap; gap:6px;">${project.tags.map(t => `<span class="window-tag" style="font-size:0.6rem; padding:4px 10px; background:#000; color:white; border-radius:0px; border:1px solid white; cursor:pointer; transition:all 0.2s ease;" onmouseover="this.style.background='white'; this.style.color='#000';" onmouseout="this.style.background='#000'; this.style.color='white';">${t}</span>`).join('')}</div>
       <div style="color: var(--accent); font-style: italic; font-size: 0.75rem;">${project.subtitle} (${project.year})</div>
       <div style="font-size: 0.8rem; line-height: 1.5; color: var(--muted);">${project.fullDesc}</div>
     </div>
@@ -2007,7 +1946,7 @@ function closeResultsModal() { document.getElementById('resultsModal').style.dis
 function openSplitViewForProject(index) {
   const project = allProjects[index];
   const splitView = document.getElementById('splitView');
-  splitView.innerHTML = `<div class="split-pane" style="flex:1; background:var(--modal-bg); border-radius:12px; display:flex; flex-direction:column; border:1px solid var(--rule); overflow:hidden;"><div style="background:var(--accent); padding:0.8rem; border-radius:12px 12px 0 0; display:flex; justify-content:space-between;"><h3 style="color:white; margin:0; font-size:0.7rem;">${project.id} · ${project.title}</h3><button onclick="closeSplitModal()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">✕</button></div><div style="padding:1rem; overflow-y:auto; flex:1;"><div class="project-modal-carousel" style="position:relative;"><div class="project-modal-slides" id="splitCarousel" style="display:flex; transition:transform 0.3s ease; overflow:hidden;">${project.images.map(img => `<div class="project-modal-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'" style="width:100%; height:auto; max-height:400px; object-fit:contain; background:#f5f5f5;"></div>`).join('')}</div><button class="project-modal-btn project-modal-prev" onclick="splitPrev()" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer;">‹</button><button class="project-modal-btn project-modal-next" onclick="splitNext()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer;">›</button></div><div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem;">${project.tags.map(t => `<span style="background:var(--accent); color:white; padding:0.2rem 0.6rem; border-radius:12px; font-size:0.6rem;">${t}</span>`).join('')}</div><div style="color:var(--accent); font-style:italic; margin-top:0.5rem;">${project.subtitle} (${project.year})</div><div style="margin-top:1rem; font-size:0.8rem; line-height:1.5;">${project.fullDesc}</div></div></div><div class="split-pane" id="secondPane" style="flex:1; background:var(--modal-bg); border-radius:12px; display:flex; flex-direction:column; border:1px solid var(--rule); overflow:hidden;"><div style="background:#ddd; padding:0.8rem; border-radius:12px 12px 0 0; text-align:center;"><h3 style="color:#333; margin:0; font-size:0.7rem;">Select a project to compare</h3></div><div style="padding:1rem; overflow-y:auto; flex:1;"><div style="display:flex; flex-direction:column; gap:0.8rem;">${allProjects.filter(p => p.id !== project.id).map(p => `<div class="result-card" onclick="loadCompareProject(${allProjects.findIndex(proj => proj.id === p.id)})" style="background:var(--card-bg); border:1px solid var(--rule); border-radius:8px; padding:0.8rem; cursor:pointer;"><div style="font-weight:bold;">${p.id} · ${p.title}</div><div style="font-size:0.8rem;">${p.subtitle} (${p.year})</div></div>`).join('')}</div></div></div>`;
+  splitView.innerHTML = `<div class="split-pane" style="flex:1; background:var(--modal-bg); border-radius:12px; display:flex; flex-direction:column; border:1px solid var(--rule); overflow:hidden;"><div style="background:var(--accent); padding:0.8rem; border-radius:12px 12px 0 0; display:flex; justify-content:space-between;"><h3 style="color:white; margin:0; font-size:0.7rem;">${project.id} · ${project.title}</h3><button onclick="closeSplitModal()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">✕</button></div><div style="padding:1rem; overflow-y:auto; flex:1;"><div class="project-modal-carousel" style="position:relative;"><div class="project-modal-slides" id="splitCarousel" style="display:flex; transition:transform 0.3s ease; overflow:hidden;">${project.images.map(img => `<div class="project-modal-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'" style="width:100%; height:auto; max-height:400px; object-fit:contain; background:#f5f5f5;"></div>`).join('')}</div><button class="project-modal-btn project-modal-prev" onclick="splitPrev()" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer;">‹</button><button class="project-modal-btn project-modal-next" onclick="splitNext()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer;">›</button></div><div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem;">${project.tags.map(t => `<span style="background:#000; color:white; padding:0.2rem 0.6rem; border-radius:0px; border:1px solid white; font-size:0.6rem; cursor:pointer; transition:all 0.2s ease;" onmouseover="this.style.background='white'; this.style.color='#000';" onmouseout="this.style.background='#000'; this.style.color='white';"">${t}</span>`).join('')}</div><div style="color:var(--accent); font-style:italic; margin-top:0.5rem;">${project.subtitle} (${project.year})</div><div style="margin-top:1rem; font-size:0.8rem; line-height:1.5;">${project.fullDesc}</div></div></div><div class="split-pane" id="secondPane" style="flex:1; background:var(--modal-bg); border-radius:12px; display:flex; flex-direction:column; border:1px solid var(--rule); overflow:hidden;"><div style="background:#ddd; padding:0.8rem; border-radius:12px 12px 0 0; text-align:center;"><h3 style="color:#333; margin:0; font-size:0.7rem;">Select a project to compare</h3></div><div style="padding:1rem; overflow-y:auto; flex:1;"><div style="display:flex; flex-direction:column; gap:0.8rem;">${allProjects.filter(p => p.id !== project.id).map(p => `<div class="result-card" onclick="loadCompareProject(${allProjects.findIndex(proj => proj.id === p.id)})" style="background:var(--card-bg); border:1px solid var(--rule); border-radius:8px; padding:0.8rem; cursor:pointer;"><div style="font-weight:bold;">${p.id} · ${p.title}</div><div style="font-size:0.8rem;">${p.subtitle} (${p.year})</div></div>`).join('')}</div></div></div>`;
   document.getElementById('splitModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
   let splitCurrentIndex = 0;
@@ -2019,7 +1958,7 @@ function loadCompareProject(index) {
   const project = allProjects[index];
   const secondPane = document.getElementById('secondPane');
   if (secondPane) {
-    secondPane.innerHTML = `<div style="background:var(--accent); padding:0.8rem; border-radius:12px 12px 0 0; display:flex; justify-content:space-between;"><h3 style="color:white; margin:0; font-size:0.7rem;">${project.id} · ${project.title}</h3><button onclick="closeSplitModal()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">✕</button></div><div style="padding:1rem; overflow-y:auto; flex:1;"><div class="project-modal-carousel" style="position:relative;"><div class="project-modal-slides" id="compareCarousel" style="display:flex; transition:transform 0.3s ease; overflow:hidden;">${project.images.map(img => `<div class="project-modal-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'" style="width:100%; height:auto; max-height:400px; object-fit:contain; background:#f5f5f5;"></div>`).join('')}</div><button class="project-modal-btn project-modal-prev" onclick="comparePrev()" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer;">‹</button><button class="project-modal-btn project-modal-next" onclick="compareNext()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer;">›</button></div><div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem;">${project.tags.map(t => `<span style="background:var(--accent); color:white; padding:0.2rem 0.6rem; border-radius:12px; font-size:0.6rem;">${t}</span>`).join('')}</div><div style="color:var(--accent); font-style:italic; margin-top:0.5rem;">${project.subtitle} (${project.year})</div><div style="margin-top:1rem; font-size:0.8rem; line-height:1.5;">${project.fullDesc}</div></div>`;
+    secondPane.innerHTML = `<div style="background:var(--accent); padding:0.8rem; border-radius:12px 12px 0 0; display:flex; justify-content:space-between;"><h3 style="color:white; margin:0; font-size:0.7rem;">${project.id} · ${project.title}</h3><button onclick="closeSplitModal()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">✕</button></div><div style="padding:1rem; overflow-y:auto; flex:1;"><div class="project-modal-carousel" style="position:relative;"><div class="project-modal-slides" id="compareCarousel" style="display:flex; transition:transform 0.3s ease; overflow:hidden;">${project.images.map(img => `<div class="project-modal-slide" style="min-width:100%;"><img src="images/${img}" onerror="this.src='https://placehold.co/800x400/f5f5f5/999?text=${project.title}'" style="width:100%; height:auto; max-height:400px; object-fit:contain; background:#f5f5f5;"></div>`).join('')}</div><button class="project-modal-btn project-modal-prev" onclick="comparePrev()" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer;">‹</button><button class="project-modal-btn project-modal-next" onclick="compareNext()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer;">›</button></div><div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem;">${project.tags.map(t => `<span style="background:#000; color:white; padding:0.2rem 0.6rem; border-radius:0px; border:1px solid white; font-size:0.6rem; cursor:pointer; transition:all 0.2s ease;" onmouseover="this.style.background='white'; this.style.color='#000';" onmouseout="this.style.background='#000'; this.style.color='white';"">${t}</span>`).join('')}</div><div style="color:var(--accent); font-style:italic; margin-top:0.5rem;">${project.subtitle} (${project.year})</div><div style="margin-top:1rem; font-size:0.8rem; line-height:1.5;">${project.fullDesc}</div></div>`;
   }
   let compareIndex = 0;
   window.comparePrev = () => { const slides = document.getElementById('compareCarousel'); if (!slides) return; compareIndex = Math.max(0, compareIndex - 1); slides.style.transform = `translateX(-${compareIndex * 100}%)`; };
@@ -2228,39 +2167,8 @@ class Ripple {
   }
 }
 
-function initGridCanvas() {
-  gridCanvas = document.getElementById('gridCanvas');
-  if (!gridCanvas) {
-    console.error('Grid canvas not found');
-    return;
-  }
-  
-  gridCtx = gridCanvas.getContext('2d');
-  if (!gridCtx) {
-    console.error('Could not get canvas context');
-    return;
-  }
-  
-  const dpr = window.devicePixelRatio || 1;
-  gridCanvas.width = window.innerWidth * dpr;
-  gridCanvas.height = window.innerHeight * dpr;
-  gridCanvas.style.width = window.innerWidth + 'px';
-  gridCanvas.style.height = window.innerHeight + 'px';
-  gridCtx.scale(dpr, dpr);
-  
-  // Get theme colors
-  const isDarkTheme = document.body.classList.contains('dark-theme');
-  gridCanvas.dataset.isDarkTheme = isDarkTheme ? 'true' : 'false';
-  
-  // Start animation loop
-  animateGrid();
-}
+// Grid functions removed - grid canvas disabled
 
-function animateGrid() {
-  drawDeformedGrid();
-  time += 0.016; // ~60fps
-  requestAnimationFrame(animateGrid);
-}
 
 function drawDeformedGrid() {
   if (!gridCtx) return;
@@ -2486,6 +2394,16 @@ document.body.classList.toggle = function(className) {
   return result;
 };
 
+// ========== TOGGLE RESEARCH ITEMS ==========
+function toggleResearchItems() {
+  const researchItems = document.getElementById('researchItems');
+  if (researchItems.style.display === 'none') {
+    researchItems.style.display = 'grid';
+  } else {
+    researchItems.style.display = 'none';
+  }
+}
+
 // ========== INITIALIZE ==========
 function initialize() {
   allProjects = buildProjectsWithDynamicImages();
@@ -2496,7 +2414,7 @@ function initialize() {
   setTimeout(createTagFilters, 800);
   const filters = document.querySelectorAll('#categoryFilters li');
   filters.forEach(filter => {
-    filter.addEventListener('click', () => { const category = filter.getAttribute('data-category'); filters.forEach(f => f.classList.remove('active')); filter.classList.add('active'); manager.filterByCategory(category); setTimeout(() => { manager.animateToGrid(); }, 50); clearHoverLines(); });
+    filter.addEventListener('click', () => { const category = filter.getAttribute('data-category'); filters.forEach(f => f.classList.remove('active')); filter.classList.add('active'); manager.filterByCategory(category); clearHoverLines(); });
     filter.addEventListener('mouseenter', () => { manager.highlightByCategory(filter.getAttribute('data-category')); setTimeout(() => drawCategoryHoverLines(filter), 50); });
     filter.addEventListener('mouseleave', () => { if (document.getElementById('connectorSvg').style.display !== 'none') clearHoverLines(); const activeCategory = document.querySelector('#categoryFilters li.active').getAttribute('data-category'); manager.highlightByCategory(activeCategory); setTimeout(() => { if (manager) manager.updateAllConnectorLines(); }, 100); });
   });
@@ -2507,22 +2425,11 @@ function initialize() {
   document.getElementById('resultsModal').addEventListener('click', (e) => { if (e.target === document.getElementById('resultsModal')) closeResultsModal(); });
   document.getElementById('splitModal').addEventListener('click', (e) => { if (e.target === document.getElementById('splitModal')) closeSplitModal(); });
   window.addEventListener('resize', () => { if (manager) manager.updateAllConnectorLines(); });
-  const gridBtn = document.getElementById('gridBtn');
-  const randomizeBtn = document.getElementById('randomizeBtn');
-  const hideLinesBtn = document.getElementById('hideLinesBtn');
-  const showLinesBtn = document.getElementById('showLinesBtn');
-  if (gridBtn) gridBtn.addEventListener('click', () => { manager.animateToGrid(); });
-  if (randomizeBtn) randomizeBtn.addEventListener('click', () => manager.randomizeArrangement());
-  if (hideLinesBtn) hideLinesBtn.addEventListener('click', () => manager.hideAllLines());
-  if (showLinesBtn) showLinesBtn.addEventListener('click', () => manager.showAllLines());
-  const themeBtn = document.getElementById('themeBtn');
-  if (themeBtn) {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') { document.body.classList.add('dark-theme'); themeBtn.innerHTML = '☀️ Light'; }
-    else { themeBtn.innerHTML = '🌓 Dark'; }
-    themeBtn.addEventListener('click', () => { document.body.classList.toggle('dark-theme'); if (document.body.classList.contains('dark-theme')) { localStorage.setItem('theme', 'dark'); themeBtn.innerHTML = '☀️ Light'; } else { localStorage.setItem('theme', 'light'); themeBtn.innerHTML = '🌓 Dark'; } });
-  }
+  // Grid and Randomize buttons removed
   
+  document.body.classList.add('dark-theme');
+  
+
   // Publication panel back button
   const publicationPanelBack = document.getElementById('publicationPanelBack');
   if (publicationPanelBack) {
@@ -2532,7 +2439,7 @@ function initialize() {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeResultsModal(); closeSplitModal(); closePublication(); document.getElementById('cvModal').style.display = 'none'; } });
 }
 
-window.addEventListener('load', () => { initGridCanvas(); initialize(); });
+window.addEventListener('load', () => { initialize(); });
 window.openSplitViewForProject = openSplitViewForProject;
 window.loadCompareProject = loadCompareProject;
 window.closeSplitModal = closeSplitModal;
