@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ad(h)am Sinan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  font-family: 'IM Fell English', serif;
+  color: #1a1612;
+}
+
+#page {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(8px, 1.5vw, 16px) clamp(10px, 2.2vw, 22px) clamp(10px, 1.8vw, 18px);
+}
+
+#top-meta {
+  position: relative;
+  height: 18px;
+  flex-shrink: 0;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+}
+
+#page-left {
+  font-size: clamp(7px, 1vw, 10px);
+  font-style: italic;
+  color: #1a1612;
+  opacity: 0.5;
+  white-space: nowrap;
+}
+
+#page-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(8px, 1.1vw, 11px);
+  font-style: italic;
+  letter-spacing: 0.04em;
+  color: #1a1612;
+  white-space: nowrap;
+  max-width: 70vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#page-right {
+  margin-left: auto;
+  font-size: clamp(7px, 1vw, 10px);
+  font-style: italic;
+  color: #1a1612;
+  opacity: 0.5;
+  white-space: nowrap;
+}
+
+#plate-wrap {
+  flex: 1;
+  position: relative;
+  border: 1.5px solid #1a1612;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+}
+
+/* ---- PER-CELL FIBONACCI ARC ---- */
+/* Every cell gets its own small golden-spiral quarter-arc, drawn in a
+   corner and scaled to that cell's own live dimensions — not one global
+   decoration, but one quiet mark per square, tied directly to its size.
+   Drawn with a line-draw animation (stroke-dashoffset) so it appears to
+   trace itself in, and redrawn whenever the cell resizes so it always
+   matches the cell's current proportions. */
+.cell-fib-arc {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+  mix-blend-mode: multiply;
+  opacity: 0.22;
+}
+.cell-fib-arc path {
+  fill: none;
+  stroke: #1a1612;
+  stroke-width: 1;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.cell-fib-arc rect {
+  fill: none;
+  stroke: #1a1612;
+  stroke-width: 0.5;
+  opacity: 0.5;
+}
+.cell-category .cell-fib-arc path,
+.cell-category .cell-fib-arc rect {
+  stroke: #ffffff;
+}
+
+/* ---- CELLS ---- */
+.cell {
+  position: relative;
+  border: 0.5px solid #1a1612;
+  overflow: hidden;
+  padding: 12px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  z-index: 1;
+}
+
+.cell:hover { background: rgba(26,22,18,0.04); }
+.cell.clickable { cursor: pointer; }
+.cell.clickable:hover { background: rgba(26,22,18,0.05); }
+
+/* cell corner labels */
+.cell-label {
+  position: absolute;
+  top: clamp(5px, 1vw, 8px); left: clamp(7px, 1.3vw, 11px);
+  font-size: clamp(7px, 1vw, 11px);
+  font-style: italic;
+  opacity: 0.45;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 1;
+  letter-spacing: 0.03em;
+}
+/* Inside project cells, push the dimension label to the right corner instead,
+   so it never sits underneath the title in the top-left */
+.cell-project .cell-label {
+  left: auto;
+  right: 11px;
+  top: 8px;
+  text-align: right;
+}
+.cell-fig {
+  position: absolute;
+  bottom: clamp(5px, 1vw, 8px); right: clamp(7px, 1.3vw, 11px);
+  font-size: clamp(6.5px, 0.9vw, 10px);
+  font-style: italic;
+  opacity: 0.32;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ---- CELL TYPE: IDENTITY ---- */
+.cell-identity {
+  justify-content: flex-end;
+}
+.identity-eyebrow {
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-style: italic;
+  opacity: 0.55;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.identity-name {
+  font-size: clamp(22px, 4.5vw, 52px);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+.identity-name em { font-style: italic; }
+.identity-bio {
+  font-size: clamp(9px, 1.1vw, 12px);
+  font-style: italic;
+  line-height: 1.75;
+  opacity: 0.65;
+  max-width: 38ch;
+}
+
+/* ---- CELL TYPE: PROJECT ---- */
+.cell-project { justify-content: flex-start; background-size: cover; background-position: center; }
+.cell-project::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  z-index: 1;
+}
+.cell-project > * { position: relative; z-index: 2; }
+
+/* ---- HOVER HERO IMAGE ---- */
+/* Shows project image #1 on hover, fading in beneath the text content.
+   Sits above the corner dimension label and fib-arc but below the title
+   text, so the cell remains fully readable while previewing the image. */
+.proj-hover-hero {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  overflow: hidden;
+}
+.proj-hover-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cell-project:hover .proj-hover-hero { opacity: 1; }
+/* Darken the image slightly + add a light scrim so text stays legible
+   over it once it fades in */
+.proj-hover-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.35) 55%, rgba(255,255,255,0.05) 100%);
+}
+
+.proj-id {
+  font-size: 7.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  margin-bottom: 4px;
+  font-style: italic;
+  transition: font-size 0.4s cubic-bezier(0.4,0,0.2,1),
+              letter-spacing 0.4s cubic-bezier(0.4,0,0.2,1),
+              margin 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.proj-title {
+  font-size: clamp(10px, 1.5vw, 16px);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 4px;
+  transition: font-size 0.4s cubic-bezier(0.4,0,0.2,1),
+              letter-spacing 0.4s cubic-bezier(0.4,0,0.2,1),
+              line-height 0.4s cubic-bezier(0.4,0,0.2,1),
+              margin 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.proj-subtitle {
+  font-size: clamp(8px, 0.9vw, 10px);
+  font-style: italic;
+  opacity: 0.5;
+  margin-bottom: 6px;
+  transition: font-size 0.4s cubic-bezier(0.4,0,0.2,1),
+              letter-spacing 0.4s cubic-bezier(0.4,0,0.2,1),
+              margin 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ---- ADAPTIVE META BLOCK (title/id/subtitle) ---- */
+.proj-meta {
+  display: flex;
+  flex-direction: column;
+  transition: gap 0.4s cubic-bezier(0.4,0,0.2,1),
+              margin 0.4s cubic-bezier(0.4,0,0.2,1);
+  margin-top: 12px;   /* clears the corner dimension label */
+  position: relative;
+  z-index: 3;
+  flex-shrink: 0;
+}
+
+/* Extreme-thin mode: the meta block becomes a vertical column; each line
+   (id, title, subtitle) stacks left-to-right as its own vertical strip,
+   and the letters inside rotate to read bottom-to-top — like text turned
+   to fit a narrow spine, the standard convention for vertical labels.
+   Centered both ways so it never hides against the cell edges. */
+.proj-meta.flip-vertical {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  margin-top: 0;
+  position: absolute;
+  inset: 0;
+}
+.proj-meta.flip-vertical .proj-id,
+.proj-meta.flip-vertical .proj-title,
+.proj-meta.flip-vertical .proj-subtitle {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  white-space: normal;
+}
+
+/* Extreme-wide mode (mirror case): cell is very wide and short — the meta
+   block centers itself fully within the cell so the title never clips
+   against the top/bottom edges or hides off to one side. Text stays
+   horizontal and readable as normal; only positioning changes. */
+.proj-meta.flip-horizontal {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  margin-top: 0;
+  position: absolute;
+  inset: 0;
+  gap: 2px;
+}
+.proj-meta.flip-horizontal .proj-id,
+.proj-meta.flip-horizontal .proj-title,
+.proj-meta.flip-horizontal .proj-subtitle {
+  margin: 0;
+  text-align: center;
+}
+/* When the cell is extremely squat, only the title has guaranteed room —
+   id and subtitle are dropped rather than overflowing/clipping invisibly */
+.proj-meta.flip-horizontal.ultra-squat .proj-id,
+.proj-meta.flip-horizontal.ultra-squat .proj-subtitle {
+  display: none;
+}
+
+/* Too short for description/tags when extremely wide and squat — hide them */
+.cell-project:has(.proj-meta.flip-horizontal) .proj-desc,
+.cell-project:has(.proj-meta.flip-horizontal) .proj-tags {
+  display: none !important;
+}
+
+/* Too narrow for description/tags — hide them */
+.cell-project:has(.proj-meta.flip-vertical) .proj-desc,
+.cell-project:has(.proj-meta.flip-vertical) .proj-tags {
+  display: none !important;
+}
+
+/* ---- PER-LETTER FLIP ANIMATION ---- */
+/* Each character is wrapped in a .flip-char span. In horizontal mode it
+   reads normally, inline, left-to-right. When the cell becomes an extreme
+   sliver, each letter independently rotates -90deg (a single clean rotation,
+   no compounded writing-mode flip) so the line reads bottom-to-top, turned
+   to fit the narrow spine — fully legible, just rotated as one would tilt
+   a book spine to read it. Each letter has its own transition-delay so the
+   rotation cascades letter-by-letter rather than snapping as one block. */
+.flip-char {
+  display: inline-block;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: rotate(0deg);
+  will-change: transform;
+}
+.proj-meta.flip-vertical .flip-char {
+  transform: rotate(-90deg);
+}
+.proj-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 6px;
+}
+.proj-tag {
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 0.5px solid rgba(26,22,18,0.4);
+  padding: 1px 5px;
+  font-style: italic;
+}
+.proj-desc {
+  font-size: clamp(8px, 0.9vw, 10px);
+  font-style: italic;
+  line-height: 1.65;
+  opacity: 0.55;
+  margin-bottom: 8px;
+  display: none;
+}
+
+/* ---- CELL TYPE: CATEGORY HEADER ---- */
+.cell-category {
+  justify-content: center;
+  align-items: flex-start;
+  background: #1a1612;
+  border-color: #ffffff;
+}
+.cell-category .cat-label,
+.cell-category .cat-title,
+.cell-category .cat-count {
+  color: #ffffff;
+}
+.cell-category:hover { background: #1a1612; }
+.cell-category.clickable:hover { background: #2a241e; }
+.cell-category.cat-active .cat-title {
+  font-style: italic;
+  border-bottom: 0.5px solid rgba(255,255,255,0.5);
+  padding-bottom: 3px;
+}
+.cell-category.cat-active .cat-label::before {
+  content: "→ ";
+}
+.cat-label {
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-style: italic;
+  opacity: 0.55;
+  margin-bottom: 6px;
+}
+.cat-title {
+  font-size: clamp(14px, 2.2vw, 26px);
+  line-height: 1.1;
+  font-weight: 400;
+}
+.cat-count {
+  font-size: 8px;
+  font-style: italic;
+  opacity: 0.5;
+  margin-top: 5px;
+}
+.cell-category .cell-label,
+.cell-category .cell-fig {
+  color: #ffffff;
+}
+
+/* ---- CELL TYPE: WRITING ---- */
+.cell-writing { justify-content: flex-end; cursor: pointer; }
+.writing-type {
+  font-size: 7px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-style: italic;
+  opacity: 0.45;
+  margin-bottom: 5px;
+}
+.writing-title {
+  font-size: clamp(9px, 1.2vw, 13px);
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+.writing-institution {
+  font-size: 8px;
+  font-style: italic;
+  opacity: 0.45;
+}
+
+/* ---- CELL TYPE: CV / EDUCATION ---- */
+.cell-cv { }
+.cv-section {
+  margin-bottom: 10px;
+}
+.cv-section-title {
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-style: italic;
+  opacity: 0.4;
+  margin-bottom: 5px;
+  border-bottom: 0.5px solid rgba(26,22,18,0.2);
+  padding-bottom: 3px;
+}
+.cv-entry {
+  font-size: clamp(7.5px, 0.85vw, 10px);
+  line-height: 1.55;
+  margin-bottom: 3px;
+  font-style: italic;
+  opacity: 0.7;
+}
+.cv-entry strong { font-style: normal; opacity: 1; font-weight: 400; }
+
+/* ---- CELL TYPE: CONTACT ---- */
+.cell-contact { justify-content: flex-end; }
+.contact-heading {
+  font-size: clamp(14px, 2vw, 24px);
+  line-height: 1.05;
+  margin-bottom: 10px;
+}
+.contact-heading em { font-style: italic; }
+.contact-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  font-size: clamp(8px, 0.95vw, 11px);
+  font-style: italic;
+  border-top: 0.5px solid rgba(26,22,18,0.25);
+  padding: 5px 0;
+  opacity: 0.65;
+  transition: opacity 0.2s;
+}
+.contact-link:hover { opacity: 1; }
+.contact-link span {
+  display: block;
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  margin-bottom: 1px;
+  font-style: normal;
+}
+
+/* ---- CELL TYPE: TAGS ---- */
+.cell-tags { flex-wrap: wrap; flex-direction: row; gap: 5px; align-items: center; align-content: center; display: flex; }
+.tag-pill {
+  font-size: 7.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-style: italic;
+  border: 0.5px solid rgba(26,22,18,0.4);
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.tag-pill:hover { background: rgba(26,22,18,0.08); }
+
+/* ---- CELL TYPE: SKILLS ---- */
+.cell-skills { }
+.skill-row {
+  font-size: clamp(7.5px, 0.85vw, 10px);
+  font-style: italic;
+  line-height: 1.6;
+  opacity: 0.65;
+  border-bottom: 0.5px solid rgba(26,22,18,0.12);
+  padding: 3px 0;
+}
+
+/* ---- CELL TYPE: DIVIDER / LABEL ---- */
+.cell-divider {
+  justify-content: center;
+  align-items: center;
+}
+.divider-text {
+  font-size: 7px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-style: italic;
+  opacity: 0.3;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+/* ---- EXPAND LAYER (inside each clickable cell) ---- */
+.expand-layer {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  padding: 20px 22px 18px;
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  z-index: 10;
+}
+.cell-expanded .expand-layer { pointer-events: auto; }
+
+.expand-close {
+  position: absolute;
+  top: 12px; right: 18px;
+  background: none;
+  border: none;
+  font-family: 'IM Fell English', serif;
+  font-size: 48px;
+  font-style: italic;
+  color: #1a1612;
+  cursor: pointer;
+  opacity: 0.15;
+  line-height: 1;
+  padding: 0;
+  transition: opacity 0.2s;
+  z-index: 20;
+}
+.expand-close:hover { opacity: 0.65; }
+
+.expand-hero {
+  width: calc(100% + 44px);
+  height: 38%;
+  min-height: 120px;
+  margin: -20px -22px 16px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+.expand-type {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-style: italic;
+  opacity: 0.4;
+  margin-bottom: 10px;
+}
+.expand-title {
+  font-size: clamp(16px, 3vw, 36px);
+  line-height: 1.05;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+.expand-subtitle {
+  font-size: clamp(9px, 1vw, 12px);
+  font-style: italic;
+  opacity: 0.5;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+.expand-rule {
+  width: 100%;
+  height: 0.5px;
+  background: rgba(26,22,18,0.2);
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+.expand-body {
+  font-size: clamp(9px, 1.1vw, 13px);
+  font-style: italic;
+  line-height: 1.8;
+  opacity: 0.65;
+  text-align: left;
+  max-width: 46ch;
+  flex: 0 0 auto;
+  overflow-y: auto;
+  max-height: 100%;
+}
+.expand-body::-webkit-scrollbar { width: 2px; }
+.expand-body::-webkit-scrollbar-thumb { background: rgba(26,22,18,0.2); }
+
+/* ---- EXPAND GALLERY ---- */
+/* Shown when a project cell is clicked open: one row per image, image on
+   the left, Fig. N + caption text on the right — scrollable if the
+   expanded cell isn't tall enough to show all six rows at once. */
+.expand-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  max-height: 100%;
+  padding-right: 4px;
+}
+.expand-gallery::-webkit-scrollbar { width: 2px; }
+.expand-gallery::-webkit-scrollbar-thumb { background: rgba(26,22,18,0.2); }
+
+.gallery-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+.gallery-row-img {
+  width: clamp(64px, 14vw, 120px);
+  aspect-ratio: 3 / 2;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 0.5px solid rgba(26,22,18,0.25);
+  background: #f5f5f5;
+}
+.gallery-row-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.gallery-row-text {
+  flex: 1;
+  min-width: 0;
+  padding-top: 2px;
+}
+.gallery-fig {
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-style: italic;
+  opacity: 0.45;
+  margin-bottom: 3px;
+}
+.gallery-caption {
+  font-size: clamp(8.5px, 1vw, 11px);
+  font-style: italic;
+  line-height: 1.6;
+  opacity: 0.7;
+}
+
+.expand-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 12px;
+  flex-shrink: 0;
+}
+
+#bottom-credit {
+  height: 14px;
+  flex-shrink: 0;
+  position: relative;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.credit-text {
+  font-size: clamp(7px, 1vw, 9px);
+  font-style: italic;
+  opacity: 0.3;
+  letter-spacing: 0.02em;
+}
+
+/* ====================================================================
+   RESPONSIVE BREAKPOINT — narrow / mobile / extreme-aspect viewports
+   The cursor-proximity grid physics and Fibonacci breathing are a
+   pointer-driven concept that doesn't translate to touch or very
+   narrow screens. Below this threshold, the plate becomes a calm,
+   readable, scrollable single-column stack — same content, same
+   typeface and palette, no cursor interaction required. The grid
+   JS keeps running underneath (harmless), but layout fully overrides it.
+   ==================================================================== */
+@media (max-width: 720px), (max-aspect-ratio: 3/4) {
+  html, body { overflow-y: auto; overflow-x: hidden; }
+
+  #page { position: static; height: auto; min-height: 100vh; padding: 14px 14px 18px; }
+
+  #plate-wrap { overflow: visible; border-width: 1px; }
+
+  #grid {
+    position: static !important;
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+  }
+
+  .cell {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    min-height: 92px;
+    flex: none !important;
+  }
+
+  /* Force every text block back to plain horizontal reading on mobile —
+     the extreme-aspect flip/rotation system is desktop-cursor-only */
+  .proj-meta,
+  .proj-meta.flip-vertical,
+  .proj-meta.flip-horizontal {
+    position: static !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    width: auto !important;
+    height: auto !important;
+    transform: none !important;
+    margin-top: 10px !important;
+  }
+  .proj-meta .proj-id,
+  .proj-meta .proj-title,
+  .proj-meta .proj-subtitle {
+    display: block !important;
+    flex-direction: row !important;
+    white-space: normal !important;
+    text-align: left !important;
+  }
+  .flip-char { transform: rotate(0deg) !important; transition-delay: 0ms !important; }
+
+  .cell-project .proj-desc { display: block !important; }
+  .cell-project .proj-tags { display: flex !important; }
+
+  .expand-layer { position: static !important; opacity: 1 !important; pointer-events: auto !important; }
+  .cell.cell-expanded { /* expanded state is meaningless in stacked mobile layout */ }
+  .expand-close { display: none; }
+
+  .identity-name { font-size: clamp(28px, 9vw, 44px); }
+  .cat-title { font-size: clamp(18px, 6vw, 24px); }
+
+  #hint, #corner-label { display: none; }
+}
+</style>
+
+</head>
+<body>
+
+<div id="page">
+  <div id="top-meta">
+    <span id="page-left"></span>
+    <span id="page-center">Ad(h)am Sinan — Architecture · Art · Research · Education</span>
+    <span id="page-right"></span>
+  </div>
+
+  <div id="plate-wrap">
+    <div id="grid"></div>
+  </div>
+
+  <div id="bottom-credit">
+    <span class="credit-text" id="fib-note"></span>
+    <span class="credit-text">adam95darwesh@gmail.com</span>
+  </div>
+</div>
+
+<!-- SLIDE-UP PANEL -->
+<div id="panel">
+  <div id="panel-header">
+    <span id="panel-type"></span>
+    <button id="panel-close">× close</button>
+  </div>
+  <div id="panel-body">
+    <div id="panel-title"></div>
+    <div id="panel-meta"></div>
+    <div id="panel-desc"></div>
+    <div id="panel-details"></div>
+  </div>
+</div>
+
+<script>
+// ---- FIBONACCI ----
+const FIB = [1,1,2,3,5,8,13,21,34,55,89,144];
+
+function pickFibs(n) {
+  const maxStart = FIB.length - n;
+  const start = Math.floor(Math.random() * (maxStart + 1));
+  return FIB.slice(start, start + n);
+}
+
+function rnd(a, b) { return Math.random() * (b - a) + a; }
+
+// ---- CONTENT DATA ----
+const PROJECTS = [
+  { id:'01', slug:'spiral_spines', title:'Spiral Spines', subtitle:'Climate Biennale Vienna', year:'2026', cat:'architecture', tags:['Ecological','Vernacular'], desc:'A regenerative material practice that transforms uprooted and discarded timber into structural and spatial systems.', fullDesc:'A regenerative material practice that transforms uprooted and discarded timber. Presented at the Climate Biennale Vienna 2026.' },
+  { id:'02', slug:'woven_realities', title:'Woven Realities', subtitle:'Afghan House Pavilion', year:'2026', cat:'architecture', tags:['Vernacular','Digital Fabrication'], desc:'A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice.', fullDesc:'A 1:1-scale architectural prototype translating Afghan dwelling traditions into a contemporary circular material practice.' },
+  { id:'03', slug:'new_cairn', title:'The New Cairn', subtitle:'Rubble Stacking', year:'Ongoing', cat:'research', tags:['Post-Conflict','Material Research'], desc:'Research project proposing un-crushed demolition rubble as masonry units for post-conflict reconstruction.', fullDesc:'Research project proposing un-crushed demolition rubble as intentional masonry units — transforming destruction into building material.' },
+  { id:'04', slug:'carbonfloss', title:'Carbonfloss', subtitle:'eVolo Competition', year:'2020', cat:'architecture', tags:['Speculative','Ecological'], desc:'A political statement against reluctance policies — carbon capture architecture at urban scale.', fullDesc:'A political statement against absurd reluctance policies. An eVolo competition entry for speculative carbon-capture urban infrastructure.' },
+  { id:'05', slug:'ourobos', title:'OUROBOS', subtitle:'Residual Morphogenesis', year:'2022', cat:'architecture', tags:['Material Research','Digital Fabrication'], desc:'Exploration of residual morphogenesis using AI-driven workflows and computational design.', fullDesc:'Exploration of residual morphogenesis using AI-driven workflows. The form emerges from material surplus rather than programme.' },
+  { id:'06', slug:'agropraxis', title:'Agropraxis', subtitle:'Published in Dezeen', year:'2021', cat:'architecture', tags:['Ecological','Collective Practice'], desc:'The intersection of agriculture and architectural practice as a form of collective spatial production.', fullDesc:'Intersection of agriculture and architectural practice. Published in Dezeen as a model for collective spatial and food production.' },
+  { id:'07', slug:'medius', title:'Medius Paedagogicus', subtitle:'Diola Compounds', year:'2022', cat:'education', tags:['Pedagogy','Vernacular'], desc:'A prototype tracing spatial character from Diola compounds in Senegal into contemporary pedagogical architecture.', fullDesc:'A prototype tracing character from Diola compounds in Senegal. Published in Dezeen 2022.' },
+  { id:'08', slug:'soft_unsealing', title:'Soft Unsealing', subtitle:'IABR11 Rotterdam', year:'2024', cat:'art', tags:['Collective Practice','Installation'], desc:'Exploring softening urban boundaries — an installation at the International Architecture Biennale Rotterdam.', fullDesc:'Exploring softening boundaries in urban contexts. Installation at IABR11 Rotterdam, 2024.' },
+  { id:'09', slug:'old_airfield', title:'Old Airfield', subtitle:'Chicago Architecture Biennial', year:'Ongoing', cat:'art', tags:['Collective Practice','Installation'], desc:'Acoustic mirror as cultural gateway — exploring sound, spatial memory, and contested sites.', fullDesc:'Acoustic mirror cultural gateway exploring sound and spatial memory at abandoned airfields. Ongoing project for the Chicago Architecture Biennial.' },
+  { id:'10', slug:'enkidu', title:'Enkidu', subtitle:'Vernacular Revival', year:'In Dev', cat:'architecture', tags:['Vernacular','Ecological'], desc:'Reviving vernacular Palestinian architecture in Dier Ghassaneh through material continuity.', fullDesc:'Reviving vernacular Palestinian architecture in Dier Ghassaneh — stone, mud, and memory.' },
+  { id:'11', slug:'aura', title:'Aura', subtitle:'Folly Project', year:'2022', cat:'art', tags:['Installation','Speculative'], desc:'Exploring atmospheric qualities of architectural space through a small speculative folly.', fullDesc:'Exploring atmospheric qualities of architectural space. A speculative folly engaging with the phenomenology of light and air.' },
+  { id:'12', slug:'liberation_fronts', title:'Liberation Fronts', subtitle:'Diploma Thesis', year:'2024', cat:'research', tags:['Political','Speculative'], desc:'Exploring liberation fronts as spatial and political constructs — diploma thesis at Die Angewandte.', fullDesc:'Exploring liberation fronts as spatial and political constructs. Diploma thesis, Die Angewandte, Vienna, 2024.' },
+  { id:'13', slug:'regutting', title:'Regutting', subtitle:'Wonder Cabinet', year:'2025', cat:'art', tags:['Residency','Installation'], desc:'Returns and remains — film, photography, and installation exploring sites of departure and arrival.', fullDesc:'Returns and remains through film, photography, and installation. Wonder Cabinet residency, 2025.' },
+  { id:'14', slug:'agential_cartographies', title:'Agential Cartographies', subtitle:'Dar Jacir', year:'2025', cat:'research', tags:['Exhibition','Political'], desc:'Experimental mappings across three spatial typologies — Palestine as territory of contested spatial knowledge.', fullDesc:'Experimental mappings across three spatial typologies. Exhibition at Dar Jacir, Palestine, 2025.' },
+  { id:'15', slug:'phd_research', title:'PhD Research', subtitle:'Die Angewandte', year:'2024+', cat:'education', tags:['Material Research','Pedagogy'], desc:'Post-conflict material practice and rubble reuse — doctoral research at Die Angewandte, Vienna.', fullDesc:'Post-conflict material practice and rubble reuse. Doctoral research at Die Angewandte (University of Applied Arts, Vienna), 2024 onwards.' },
+  { id:'16', slug:'teaching_aaup', title:'Teaching at AAUP', subtitle:'Arab American University', year:'2025+', cat:'education', tags:['Pedagogy','Vernacular'], desc:'Faculty member at the Faculty of Architecture, AAUP, Palestine — teaching design studio and theory.', fullDesc:'Faculty member at the Faculty of Architecture, Arab American University, Palestine. Teaching design studio and architectural theory.' }
+];
+
+// Each project has 6 images, following the original convention:
+// images/{slug}_1.jpg ... images/{slug}_6.jpg, with a placeholder fallback
+// if the actual file isn't present in this environment.
+function projectImages(slug, title) {
+  const imgs = [];
+  for (let i = 1; i <= 6; i++) {
+    imgs.push({
+      src: `images/${slug}_${i}.jpg`,
+      fallback: `https://placehold.co/600x400/f5f5f5/999?text=${encodeURIComponent(title)}+${i}`
+    });
+  }
+  return imgs;
+}
+PROJECTS.forEach(p => { p.images = projectImages(p.slug, p.title); });
+
+
+
+const WRITINGS = [
+  { type:'Conference Paper', title:'Dynamic Ruinations: Architecture Against Finality', institution:'2026 — Newcastle University', desc:'Presented at "Co-producing Alternative Futures through Experimental Urbanism" Symposium, University of Pretoria, South Africa (April 2026).', details:'This conference paper explores the theoretical framework of dynamic ruinations as a counter-narrative to architectural finality and permanence. It examines how experimental urbanism can produce alternative futures through processes of creative destruction and material transformation.' },
+  { type:'Conference Paper', title:'Agential Cartographies', institution:'2026 — Extra-territorial Studio', desc:'Presented at "Spectres of the Undercommons" Conference, The American University in Cairo (April 2026).', details:'This paper investigates how cartographic practices can become agential tools for urban resistance and alternative spatial imaginaries. It proposes mapping as a form of knowledge production that centers marginalized voices and deterritorialized communities.' },
+  { type:'Conference Paper', title:'Spatio-territorial Examination of the Actively Deterritorialized', institution:'2025 — Birzeit University', desc:'Presented at "Engineering Destruction" Conference, Birzeit University (June 2025).', details:'This paper critically examines the spatio-territorial dimensions of deterritorialization, analyzing how destruction and displacement produce new forms of spatial agency. It applies contemporary theory to the Palestinian context, exploring material and immaterial forms of territorial resistance.' },
+  { type:'Book Chapter', title:'Re: Action — Urban Resilience in the post-Information Age', institution:'2023 — Birkhäuser', desc:'Published by Birkhäuser (2023). Edited by Hani Rashid.', details:'A comprehensive book chapter exploring how urban systems can develop resilience strategies in an era of information saturation and digital transformation.' },
+  { type:'Research Proposal', title:'Rubble Typology: Destruction Mode as a Material Determinant', institution:'2025 — The New Cairn Project', desc:'A comparative framework for understanding how different destruction modes produce materially distinct waste streams.', details:'This research proposal develops a comprehensive typology of rubble based on the modes and mechanisms of destruction. It argues that material properties of demolition waste are not incidental, but are actively determined by the specific destructive processes that produce them.' },
+  { type:'Material Research', title:'Compression-Only Logic in Heterogeneous Rubble Assemblies', institution:'2025 — Fellowship Research', desc:'Applying the Safe Theorem to mixed-material demolition waste for compression-only structural logic.', details:'This research investigates how heterogeneous rubble assemblies can be engineered to work under compression-only loads, drawing on principles from the Safe Theorem in structural mechanics.' }
+];
+
+const TAGS = ["Ecological","Vernacular","Digital Fabrication","Post-Conflict","Material Research","Speculative","Collective Practice","Pedagogy","Installation","Political","Residency","Exhibition"];
+
+const CATS = [
+  { key:'architecture', label:'Architecture', count:7 },
+  { key:'art', label:'Art', count:4 },
+  { key:'research', label:'Research', count:3 },
+  { key:'education', label:'Education', count:3 },
+];
+
+// ---- CELL DEFINITIONS ----
+// ---- SHUFFLE HELPER (seeded by Math.random — different every page load) ----
+function shuffleArr(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Build each category's project list, shuffled — same project SET, new ORDER each reload.
+// Grid positions/spans (ASSIGNMENTS) stay fixed; only which project lands in which slot varies.
+const archProjects = shuffleArr([PROJECTS[0], PROJECTS[1], PROJECTS[3], PROJECTS[4], PROJECTS[5], PROJECTS[9], PROJECTS[6]]);
+const artProjects  = shuffleArr([PROJECTS[7], PROJECTS[8], PROJECTS[10], PROJECTS[12]]);
+const resProjects  = shuffleArr([PROJECTS[2], PROJECTS[11], PROJECTS[13]]);
+const eduProjects  = shuffleArr([PROJECTS[6], PROJECTS[14], PROJECTS[15]]);
+const writingsShuffled = shuffleArr([WRITINGS[0], WRITINGS[1], WRITINGS[2], WRITINGS[3], WRITINGS[4], WRITINGS[5]]);
+
+const CELLS = [
+  // 0:  Identity
+  { type:'identity' },
+  // 1:  Cat — Architecture
+  { type:'category', data: CATS[0] },
+  // 2–8: Architecture projects (7 total) — order randomized each load
+  { type:'project', data: archProjects[0] },
+  { type:'project', data: archProjects[1] },
+  { type:'project', data: archProjects[2] },
+  { type:'project', data: archProjects[3] },
+  { type:'project', data: archProjects[4] },
+  { type:'project', data: archProjects[5] },
+  { type:'project', data: archProjects[6] },
+  // 9:  Cat — Art
+  { type:'category', data: CATS[1] },
+  // 10–13: Art projects (4) — order randomized each load
+  { type:'project', data: artProjects[0] },
+  { type:'project', data: artProjects[1] },
+  { type:'project', data: artProjects[2] },
+  { type:'project', data: artProjects[3] },
+  // 14: Cat — Research
+  { type:'category', data: CATS[2] },
+  // 15–17: Research projects (3) — order randomized each load
+  { type:'project', data: resProjects[0] },
+  { type:'project', data: resProjects[1] },
+  { type:'project', data: resProjects[2] },
+  // 18: Cat — Education
+  { type:'category', data: CATS[3] },
+  // 19–21: Education projects (3) — order randomized each load
+  { type:'project', data: eduProjects[0] },
+  { type:'project', data: eduProjects[1] },
+  { type:'project', data: eduProjects[2] },
+  // 22: Research & Publications section head
+  { type:'section-head', label:'Research & Publications' },
+  // 23–28: All 6 writings — order randomized each load
+  { type:'writing', data: writingsShuffled[0] },
+  { type:'writing', data: writingsShuffled[1] },
+  { type:'writing', data: writingsShuffled[2] },
+  { type:'writing', data: writingsShuffled[3] },
+  { type:'writing', data: writingsShuffled[4] },
+  { type:'writing', data: writingsShuffled[5] },
+  // 29: CV
+  { type:'cv' },
+  // 30: Tags
+  { type:'tags' },
+  // 31: Contact
+  { type:'contact' },
+  // 32: Skills
+  { type:'skills' },
+];
+
+// ---- EXPAND STATE ----
+let expandedCell = null;   // the DOM element currently expanded
+let expandedAsgn = null;   // its ASSIGNMENTS entry [cellIdx, col, row, cs, rs]
+
+// ---- CATEGORY FILTER STATE ----
+let categoryMode = null;       // 'architecture' | 'art' | 'research' | null
+let activeCatEl = null;        // the clicked category DOM element
+
+// Category → which rows are "active" (contain that category's projects)
+// Row indices are 0-based internally
+const CAT_ROWS = {
+  architecture: [0, 1],   // rows 1-2
+  art:          [2],      // row 3
+  research:     [3],      // row 4
+  education:    [4],      // row 5
+  publications: [5, 6],   // rows 6-7
+};
+
+// Weight for active-category rows and cols; inactive rows/cols get W_MIN
+const W_CAT_ACTIVE   = 21;  // fib — project rows for the selected category
+const W_CAT_INACTIVE = 8;   // fib — rows for other categories (still visible, just small)
+const W_CAT_COL_ALL  = 13;  // fib — all project columns stay readable
+
+function setCategoryMode(catKey, el) {
+  // Clear any expanded project first
+  collapseCell();
+
+  // Remove active class from previous
+  if (activeCatEl) activeCatEl.classList.remove('cat-active');
+
+  categoryMode = catKey;
+  activeCatEl = el;
+  el.classList.add('cat-active');
+  mouseActive = false;
+}
+
+function clearCategoryMode() {
+  if (activeCatEl) activeCatEl.classList.remove('cat-active');
+  categoryMode = null;
+  activeCatEl = null;
+  mouseActive = true;
+}
+
+// When a cell expands: its col(s) and row(s) → W_MAX, all others → W_MIN
+// Returns weights back to mouse-driven when collapsed
+function expandCell(el, asgn) {
+  if (expandedCell === el) return;
+  collapseCell();
+  clearCategoryMode();      // exit category mode on project expand
+
+  expandedCell = el;
+  expandedAsgn = asgn;
+  mouseActive = false;
+
+  el.classList.add('cell-expanded');
+
+  const layer = el.querySelector('.expand-layer');
+  if (layer) {
+    requestAnimationFrame(() => { layer.style.opacity = '1'; });
+  }
+}
+
+function collapseCell() {
+  if (!expandedCell) return;
+  expandedCell.classList.remove('cell-expanded');
+
+  const layer = expandedCell.querySelector('.expand-layer');
+  if (layer) layer.style.opacity = '0';
+
+  expandedCell = null;
+  expandedAsgn = null;
+  mouseActive = true;
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    collapseCell();
+    clearCategoryMode();
+  }
+});
+
+// ---- LETTER-WRAP HELPER ----
+// Wraps each character of a string in a .flip-char span with a staggered
+// transition-delay, so when flip-vertical activates the letters rotate
+// independently in sequence rather than all at once.
+function wrapLetters(text) {
+  return [...text].map((ch, i) => {
+    const safe = ch === ' ' ? '&nbsp;' : ch;
+    const delay = (i * 18).toFixed(0); // ms stagger per letter
+    return `<span class="flip-char" style="transition-delay:${delay}ms">${safe}</span>`;
+  }).join('');
+}
+
+// ---- ASPECT-RATIO-RESPONSIVE TEXT ----
+// Watches a cell's live size (which changes continuously as the grid breathes)
+// and rotates/scales its .proj-meta block to fit: horizontal for wide cells,
+// vertical for tall narrow ones, with font-size and letter-spacing scaled to
+// the cell's limiting dimension. All changes are CSS-transitioned, so the
+// switch reads as a smooth continuous adjustment rather than a snap.
+function observeAspect(el) {
+  const meta = el.querySelector('.proj-meta');
+  if (!meta) return;
+
+  // EXTREME_RATIO: only flip/center when the cell is genuinely a sliver —
+  // not just "taller than wide" or "wider than tall", but dramatically so.
+  const EXTREME_TALL_RATIO = 0.38;   // width/height below this → vertical flip
+  const EXTREME_WIDE_RATIO = 2.6;    // width/height above this → horizontal centering (mirror case)
+
+  const ro = new ResizeObserver(entries => {
+    for (const entry of entries) {
+      const { width, height } = entry.contentRect;
+      if (width < 4 || height < 4) continue;
+
+      const ratio = width / height; // >1 = wide, <1 = tall
+      const isExtremeTall = ratio < EXTREME_TALL_RATIO;
+      const isExtremeWide = ratio > EXTREME_WIDE_RATIO;
+
+      meta.classList.toggle('flip-vertical', isExtremeTall);
+      meta.classList.toggle('flip-horizontal', isExtremeWide);
+      // Below this height, even a single scaled-down line risks clipping
+      // three stacked lines — drop id/subtitle and keep only the title.
+      meta.classList.toggle('ultra-squat', isExtremeWide && height < 70);
+
+      // Scale typography to the limiting dimension so text always fits.
+      // Extreme-TALL cells are constrained by height (narrow width).
+      // Extreme-WIDE cells are ALSO constrained by height (short, squat) —
+      // width is abundant there, so using it as "limiting" was producing
+      // oversized text that overflowed the cell's small height and got
+      // clipped invisible. Only genuinely normal-ish cells use width.
+      const limiting = (isExtremeTall || isExtremeWide) ? height : width;
+      const scale = Math.max(0.55, Math.min(1.15, limiting / 260));
+
+      const idEl    = meta.querySelector('.proj-id');
+      const titleEl = meta.querySelector('.proj-title');
+      const subEl   = meta.querySelector('.proj-subtitle');
+
+      if (idEl)    idEl.style.fontSize    = `${(7.5 * scale).toFixed(2)}px`;
+      if (titleEl) titleEl.style.fontSize = `${(15 * scale).toFixed(2)}px`;
+      if (subEl)   subEl.style.fontSize   = `${(9 * scale).toFixed(2)}px`;
+
+      const ls = Math.max(0.01, Math.min(0.12, 0.04 + (scale - 0.7) * 0.1));
+      if (idEl)    idEl.style.letterSpacing    = `${ls.toFixed(3)}em`;
+      if (titleEl) titleEl.style.letterSpacing = isExtremeTall ? `${(ls*0.5).toFixed(3)}em` : '0';
+
+      meta.style.gap = isExtremeTall ? '2px' : '0px';
+    }
+  });
+
+  ro.observe(el);
+}
+
+// ---- RENDER CELL CONTENT ----
+// asgn = [cellIdx, col, row, cs, rs] — passed in so click handlers can reference it
+function renderCell(el, cell, colFib, rowFib, figNum, asgn) {
+  const label = `${colFib} × ${rowFib}`;
+  el.innerHTML = `<span class="cell-label">${label}</span><span class="cell-fig">Fig. ${figNum}</span>`;
+
+  if (cell.type === 'identity') {
+    el.classList.add('cell-identity');
+    el.innerHTML += `
+      <div class="identity-eyebrow">Architecture &nbsp;·&nbsp; Art &nbsp;·&nbsp; Research &nbsp;·&nbsp; Education</div>
+      <div class="identity-name">Ad(h)am<br><em>Sinan</em></div>
+      <div class="identity-bio">An architect, artist, and researcher blending conceptual, theoretical, technical, and artistic approaches. My work is enriched by interdisciplinary collaboration and strong research foundations.</div>
+    `;
+  }
+
+  else if (cell.type === 'category') {
+    el.classList.add('cell-category', 'clickable');
+    const d = cell.data;
+    el.innerHTML += `
+      <div class="cat-label">Category</div>
+      <div class="cat-title">${d.label}</div>
+      <div class="cat-count">${d.count} project${d.count > 1 ? 's' : ''}</div>
+    `;
+    el.addEventListener('click', () => {
+      if (categoryMode === d.key) {
+        clearCategoryMode();
+      } else {
+        setCategoryMode(d.key, el);
+      }
+    });
+  }
+
+  else if (cell.type === 'project') {
+    el.classList.add('cell-project', 'clickable');
+    const p = cell.data;
+    const tagsHtml = p.tags.map(t => `<span class="proj-tag">${t}</span>`).join('');
+
+    // Build the gallery rows for the expanded view — one row per image,
+    // each labeled Fig. N with accompanying caption text beside it.
+    const galleryRows = p.images.map((img, i) => `
+      <div class="gallery-row">
+        <div class="gallery-row-img">
+          <img src="${img.src}" alt="${p.title} — Fig. ${i + 1}"
+               onerror="this.onerror=null;this.src='${img.fallback}'">
+        </div>
+        <div class="gallery-row-text">
+          <div class="gallery-fig">Fig. ${i + 1}</div>
+          <div class="gallery-caption">${i === 0 ? p.fullDesc : (p.subtitle + ' — ' + p.title + ', detail ' + (i + 1) + '.')}</div>
+        </div>
+      </div>
+    `).join('');
+
+    el.innerHTML += `
+      <div class="proj-hover-hero">
+        <img src="${p.images[0].src}" alt="${p.title}"
+             onerror="this.onerror=null;this.src='${p.images[0].fallback}'">
+      </div>
+      <div class="proj-meta">
+        <div class="proj-id">${wrapLetters(p.id + ' · ' + p.year)}</div>
+        <div class="proj-title">${wrapLetters(p.title)}</div>
+        <div class="proj-subtitle">${wrapLetters(p.subtitle)}</div>
+      </div>
+      <div class="proj-desc">${p.desc}</div>
+      <div class="proj-tags">${tagsHtml}</div>
+      <div class="expand-layer">
+        <button class="expand-close"><em>x</em></button>
+        <div class="expand-type">${p.cat} &nbsp;·&nbsp; ${p.year}</div>
+        <div class="expand-title">${p.title}</div>
+        <div class="expand-subtitle">${p.subtitle}</div>
+        <div class="expand-rule"></div>
+        <div class="expand-gallery">${galleryRows}</div>
+        <div class="expand-tags">${tagsHtml}</div>
+      </div>
+    `;
+    el.addEventListener('click', e => {
+      if (e.target.classList.contains('expand-close')) return;
+      if (expandedCell === el) return;
+      expandCell(el, asgn);
+    });
+    el.querySelector('.expand-close').addEventListener('click', e => {
+      e.stopPropagation();
+      collapseCell();
+    });
+    observeAspect(el);
+  }
+
+  else if (cell.type === 'section-head') {
+    el.classList.add('cell-category', 'clickable');
+    el.innerHTML += `
+      <div class="cat-label">Section</div>
+      <div class="cat-title">${cell.label}</div>
+    `;
+    el.addEventListener('click', () => {
+      if (categoryMode === 'publications') {
+        clearCategoryMode();
+      } else {
+        setCategoryMode('publications', el);
+      }
+    });
+  }
+
+  else if (cell.type === 'writing') {
+    el.classList.add('cell-writing', 'clickable');
+    const w = cell.data;
+    el.innerHTML += `
+      <div class="writing-type">${w.type}</div>
+      <div class="writing-title">${w.title}</div>
+      <div class="writing-institution">${w.institution}</div>
+      <div class="expand-layer">
+        <button class="expand-close"><em>x</em></button>
+        <div class="expand-type">${w.type}</div>
+        <div class="expand-title">${w.title}</div>
+        <div class="expand-subtitle">${w.institution}</div>
+        <div class="expand-rule"></div>
+        <div class="expand-body">${w.desc}</div>
+        <div class="expand-body" style="margin-top:10px; opacity:0.55;">${w.details}</div>
+      </div>
+    `;
+    el.addEventListener('click', e => {
+      if (e.target.classList.contains('expand-close')) return;
+      if (expandedCell === el) return;
+      expandCell(el, asgn);
+    });
+    el.querySelector('.expand-close').addEventListener('click', e => {
+      e.stopPropagation();
+      collapseCell();
+    });
+  }
+
+  else if (cell.type === 'cv') {
+    el.classList.add('cell-cv');
+    el.innerHTML += `
+      <div class="cv-section">
+        <div class="cv-section-title">Education</div>
+        <div class="cv-entry"><strong>PhD / DR.TECH</strong> — Die Angewandte (2024–present)</div>
+        <div class="cv-entry"><strong>MArch</strong> — Die Angewandte, Magna cum laude (2020–2024)</div>
+        <div class="cv-entry"><strong>B.Sc Architecture</strong> — AABU, Jordan (2013–2020)</div>
+      </div>
+      <div class="cv-section">
+        <div class="cv-section-title">Experience</div>
+        <div class="cv-entry"><strong>Faculty Member</strong> — AAUP, Palestine (2025–present)</div>
+        <div class="cv-entry"><strong>Researcher / Curator</strong> — CSRC at AAUP (2025–present)</div>
+        <div class="cv-entry"><strong>Architect</strong> — LAVA, Berlin (2024–2025)</div>
+        <div class="cv-entry"><strong>Freelance Architect</strong> — Worldwide (2022–present)</div>
+      </div>
+    `;
+  }
+
+  else if (cell.type === 'tags') {
+    el.classList.add('cell-tags');
+    el.innerHTML += TAGS.map(t => `<span class="tag-pill">${t}</span>`).join('');
+  }
+
+  else if (cell.type === 'contact') {
+    el.classList.add('cell-contact');
+    el.innerHTML += `
+      <div class="contact-heading">Let's<br><em>work together.</em></div>
+      <a href="mailto:adam95darwesh@gmail.com" class="contact-link">
+        <span>Email</span>adam95darwesh@gmail.com
+      </a>
+      <a href="https://www.linkedin.com/in/aladham/" target="_blank" class="contact-link">
+        <span>LinkedIn</span>in/aladham
+      </a>
+      <a href="https://www.instagram.com/al_adhambinsinan/" target="_blank" class="contact-link">
+        <span>Instagram</span>@al_adhambinsinan
+      </a>
+    `;
+  }
+
+  else if (cell.type === 'skills') {
+    el.classList.add('cell-skills');
+    el.innerHTML += `
+      <div class="cv-section-title" style="margin-bottom:6px;">Skills & Languages</div>
+      <div class="skill-row">Rhino3D · Archicad · Blender3D · Maya · Sketchup</div>
+      <div class="skill-row">Vray · Cycles · D5 Render · Twinmotion · Lumion</div>
+      <div class="skill-row">Arabic (native) · English (fluent) · Dutch (intermediate) · German (beginner)</div>
+    `;
+  }
+
+  else if (cell.type === 'divider') {
+    el.classList.add('cell-divider');
+    el.innerHTML += `<div class="divider-text">${cell.label}</div>`;
+  }
+}
+
+// ---- CONFIG ----
+const NUM_COLS = 5;
+const NUM_ROWS = 8;
+
+const FIB_POOL = [1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+const W_MIN = 8;
+const W_MAX = 21;
+
+// Dedicated wider range for click-to-expand — this should still dominate the grid
+const W_EXPAND_MAX = 55;
+const W_EXPAND_MIN = 2;
+const EASE = 0.055;
+
+// ---- ASSIGNMENTS (randomized per load, structure-safe) ----
+// [CELLS_idx, col(1-based), row(1-based), colSpan, rowSpan]
+//
+// Row groupings (which CELLS index lives in which row) are fixed — this is
+// what CAT_ROWS / category filtering depends on. What randomizes each load
+// is: which cell(s) in a row get a 2-column span (a "Fibonacci-wide" cell),
+// and the left-to-right order within the row. Columns always sum to exactly
+// NUM_COLS (5), so the grid never breaks or leaves gaps — only its rhythm
+// of wide/narrow cells shifts, still expressed as Fibonacci column weights
+// at render time via the cursor-driven system.
+//
+// Row 1 is special: identity spans rows 1-2 in column 1, so only columns
+// 2-5 (4 slots) are free to arrange on row 1, and row 2 only has columns
+// 2-5 to fill as well (3 cells there).
+
+function buildAssignments() {
+  const A = [];
+
+  // Helper: lay out a row's cell-indices across `availCols` (an array of
+  // 1-based column numbers, contiguous), randomly picking ONE cell (if any
+  // fit) to take a 2-col span, then fitting the rest 1-col each.
+  function layoutRow(cellIndices, row, availCols) {
+    const n = cellIndices.length;
+    const totalSlots = availCols.length;
+    // Decide if exactly one cell can take a 2-col span (only if slots allow)
+    const canWiden = totalSlots > n && n > 0;
+    const widenIdx = canWiden && Math.random() < 0.6
+      ? Math.floor(Math.random() * n)
+      : -1;
+
+    let col = availCols[0];
+    cellIndices.forEach((cellIdx, i) => {
+      const span = (i === widenIdx) ? 2 : 1;
+      A.push([cellIdx, col, row, span, 1]);
+      col += span;
+    });
+  }
+
+  // ROW 1 — Identity (fixed, spans rows 1-2, col 1) + Cat:Architecture + 3 arch projects across cols 2-5
+  A.push([0, 1, 1, 1, 2]); // Identity
+  layoutRow([1, 2, 3, 4], 1, [2, 3, 4, 5]); // Cat:Arch + 3 projects, one may widen
+
+  // ROW 2 — remaining 3 arch projects across cols 2-5 (col 1 occupied by identity span)
+  layoutRow([5, 6, 7], 2, [2, 3, 4, 5]);
+
+  // ROW 3 — Cat:Art + 3 art projects across all 5 cols
+  layoutRow([9, 10, 11, 12], 3, [1, 2, 3, 4, 5]);
+
+  // ROW 4 — Cat:Research + 3 research projects across all 5 cols
+  layoutRow([14, 15, 16, 17], 4, [1, 2, 3, 4, 5]);
+
+  // ROW 5 — Cat:Education + 3 education projects across all 5 cols
+  layoutRow([18, 19, 20, 21], 5, [1, 2, 3, 4, 5]);
+
+  // ROW 6 — Section head + 4 writings across all 5 cols
+  layoutRow([22, 23, 24, 25, 26], 6, [1, 2, 3, 4, 5]);
+
+  // ROW 7 — CV + 2 writings across all 5 cols
+  layoutRow([29, 27, 28], 7, [1, 2, 3, 4, 5]);
+
+  // ROW 8 — Regutting + Tags + Contact + Skills across all 5 cols
+  layoutRow([13, 30, 31, 32], 8, [1, 2, 3, 4, 5]);
+
+  return A;
+}
+
+const ASSIGNMENTS = buildAssignments();
+
+// ---- STATE ----
+// Continuous fr weights — these never snap, only lerp
+// Randomized idle anchor — picked once per page load from the Fibonacci pool's
+// mid-range, so the resting (no-cursor) proportions vary slightly each visit
+// while everything else (layout, content, interactions) stays identical.
+const IDLE_FIB_CHOICES = [13, 13, 13];
+const IDLE_WEIGHT = IDLE_FIB_CHOICES[Math.floor(Math.random() * IDLE_FIB_CHOICES.length)];
+
+let colW = Array(NUM_COLS).fill(IDLE_WEIGHT);
+let rowW = Array(NUM_ROWS).fill(IDLE_WEIGHT);
+
+// Target continuous weights — derived from mouse position using smooth curve
+let tColW = [...colW];
+let tRowW = [...rowW];
+
+// Stable grid rect — updated on resize, not every frame
+let gridRect = null;
+
+// Uniform column/row split positions (pixel) — computed ONCE from the stable rect,
+// not re-derived from current weights (this was the feedback-loop jitter source)
+let colEdges = []; // left edges of each column in px, length NUM_COLS+1
+let rowEdges = []; // top edges of each row in px, length NUM_ROWS+1
+
+// Mouse — raw screen coords
+let mX = window.innerWidth  / 2;
+let mY = window.innerHeight / 2;
+let mouseActive = false;
+
+// Label throttle — only update text every N frames to avoid layout thrash
+let labelFrame = 0;
+const LABEL_EVERY = 1;
+
+// ---- HELPERS ----
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+// Smooth continuous mapping: normalised distance [0..1] → fr weight [W_MIN..W_MAX]
+// Uses a power curve so the close-cell boost is dramatic but smooth
+function distToWeight(normDist) {
+  // normDist = 0 → closest → W_MAX; normDist = 1 → farthest → W_MIN
+  const inv = 1 - normDist;           // invert: 1 = close, 0 = far
+  const curved = Math.pow(inv, 2.2);  // power curve — smooth, no discontinuities
+  return W_MIN + curved * (W_MAX - W_MIN);
+}
+
+// Snap a continuous weight to the nearest Fibonacci number (for labels only)
+function snapToFib(w) {
+  return FIB_POOL.reduce((best, f) =>
+    Math.abs(f - w) < Math.abs(best - w) ? f : best
+  , FIB_POOL[0]);
+}
+
+// Compute stable column / row boundary edges from the current grid rect
+// using EQUAL splits — these are the reference positions for distance measurement.
+// We use equal splits (not fr-weighted positions) so the measurement baseline
+// doesn't move as weights change, eliminating the feedback loop.
+function computeEdges() {
+  if (!gridRect) return;
+  colEdges = [];
+  for (let i = 0; i <= NUM_COLS; i++)
+    colEdges.push(gridRect.left + (i / NUM_COLS) * gridRect.width);
+  rowEdges = [];
+  for (let i = 0; i <= NUM_ROWS; i++)
+    rowEdges.push(gridRect.top + (i / NUM_ROWS) * gridRect.height);
+}
+
+// ---- BUILD GRID DOM ----
+function buildGrid() {
+  const grid = document.getElementById('grid');
+  grid.style.gridTemplateColumns = colW.map(w => `${w.toFixed(4)}fr`).join(' ');
+  grid.style.gridTemplateRows    = rowW.map(w => `${w.toFixed(4)}fr`).join(' ');
+  grid.innerHTML = '';
+  let fig = 1;
+  ASSIGNMENTS.forEach(([ci, col, row, cs, rs]) => {
+    const cell = CELLS[ci];
+    const el = document.createElement('div');
+    el.className = 'cell';
+    el.style.gridColumn = `${col} / span ${cs}`;
+    el.style.gridRow    = `${row} / span ${rs}`;
+    renderCell(el, cell, 8, 8, fig++, [ci, col, row, cs, rs]);
+    grid.appendChild(el);
+
+    // Each cell gets its own Fibonacci arc, drawn after layout settles
+    addCellFibArc(el);
+  });
+  // Measure rect after DOM settles
+  requestAnimationFrame(() => {
+    gridRect = grid.getBoundingClientRect();
+    computeEdges();
+    refreshAllFibArcs(true); // true = animate the line-draw on first paint
+  });
+}
+
+// ---- PER-CELL FIBONACCI ARC ----
+// Each cell gets its own small SVG containing a 2–3 step golden-rectangle
+// spiral fragment, scaled to that cell's own live width/height. The arc
+// is drawn corner-to-corner using a quarter-circle construction (the same
+// classic Fibonacci spiral geometry), sized so it always touches the
+// cell's actual edges — genuinely responsive to that cell's dimensions,
+// not a single decoration laid over the whole plate.
+
+// Track which corner + step-count each cell was randomly assigned, so
+// resizes redraw the SAME arc (just rescaled) rather than re-randomizing
+// every frame, which would look like flickering instead of smooth growth.
+const cellArcMeta = new WeakMap();
+
+function addCellFibArc(el) {
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('class', 'cell-fib-arc');
+  svg.setAttribute('preserveAspectRatio', 'none');
+
+  const path = document.createElementNS(svgNS, 'path');
+  svg.appendChild(path);
+
+  // Insert as the FIRST child so it sits beneath text via DOM order too
+  // (z-index already handles stacking, but this keeps source order sane)
+  el.insertBefore(svg, el.firstChild);
+
+  // Randomly assign which corner this cell's arc emanates from, and how
+  // many Fibonacci steps (2–4) it traces — picked once per cell per load.
+  const corners = ['tl', 'tr', 'bl', 'br'];
+  const corner = corners[Math.floor(Math.random() * corners.length)];
+  const steps = 2 + Math.floor(Math.random() * 3); // 2, 3, or 4 steps
+
+  cellArcMeta.set(el, { corner, steps, svg, path });
+}
+
+// Build the path `d` string for a corner-anchored Fibonacci spiral fragment
+// that fits exactly within a w × h box, using `steps` Fibonacci squares.
+function buildArcPath(w, h, corner, steps) {
+  if (w < 6 || h < 6) return '';
+
+  // ---- 1. SQUARE SIDES: true Fibonacci, each = sum of previous two ----
+  const sizes = [1, 1];
+  for (let i = 2; i < steps + 1; i++) {
+    sizes.push(sizes[i - 1] + sizes[i - 2]);
+  }
+
+  // ---- 2. SQUARE PLACEMENT (in UNSCALED unit-1 space first) ----
+  // Build the full layout at unit=1 so we can measure the TRUE bounding
+  // rectangle before scaling — the previous version scaled by the last
+  // square's side length alone, which is NOT the same as the bounding
+  // rectangle's largest dimension, causing the spiral to overflow the
+  // cell on one axis (the actual cause of the broken/scribbled look).
+  const squares = [];
+  squares.push({ x: 0, y: 0, s: sizes[0] });
+  squares.push({ x: sizes[0], y: 0, s: sizes[1] });
+
+  let rectX = 0, rectY = 0;
+  let rectW = sizes[0] + sizes[1];
+  let rectH = sizes[0];
+  let dir = 1; // 0=attach right, 1=attach below, 2=attach left, 3=attach above
+
+  for (let i = 2; i < sizes.length; i++) {
+    const s = sizes[i];
+    let nx, ny;
+
+    if (dir === 0) {
+      nx = rectX + rectW; ny = rectY;
+      rectW += s;
+    } else if (dir === 1) {
+      nx = rectX; ny = rectY + rectH;
+      rectH += s;
+    } else if (dir === 2) {
+      nx = rectX - s; ny = rectY;
+      rectX -= s; rectW += s;
+    } else {
+      nx = rectX; ny = rectY - s;
+      rectY -= s; rectH += s;
+    }
+
+    squares.push({ x: nx, y: ny, s });
+    dir = (dir + 1) % 4;
+  }
+
+  // ---- 3. SCALE: divide by the TRUE bounding rectangle's larger
+  // dimension (not the last square's side, which under-scales and
+  // causes overflow), then apply a margin so it fits cleanly in the cell.
+  const minDim = Math.min(w, h);
+  const trueMaxDim = Math.max(rectW, rectH);
+  const unit = (minDim * 0.92) / trueMaxDim;
+
+  squares.forEach(sq => {
+    sq.x *= unit; sq.y *= unit; sq.s *= unit;
+  });
+  rectX *= unit; rectY *= unit;
+
+  // ---- 3. NORMALIZE so the whole spiral sits within [0,0]..[rectW,rectH] ----
+  // rectX/rectY may have gone negative as the spiral grew outward in
+  // earlier steps — shift everything so the bounding box starts at (0,0).
+  const offX = -rectX, offY = -rectY;
+  squares.forEach(sq => { sq.x += offX; sq.y += offY; });
+
+  // ---- 4. CORNER FLIP: mirror the whole normalized spiral to emanate
+  // from whichever corner of the cell was assigned ----
+  const flips = {
+    tl: { fx: 1,  fy: 1  },
+    tr: { fx: -1, fy: 1  },
+    bl: { fx: 1,  fy: -1 },
+    br: { fx: -1, fy: -1 },
+  };
+  const { fx, fy } = flips[corner];
+  const originX = (fx === 1) ? 0 : w;
+  const originY = (fy === 1) ? 0 : h;
+
+  function map(lx, ly) {
+    return [originX + fx * lx, originY + fy * ly];
+  }
+
+  // A single-axis mirror reverses the curve's chirality — flip the SVG
+  // arc sweep flag to match, or the path breaks into disconnected jumps.
+  const mirrored = (fx === -1) !== (fy === -1);
+  const sweep = mirrored ? 0 : 1;
+
+  // ---- 5. TRACE THE ARC: one quarter-circle per square, radius = side ----
+  // Each square's arc starts exactly where the previous square's arc
+  // ended, guaranteeing a single continuous curve (this is the actual
+  // golden spiral, not a series of disconnected fragments).
+  let d = '';
+  squares.forEach((sq, i) => {
+    const r = sq.s;
+    const stepDir = i % 4;
+    let s0x, s0y, e0x, e0y;
+
+    // Each case traces a quarter circle whose two endpoints sit on
+    // adjacent corners of the square, consistent with that square's
+    // position in the 4-step rotational cycle.
+    if (stepDir === 0)      { s0x = sq.x;     s0y = sq.y + r; e0x = sq.x + r; e0y = sq.y;     }
+    else if (stepDir === 1) { s0x = sq.x;     s0y = sq.y;     e0x = sq.x + r; e0y = sq.y + r; }
+    else if (stepDir === 2) { s0x = sq.x + r; s0y = sq.y;     e0x = sq.x;     e0y = sq.y + r; }
+    else                     { s0x = sq.x + r; s0y = sq.y + r; e0x = sq.x;     e0y = sq.y;     }
+
+    const [sx, sy] = map(s0x, s0y);
+    const [ex, ey] = map(e0x, e0y);
+
+    if (i === 0) d += `M ${sx.toFixed(2)} ${sy.toFixed(2)} `;
+    d += `A ${r.toFixed(2)} ${r.toFixed(2)} 0 0 ${sweep} ${ex.toFixed(2)} ${ey.toFixed(2)} `;
+  });
+
+  return d.trim();
+}
+
+// Redraw one cell's arc to match its current live size
+function refreshCellFibArc(el, animate) {
+  const meta = cellArcMeta.get(el);
+  if (!meta) return;
+  const { svg, path, corner, steps } = meta;
+
+  const w = el.clientWidth, h = el.clientHeight;
+  if (w < 6 || h < 6) return;
+
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+  const d = buildArcPath(w, h, corner, steps);
+  if (!d) return;
+
+  path.setAttribute('d', d);
+
+  if (animate) {
+    // Line-draw-in effect: measure the path length, start fully hidden via
+    // dash offset, then transition it to 0 so it appears to trace itself.
+    requestAnimationFrame(() => {
+      try {
+        const len = path.getTotalLength();
+        path.style.transition = 'none';
+        path.style.strokeDasharray = `${len}`;
+        path.style.strokeDashoffset = `${len}`;
+        // Force reflow so the transition fires from the offset state
+        path.getBoundingClientRect();
+        path.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(0.4,0,0.2,1)';
+        path.style.strokeDashoffset = '0';
+      } catch (e) { /* getTotalLength can fail on zero-length paths */ }
+    });
+  }
+}
+
+// Refresh every cell's arc — called on layout build (animated) and on
+// resize/breathing (not animated, just keeps pace with the live size)
+let fibArcThrottle = 0;
+const FIB_ARC_EVERY = 3; // recompute every N dirty frames — arcs change
+                          // gently, no need to recompute on every single frame
+
+function refreshAllFibArcs(animate) {
+  document.querySelectorAll('.cell').forEach(el => {
+    refreshCellFibArc(el, animate);
+  });
+}
+
+window.addEventListener('resize', () => {
+  refreshAllFibArcs(false);
+});
+
+buildGrid();
+
+// ---- CATEGORY COMPANION ----
+// For each clickable cell (by DOM index), which col/row holds its category label?
+// Category cells all live in col 1. We track which row the category is in.
+// proj at row 1 or 2 → arch category at row 1 (col1 spans rows 1-2, index 0)
+// proj at row 3     → art  category at row 3 (col1, index 6)
+// proj at row 4     → res  category at row 4 (col1, index 10)
+// writing at row 5  → section head at row 5 (col1, index 13)
+function getCategoryRow(asgnEntry) {
+  const [, , row] = asgnEntry;
+  if (row <= 2) return 1;   // architecture
+  if (row === 3) return 3;  // art
+  if (row === 4) return 4;  // research
+  if (row === 5) return 5;  // education
+  if (row >= 6) return 6;   // publications
+  return null;
+}
+
+// Weight for the category companion cell — big enough to read, smaller than the hero
+const W_CAT = 13; // Fibonacci 13 — companion category cell, kept near-square
+
+// ---- ANIMATION LOOP ----
+function tick() {
+  if (expandedAsgn) {
+    // EXPAND MODE: project cell fills its col/row; category col + row get medium boost
+    const [, eCol, eRow, eCs, eRs] = expandedAsgn;
+    const catRow = getCategoryRow(expandedAsgn);
+
+    for (let c = 0; c < NUM_COLS; c++) {
+      const active = c >= eCol - 1 && c < eCol - 1 + eCs;
+      tColW[c] = active ? W_EXPAND_MAX : (c === 0 ? W_CAT : W_EXPAND_MIN);
+    }
+    for (let r = 0; r < NUM_ROWS; r++) {
+      const active = r >= eRow - 1 && r < eRow - 1 + eRs;
+      const isCatRow = catRow !== null && r === catRow - 1 && !active;
+      tRowW[r] = active ? W_EXPAND_MAX : (isCatRow ? W_CAT : W_EXPAND_MIN);
+    }
+  } else if (categoryMode) {
+    // CATEGORY MODE: active category rows large, other project rows small, col 0 normal
+    const activeRows = CAT_ROWS[categoryMode] || [];
+    for (let c = 0; c < NUM_COLS; c++) {
+      // col 0 = category labels — keep at medium so all labels remain visible
+      tColW[c] = c === 0 ? W_CAT : W_CAT_COL_ALL;
+    }
+    for (let r = 0; r < NUM_ROWS; r++) {
+      tRowW[r] = activeRows.includes(r) ? W_CAT_ACTIVE : W_CAT_INACTIVE;
+    }
+  } else if (mouseActive && gridRect) {
+    // MOUSE MODE: proximity-driven Fibonacci weights, with the actual
+    // hovered cell forced to a perfectly square PIXEL aspect ratio.
+    //
+    // Two bugs in the previous attempt:
+    //  1) It located "the hovered cell" using EQUAL-SPLIT colEdges/rowEdges
+    //     (a fixed reference grid used only to avoid a feedback loop in the
+    //     distance measurement) — but the cell's actual on-screen position
+    //     is fr-weighted and constantly shifting, so the lookup was checking
+    //     the wrong coordinates entirely.
+    //  2) Even forcing tColW[c] === tRowW[r] (equal fr weight) does NOT
+    //     produce an equal PIXEL size, because pixels-per-fr differs
+    //     between the column axis (5 columns sharing the width) and the
+    //     row axis (8 rows sharing the height) — equal fr weight on
+    //     different axis totals gives different actual pixel dimensions.
+    //
+    // Fix: find the truly hovered cell via its REAL DOM rect, then solve
+    // directly for the fr weight that makes that cell's PIXEL width equal
+    // its pixel height, accounting for the other columns/rows total.
+    const maxDist = Math.sqrt(gridRect.width ** 2 + gridRect.height ** 2);
+
+    // Base proximity weight for every column/row (unchanged organic falloff)
+    for (let c = 0; c < NUM_COLS; c++) {
+      const cx = (colEdges[c] + colEdges[c + 1]) / 2;
+      let nearestRowIdx = 0, nearestRowDist = Infinity;
+      for (let r = 0; r < NUM_ROWS; r++) {
+        const cy = (rowEdges[r] + rowEdges[r + 1]) / 2;
+        const d = Math.abs(mY - cy);
+        if (d < nearestRowDist) { nearestRowDist = d; nearestRowIdx = r; }
+      }
+      const cy = (rowEdges[nearestRowIdx] + rowEdges[nearestRowIdx + 1]) / 2;
+      const radial = Math.sqrt((mX - cx) ** 2 + (mY - cy) ** 2);
+      tColW[c] = distToWeight(Math.min(radial / maxDist, 1));
+    }
+    for (let r = 0; r < NUM_ROWS; r++) {
+      const cy = (rowEdges[r] + rowEdges[r + 1]) / 2;
+      let nearestColIdx = 0, nearestColDist = Infinity;
+      for (let c = 0; c < NUM_COLS; c++) {
+        const cx = (colEdges[c] + colEdges[c + 1]) / 2;
+        const d = Math.abs(mX - cx);
+        if (d < nearestColDist) { nearestColDist = d; nearestColIdx = c; }
+      }
+      const cx = (colEdges[nearestColIdx] + colEdges[nearestColIdx + 1]) / 2;
+      const radial = Math.sqrt((mX - cx) ** 2 + (mY - cy) ** 2);
+      tRowW[r] = distToWeight(Math.min(radial / maxDist, 1));
+    }
+
+    // Find the actually-hovered cell via its REAL rendered DOM position
+    // (queried directly, not reconstructed from a stale reference grid).
+    const gridEl = document.getElementById('grid');
+    let hoveredEntry = null, hoveredDist = Infinity;
+    if (gridEl) {
+      const cellEls = gridEl.querySelectorAll('.cell');
+      cellEls.forEach((el, i) => {
+        const a = ASSIGNMENTS[i];
+        if (!a) return;
+        const r = el.getBoundingClientRect();
+        const dx = Math.max(r.left - mX, 0, mX - r.right);
+        const dy = Math.max(r.top - mY, 0, mY - r.bottom);
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < hoveredDist) {
+          hoveredDist = d;
+          hoveredEntry = { asgn: a, rect: r };
+        }
+      });
+    }
+
+    // Solve for the ROW weight that makes the hovered cell's pixel HEIGHT
+    // match its pixel WIDTH (which already comes from the normal column
+    // proximity falloff above). This is always solvable and always
+    // positive — unlike trying to solve both axes simultaneously via a
+    // shared symmetric equation, which can produce a negative/invalid
+    // weight when the plate's width/height or column/row counts differ
+    // a lot (5 columns vs 8 rows here).
+    if (hoveredEntry) {
+      const [, col, row, cs, rs] = hoveredEntry.asgn;
+      const plateW = gridRect.width;
+      const plateH = gridRect.height;
+
+      // Current column weight for the hovered span (already set above by
+      // the normal proximity loop) — this becomes the "driving" dimension.
+      let hoveredColW = 0;
+      for (let c = col - 1; c < col - 1 + cs; c++) hoveredColW += tColW[c];
+
+      let otherColSum = 0;
+      for (let c = 0; c < NUM_COLS; c++) {
+        if (c < col - 1 || c >= col - 1 + cs) otherColSum += tColW[c];
+      }
+      const totalColW = otherColSum + hoveredColW;
+      const targetPx = plateW * hoveredColW / totalColW;
+
+      let otherRowSum = 0;
+      for (let r = 0; r < NUM_ROWS; r++) {
+        if (r < row - 1 || r >= row - 1 + rs) otherRowSum += tRowW[r];
+      }
+
+      // Solve: targetPx = plateH * hoveredRowW / (otherRowSum + hoveredRowW)
+      // => hoveredRowW = targetPx * otherRowSum / (plateH - targetPx)
+      const denom = plateH - targetPx;
+      if (denom > 1) { // guard against the cell already filling ~the whole height
+        let hoveredRowW = (targetPx * otherRowSum) / denom;
+        // Wide clamp range — this only constrains the ONE hovered cell's
+        // row weight, not the grid's overall aesthetic, so it should only
+        // ever kick in as a safety net against runaway values, never as
+        // a routine truncation that would silently break the square match
+        // (the earlier W_EXPAND_MAX=55 ceiling was doing exactly that).
+        hoveredRowW = Math.max(1, Math.min(400, hoveredRowW));
+        for (let r = row - 1; r < row - 1 + rs; r++) tRowW[r] = hoveredRowW / rs;
+      }
+    }
+  } else {
+    // IDLE: neutral weight, randomized once per page load
+    tColW.fill(IDLE_WEIGHT);
+    tRowW.fill(IDLE_WEIGHT);
+  }
+
+  // Lerp current → target
+  let dirty = false;
+  for (let i = 0; i < NUM_COLS; i++) {
+    const next = lerp(colW[i], tColW[i], EASE);
+    if (Math.abs(next - colW[i]) > 0.005) dirty = true;
+    colW[i] = next;
+  }
+  for (let i = 0; i < NUM_ROWS; i++) {
+    const next = lerp(rowW[i], tRowW[i], EASE);
+    if (Math.abs(next - rowW[i]) > 0.005) dirty = true;
+    rowW[i] = next;
+  }
+
+  if (dirty) {
+    const grid = document.getElementById('grid');
+    grid.style.gridTemplateColumns = colW.map(w => `${w.toFixed(4)}fr`).join(' ');
+    grid.style.gridTemplateRows    = rowW.map(w => `${w.toFixed(4)}fr`).join(' ');
+
+    // Keep each cell's Fibonacci arc in sync with its live size as the
+    // grid breathes (cursor proximity, expand, category mode). Throttled
+    // so it recomputes every few frames rather than every single one.
+    fibArcThrottle++;
+    if (fibArcThrottle >= FIB_ARC_EVERY) {
+      fibArcThrottle = 0;
+      refreshAllFibArcs(false);
+    }
+
+    // Show expand-layer content only when the cell is truly large
+    if (expandedCell) {
+      const [, eCol, eRow] = expandedAsgn;
+      const totalCW = colW.reduce((a,b)=>a+b,0);
+      const totalRW = rowW.reduce((a,b)=>a+b,0);
+      const cellColFrac = colW[eCol-1] / totalCW;
+      const cellRowFrac = rowW[eRow-1] / totalRW;
+      const layer = expandedCell.querySelector('.expand-layer');
+      if (layer) {
+        // fade in content once the cell is more than 40% of each axis
+        const progress = Math.min(
+          Math.max((cellColFrac - 0.15) / 0.25, 0),
+          Math.max((cellRowFrac - 0.15) / 0.25, 0)
+        );
+        layer.style.opacity = progress.toFixed(3);
+      }
+    }
+
+    // Labels every N frames
+    labelFrame++;
+    if (labelFrame >= LABEL_EVERY) {
+      labelFrame = 0;
+      const cells = grid.querySelectorAll('.cell');
+      cells.forEach((el, i) => {
+        const a = ASSIGNMENTS[i];
+        if (!a) return;
+        const [, col, row, cs, rs] = a;
+        const cf = snapToFib(colW[col - 1]);
+        const rf = snapToFib(rowW[row - 1]);
+        // pixel dimensions from bounding rect
+        const rect = el.getBoundingClientRect();
+        const pw = Math.round(rect.width);
+        const ph = Math.round(rect.height);
+        const labelEl = el.querySelector('.cell-label');
+        if (labelEl) labelEl.innerHTML = `${cf} × ${rf}<br><span style="font-size:9px;opacity:0.6;">${pw} × ${ph}px</span>`;
+      });
+      const activeFibs = [...new Set([...colW, ...rowW].map(snapToFib))].sort((a,b)=>a-b);
+      const noteEl = document.getElementById('fib-note');
+      if (noteEl) noteEl.textContent = `Fibonacci: ${activeFibs.join(' · ')}`;
+    }
+  }
+
+  requestAnimationFrame(tick);
+}
+
+// ---- EVENTS ----
+document.addEventListener('mousemove', e => {
+  if (expandedCell) return; // ignore mouse while a cell is expanded
+  mX = e.clientX;
+  mY = e.clientY;
+  mouseActive = true;
+});
+document.addEventListener('mouseleave', () => { mouseActive = false; });
+document.addEventListener('mouseenter', () => { if (!expandedCell) mouseActive = true; });
+
+window.addEventListener('resize', () => {
+  const grid = document.getElementById('grid');
+  gridRect = grid.getBoundingClientRect();
+  computeEdges();
+  revealDescriptions();
+});
+
+// ---- DESCRIPTION REVEAL ----
+function revealDescriptions() {
+  document.querySelectorAll('.cell-project').forEach(el => {
+    const desc = el.querySelector('.proj-desc');
+    if (!desc) return;
+    desc.style.display = el.offsetHeight > 120 ? 'block' : 'none';
+  });
+}
+
+tick();
+revealDescriptions();
+</script>
+</body>
+</html>
