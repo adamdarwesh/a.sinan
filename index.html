@@ -68,7 +68,7 @@ html, body {
 #plate-wrap {
   flex: 1;
   position: relative;
-  border: 1.5px solid #1a1612;
+  border: 0.5px solid #1a1612;
   min-height: 0;
   overflow: hidden;
 }
@@ -124,6 +124,14 @@ html, body {
   flex-direction: column;
   background: #ffffff;
   z-index: 1;
+  transition: border-width 0.3s ease;
+}
+
+/* Every line on the plate stays a consistent hairline weight (0.5px)
+   EXCEPT the cell currently expanded (clicked open), which gets a
+   visibly thicker border to mark it as the active/focused element. */
+.cell.cell-expanded {
+  border-width: 2px;
 }
 
 .cell:hover { background: rgba(26,22,18,0.04); }
@@ -143,12 +151,17 @@ html, body {
   letter-spacing: 0.03em;
 }
 /* Inside project cells, push the dimension label to the right corner instead,
-   so it never sits underneath the title in the top-left */
+   so it never sits underneath the title in the top-left — and give it its
+   own small white patch + higher z-index so it sits cleanly above the
+   image grid rather than intersecting/blending with whatever image is there. */
 .cell-project .cell-label {
   left: auto;
-  right: 11px;
-  top: 8px;
+  right: 0;
+  top: 0;
   text-align: right;
+  background: #ffffff;
+  padding: 6px 9px 5px 10px;
+  z-index: 3;
 }
 .cell-fig {
   position: absolute;
@@ -159,6 +172,12 @@ html, body {
   line-height: 1;
   pointer-events: none;
   z-index: 2;
+}
+.cell-project .cell-fig {
+  background: #ffffff;
+  padding: 4px 8px 5px 9px;
+  bottom: 0;
+  right: 0;
 }
 
 /* ---- CELL TYPE: IDENTITY ---- */
@@ -202,12 +221,13 @@ html, body {
 .cell-project > * { position: relative; z-index: 2; }
 
 /* ---- ALWAYS-VISIBLE IMAGE GRID ---- */
-/* All 6 project images are shown at all times, arranged in a responsive
-   grid that fills the cell behind the text. As the cell shrinks (cursor
-   moves away, category mode compresses it, etc.) the grid scales down
-   proportionally — same arrangement, smaller tiles — rather than hiding.
-   Title/ID/subtitle stay pinned to the top-left via proj-meta's own
-   absolute positioning below, sitting above this grid at all times. */
+/* All 6 project images shown at all times, tiled edge-to-edge with NO
+   gaps — a clean mosaic, not a grid with visible white lines between
+   tiles. Scales down proportionally as the cell shrinks (CSS Grid
+   handles this natively). The title/details and dimension label each
+   get their own small solid-white reserved zone in the top corners so
+   they never sit directly on top of (or visually fight with) the
+   images — clean separation, not an overlay scrim across everything. */
 .proj-image-grid {
   position: absolute;
   inset: 0;
@@ -215,13 +235,18 @@ html, body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 1px;
+  gap: 0;
   overflow: hidden;
+}
+/* When the cell is expanded (click-opened), the small background grid
+   must not show at all — the expand-layer becomes the entire visual
+   content of the cell. */
+.cell-expanded .proj-image-grid {
+  display: none;
 }
 .proj-image-grid .grid-img {
   position: relative;
   overflow: hidden;
-  background: transparent;
 }
 .proj-image-grid .grid-img img {
   width: 100%;
@@ -229,13 +254,29 @@ html, body {
   object-fit: cover;
   display: block;
 }
-/* Light scrim so the top-left text stays legible over the image grid */
-.proj-image-grid::after {
-  content: '';
+
+/* Reserved text zone: a solid white patch behind the title block only —
+   not a gradient over the whole cell, just enough to keep the text
+   readable without touching/overlapping the images beneath it. */
+.proj-text-zone {
   position: absolute;
+  top: 0; left: 0;
+  z-index: 2;
+  background: #ffffff;
+  padding: 10px 12px 8px 12px;
+  max-width: 72%;
+}
+/* When the cell is an extreme sliver, the flipped/centered meta block
+   needs the FULL cell, not just the 72%-width text zone — so let it
+   escape the zone's constraint and become the entire visual surface
+   in that state (same as the rest of the flip-mode behaviour). */
+.proj-text-zone:has(.proj-meta.flip-vertical),
+.proj-text-zone:has(.proj-meta.flip-horizontal) {
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.55) 30%, rgba(255,255,255,0.15) 60%, rgba(255,255,255,0.05) 100%);
-  pointer-events: none;
+  display: flex;
 }
 
 .proj-id {
@@ -275,7 +316,6 @@ html, body {
   flex-direction: column;
   transition: gap 0.4s cubic-bezier(0.4,0,0.2,1),
               margin 0.4s cubic-bezier(0.4,0,0.2,1);
-  margin-top: 12px;   /* clears the corner dimension label */
   position: relative;
   z-index: 3;
   flex-shrink: 0;
@@ -738,7 +778,7 @@ html, body {
 
   #page { position: static; height: auto; min-height: 100vh; padding: 14px 14px 18px; }
 
-  #plate-wrap { overflow: visible; border-width: 1px; }
+  #plate-wrap { overflow: visible; border-width: 0.5px; }
 
   #grid {
     position: static !important;
@@ -1167,6 +1207,7 @@ function renderCell(el, cell, colFib, rowFib, figNum, asgn) {
     const platesHtml = p.images.map((img, i) => `
       <div class="plate-image">
         <img src="${img.src}" alt="${p.title} — Fig. ${i + 1}"
+             loading="lazy" decoding="async"
              onerror="this.onerror=null;this.src='${img.fallback}'">
         <div class="plate-caption">
           <div class="plate-fig">Fig. ${i + 1}</div>
@@ -1182,19 +1223,22 @@ function renderCell(el, cell, colFib, rowFib, figNum, asgn) {
     const gridImgsHtml = p.images.map((img, i) => `
       <div class="grid-img">
         <img src="${img.src}" alt="${p.title} — Fig. ${i + 1}"
+             loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async"
              onerror="this.onerror=null;this.src='${img.fallback}'">
       </div>
     `).join('');
 
     el.innerHTML += `
       <div class="proj-image-grid">${gridImgsHtml}</div>
-      <div class="proj-meta">
-        <div class="proj-id">${wrapLetters(p.id + ' · ' + p.year)}</div>
-        <div class="proj-title">${wrapLetters(p.title)}</div>
-        <div class="proj-subtitle">${wrapLetters(p.subtitle)}</div>
+      <div class="proj-text-zone">
+        <div class="proj-meta">
+          <div class="proj-id">${wrapLetters(p.id + ' · ' + p.year)}</div>
+          <div class="proj-title">${wrapLetters(p.title)}</div>
+          <div class="proj-subtitle">${wrapLetters(p.subtitle)}</div>
+        </div>
+        <div class="proj-desc">${p.desc}</div>
+        <div class="proj-tags">${tagsHtml}</div>
       </div>
-      <div class="proj-desc">${p.desc}</div>
-      <div class="proj-tags">${tagsHtml}</div>
       <div class="expand-layer">
         <button class="expand-close"><em>x</em></button>
         <div class="expand-type">${p.cat} &nbsp;·&nbsp; ${p.year}</div>
@@ -1328,7 +1372,8 @@ const W_MAX = 21;
 // Dedicated wider range for click-to-expand — this should still dominate the grid
 const W_EXPAND_MAX = 55;
 const W_EXPAND_MIN = 2;
-const EASE = 0.055;
+const EASE = 0.11; // doubled from 0.055 — grid responds noticeably snappier
+                    // to cursor movement and clicks, settles faster
 
 // ---- ASSIGNMENTS (randomized per load, structure-safe) ----
 // [CELLS_idx, col(1-based), row(1-based), colSpan, rowSpan]
@@ -1428,7 +1473,9 @@ let mouseActive = false;
 
 // Label throttle — only update text every N frames to avoid layout thrash
 let labelFrame = 0;
-const LABEL_EVERY = 1;
+const LABEL_EVERY = 8; // throttled — getBoundingClientRect() per cell every
+                        // single frame was expensive; updating ~7x/sec instead
+                        // of 60x/sec is visually indistinguishable but far cheaper
 
 // ---- HELPERS ----
 function lerp(a, b, t) { return a + (b - a) * t; }
@@ -1858,12 +1905,12 @@ function tick() {
   let dirty = false;
   for (let i = 0; i < NUM_COLS; i++) {
     const next = lerp(colW[i], tColW[i], EASE);
-    if (Math.abs(next - colW[i]) > 0.005) dirty = true;
-    colW[i] = next;
-  }
+    if (Math.abs(next - colW[i]) > 0.02) dirty = true; // loosened from 0.005 —
+    colW[i] = next;                                     // stops redundant DOM
+  }                                                       // writes once visually settled
   for (let i = 0; i < NUM_ROWS; i++) {
     const next = lerp(rowW[i], tRowW[i], EASE);
-    if (Math.abs(next - rowW[i]) > 0.005) dirty = true;
+    if (Math.abs(next - rowW[i]) > 0.02) dirty = true;
     rowW[i] = next;
   }
 
