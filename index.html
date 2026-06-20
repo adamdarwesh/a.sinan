@@ -228,30 +228,60 @@ html, body {
    get their own small solid-white reserved zone in the top corners so
    they never sit directly on top of (or visually fight with) the
    images — clean separation, not an overlay scrim across everything. */
+/* ---- SHAPE-RESPONSIVE IMAGE LAYOUT ---- */
+/* Replaces a fixed 3x2 grid. JS (observeAspect) detects the cell's live
+   shape and toggles one of three layout classes:
+     .layout-row  — wide cells: images in a single horizontal row
+     .layout-col  — tall cells: images in a single vertical column
+     .layout-grid — square-ish cells: images in a balanced grid
+   In every mode, each tile uses object-fit: contain (never cover) so no
+   image is ever cropped/squished — it scales to fit its tile, preserving
+   its own natural aspect ratio, with a consistent visible gap between
+   tiles in all three layouts. */
 .proj-image-grid {
   position: absolute;
   inset: 0;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 0;
+  gap: 3px;
   overflow: hidden;
+  padding: 3px;
+  box-sizing: border-box;
 }
-/* When the cell is expanded (click-opened), the small background grid
-   must not show at all — the expand-layer becomes the entire visual
-   content of the cell. */
 .cell-expanded .proj-image-grid {
   display: none;
 }
+
+.proj-image-grid.layout-row {
+  grid-auto-flow: column;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: 1fr;
+}
+.proj-image-grid.layout-col {
+  grid-auto-flow: row;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(6, 1fr);
+}
+.proj-image-grid.layout-grid {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
 .proj-image-grid .grid-img {
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
 }
 .proj-image-grid .grid-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain; /* never crop/squish — preserves each image's own ratio */
   display: block;
 }
 
@@ -266,17 +296,14 @@ html, body {
   padding: 10px 12px 8px 12px;
   max-width: 72%;
 }
-/* When the cell is an extreme sliver, the flipped/centered meta block
-   needs the FULL cell, not just the 72%-width text zone — so let it
-   escape the zone's constraint and become the entire visual surface
-   in that state (same as the rest of the flip-mode behaviour). */
+/* Title always stays anchored top-left — even in extreme-sliver cells
+   where the letters rotate to fit (flip-vertical/flip-horizontal), the
+   TEXT ZONE itself never centers or escapes its top-left corner position. */
 .proj-text-zone:has(.proj-meta.flip-vertical),
 .proj-text-zone:has(.proj-meta.flip-horizontal) {
   max-width: 100%;
-  width: 100%;
-  height: 100%;
-  inset: 0;
-  display: flex;
+  width: auto;
+  height: auto;
 }
 
 .proj-id {
@@ -328,15 +355,14 @@ html, body {
    Centered both ways so it never hides against the cell edges. */
 .proj-meta.flip-vertical {
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   gap: 6px;
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
   max-height: 100%;
   margin-top: 0;
-  position: absolute;
-  inset: 0;
+  position: relative;
 }
 .proj-meta.flip-vertical .proj-id,
 .proj-meta.flip-vertical .proj-title,
@@ -355,21 +381,20 @@ html, body {
    horizontal and readable as normal; only positioning changes. */
 .proj-meta.flip-horizontal {
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
-  height: 100%;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+  width: auto;
+  height: auto;
   margin-top: 0;
-  position: absolute;
-  inset: 0;
+  position: relative;
   gap: 2px;
 }
 .proj-meta.flip-horizontal .proj-id,
 .proj-meta.flip-horizontal .proj-title,
 .proj-meta.flip-horizontal .proj-subtitle {
   margin: 0;
-  text-align: center;
+  text-align: left;
 }
 /* When the cell is extremely squat, only the title has guaranteed room —
    id and subtitle are dropped rather than overflowing/clipping invisibly */
@@ -824,6 +849,15 @@ html, body {
   .cell-project .proj-desc { display: block !important; }
   .cell-project .proj-tags { display: flex !important; }
 
+  /* Mobile cells stack full-width — treat the image area as a simple grid */
+  .proj-image-grid { position: relative !important; height: 140px !important; }
+  .proj-image-grid.layout-row,
+  .proj-image-grid.layout-col {
+    grid-auto-flow: row !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-rows: repeat(2, 1fr) !important;
+  }
+
   .expand-layer { position: static !important; opacity: 1 !important; pointer-events: auto !important; }
   .cell.cell-expanded { /* expanded state is meaningless in stacked mobile layout */ }
   .expand-close { display: none; }
@@ -1108,11 +1142,19 @@ function wrapLetters(text) {
 function observeAspect(el) {
   const meta = el.querySelector('.proj-meta');
   if (!meta) return;
+  const imgGrid = el.querySelector('.proj-image-grid');
 
   // EXTREME_RATIO: only flip/center when the cell is genuinely a sliver —
   // not just "taller than wide" or "wider than tall", but dramatically so.
   const EXTREME_TALL_RATIO = 0.38;   // width/height below this → vertical flip
   const EXTREME_WIDE_RATIO = 2.6;    // width/height above this → horizontal centering (mirror case)
+
+  // Thresholds for the IMAGE layout (separate from the text-flip thresholds
+  // above — images should respond to shape much sooner / more gently than
+  // the extreme letter-rotation system, which only kicks in for slivers).
+  const ROW_RATIO = 1.35;  // wider than this → lay images out in a single row
+  const COL_RATIO = 0.74;  // narrower than this → lay images out in a column
+  // Between COL_RATIO and ROW_RATIO → balanced grid (cell is roughly square)
 
   const ro = new ResizeObserver(entries => {
     for (const entry of entries) {
@@ -1128,6 +1170,18 @@ function observeAspect(el) {
       // Below this height, even a single scaled-down line risks clipping
       // three stacked lines — drop id/subtitle and keep only the title.
       meta.classList.toggle('ultra-squat', isExtremeWide && height < 70);
+
+      // ---- IMAGE LAYOUT: pick row / column / grid based on live shape ----
+      if (imgGrid) {
+        imgGrid.classList.remove('layout-row', 'layout-col', 'layout-grid');
+        if (ratio > ROW_RATIO) {
+          imgGrid.classList.add('layout-row');
+        } else if (ratio < COL_RATIO) {
+          imgGrid.classList.add('layout-col');
+        } else {
+          imgGrid.classList.add('layout-grid');
+        }
+      }
 
       // Scale typography to the limiting dimension so text always fits.
       // Extreme-TALL cells are constrained by height (narrow width).
@@ -1229,7 +1283,7 @@ function renderCell(el, cell, colFib, rowFib, figNum, asgn) {
     `).join('');
 
     el.innerHTML += `
-      <div class="proj-image-grid">${gridImgsHtml}</div>
+      <div class="proj-image-grid layout-grid">${gridImgsHtml}</div>
       <div class="proj-text-zone">
         <div class="proj-meta">
           <div class="proj-id">${wrapLetters(p.id + ' · ' + p.year)}</div>
