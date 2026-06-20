@@ -645,62 +645,104 @@ html, body {
 .expand-gallery::-webkit-scrollbar { width: 3px; }
 .expand-gallery::-webkit-scrollbar-thumb { background: rgba(26,22,18,0.2); }
 
-/* Each row: a large image (≥75% of the cell's width) with its Fig./caption
-   sitting directly beneath it — not a small thumbnail with text crammed
-   to the side. This is the dominant visual unit of the expanded view. */
-.gallery-row {
+/* ---- LIGHTBOX GALLERY ---- */
+/* A large hero image fills most of the cell, with its Fig./caption shown
+   as a small overlay label in its corner (matching the plate's own
+   Fig. N convention used elsewhere). Below it, a row of six thumbnail
+   strips lets you switch which image is active — clicking a thumbnail
+   swaps the hero with a quick crossfade. */
+.expand-gallery {
   display: flex;
-  flex-direction: row;
-  gap: 18px;
-  align-items: center;
-  flex-shrink: 0;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
 }
-/* Odd rows (1st, 3rd, 5th...): image on the left, paragraph on the right */
-.gallery-row:nth-child(odd) {
-  flex-direction: row;
-}
-/* Even rows (2nd, 4th, 6th...): image on the right, paragraph on the left
-   — the image and text simply swap sides via row-reverse */
-.gallery-row:nth-child(even) {
-  flex-direction: row-reverse;
-}
-.gallery-row:nth-child(even) .gallery-row-text {
-  text-align: right;
-}
-.gallery-row-img {
-  width: 55%;
-  max-width: 460px;
-  aspect-ratio: 3 / 2;
-  flex-shrink: 0;
+
+.lightbox-hero {
+  position: relative;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: hidden;
   border: 0.5px solid rgba(26,22,18,0.25);
   background: #f5f5f5;
 }
-.gallery-row-img img {
+.lightbox-hero img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.lightbox-hero img.active {
+  opacity: 1;
+}
+
+.lightbox-caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 10px 12px 8px;
+  background: linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.6) 60%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+.lightbox-fig {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-style: italic;
+  opacity: 0.5;
+  margin-bottom: 3px;
+}
+.lightbox-text {
+  font-size: clamp(8.5px, 1vw, 11px);
+  font-style: italic;
+  line-height: 1.5;
+  opacity: 0.75;
+  max-width: 42ch;
+}
+
+.lightbox-filmstrip {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  width: 100%;
+}
+.lightbox-thumb {
+  flex: 1;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  cursor: pointer;
+  border: 0.5px solid rgba(26,22,18,0.2);
+  opacity: 0.45;
+  transition: opacity 0.25s ease, border-color 0.25s ease;
+  position: relative;
+}
+.lightbox-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-.gallery-row-text {
-  flex: 1;
-  min-width: 0;
-  padding-top: 0;
+.lightbox-thumb:hover { opacity: 0.75; }
+.lightbox-thumb.active {
+  opacity: 1;
+  border-color: #1a1612;
 }
-.gallery-fig {
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+.lightbox-thumb-num {
+  position: absolute;
+  top: 2px; left: 3px;
+  font-size: 7px;
   font-style: italic;
-  opacity: 0.45;
-  margin-bottom: 4px;
-}
-.gallery-caption {
-  font-size: clamp(9px, 1.1vw, 12px);
-  font-style: italic;
-  line-height: 1.65;
-  opacity: 0.7;
+  color: #fff;
+  text-shadow: 0 0 3px rgba(0,0,0,0.8);
+  pointer-events: none;
 }
 
 .expand-tags {
@@ -1157,18 +1199,26 @@ function renderCell(el, cell, colFib, rowFib, figNum, asgn) {
     const p = cell.data;
     const tagsHtml = p.tags.map(t => `<span class="proj-tag">${t}</span>`).join('');
 
-    // Build the gallery rows for the expanded view — one row per image,
-    // each labeled Fig. N with accompanying caption text beside it.
-    const galleryRows = p.images.map((img, i) => `
-      <div class="gallery-row">
-        <div class="gallery-row-img">
-          <img src="${img.src}" alt="${p.title} — Fig. ${i + 1}"
-               onerror="this.onerror=null;this.src='${img.fallback}'">
-        </div>
-        <div class="gallery-row-text">
-          <div class="gallery-fig">Fig. ${i + 1}</div>
-          <div class="gallery-caption">${i === 0 ? p.fullDesc : (p.subtitle + ' — ' + p.title + ', detail ' + (i + 1) + '.')}</div>
-        </div>
+    // Captions per image — image 1 uses the full project description,
+    // the rest get a generated detail caption.
+    const captions = p.images.map((img, i) =>
+      i === 0 ? p.fullDesc : (p.subtitle + ' — ' + p.title + ', detail ' + (i + 1) + '.')
+    );
+
+    // Hero images — all six stacked in the same box, only the active one
+    // visible (opacity-crossfaded), so swapping is instant and smooth.
+    const heroImgs = p.images.map((img, i) => `
+      <img src="${img.src}" alt="${p.title} — Fig. ${i + 1}"
+           class="${i === 0 ? 'active' : ''}" data-idx="${i}"
+           onerror="this.onerror=null;this.src='${img.fallback}'">
+    `).join('');
+
+    // Thumbnail filmstrip — click to switch the active hero image
+    const thumbs = p.images.map((img, i) => `
+      <div class="lightbox-thumb ${i === 0 ? 'active' : ''}" data-idx="${i}">
+        <span class="lightbox-thumb-num">${i + 1}</span>
+        <img src="${img.src}" alt="Fig. ${i + 1} thumbnail"
+             onerror="this.onerror=null;this.src='${img.fallback}'">
       </div>
     `).join('');
 
@@ -1190,7 +1240,16 @@ function renderCell(el, cell, colFib, rowFib, figNum, asgn) {
         <div class="expand-title">${p.title}</div>
         <div class="expand-subtitle">${p.subtitle}</div>
         <div class="expand-rule"></div>
-        <div class="expand-gallery">${galleryRows}</div>
+        <div class="expand-gallery">
+          <div class="lightbox-hero">
+            ${heroImgs}
+            <div class="lightbox-caption">
+              <div class="lightbox-fig">Fig. 1</div>
+              <div class="lightbox-text">${captions[0]}</div>
+            </div>
+          </div>
+          <div class="lightbox-filmstrip">${thumbs}</div>
+        </div>
         <div class="expand-tags">${tagsHtml}</div>
       </div>
     `;
@@ -1203,6 +1262,28 @@ function renderCell(el, cell, colFib, rowFib, figNum, asgn) {
       e.stopPropagation();
       collapseCell();
     });
+
+    // Thumbnail click → swap active hero image + caption
+    const heroEl = el.querySelector('.lightbox-hero');
+    const captionFigEl = el.querySelector('.lightbox-fig');
+    const captionTextEl = el.querySelector('.lightbox-text');
+    el.querySelectorAll('.lightbox-thumb').forEach(thumb => {
+      thumb.addEventListener('click', e => {
+        e.stopPropagation();
+        const idx = parseInt(thumb.dataset.idx, 10);
+
+        el.querySelectorAll('.lightbox-thumb').forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+
+        heroEl.querySelectorAll('img').forEach(img => {
+          img.classList.toggle('active', parseInt(img.dataset.idx, 10) === idx);
+        });
+
+        captionFigEl.textContent = `Fig. ${idx + 1}`;
+        captionTextEl.textContent = captions[idx];
+      });
+    });
+
     observeAspect(el);
   }
 
