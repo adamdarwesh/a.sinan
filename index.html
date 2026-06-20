@@ -201,33 +201,41 @@ html, body {
 }
 .cell-project > * { position: relative; z-index: 2; }
 
-/* ---- HOVER HERO IMAGE ---- */
-/* Shows project image #1 on hover, fading in beneath the text content.
-   Sits above the corner dimension label and fib-arc but below the title
-   text, so the cell remains fully readable while previewing the image. */
-.proj-hover-hero {
+/* ---- ALWAYS-VISIBLE IMAGE GRID ---- */
+/* All 6 project images are shown at all times, arranged in a responsive
+   grid that fills the cell behind the text. As the cell shrinks (cursor
+   moves away, category mode compresses it, etc.) the grid scales down
+   proportionally — same arrangement, smaller tiles — rather than hiding.
+   Title/ID/subtitle stay pinned to the top-left via proj-meta's own
+   absolute positioning below, sitting above this grid at all times. */
+.proj-image-grid {
   position: absolute;
   inset: 0;
   z-index: 1;
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  pointer-events: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1px;
   overflow: hidden;
 }
-.proj-hover-hero img {
+.proj-image-grid .grid-img {
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+}
+.proj-image-grid .grid-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-.cell-project:hover .proj-hover-hero { opacity: 1; }
-/* Darken the image slightly + add a light scrim so text stays legible
-   over it once it fades in */
-.proj-hover-hero::after {
+/* Light scrim so the top-left text stays legible over the image grid */
+.proj-image-grid::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.35) 55%, rgba(255,255,255,0.05) 100%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.55) 30%, rgba(255,255,255,0.15) 60%, rgba(255,255,255,0.05) 100%);
+  pointer-events: none;
 }
 
 .proj-id {
@@ -364,6 +372,8 @@ html, body {
   flex-wrap: wrap;
   gap: 3px;
   margin-top: 6px;
+  position: relative;
+  z-index: 3;
 }
 .proj-tag {
   font-size: 7px;
@@ -377,9 +387,10 @@ html, body {
   font-size: clamp(8px, 0.9vw, 10px);
   font-style: italic;
   line-height: 1.65;
-  opacity: 0.55;
+  opacity: 0.7;
   margin-bottom: 8px;
-  display: none;
+  position: relative;
+  z-index: 3;
 }
 
 /* ---- CELL TYPE: CATEGORY HEADER ---- */
@@ -1164,11 +1175,19 @@ function renderCell(el, cell, colFib, rowFib, figNum, asgn) {
       </div>
     `).join('');
 
-    el.innerHTML += `
-      <div class="proj-hover-hero">
-        <img src="${p.images[0].src}" alt="${p.title}"
-             onerror="this.onerror=null;this.src='${p.images[0].fallback}'">
+    // Always-visible image grid — all 6 images shown at once, arranged in
+    // a 3×2 grid that fills the cell behind the text. Scales down with
+    // the cell (same arrangement, smaller tiles) rather than appearing
+    // only on hover. Title/desc/tags sit above it via z-index.
+    const gridImgsHtml = p.images.map((img, i) => `
+      <div class="grid-img">
+        <img src="${img.src}" alt="${p.title} — Fig. ${i + 1}"
+             onerror="this.onerror=null;this.src='${img.fallback}'">
       </div>
+    `).join('');
+
+    el.innerHTML += `
+      <div class="proj-image-grid">${gridImgsHtml}</div>
       <div class="proj-meta">
         <div class="proj-id">${wrapLetters(p.id + ' · ' + p.year)}</div>
         <div class="proj-title">${wrapLetters(p.title)}</div>
