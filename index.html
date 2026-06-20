@@ -635,23 +635,42 @@ html, body {
 .expand-gallery {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 22px;
   flex: 1 1 auto;
   overflow-y: auto;
   max-height: 100%;
   padding-right: 4px;
+  width: 100%;
 }
-.expand-gallery::-webkit-scrollbar { width: 2px; }
+.expand-gallery::-webkit-scrollbar { width: 3px; }
 .expand-gallery::-webkit-scrollbar-thumb { background: rgba(26,22,18,0.2); }
 
+/* Each row: a large image (≥75% of the cell's width) with its Fig./caption
+   sitting directly beneath it — not a small thumbnail with text crammed
+   to the side. This is the dominant visual unit of the expanded view. */
 .gallery-row {
   display: flex;
-  gap: 12px;
-  align-items: flex-start;
+  flex-direction: row;
+  gap: 18px;
+  align-items: center;
   flex-shrink: 0;
+  width: 100%;
+}
+/* Odd rows (1st, 3rd, 5th...): image on the left, paragraph on the right */
+.gallery-row:nth-child(odd) {
+  flex-direction: row;
+}
+/* Even rows (2nd, 4th, 6th...): image on the right, paragraph on the left
+   — the image and text simply swap sides via row-reverse */
+.gallery-row:nth-child(even) {
+  flex-direction: row-reverse;
+}
+.gallery-row:nth-child(even) .gallery-row-text {
+  text-align: right;
 }
 .gallery-row-img {
-  width: clamp(64px, 14vw, 120px);
+  width: 55%;
+  max-width: 460px;
   aspect-ratio: 3 / 2;
   flex-shrink: 0;
   overflow: hidden;
@@ -667,20 +686,20 @@ html, body {
 .gallery-row-text {
   flex: 1;
   min-width: 0;
-  padding-top: 2px;
+  padding-top: 0;
 }
 .gallery-fig {
-  font-size: 8px;
+  font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-style: italic;
   opacity: 0.45;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 .gallery-caption {
-  font-size: clamp(8.5px, 1vw, 11px);
+  font-size: clamp(9px, 1.1vw, 12px);
   font-style: italic;
-  line-height: 1.6;
+  line-height: 1.65;
   opacity: 0.7;
 }
 
