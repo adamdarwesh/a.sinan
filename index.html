@@ -1001,7 +1001,7 @@ function projectMedia(slug, title, mediaExts) {
     const i = idx + 1;
     const isVideo = VIDEO_EXTS.includes(ext.toLowerCase());
     return {
-      src: `media/${slug}_${i}.${ext}`,
+      src: `images/${slug}_${i}.${ext}`,
       type: isVideo ? 'video' : 'image',
       fallback: localPlaceholder(title, i)
     };
