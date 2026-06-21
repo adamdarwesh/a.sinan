@@ -946,17 +946,18 @@ html.color-reversed #color-toggle {
 </div>
 
 <script>
-// ---- VIDEO FALLBACK HANDLER (global) ----
-// A video failed to load (file missing/wrong format) — swap it for the
-// placeholder image. Just one fallback, no extension probing: the exact
-// file path was already declared correctly via mediaExts, so a failure
-// here means the file genuinely isn't there yet, not a guessing game.
-window.__videoFallback = function(el, fallback) {
-  const img = document.createElement('img');
-  img.className = el.className;
-  img.src = fallback;
-  img.style.cssText = el.style.cssText;
-  el.replaceWith(img);
+// ---- MEDIA MISSING HANDLER (global) ----
+// A declared file failed to load (genuinely missing/wrong path). Per
+// requirements: never show a placeholder, blank box, or empty tile for
+// it — remove the element and its wrapping tile from the page entirely,
+// so only media that actually exists and loads is ever displayed.
+window.__mediaMissing = function(el) {
+  // .grid-img (mosaic tiles) and .plate-image (gallery plates) are the
+  // two wrapper types this can appear inside — remove whichever wrapper
+  // exists so no empty gap or box is left behind. If there's no such
+  // wrapper (shouldn't normally happen), just remove the element itself.
+  const wrapper = el.closest('.grid-img, .plate-image');
+  (wrapper || el).remove();
 };
 
 // ---- FIBONACCI ----
@@ -995,61 +996,43 @@ const PROJECTS = [
 // approach (which costs up to 7 failed network requests per missing
 // file — slow, especially across ~16 projects × several slots each),
 // this declares the EXACT extension for each slot up front, so the
-// browser only ever makes ONE request per item: either it succeeds, or
-// it fails once and shows the placeholder. No guessing, no waterfall.
+// browser only ever makes ONE request per item.
 //
 // To add media to a project: list the extensions in order in `mediaExts`
 // on that project's entry, e.g. mediaExts: ['jpg','jpg','mp4','png'] —
-// slot 1 is a jpg, slot 2 a jpg, slot 3 a video, slot 4 a png. If a
-// project doesn't specify `mediaExts`, it defaults to 6 slots all
-// assumed to be .jpg (matching the original convention).
+// slot 1 is a jpg, slot 2 a jpg, slot 3 a video, slot 4 a png.
+//
+// If a project doesn't specify `mediaExts` at all, NOTHING is requested
+// for it — no default 6-slot guess, no phantom files. Only declared
+// slots are ever attempted, and any slot that fails to load (file
+// genuinely missing) removes itself from the page entirely: no
+// placeholder graphic, no blank box, no empty gap. Only media that
+// actually exists and loads successfully is ever shown.
 const VIDEO_EXTS = ['mp4', 'webm', 'mov'];
-const DEFAULT_MEDIA_EXTS = ['jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg'];
 
 function projectMedia(slug, title, mediaExts) {
-  const exts = mediaExts || DEFAULT_MEDIA_EXTS;
-  return exts.map((ext, idx) => {
+  if (!mediaExts || mediaExts.length === 0) return [];
+  return mediaExts.map((ext, idx) => {
     const i = idx + 1;
     const isVideo = VIDEO_EXTS.includes(ext.toLowerCase());
     return {
       src: `images/${slug}_${i}.${ext}`,
       type: isVideo ? 'video' : 'image',
-      fallback: localPlaceholder(title, i)
     };
   });
 }
 PROJECTS.forEach(p => { p.images = projectMedia(p.slug, p.title, p.mediaExts); });
 
-// ---- LOCAL PLACEHOLDER (no network request) ----
-// Generates a placeholder entirely in-browser as an SVG data URI — this
-// is what was actually causing "takes ages, nothing shows": the previous
-// version fell back to placehold.co, an EXTERNAL service, for every
-// single missing file. With no real media files present yet, that meant
-// ~96 outbound network requests to a third-party API on every page
-// load. A local data URI renders instantly with zero network cost,
-// regardless of how many placeholders are needed.
-function localPlaceholder(title, num) {
-  const label = `${title} ${num}`.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
-    <rect width="600" height="400" fill="#f5f5f5"/>
-    <text x="300" y="200" font-family="serif" font-size="20" fill="#999"
-          text-anchor="middle" dominant-baseline="middle">${label}</text>
-  </svg>`;
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
-}
-
 // ---- MEDIA ELEMENT BUILDER ----
-// One request per item — no extension probing. Images fall back to the
-// placeholder directly on error; videos fall back via an error listener
-// that swaps the element to the placeholder image.
+// One request per item. If a file fails to load, the element (and its
+// wrapping tile) removes itself from the DOM outright — no placeholder
+// is ever shown. Only media that successfully loads is displayed.
 function renderMediaTag(item, altText, extraAttrs) {
-  const fallback = item.fallback;
-
   if (item.type === 'video') {
     return `
       <video ${extraAttrs || ''} autoplay muted loop playsinline
              src="${item.src}"
-             onerror="window.__videoFallback(this, '${fallback}')">
+             onerror="window.__mediaMissing(this)">
       </video>
     `;
   }
@@ -1057,7 +1040,7 @@ function renderMediaTag(item, altText, extraAttrs) {
   return `
     <img ${extraAttrs || ''} alt="${altText}"
          src="${item.src}"
-         onerror="this.onerror=null;this.src='${fallback}'">
+         onerror="window.__mediaMissing(this)">
   `;
 }
 
