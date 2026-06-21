@@ -27,7 +27,9 @@ html.color-reversed {
   filter: invert(1) hue-rotate(180deg);
 }
 html.color-reversed img,
-html.color-reversed .plate-image img {
+html.color-reversed video,
+html.color-reversed .plate-image img,
+html.color-reversed .plate-image video {
   filter: invert(1) hue-rotate(180deg);
 }
 
@@ -299,15 +301,16 @@ html.color-reversed #color-toggle {
   align-items: flex-start;
   justify-content: center;
 }
-.proj-image-grid .grid-img img {
+.proj-image-grid .grid-img img,
+.proj-image-grid .grid-img video {
   width: 100%;
   height: auto;
   display: block;
-  /* No cropping — each image keeps its true natural aspect ratio.
+  /* No cropping — each item keeps its true natural aspect ratio.
      Because the grid rows are now auto-sized to content (not stretched
      1fr tracks), there's no leftover empty space within a row for a
-     differently-shaped image to "float" in — rows simply pack tightly
-     against each other based on actual rendered image heights. */
+     differently-shaped item to "float" in — rows simply pack tightly
+     against each other based on actual rendered heights. */
 }
 
 /* Reserved text zone: a solid white patch behind the title block only —
@@ -758,7 +761,8 @@ html.color-reversed #color-toggle {
   display: flex;
   justify-content: center;
 }
-.plate-image img {
+.plate-image img,
+.plate-image video {
   display: block;
   width: auto;
   height: auto;
@@ -931,6 +935,19 @@ html.color-reversed #color-toggle {
 </div>
 
 <script>
+// ---- VIDEO FALLBACK HANDLER (global) ----
+// A video failed to load (file missing/wrong format) — swap it for the
+// placeholder image. Just one fallback, no extension probing: the exact
+// file path was already declared correctly via mediaExts, so a failure
+// here means the file genuinely isn't there yet, not a guessing game.
+window.__videoFallback = function(el, fallback) {
+  const img = document.createElement('img');
+  img.className = el.className;
+  img.src = fallback;
+  img.style.cssText = el.style.cssText;
+  el.replaceWith(img);
+};
+
 // ---- FIBONACCI ----
 const FIB = [1,1,2,3,5,8,13,21,34,55,89,144];
 
@@ -954,7 +971,7 @@ const PROJECTS = [
   { id:'08', slug:'soft_unsealing', title:'Soft Unsealing', subtitle:'IABR11 Rotterdam', year:'2024', cat:'art', tags:['Collective Practice','Installation'], desc:'Exploring softening urban boundaries — an installation at the International Architecture Biennale Rotterdam.', fullDesc:'Exploring softening boundaries in urban contexts. Installation at IABR11 Rotterdam, 2024.' },
   { id:'09', slug:'old_airfield', title:'Old Airfield', subtitle:'Chicago Architecture Biennial', year:'Ongoing', cat:'art', tags:['Collective Practice','Installation'], desc:'Acoustic mirror as cultural gateway — exploring sound, spatial memory, and contested sites.', fullDesc:'Acoustic mirror cultural gateway exploring sound and spatial memory at abandoned airfields. Ongoing project for the Chicago Architecture Biennial.' },
   { id:'10', slug:'enkidu', title:'Enkidu', subtitle:'Vernacular Revival', year:'In Dev', cat:'architecture', tags:['Vernacular','Ecological'], desc:'Reviving vernacular Palestinian architecture in Dier Ghassaneh through material continuity.', fullDesc:'Reviving vernacular Palestinian architecture in Dier Ghassaneh — stone, mud, and memory.' },
-  { id:'11', slug:'aura', title:'Aura', subtitle:'Folly Project', year:'2022', cat:'art', tags:['Installation','Speculative'], desc:'Exploring atmospheric qualities of architectural space through a small speculative folly.', fullDesc:'Exploring atmospheric qualities of architectural space. A speculative folly engaging with the phenomenology of light and air.' },
+  { id:'11', slug:'aura', title:'Aura', subtitle:'Folly Project', year:'2022', cat:'art', tags:['Installation','Speculative'], desc:'Exploring atmospheric qualities of architectural space through a small speculative folly.', fullDesc:'Exploring atmospheric qualities of architectural space. A speculative folly engaging with the phenomenology of light and air.', mediaExts:['jpg','jpg','jpg','mp4','jpg','jpg','jpg','png','jpg'] },
   { id:'12', slug:'liberation_fronts', title:'Liberation Fronts', subtitle:'Diploma Thesis', year:'2024', cat:'research', tags:['Political','Speculative'], desc:'Exploring liberation fronts as spatial and political constructs — diploma thesis at Die Angewandte.', fullDesc:'Exploring liberation fronts as spatial and political constructs. Diploma thesis, Die Angewandte, Vienna, 2024.' },
   { id:'13', slug:'regutting', title:'Regutting', subtitle:'Wonder Cabinet', year:'2025', cat:'art', tags:['Residency','Installation'], desc:'Returns and remains — film, photography, and installation exploring sites of departure and arrival.', fullDesc:'Returns and remains through film, photography, and installation. Wonder Cabinet residency, 2025.' },
   { id:'14', slug:'agential_cartographies', title:'Agential Cartographies', subtitle:'Dar Jacir', year:'2025', cat:'research', tags:['Exhibition','Political'], desc:'Experimental mappings across three spatial typologies — Palestine as territory of contested spatial knowledge.', fullDesc:'Experimental mappings across three spatial typologies. Exhibition at Dar Jacir, Palestine, 2025.' },
@@ -962,20 +979,58 @@ const PROJECTS = [
   { id:'16', slug:'teaching_aaup', title:'Teaching at AAUP', subtitle:'Arab American University', year:'2025+', cat:'education', tags:['Pedagogy','Vernacular'], desc:'Faculty member at the Faculty of Architecture, AAUP, Palestine — teaching design studio and theory.', fullDesc:'Faculty member at the Faculty of Architecture, Arab American University, Palestine. Teaching design studio and architectural theory.' }
 ];
 
-// Each project has 6 images, following the original convention:
-// images/{slug}_1.jpg ... images/{slug}_6.jpg, with a placeholder fallback
-// if the actual file isn't present in this environment.
-function projectImages(slug, title) {
-  const imgs = [];
-  for (let i = 1; i <= 6; i++) {
-    imgs.push({
-      src: `images/${slug}_${i}.jpg`,
+// ---- MEDIA SYSTEM: images AND videos, any count per project ----
+// Convention: media/{slug}_{n}.{ext}. Unlike a "try every extension"
+// approach (which costs up to 7 failed network requests per missing
+// file — slow, especially across ~16 projects × several slots each),
+// this declares the EXACT extension for each slot up front, so the
+// browser only ever makes ONE request per item: either it succeeds, or
+// it fails once and shows the placeholder. No guessing, no waterfall.
+//
+// To add media to a project: list the extensions in order in `mediaExts`
+// on that project's entry, e.g. mediaExts: ['jpg','jpg','mp4','png'] —
+// slot 1 is a jpg, slot 2 a jpg, slot 3 a video, slot 4 a png. If a
+// project doesn't specify `mediaExts`, it defaults to 6 slots all
+// assumed to be .jpg (matching the original convention).
+const VIDEO_EXTS = ['mp4', 'webm', 'mov'];
+const DEFAULT_MEDIA_EXTS = ['jpg', 'jpg', 'jpg', 'jpg', 'jpg', 'jpg'];
+
+function projectMedia(slug, title, mediaExts) {
+  const exts = mediaExts || DEFAULT_MEDIA_EXTS;
+  return exts.map((ext, idx) => {
+    const i = idx + 1;
+    const isVideo = VIDEO_EXTS.includes(ext.toLowerCase());
+    return {
+      src: `media/${slug}_${i}.${ext}`,
+      type: isVideo ? 'video' : 'image',
       fallback: `https://placehold.co/600x400/f5f5f5/999?text=${encodeURIComponent(title)}+${i}`
-    });
-  }
-  return imgs;
+    };
+  });
 }
-PROJECTS.forEach(p => { p.images = projectImages(p.slug, p.title); });
+PROJECTS.forEach(p => { p.images = projectMedia(p.slug, p.title, p.mediaExts); });
+
+// ---- MEDIA ELEMENT BUILDER ----
+// One request per item — no extension probing. Images fall back to the
+// placeholder directly on error; videos fall back via an error listener
+// that swaps the element to the placeholder image.
+function renderMediaTag(item, altText, extraAttrs) {
+  const fallback = item.fallback;
+
+  if (item.type === 'video') {
+    return `
+      <video ${extraAttrs || ''} autoplay muted loop playsinline
+             src="${item.src}"
+             onerror="window.__videoFallback(this, '${fallback}')">
+      </video>
+    `;
+  }
+
+  return `
+    <img ${extraAttrs || ''} alt="${altText}"
+         src="${item.src}"
+         onerror="this.onerror=null;this.src='${fallback}'">
+  `;
+}
 
 
 
@@ -1285,21 +1340,19 @@ function renderCell(el, cell, colFib, rowFib, figNum, asgn) {
     const p = cell.data;
     const tagsHtml = p.tags.map(t => `<span class="proj-tag">${t}</span>`).join('');
 
-    // Captions per image — image 1 uses the full project description,
+    // Captions per item — item 1 uses the full project description,
     // the rest get a generated detail caption.
     const captions = p.images.map((img, i) =>
       i === 0 ? p.fullDesc : (p.subtitle + ' — ' + p.title + ', detail ' + (i + 1) + '.')
     );
 
-    // Full-bleed stacked plates — each image at full width in sequence,
-    // its own Fig. N + caption overlaid in the corner. No thumbnails,
-    // no side text — just one large plate after another, like flipping
-    // through pages of a publication.
-    const platesHtml = p.images.map((img, i) => `
+    // Full-bleed stacked plates — each item (image OR video) at full
+    // width in sequence, its own Fig. N + caption overlaid in the
+    // corner. No thumbnails, no side text — just one large plate after
+    // another, like flipping through pages of a publication.
+    const platesHtml = p.images.map((item, i) => `
       <div class="plate-image">
-        <img src="${img.src}" alt="${p.title} — Fig. ${i + 1}"
-             loading="lazy" decoding="async"
-             onerror="this.onerror=null;this.src='${img.fallback}'">
+        ${renderMediaTag(item, `${p.title} — Fig. ${i + 1}`, 'loading="lazy" decoding="async"')}
         <div class="plate-caption">
           <div class="plate-fig">Fig. ${i + 1}</div>
           <div class="plate-text">${captions[i]}</div>
@@ -1307,15 +1360,13 @@ function renderCell(el, cell, colFib, rowFib, figNum, asgn) {
       </div>
     `).join('');
 
-    // Always-visible image grid — all 6 images shown at once, arranged in
-    // a 3×2 grid that fills the cell behind the text. Scales down with
-    // the cell (same arrangement, smaller tiles) rather than appearing
-    // only on hover. Title/desc/tags sit above it via z-index.
-    const gridImgsHtml = p.images.map((img, i) => `
+    // Always-visible media grid — every item (image or video) shown at
+    // once, arranged responsively (row/column/grid based on cell shape).
+    // Scales down with the cell rather than appearing only on hover.
+    // Title/desc/tags sit above it via z-index.
+    const gridImgsHtml = p.images.map((item, i) => `
       <div class="grid-img">
-        <img src="${img.src}" alt="${p.title} — Fig. ${i + 1}"
-             loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async"
-             onerror="this.onerror=null;this.src='${img.fallback}'">
+        ${renderMediaTag(item, `${p.title} — Fig. ${i + 1}`, `loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async"`)}
       </div>
     `).join('');
 
