@@ -17,6 +17,53 @@ html, body {
   color: #1a1612;
 }
 
+/* ---- COLOR REVERSE (DARK MODE) ---- */
+/* Inverts the entire page in one stroke — white becomes black, black
+   becomes white, every other color flips sensibly too — without having
+   to override each of the ~20 individual hardcoded color values used
+   throughout the plate. Images get a counter-invert so photos still
+   display normally instead of looking like film negatives. */
+html.color-reversed {
+  filter: invert(1) hue-rotate(180deg);
+}
+html.color-reversed img,
+html.color-reversed .plate-image img {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+#color-toggle {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 2000;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #1a1612;
+  background: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.2s ease;
+}
+#color-toggle:hover { transform: scale(1.08); }
+#color-toggle::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #1a1612 50%, #ffffff 50%);
+  border: 1px solid #1a1612;
+}
+/* The button itself should NOT flip when reversed, or it becomes
+   invisible/contradictory — exclude it from the page-wide filter by
+   re-inverting it back to normal. */
+html.color-reversed #color-toggle {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 #page {
   position: fixed;
   inset: 0;
@@ -68,7 +115,7 @@ html, body {
 #plate-wrap {
   flex: 1;
   position: relative;
-  border: 0.5px solid #1a1612;
+  border: 1px solid #1a1612;
   min-height: 0;
   overflow: hidden;
 }
@@ -79,59 +126,24 @@ html, body {
   display: grid;
 }
 
-/* ---- PER-CELL FIBONACCI ARC ---- */
-/* Every cell gets its own small golden-spiral quarter-arc, drawn in a
-   corner and scaled to that cell's own live dimensions — not one global
-   decoration, but one quiet mark per square, tied directly to its size.
-   Drawn with a line-draw animation (stroke-dashoffset) so it appears to
-   trace itself in, and redrawn whenever the cell resizes so it always
-   matches the cell's current proportions. */
-.cell-fib-arc {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 4;
-  mix-blend-mode: multiply;
-  opacity: 0.22;
-}
-.cell-fib-arc path {
-  fill: none;
-  stroke: #1a1612;
-  stroke-width: 1;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.cell-fib-arc rect {
-  fill: none;
-  stroke: #1a1612;
-  stroke-width: 0.5;
-  opacity: 0.5;
-}
-.cell-category .cell-fib-arc path,
-.cell-category .cell-fib-arc rect {
-  stroke: #ffffff;
-}
-
 /* ---- CELLS ---- */
 .cell {
   position: relative;
-  border: 0.5px solid #1a1612;
+  border: 1px solid #1a1612;
   overflow: hidden;
   padding: 12px 14px 10px;
   display: flex;
   flex-direction: column;
   background: #ffffff;
   z-index: 1;
-  transition: border-width 0.3s ease;
+  transition: border-width 0.3s ease, border-color 0.3s ease;
 }
 
 /* Every line on the plate stays a consistent hairline weight (0.5px)
    EXCEPT the cell currently expanded (clicked open), which gets a
    visibly thicker border to mark it as the active/focused element. */
 .cell.cell-expanded {
-  border-width: 2px;
+  border-width: 3px;
 }
 
 .cell:hover { background: rgba(26,22,18,0.04); }
@@ -240,13 +252,21 @@ html, body {
    tiles in all three layouts. */
 .proj-image-grid {
   position: absolute;
-  inset: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   z-index: 1;
   display: grid;
   gap: 3px;
   overflow: hidden;
   padding: 3px;
   box-sizing: border-box;
+  /* Rows/columns size to their actual content (auto), not stretched 1fr
+     tracks — this is what was causing visible gaps: 1fr forced each row
+     to consume an equal SHARE of the full cell height regardless of
+     whether the image actually needed that much space. With auto sizing,
+     each row is exactly as tall as its content, so rows pack directly
+     against one another with only the deliberate 3px gap, never more. */
+  align-content: start;
+  justify-content: start;
 }
 .cell-expanded .proj-image-grid {
   display: none;
@@ -255,34 +275,39 @@ html, body {
 .proj-image-grid.layout-row {
   grid-auto-flow: column;
   grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: 1fr;
+  grid-template-rows: auto;
+  height: auto;
 }
 .proj-image-grid.layout-col {
   grid-auto-flow: row;
   grid-template-columns: 1fr;
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-rows: repeat(6, auto);
+  height: auto;
 }
 .proj-image-grid.layout-grid {
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto);
+  height: auto;
 }
 
 .proj-image-grid .grid-img {
   position: relative;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   min-width: 0;
   min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 .proj-image-grid .grid-img img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
+  width: 100%;
   height: auto;
-  object-fit: contain; /* never crop/squish — preserves each image's own ratio */
   display: block;
+  /* No cropping — each image keeps its true natural aspect ratio.
+     Because the grid rows are now auto-sized to content (not stretched
+     1fr tracks), there's no leftover empty space within a row for a
+     differently-shaped image to "float" in — rows simply pack tightly
+     against each other based on actual rendered image heights. */
 }
 
 /* Reserved text zone: a solid white patch behind the title block only —
@@ -803,7 +828,7 @@ html, body {
 
   #page { position: static; height: auto; min-height: 100vh; padding: 14px 14px 18px; }
 
-  #plate-wrap { overflow: visible; border-width: 0.5px; }
+  #plate-wrap { overflow: visible; border-width: 1px; }
 
   #grid {
     position: static !important;
@@ -888,6 +913,8 @@ html, body {
     <span class="credit-text">adam95darwesh@gmail.com</span>
   </div>
 </div>
+
+<button id="color-toggle" aria-label="Toggle color reverse" title="Reverse colors"></button>
 
 <!-- SLIDE-UP PANEL -->
 <div id="panel">
@@ -1144,67 +1171,77 @@ function observeAspect(el) {
   if (!meta) return;
   const imgGrid = el.querySelector('.proj-image-grid');
 
-  // EXTREME_RATIO: only flip/center when the cell is genuinely a sliver —
-  // not just "taller than wide" or "wider than tall", but dramatically so.
-  const EXTREME_TALL_RATIO = 0.38;   // width/height below this → vertical flip
-  const EXTREME_WIDE_RATIO = 2.6;    // width/height above this → horizontal centering (mirror case)
+  // Cache child elements ONCE — the previous version re-queried these on
+  // every single ResizeObserver callback (which fires extremely often
+  // while the grid's cursor-driven cells are continuously resizing),
+  // multiplying 16 project cells × multiple querySelectors × every frame
+  // into real, measurable jank.
+  const idEl    = meta.querySelector('.proj-id');
+  const titleEl = meta.querySelector('.proj-title');
+  const subEl   = meta.querySelector('.proj-subtitle');
 
-  // Thresholds for the IMAGE layout (separate from the text-flip thresholds
-  // above — images should respond to shape much sooner / more gently than
-  // the extreme letter-rotation system, which only kicks in for slivers).
-  const ROW_RATIO = 1.35;  // wider than this → lay images out in a single row
-  const COL_RATIO = 0.74;  // narrower than this → lay images out in a column
-  // Between COL_RATIO and ROW_RATIO → balanced grid (cell is roughly square)
+  const EXTREME_TALL_RATIO = 0.38;
+  const EXTREME_WIDE_RATIO = 2.6;
+  const ROW_RATIO = 1.35;
+  const COL_RATIO = 0.74;
+
+  // Track the last applied "bucket" so we skip ALL work (class toggles,
+  // style writes) when the cell's shape bucket hasn't actually changed —
+  // most resize notifications during the grid's smooth breathing are tiny
+  // sub-pixel-ratio steps that don't cross any threshold, so there's no
+  // visible difference to apply, only wasted DOM writes.
+  let lastBucket = null;
+  let lastScaleKey = null;
 
   const ro = new ResizeObserver(entries => {
-    for (const entry of entries) {
-      const { width, height } = entry.contentRect;
-      if (width < 4 || height < 4) continue;
+    const entry = entries[0]; // only one target per observer here
+    const { width, height } = entry.contentRect;
+    if (width < 4 || height < 4) return;
 
-      const ratio = width / height; // >1 = wide, <1 = tall
-      const isExtremeTall = ratio < EXTREME_TALL_RATIO;
-      const isExtremeWide = ratio > EXTREME_WIDE_RATIO;
+    const ratio = width / height;
+    const isExtremeTall = ratio < EXTREME_TALL_RATIO;
+    const isExtremeWide = ratio > EXTREME_WIDE_RATIO;
+    const isUltraSquat = isExtremeWide && height < 70;
+
+    const imgBucket = ratio > ROW_RATIO ? 'row' : (ratio < COL_RATIO ? 'col' : 'grid');
+    const bucket = `${isExtremeTall ? 1 : 0}${isExtremeWide ? 1 : 0}${isUltraSquat ? 1 : 0}${imgBucket}`;
+
+    if (bucket !== lastBucket) {
+      lastBucket = bucket;
 
       meta.classList.toggle('flip-vertical', isExtremeTall);
       meta.classList.toggle('flip-horizontal', isExtremeWide);
-      // Below this height, even a single scaled-down line risks clipping
-      // three stacked lines — drop id/subtitle and keep only the title.
-      meta.classList.toggle('ultra-squat', isExtremeWide && height < 70);
+      meta.classList.toggle('ultra-squat', isUltraSquat);
+      meta.style.gap = isExtremeTall ? '2px' : '0px';
 
-      // ---- IMAGE LAYOUT: pick row / column / grid based on live shape ----
       if (imgGrid) {
         imgGrid.classList.remove('layout-row', 'layout-col', 'layout-grid');
-        if (ratio > ROW_RATIO) {
-          imgGrid.classList.add('layout-row');
-        } else if (ratio < COL_RATIO) {
-          imgGrid.classList.add('layout-col');
-        } else {
-          imgGrid.classList.add('layout-grid');
-        }
+        imgGrid.classList.add(`layout-${imgBucket}`);
       }
+    }
 
-      // Scale typography to the limiting dimension so text always fits.
-      // Extreme-TALL cells are constrained by height (narrow width).
-      // Extreme-WIDE cells are ALSO constrained by height (short, squat) —
-      // width is abundant there, so using it as "limiting" was producing
-      // oversized text that overflowed the cell's small height and got
-      // clipped invisible. Only genuinely normal-ish cells use width.
-      const limiting = (isExtremeTall || isExtremeWide) ? height : width;
-      const scale = Math.max(0.55, Math.min(1.15, limiting / 260));
+    // Typography scale — quantize to avoid writing styles for visually
+    // identical sub-pixel scale changes (rounds to nearest 0.02 step).
+    const limiting = (isExtremeTall || isExtremeWide) ? height : width;
+    const rawScale = Math.max(0.55, Math.min(1.15, limiting / 260));
+    const scale = Math.round(rawScale * 50) / 50; // snap to 0.02 increments
+    const scaleKey = `${scale}|${isExtremeTall}`;
 
-      const idEl    = meta.querySelector('.proj-id');
-      const titleEl = meta.querySelector('.proj-title');
-      const subEl   = meta.querySelector('.proj-subtitle');
-
-      if (idEl)    idEl.style.fontSize    = `${(7.5 * scale).toFixed(2)}px`;
-      if (titleEl) titleEl.style.fontSize = `${(15 * scale).toFixed(2)}px`;
-      if (subEl)   subEl.style.fontSize   = `${(9 * scale).toFixed(2)}px`;
-
+    if (scaleKey !== lastScaleKey) {
+      lastScaleKey = scaleKey;
       const ls = Math.max(0.01, Math.min(0.12, 0.04 + (scale - 0.7) * 0.1));
-      if (idEl)    idEl.style.letterSpacing    = `${ls.toFixed(3)}em`;
-      if (titleEl) titleEl.style.letterSpacing = isExtremeTall ? `${(ls*0.5).toFixed(3)}em` : '0';
 
-      meta.style.gap = isExtremeTall ? '2px' : '0px';
+      if (idEl) {
+        idEl.style.fontSize = `${(7.5 * scale).toFixed(2)}px`;
+        idEl.style.letterSpacing = `${ls.toFixed(3)}em`;
+      }
+      if (titleEl) {
+        titleEl.style.fontSize = `${(15 * scale).toFixed(2)}px`;
+        titleEl.style.letterSpacing = isExtremeTall ? `${(ls * 0.5).toFixed(3)}em` : '0';
+      }
+      if (subEl) {
+        subEl.style.fontSize = `${(9 * scale).toFixed(2)}px`;
+      }
     }
   });
 
@@ -1579,217 +1616,13 @@ function buildGrid() {
     el.style.gridRow    = `${row} / span ${rs}`;
     renderCell(el, cell, 8, 8, fig++, [ci, col, row, cs, rs]);
     grid.appendChild(el);
-
-    // Each cell gets its own Fibonacci arc, drawn after layout settles
-    addCellFibArc(el);
   });
   // Measure rect after DOM settles
   requestAnimationFrame(() => {
     gridRect = grid.getBoundingClientRect();
     computeEdges();
-    refreshAllFibArcs(true); // true = animate the line-draw on first paint
   });
 }
-
-// ---- PER-CELL FIBONACCI ARC ----
-// Each cell gets its own small SVG containing a 2–3 step golden-rectangle
-// spiral fragment, scaled to that cell's own live width/height. The arc
-// is drawn corner-to-corner using a quarter-circle construction (the same
-// classic Fibonacci spiral geometry), sized so it always touches the
-// cell's actual edges — genuinely responsive to that cell's dimensions,
-// not a single decoration laid over the whole plate.
-
-// Track which corner + step-count each cell was randomly assigned, so
-// resizes redraw the SAME arc (just rescaled) rather than re-randomizing
-// every frame, which would look like flickering instead of smooth growth.
-const cellArcMeta = new WeakMap();
-
-function addCellFibArc(el) {
-  const svgNS = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(svgNS, 'svg');
-  svg.setAttribute('class', 'cell-fib-arc');
-  svg.setAttribute('preserveAspectRatio', 'none');
-
-  const path = document.createElementNS(svgNS, 'path');
-  svg.appendChild(path);
-
-  // Insert as the FIRST child so it sits beneath text via DOM order too
-  // (z-index already handles stacking, but this keeps source order sane)
-  el.insertBefore(svg, el.firstChild);
-
-  // Randomly assign which corner this cell's arc emanates from, and how
-  // many Fibonacci steps (2–4) it traces — picked once per cell per load.
-  const corners = ['tl', 'tr', 'bl', 'br'];
-  const corner = corners[Math.floor(Math.random() * corners.length)];
-  const steps = 2 + Math.floor(Math.random() * 3); // 2, 3, or 4 steps
-
-  cellArcMeta.set(el, { corner, steps, svg, path });
-}
-
-// Build the path `d` string for a corner-anchored Fibonacci spiral fragment
-// that fits exactly within a w × h box, using `steps` Fibonacci squares.
-function buildArcPath(w, h, corner, steps) {
-  if (w < 6 || h < 6) return '';
-
-  // ---- 1. SQUARE SIDES: true Fibonacci, each = sum of previous two ----
-  const sizes = [1, 1];
-  for (let i = 2; i < steps + 1; i++) {
-    sizes.push(sizes[i - 1] + sizes[i - 2]);
-  }
-
-  // ---- 2. SQUARE PLACEMENT (in UNSCALED unit-1 space first) ----
-  // Build the full layout at unit=1 so we can measure the TRUE bounding
-  // rectangle before scaling — the previous version scaled by the last
-  // square's side length alone, which is NOT the same as the bounding
-  // rectangle's largest dimension, causing the spiral to overflow the
-  // cell on one axis (the actual cause of the broken/scribbled look).
-  const squares = [];
-  squares.push({ x: 0, y: 0, s: sizes[0] });
-  squares.push({ x: sizes[0], y: 0, s: sizes[1] });
-
-  let rectX = 0, rectY = 0;
-  let rectW = sizes[0] + sizes[1];
-  let rectH = sizes[0];
-  let dir = 1; // 0=attach right, 1=attach below, 2=attach left, 3=attach above
-
-  for (let i = 2; i < sizes.length; i++) {
-    const s = sizes[i];
-    let nx, ny;
-
-    if (dir === 0) {
-      nx = rectX + rectW; ny = rectY;
-      rectW += s;
-    } else if (dir === 1) {
-      nx = rectX; ny = rectY + rectH;
-      rectH += s;
-    } else if (dir === 2) {
-      nx = rectX - s; ny = rectY;
-      rectX -= s; rectW += s;
-    } else {
-      nx = rectX; ny = rectY - s;
-      rectY -= s; rectH += s;
-    }
-
-    squares.push({ x: nx, y: ny, s });
-    dir = (dir + 1) % 4;
-  }
-
-  // ---- 3. SCALE: divide by the TRUE bounding rectangle's larger
-  // dimension (not the last square's side, which under-scales and
-  // causes overflow), then apply a margin so it fits cleanly in the cell.
-  const minDim = Math.min(w, h);
-  const trueMaxDim = Math.max(rectW, rectH);
-  const unit = (minDim * 0.92) / trueMaxDim;
-
-  squares.forEach(sq => {
-    sq.x *= unit; sq.y *= unit; sq.s *= unit;
-  });
-  rectX *= unit; rectY *= unit;
-
-  // ---- 3. NORMALIZE so the whole spiral sits within [0,0]..[rectW,rectH] ----
-  // rectX/rectY may have gone negative as the spiral grew outward in
-  // earlier steps — shift everything so the bounding box starts at (0,0).
-  const offX = -rectX, offY = -rectY;
-  squares.forEach(sq => { sq.x += offX; sq.y += offY; });
-
-  // ---- 4. CORNER FLIP: mirror the whole normalized spiral to emanate
-  // from whichever corner of the cell was assigned ----
-  const flips = {
-    tl: { fx: 1,  fy: 1  },
-    tr: { fx: -1, fy: 1  },
-    bl: { fx: 1,  fy: -1 },
-    br: { fx: -1, fy: -1 },
-  };
-  const { fx, fy } = flips[corner];
-  const originX = (fx === 1) ? 0 : w;
-  const originY = (fy === 1) ? 0 : h;
-
-  function map(lx, ly) {
-    return [originX + fx * lx, originY + fy * ly];
-  }
-
-  // A single-axis mirror reverses the curve's chirality — flip the SVG
-  // arc sweep flag to match, or the path breaks into disconnected jumps.
-  const mirrored = (fx === -1) !== (fy === -1);
-  const sweep = mirrored ? 0 : 1;
-
-  // ---- 5. TRACE THE ARC: one quarter-circle per square, radius = side ----
-  // Each square's arc starts exactly where the previous square's arc
-  // ended, guaranteeing a single continuous curve (this is the actual
-  // golden spiral, not a series of disconnected fragments).
-  let d = '';
-  squares.forEach((sq, i) => {
-    const r = sq.s;
-    const stepDir = i % 4;
-    let s0x, s0y, e0x, e0y;
-
-    // Each case traces a quarter circle whose two endpoints sit on
-    // adjacent corners of the square, consistent with that square's
-    // position in the 4-step rotational cycle.
-    if (stepDir === 0)      { s0x = sq.x;     s0y = sq.y + r; e0x = sq.x + r; e0y = sq.y;     }
-    else if (stepDir === 1) { s0x = sq.x;     s0y = sq.y;     e0x = sq.x + r; e0y = sq.y + r; }
-    else if (stepDir === 2) { s0x = sq.x + r; s0y = sq.y;     e0x = sq.x;     e0y = sq.y + r; }
-    else                     { s0x = sq.x + r; s0y = sq.y + r; e0x = sq.x;     e0y = sq.y;     }
-
-    const [sx, sy] = map(s0x, s0y);
-    const [ex, ey] = map(e0x, e0y);
-
-    if (i === 0) d += `M ${sx.toFixed(2)} ${sy.toFixed(2)} `;
-    d += `A ${r.toFixed(2)} ${r.toFixed(2)} 0 0 ${sweep} ${ex.toFixed(2)} ${ey.toFixed(2)} `;
-  });
-
-  return d.trim();
-}
-
-// Redraw one cell's arc to match its current live size
-function refreshCellFibArc(el, animate) {
-  const meta = cellArcMeta.get(el);
-  if (!meta) return;
-  const { svg, path, corner, steps } = meta;
-
-  const w = el.clientWidth, h = el.clientHeight;
-  if (w < 6 || h < 6) return;
-
-  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-
-  const d = buildArcPath(w, h, corner, steps);
-  if (!d) return;
-
-  path.setAttribute('d', d);
-
-  if (animate) {
-    // Line-draw-in effect: measure the path length, start fully hidden via
-    // dash offset, then transition it to 0 so it appears to trace itself.
-    requestAnimationFrame(() => {
-      try {
-        const len = path.getTotalLength();
-        path.style.transition = 'none';
-        path.style.strokeDasharray = `${len}`;
-        path.style.strokeDashoffset = `${len}`;
-        // Force reflow so the transition fires from the offset state
-        path.getBoundingClientRect();
-        path.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(0.4,0,0.2,1)';
-        path.style.strokeDashoffset = '0';
-      } catch (e) { /* getTotalLength can fail on zero-length paths */ }
-    });
-  }
-}
-
-// Refresh every cell's arc — called on layout build (animated) and on
-// resize/breathing (not animated, just keeps pace with the live size)
-let fibArcThrottle = 0;
-const FIB_ARC_EVERY = 3; // recompute every N dirty frames — arcs change
-                          // gently, no need to recompute on every single frame
-
-function refreshAllFibArcs(animate) {
-  document.querySelectorAll('.cell').forEach(el => {
-    refreshCellFibArc(el, animate);
-  });
-}
-
-window.addEventListener('resize', () => {
-  refreshAllFibArcs(false);
-});
 
 buildGrid();
 
@@ -1973,15 +1806,6 @@ function tick() {
     grid.style.gridTemplateColumns = colW.map(w => `${w.toFixed(4)}fr`).join(' ');
     grid.style.gridTemplateRows    = rowW.map(w => `${w.toFixed(4)}fr`).join(' ');
 
-    // Keep each cell's Fibonacci arc in sync with its live size as the
-    // grid breathes (cursor proximity, expand, category mode). Throttled
-    // so it recomputes every few frames rather than every single one.
-    fibArcThrottle++;
-    if (fibArcThrottle >= FIB_ARC_EVERY) {
-      fibArcThrottle = 0;
-      refreshAllFibArcs(false);
-    }
-
     // Show expand-layer content only when the cell is truly large
     if (expandedCell) {
       const [, eCol, eRow] = expandedAsgn;
@@ -2055,6 +1879,14 @@ function revealDescriptions() {
 
 tick();
 revealDescriptions();
+
+// ---- COLOR REVERSE TOGGLE ----
+const colorToggleBtn = document.getElementById('color-toggle');
+if (colorToggleBtn) {
+  colorToggleBtn.addEventListener('click', () => {
+    document.documentElement.classList.toggle('color-reversed');
+  });
+}
 </script>
 </body>
 </html>
