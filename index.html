@@ -1003,11 +1003,29 @@ function projectMedia(slug, title, mediaExts) {
     return {
       src: `media/${slug}_${i}.${ext}`,
       type: isVideo ? 'video' : 'image',
-      fallback: `https://placehold.co/600x400/f5f5f5/999?text=${encodeURIComponent(title)}+${i}`
+      fallback: localPlaceholder(title, i)
     };
   });
 }
 PROJECTS.forEach(p => { p.images = projectMedia(p.slug, p.title, p.mediaExts); });
+
+// ---- LOCAL PLACEHOLDER (no network request) ----
+// Generates a placeholder entirely in-browser as an SVG data URI — this
+// is what was actually causing "takes ages, nothing shows": the previous
+// version fell back to placehold.co, an EXTERNAL service, for every
+// single missing file. With no real media files present yet, that meant
+// ~96 outbound network requests to a third-party API on every page
+// load. A local data URI renders instantly with zero network cost,
+// regardless of how many placeholders are needed.
+function localPlaceholder(title, num) {
+  const label = `${title} ${num}`.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
+    <rect width="600" height="400" fill="#f5f5f5"/>
+    <text x="300" y="200" font-family="serif" font-size="20" fill="#999"
+          text-anchor="middle" dominant-baseline="middle">${label}</text>
+  </svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
 
 // ---- MEDIA ELEMENT BUILDER ----
 // One request per item — no extension probing. Images fall back to the
