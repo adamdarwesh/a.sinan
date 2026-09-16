@@ -117,35 +117,37 @@ html.color-reversed #color-toggle {
 #plate-wrap {
   flex: 1;
   position: relative;
-  border: 1px solid #1a1612;
+  border: none;
   min-height: 0;
   overflow: hidden;
 }
 
 #grid {
   position: absolute;
-  inset: 0;
+  inset: 8px;
   display: grid;
+  gap: 8px;
 }
 
 /* ---- CELLS ---- */
 .cell {
   position: relative;
-  border: 1px solid #1a1612;
+  border: none;
   overflow: hidden;
   padding: 12px 14px 10px;
   display: flex;
   flex-direction: column;
   background: #ffffff;
   z-index: 1;
-  transition: border-width 0.3s ease, border-color 0.3s ease;
+  transition: box-shadow 0.3s ease;
+  box-shadow: 0 0 0 1px rgba(26,22,18,0.08);
 }
 
 /* Every line on the plate stays a consistent hairline weight (0.5px)
    EXCEPT the cell currently expanded (clicked open), which gets a
    visibly thicker border to mark it as the active/focused element. */
 .cell.cell-expanded {
-  border-width: 3px;
+  box-shadow: 0 0 0 2px #1a1612;
 }
 
 .cell:hover { background: rgba(26,22,18,0.04); }
@@ -499,7 +501,7 @@ html.color-reversed #color-toggle {
   justify-content: center;
   align-items: flex-start;
   background: #1a1612;
-  border-color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.2);
 }
 .cell-category .cat-label,
 .cell-category .cat-title,
@@ -840,7 +842,7 @@ html.color-reversed #color-toggle {
 
   #page { position: static; height: auto; min-height: 100vh; padding: 14px 14px 18px; }
 
-  #plate-wrap { overflow: visible; border-width: 1px; }
+  #plate-wrap { overflow: visible; border: none; }
 
   #grid {
     position: static !important;
@@ -974,40 +976,43 @@ function rnd(a, b) { return Math.random() * (b - a) + a; }
 // ---- CONTENT DATA ----
 const PROJECTS = [
   { id:'01', slug:'spiral_spines', title:'Spiral Spines', subtitle:'Climate Biennale Vienna', year:'2026', cat:'architecture', tags:['Ecological','Vernacular'], desc:'A regenerative material practice that transforms uprooted and discarded timber into structural and spatial systems.', fullDesc:'A regenerative material practice that transforms uprooted and discarded timber. Presented at the Climate Biennale Vienna 2026.', mediaExts:['jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg'] },
-  { id:'02', slug:'woven_realities', title:'Woven Realities', subtitle:'Afghan House Pavilion', year:'2026', cat:'architecture', tags:['Vernacular','Digital Fabrication'], desc:'A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice.', fullDesc:'A 1:1-scale architectural prototype translating Afghan dwelling traditions into a contemporary circular material practice.', mediaExts:['jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg'] },
-  { id:'03', slug:'new_cairn', title:'The New Cairn', subtitle:'Rubble Stacking', year:'Ongoing', cat:'research', tags:['Post-Conflict','Material Research'], desc:'Research project proposing un-crushed demolition rubble as masonry units for post-conflict reconstruction.', fullDesc:'Research project proposing un-crushed demolition rubble as intentional masonry units — transforming destruction into building material.' },
-  { id:'04', slug:'carbonfloss', title:'Carbonfloss', subtitle:'eVolo Competition', year:'2020', cat:'architecture', tags:['Speculative','Ecological'], desc:'A political statement against reluctance policies — carbon capture architecture at urban scale.', fullDesc:'A political statement against absurd reluctance policies. An eVolo competition entry for speculative carbon-capture urban infrastructure.', mediaExts:['jpg','jpg'] },
-  { id:'05', slug:'ouroboros', title:'OUROBOS', subtitle:'Residual Morphogenesis', year:'2022', cat:'architecture', tags:['Material Research','Digital Fabrication'], desc:'Exploration of residual morphogenesis using AI-driven workflows and computational design.', fullDesc:'Exploration of residual morphogenesis using AI-driven workflows. The form emerges from material surplus rather than programme.', mediaExts:['jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg'] },
-  { id:'06', slug:'agropraxis', title:'Agropraxis', subtitle:'Published in Dezeen', year:'2021', cat:'architecture', tags:['Ecological','Collective Practice'], desc:'The intersection of agriculture and architectural practice as a form of collective spatial production.', fullDesc:'Intersection of agriculture and architectural practice. Published in Dezeen as a model for collective spatial and food production.', mediaExts:['jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg'] },
-  { id:'07', slug:'medius', title:'Medius Paedagogicus', subtitle:'Diola Compounds', year:'2022', cat:'education', tags:['Pedagogy','Vernacular'], desc:'A prototype tracing spatial character from Diola compounds in Senegal into contemporary pedagogical architecture.', fullDesc:'A prototype tracing character from Diola compounds in Senegal. Published in Dezeen 2022.' },
-  { id:'08', slug:'soft_unsealing', title:'Soft Unsealing', subtitle:'IABR11 Rotterdam', year:'2024', cat:'art', tags:['Collective Practice','Installation'], desc:'Exploring softening urban boundaries — an installation at the International Architecture Biennale Rotterdam.', fullDesc:'Exploring softening boundaries in urban contexts. Installation at IABR11 Rotterdam, 2024.' },
-  { id:'09', slug:'old_airfield', title:'Old Airfield', subtitle:'Chicago Architecture Biennial', year:'Ongoing', cat:'art', tags:['Collective Practice','Installation'], desc:'Acoustic mirror as cultural gateway — exploring sound, spatial memory, and contested sites.', fullDesc:'Acoustic mirror cultural gateway exploring sound and spatial memory at abandoned airfields. Ongoing project for the Chicago Architecture Biennial.' },
-  { id:'10', slug:'enkidu', title:'Enkidu', subtitle:'Vernacular Revival', year:'In Dev', cat:'architecture', tags:['Vernacular','Ecological'], desc:'Reviving vernacular Palestinian architecture in Dier Ghassaneh through material continuity.', fullDesc:'Reviving vernacular Palestinian architecture in Dier Ghassaneh — stone, mud, and memory.' },
-  { id:'11', slug:'aura', title:'Aura', subtitle:'Folly Project', year:'2022', cat:'art', tags:['Installation','Speculative'], desc:'Exploring atmospheric qualities of architectural space through a small speculative folly.', fullDesc:'Exploring atmospheric qualities of architectural space. A speculative folly engaging with the phenomenology of light and air.', mediaExts:['jpg','jpg','jpg','jpg','jpg'] },
-  { id:'12', slug:'liberation_fronts', title:'Liberation Fronts', subtitle:'Diploma Thesis', year:'2024', cat:'research', tags:['Political','Speculative'], desc:'Exploring liberation fronts as spatial and political constructs — diploma thesis at Die Angewandte.', fullDesc:'Exploring liberation fronts as spatial and political constructs. Diploma thesis, Die Angewandte, Vienna, 2024.' },
-  { id:'13', slug:'regutting', title:'Regutting', subtitle:'Wonder Cabinet', year:'2025', cat:'art', tags:['Residency','Installation'], desc:'Returns and remains — film, photography, and installation exploring sites of departure and arrival.', fullDesc:'Returns and remains through film, photography, and installation. Wonder Cabinet residency, 2025.' },
-  { id:'14', slug:'agential_cartographies', title:'Agential Cartographies', subtitle:'Dar Jacir', year:'2025', cat:'research', tags:['Exhibition','Political'], desc:'Experimental mappings across three spatial typologies — Palestine as territory of contested spatial knowledge.', fullDesc:'Experimental mappings across three spatial typologies. Exhibition at Dar Jacir, Palestine, 2025.' },
-  { id:'15', slug:'phd_research', title:'PhD Research', subtitle:'Die Angewandte', year:'2024+', cat:'education', tags:['Material Research','Pedagogy'], desc:'Post-conflict material practice and rubble reuse — doctoral research at Die Angewandte, Vienna.', fullDesc:'Post-conflict material practice and rubble reuse. Doctoral research at Die Angewandte (University of Applied Arts, Vienna), 2024 onwards.' },
-  { id:'16', slug:'teaching_aaup', title:'Teaching at AAUP', subtitle:'Arab American University', year:'2025+', cat:'education', tags:['Pedagogy','Vernacular'], desc:'Faculty member at the Faculty of Architecture, AAUP, Palestine — teaching design studio and theory.', fullDesc:'Faculty member at the Faculty of Architecture, Arab American University, Palestine. Teaching design studio and architectural theory.' }
-];
+  { id:'02', slug:'woven_realities', title:'Woven Realities', subtitle:'Afghan House Pavilion — The Diversity of Afghan Homes: Regenerative Architecture, Circular Material Practice, and Socio-Spatial Resilience', year:'2025', cat:'architecture', tags:['Vernacular','Digital Fabrication'], desc:'A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice.', fullDesc:`The Woven Realities project understands human memory as an abstract yet fundamental architectural process. The aim is to translate these intimate dimensions of dwelling into a circular, 1:1-scale architectural prototype. Drawing primary inspiration from the traditional clay and mud-brick houses prevalent in Central Asia and globally, the project reinterprets these vernacular typologies for a European context. We achieve this by substituting traditional earth with locally sourced, reusable by-products from the construction, industry, and consumer waste sectors.
 
-// ---- MEDIA SYSTEM: images AND videos, any count per project ----
-// Convention: media/{slug}_{n}.{ext}. Unlike a "try every extension"
-// approach (which costs up to 7 failed network requests per missing
-// file — slow, especially across ~16 projects × several slots each),
-// this declares the EXACT extension for each slot up front, so the
-// browser only ever makes ONE request per item.
-//
-// To add media to a project: list the extensions in order in `mediaExts`
-// on that project's entry, e.g. mediaExts: ['jpg','jpg','mp4','png'] —
-// slot 1 is a jpg, slot 2 a jpg, slot 3 a video, slot 4 a png.
-//
-// If a project doesn't specify `mediaExts` at all, NOTHING is requested
-// for it — no default 6-slot guess, no phantom files. Only declared
-// slots are ever attempted, and any slot that fails to load (file
-// genuinely missing) removes itself from the page entirely: no
-// placeholder graphic, no blank box, no empty gap. Only media that
-// actually exists and loads successfully is ever shown.
+By abstracting destroyed Afghan cultural monuments and reconstructing them using these reclaimed materials, we create a modular spatial structure. This transformation results in a low-tech, highly adaptable construction method that can be easily deployed, modified, and rebuilt virtually anywhere. It demonstrates how regenerative, low-carbon building approaches are not only ecologically necessary but also function as ritualistic techniques of enclosure, transforming mere "being in the world" into a profound sense of "being at home."
+
+Material Specifications: Wood, Cement, Stone, Fabric, Narrative Embeddedness. Construction Techniques: Low-Tech Modular Assembly, Vernacular Adaptation, Kinetic Base, Deliberate Omission. Dimensions: 666.5 x 322.5 x 263 cm. Date: 2024.`, mediaExts:['jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg'] },
+  { id:'03', slug:'new_cairn', title:'The New Cairn', subtitle:'Rubble Stacking', year:'Ongoing', cat:'research', tags:['Post-Conflict','Material Research'], desc:'Research project proposing un-crushed demolition rubble as masonry units for post-conflict reconstruction.', fullDesc:'Research project proposing un-crushed demolition rubble as intentional masonry units — transforming destruction into building material.' },
+  { id:'04', slug:'carbonfloss', title:'Carbonfloss', subtitle:'eVolo Competition', year:'2020', cat:'architecture', tags:['Speculative','Ecological'], desc:'A political statement against reluctance policies — carbon capture architecture at urban scale.', fullDesc:`CarbonFloss / Architecture for action
+
+"We are facing an unprecedented global emergency. Life on Earth is in crisis: we have entered a period of abrupt climate breakdown, and we are in the midst of a mass extinction of our own making."
+
+There is no room for hope when there is no action. Hope is action, amid impending danger of looming disaster. When hope is scarce due to inaction towards an immediate and radical response, comes carbonFloss as a political statement to counter the absurd and destructive reluctance policies, spurring and promoting hope for action as reassurance for humanity.
+
+DAC (Direct Air Capture) is a process of capturing carbon dioxide directly from the ambient air. One facility captures one million tons of CO2 per year — equivalent to the work of 40 million trees. Promoting this technology has the largest impact on reversing climate change.
+
+CarbonFloss contains 0m2 of usable space and occupies a skyline — the role of architects politically is more relevant than ever. This project acts as a radical environmental-political statement for action, to show the severity of climate change demonstrated by the amount of accumulating carbon over time.`, mediaExts:['jpg','jpg'] },
+  { id:'05', slug:'ourobos', title:'Ouroboros', subtitle:'Residual Morphogenesis', year:'2022', cat:'architecture', tags:['Material Research','AI Workflow Exploration','Residual Matter','Waste','Para-Park'], desc:'Exploration of residual morphogenesis using AI-driven workflows and computational design.', fullDesc:`Considering that the current times are deeply characterized by numerous and seemingly ever-emerging precarities, by which human societies and urban societies in particular seem to be affected the most. Building on Guy Debord's idea of the Derive for the purpose of enhancing, repairing and sustaining social cohesion, Ouroboros proposes the possibility of novel and experimental interactions and ambiences within the urban context in the form of a Parallel Park typology, integrating the idea of disturbance-based ecologies — namely third nature — to elevate social cohesion to the socio-ecological sphere.
+
+The third nature role in the equation is where ideas of decay, obsolescence and residue can be seen as the untapped potential to establish this socio-ecological cohesive atmosphere. Decay can be seen as the loss of human agency; it can also be viewed as the materialization of this two-fold relationship between social cohesion and disturbance-based ecology, creating alternating atmospheres and ambiences in the urban setting.
+
+Utilizing a bottom-up approach of investigation, research, and mapping in all design phases from: understanding the spatial conditions of the urban setting through questionnaires and interviews; situating the moments of interest to weave a virtual spatial platform that materializes itself as the base of the Derive; mapping the moments of urban residue as a vehicle for materiality.`, mediaExts:['jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg'] },
+  { id:'06', slug:'agropraxis', title:'Agropraxis', subtitle:'A hybrid agricultural-architectural settlement', year:'2021', cat:'architecture', tags:['Ecological','Agriculture','Adaptive Systems','Circular Strategies','3D-Printing'], desc:'Climate change is a threat multiplier, with many models pointing toward the direct relationship between climate change and conflict. This project defines the adverse consequences and predictions of climate change as the potential for new ways of coexisting with it — coupling vernacular architecture and available technology to envision a circular architectural system in N\'Djamena/Chad.', fullDesc:`AgroPraxis is conceived as a hybrid agricultural-architectural settlement that responds to soil degradation, water scarcity, and energy insufficiency through an interconnected technological infrastructure. The system begins with Hybrid Farming, combining pivotal and terraced cultivation methods organized in concentric, ring-like fields irrigated by a central pivotal irrigation tower. To counter high evapotranspiration and humidity loss, the project integrates a MOF Water Harvester — a metal-organic framework layer paired with an OTTI aerogel that captures atmospheric vapour through night-time absorption and converts it into day-time water production.
+
+The built fabric itself is produced through Clay 3D printing, using excavated earth and topsoil processed on-site. An ML Control Unit oversees this entire process, ingesting data on material volume and demand to generate a catalogue of printable architectural elements fed directly to the clay 3D printer.
+
+The resulting architecture takes the form of clustered, organic, tower-like clay pods connected by curving elevated walkways — a self-sufficient, regenerative settlement that merges agricultural production, water and energy harvesting, and additive construction into a single closed-loop system.`, link:'https://www.dezeen.com/2022/07/23/university-applied-arts-vienna-master-architecture-projects-schoolshows/', mediaExts:['jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg','jpg'] },
+  { id:'07', slug:'medius', title:'Medius Paedagogicus', subtitle:'Re-wilding Augarten — shape shifting urbanism', year:'2022', cat:'architecture', tags:['Pedagogy','Waste','Residual Matter','Anthropocene'], desc:'Unsettling collision; as a catalyst for Unlearning, and Defamiliarization of encounter.', fullDesc:'Medius paedagogicus is an attempt to prompt a direly needed pedagogical, semantic and paradigmatic shift to negotiate human role within nature, scope of influence, and the Anthropocene. Via the peripheric deregulation conditions of a public park, the ephemeral, deceptive, and seemingly anthropocentric architecture manifestation subsequently acts as medium for unsettling collision; as a pedagogical catalyst for Unlearning, and Defamiliarization of encounter manifesting in the ambiguity, Temporality and experientiality. Highlighting Ecocentric humility as the pedagogical objective. Paradigm Park — shape shifting urbanism.', link:'https://www.dezeen.com/2022/07/23/university-applied-arts-vienna-master-architecture-projects-schoolshows/' },
+  { id:'08', slug:'soft_unsealing', title:'Soft Unsealing', subtitle:'IABR11 Rotterdam', year:'2024', cat:'architecture', tags:['Collective Practice','Installation'], desc:'Exploring softening urban boundaries — an installation at the International Architecture Biennale Rotterdam.', fullDesc:'The goal of this project is to bring nature back to the city, revive the history, and fulfill the community wishes. This location, which initially had little function, is given a new purpose and stimulates further developments in the region. It began with applied research and experimental interventions by the [A]FA lab team, in dialogue with the community: "The core of the project is unlearning and experimenting with the ways we as architects are used to building. This is crucial to develop innovative spaces that promote socio-ecological transformation, improve local climate conditions, and create meaningful environments." The research led to site-specific environmental interventions, such as relocating trees for natural shade and implementing rainwater harvesting systems to address overheating, water scarcity, and poor urban infrastructure.', link:'https://iabr.nl/en/biennales/nature-of-hope/updates/baerbel-mueller-een-architectonische-praktijk-van-het-creeren-van-omgevingen' },
+  { id:'09', slug:'old_airfield', title:'Old Airfield', subtitle:'Chicago Architecture Biennial', year:'Ongoing', cat:'architecture', tags:['Collective Practice','Installation'], desc:'Acoustic mirror as cultural gateway — exploring sound, spatial memory, and contested sites.', fullDesc:'Acoustic mirror cultural gateway exploring sound and spatial memory at abandoned airfields. Ongoing project for the Chicago Architecture Biennial.' },
+  { id:'10', slug:'enkidu', title:'Enkidu', subtitle:'Vernacular Revival', year:'In Dev', cat:'architecture', tags:['Vernacular','Ecological'], desc:'Reviving vernacular Palestinian architecture in Dier Ghassaneh through material continuity.', fullDesc:'Reviving vernacular Palestinian architecture in Dier Ghassaneh — stone, mud, and memory.' },
+  { id:'11', slug:'aura', title:'Aura', subtitle:'Folly Project', year:'2022', cat:'architecture', tags:['Installation','Speculative'], desc:'Exploring atmospheric qualities of architectural space through a small speculative folly.', fullDesc:'Exploring atmospheric qualities of architectural space. A speculative folly engaging with the phenomenology of light and air.', mediaExts:['jpg','jpg','jpg','jpg','jpg'] },
+  { id:'12', slug:'liberation_fronts', title:'Liberation Fronts', subtitle:'Diploma Thesis', year:'2024', cat:'research', tags:['Political','Speculative'], desc:'Exploring liberation fronts as spatial and political constructs — diploma thesis at Die Angewandte.', fullDesc:'Exploring liberation fronts as spatial and political constructs. Diploma thesis, Die Angewandte, Vienna, 2024.' },
+  { id:'13', slug:'regutting', title:'Regutting', subtitle:'Wonder Cabinet', year:'2025', cat:'research', tags:['Residency','Installation'], desc:'Returns and remains — film, photography, and installation exploring sites of departure and arrival.', fullDesc:'Returns and remains through film, photography, and installation. Wonder Cabinet residency, 2025.' },
+  { id:'14', slug:'agential_cartographies', title:'Agential Cartographies', subtitle:'Dar Jacir', year:'2025', cat:'research', tags:['Exhibition','Spatial Agency'], desc:'Experimental mappings across three spatial typologies — Palestine as territory of contested spatial knowledge.', fullDesc:'Experimental mappings across three spatial typologies. Exhibition at Dar Jacir, Palestine, 2025.' },
+  { id:'15', slug:'teaching_aaup', title:'Teaching at AAUP', subtitle:'Arab American University', year:'2025+', cat:'education', tags:['Pedagogy','Vernacular'], desc:'Faculty member at the Faculty of Architecture, AAUP, Palestine — teaching design studio and theory.', fullDesc:'Faculty member at the Faculty of Architecture, Arab American University, Palestine. Teaching design studio and architectural theory.' },
+  { id:'16', slug:'birzeit', title:'Teaching at Birzeit University', subtitle:'Faculty of Art, Palestine', year:'2025+', cat:'education', tags:['Pedagogy'], desc:'Faculty member at the Faculty of Art, Palestine — teaching design studio and theory.', fullDesc:'Faculty member at the Faculty of Architecture, Arab American University, Palestine. Teaching design studio and architectural theory.' }
+]
+
 const VIDEO_EXTS = ['mp4', 'webm', 'mov'];
 
 function projectMedia(slug, title, mediaExts) {
@@ -1021,6 +1026,7 @@ function projectMedia(slug, title, mediaExts) {
     };
   });
 }
+
 PROJECTS.forEach(p => { p.images = projectMedia(p.slug, p.title, p.mediaExts); });
 
 // ---- MEDIA ELEMENT BUILDER ----
@@ -1058,10 +1064,9 @@ const WRITINGS = [
 const TAGS = ["Ecological","Vernacular","Digital Fabrication","Post-Conflict","Material Research","Speculative","Collective Practice","Pedagogy","Installation","Political","Residency","Exhibition"];
 
 const CATS = [
-  { key:'architecture', label:'Architecture', count:7 },
-  { key:'art', label:'Art', count:4 },
-  { key:'research', label:'Research', count:3 },
-  { key:'education', label:'Education', count:3 },
+  { key:'architecture', label:'Architecture', count:10 },
+  { key:'research', label:'Research', count:4 },
+  { key:'education', label:'Education', count:2 },
 ];
 
 // ---- CELL DEFINITIONS ----
@@ -1077,18 +1082,23 @@ function shuffleArr(arr) {
 
 // Build each category's project list, shuffled — same project SET, new ORDER each reload.
 // Grid positions/spans (ASSIGNMENTS) stay fixed; only which project lands in which slot varies.
-const archProjects = shuffleArr([PROJECTS[0], PROJECTS[1], PROJECTS[3], PROJECTS[4], PROJECTS[5], PROJECTS[9], PROJECTS[6]]);
-const artProjects  = shuffleArr([PROJECTS[7], PROJECTS[8], PROJECTS[10], PROJECTS[12]]);
-const resProjects  = shuffleArr([PROJECTS[2], PROJECTS[11], PROJECTS[13]]);
-const eduProjects  = shuffleArr([PROJECTS[6], PROJECTS[14], PROJECTS[15]]);
+// Architecture (10): spiral_spines[0], woven_realities[1], carbonfloss[3], ourobos[4],
+//   agropraxis[5], medius[6], soft_unsealing[7], old_airfield[8], enkidu[9], aura[10]
+const archProjects = shuffleArr([PROJECTS[0], PROJECTS[1], PROJECTS[3], PROJECTS[4], PROJECTS[5], PROJECTS[6], PROJECTS[7], PROJECTS[8], PROJECTS[9], PROJECTS[10]]);
+// Art: empty per spreadsheet — all former art projects moved to Architecture or Research
+const artProjects  = [];
+// Research (4): new_cairn[2], liberation_fronts[11], regutting[12], agential_cartographies[13]
+const resProjects  = shuffleArr([PROJECTS[2], PROJECTS[11], PROJECTS[12], PROJECTS[13]]);
+// Education (2): teaching_aaup[14], birzeit[15]
+const eduProjects  = shuffleArr([PROJECTS[14], PROJECTS[15]]);
 const writingsShuffled = shuffleArr([WRITINGS[0], WRITINGS[1], WRITINGS[2], WRITINGS[3], WRITINGS[4], WRITINGS[5]]);
 
 const CELLS = [
-  // 0:  Identity
+  // 0: Identity
   { type:'identity' },
-  // 1:  Cat — Architecture
+  // 1: Cat — Architecture
   { type:'category', data: CATS[0] },
-  // 2–8: Architecture projects (7 total) — order randomized each load
+  // 2–11: Architecture projects (10) — order randomized each load
   { type:'project', data: archProjects[0] },
   { type:'project', data: archProjects[1] },
   { type:'project', data: archProjects[2] },
@@ -1096,42 +1106,32 @@ const CELLS = [
   { type:'project', data: archProjects[4] },
   { type:'project', data: archProjects[5] },
   { type:'project', data: archProjects[6] },
-  // 9:  Cat — Art
+  { type:'project', data: archProjects[7] },
+  { type:'project', data: archProjects[8] },
+  { type:'project', data: archProjects[9] },
+  // 12: Cat — Research
   { type:'category', data: CATS[1] },
-  // 10–13: Art projects (4) — order randomized each load
-  { type:'project', data: artProjects[0] },
-  { type:'project', data: artProjects[1] },
-  { type:'project', data: artProjects[2] },
-  { type:'project', data: artProjects[3] },
-  // 14: Cat — Research
-  { type:'category', data: CATS[2] },
-  // 15–17: Research projects (3) — order randomized each load
+  // 13–16: Research projects (4) — order randomized each load
   { type:'project', data: resProjects[0] },
   { type:'project', data: resProjects[1] },
   { type:'project', data: resProjects[2] },
-  // 18: Cat — Education
-  { type:'category', data: CATS[3] },
-  // 19–21: Education projects (3) — order randomized each load
+  { type:'project', data: resProjects[3] },
+  // 17: Cat — Education
+  { type:'category', data: CATS[2] },
+  // 18–19: Education projects (2) — order randomized each load
   { type:'project', data: eduProjects[0] },
   { type:'project', data: eduProjects[1] },
-  { type:'project', data: eduProjects[2] },
-  // 22: Research & Publications section head
+  // 20: Research & Publications section head
   { type:'section-head', label:'Research & Publications' },
-  // 23–28: All 6 writings — order randomized each load
+  // 21–26: All 6 writings — order randomized each load
   { type:'writing', data: writingsShuffled[0] },
   { type:'writing', data: writingsShuffled[1] },
   { type:'writing', data: writingsShuffled[2] },
   { type:'writing', data: writingsShuffled[3] },
   { type:'writing', data: writingsShuffled[4] },
   { type:'writing', data: writingsShuffled[5] },
-  // 29: CV
-  { type:'cv' },
-  // 30: Tags
-  { type:'tags' },
-  // 31: Contact
+  // 27: Contact
   { type:'contact' },
-  // 32: Skills
-  { type:'skills' },
 ];
 
 // ---- EXPAND STATE ----
@@ -1145,11 +1145,10 @@ let activeCatEl = null;        // the clicked category DOM element
 // Category → which rows are "active" (contain that category's projects)
 // Row indices are 0-based internally
 const CAT_ROWS = {
-  architecture: [0, 1],   // rows 1-2
-  art:          [2],      // row 3
-  research:     [3],      // row 4
-  education:    [4],      // row 5
-  publications: [5, 6],   // rows 6-7
+  architecture: [0, 1, 2], // rows 1-3 (10 projects across 3 rows)
+  research:     [3],        // row 4
+  education:    [4],        // row 5
+  publications: [5, 6],     // rows 6-7
 };
 
 // Weight for active-category rows and cols; inactive rows/cols get W_MIN
@@ -1568,29 +1567,29 @@ function buildAssignments() {
   }
 
   // ROW 1 — Identity (fixed, spans rows 1-2, col 1) + Cat:Architecture + 3 arch projects across cols 2-5
-  A.push([0, 1, 1, 1, 2]); // Identity
-  layoutRow([1, 2, 3, 4], 1, [2, 3, 4, 5]); // Cat:Arch + 3 projects, one may widen
+  A.push([0, 1, 1, 1, 2]); // Identity spans rows 1-2
+  layoutRow([1, 2, 3, 4], 1, [2, 3, 4, 5]); // Cat:Arch + 3 arch projects
 
-  // ROW 2 — remaining 3 arch projects across cols 2-5 (col 1 occupied by identity span)
-  layoutRow([5, 6, 7], 2, [2, 3, 4, 5]);
+  // ROW 2 — 4 more arch projects across cols 2-5 (col 1 occupied by identity span)
+  layoutRow([5, 6, 7, 8], 2, [2, 3, 4, 5]);
 
-  // ROW 3 — Cat:Art + 3 art projects across all 5 cols
-  layoutRow([9, 10, 11, 12], 3, [1, 2, 3, 4, 5]);
+  // ROW 3 — remaining 3 arch projects across all 5 cols
+  layoutRow([9, 10, 11], 3, [1, 2, 3, 4, 5]);
 
-  // ROW 4 — Cat:Research + 3 research projects across all 5 cols
-  layoutRow([14, 15, 16, 17], 4, [1, 2, 3, 4, 5]);
+  // ROW 4 — Cat:Research + 4 research projects across all 5 cols
+  layoutRow([12, 13, 14, 15, 16], 4, [1, 2, 3, 4, 5]);
 
-  // ROW 5 — Cat:Education + 3 education projects across all 5 cols
-  layoutRow([18, 19, 20, 21], 5, [1, 2, 3, 4, 5]);
+  // ROW 5 — Cat:Education + 2 education projects across all 5 cols
+  layoutRow([17, 18, 19], 5, [1, 2, 3, 4, 5]);
 
   // ROW 6 — Section head + 4 writings across all 5 cols
-  layoutRow([22, 23, 24, 25, 26], 6, [1, 2, 3, 4, 5]);
+  layoutRow([20, 21, 22, 23, 24], 6, [1, 2, 3, 4, 5]);
 
-  // ROW 7 — CV + 2 writings across all 5 cols
-  layoutRow([29, 27, 28], 7, [1, 2, 3, 4, 5]);
+  // ROW 7 — 2 more writings across all 5 cols
+  layoutRow([25, 26], 7, [1, 2, 3, 4, 5]);
 
-  // ROW 8 — Regutting + Tags + Contact + Skills across all 5 cols
-  layoutRow([13, 30, 31, 32], 8, [1, 2, 3, 4, 5]);
+  // ROW 8 — Contact only
+  layoutRow([27], 8, [1, 2, 3, 4, 5]);
 
   return A;
 }
@@ -1698,8 +1697,7 @@ buildGrid();
 // writing at row 5  → section head at row 5 (col1, index 13)
 function getCategoryRow(asgnEntry) {
   const [, , row] = asgnEntry;
-  if (row <= 2) return 1;   // architecture
-  if (row === 3) return 3;  // art
+  if (row <= 3) return 1;   // architecture (rows 1-3, category header at row 1)
   if (row === 4) return 4;  // research
   if (row === 5) return 5;  // education
   if (row >= 6) return 6;   // publications
@@ -1916,7 +1914,7 @@ function tick() {
 
 // ---- EVENTS ----
 document.addEventListener('mousemove', e => {
-  if (expandedCell) return; // ignore mouse while a cell is expanded
+  if (expandedCell) return;
   mX = e.clientX;
   mY = e.clientY;
   mouseActive = true;
