@@ -1,3 +1,7 @@
+Here is the complete HTML code for the **RaD** website, updated exactly according to your specifications. 
+
+I have applied all the changes: pure white background, removed grain, exact font sizes and colors, solid black borders on the scattered images, no hover effects, light grey placeholders, the specific title placement, removed footer, and the updated detail page layout with the vertical divider.
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -10,9 +14,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
 <style>
 :root {
-  --paper: #e7e1d3;
-  --ink:   #2d2b28;
-  --grey:  #8f8a7e;
+  --paper: #ffffff; /* Pure white background */
+  --ink:   #1a1a1a; /* Very dark grey/black text */
+  --grey:  #8f8a7e; /* Medium grey */
   --blue:  #4a5fc1;
   --red:   #d8433b;
   --script: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
@@ -33,28 +37,23 @@ body {
 }
 a { color: inherit; text-decoration: none; }
 
-/* paper grain over everything */
-.grain {
-  position: fixed; inset: 0; width: 100%; height: 100%;
-  pointer-events: none; z-index: 90;
-  opacity: .26; mix-blend-mode: multiply;
-}
-
 /* ------------------------------------------------ landing */
 .top {
   display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 3.2vh 4vw 0;
+  padding: 4vw 4vw 0; /* 4vw padding top and left/right */
   position: relative; z-index: 2;
 }
 .duo {
   font-family: var(--script); font-weight: 400;
-  font-size: clamp(46px, 5vw, 78px); line-height: 1;
+  font-size: 5vw; /* Exactly 5vw as requested */
+  line-height: 1;
   color: var(--red);
 }
 .micro {
-  font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .14em;
   text-transform: uppercase; color: var(--grey); line-height: 1.8;
   text-align: right;
+  margin-top: 0.5vh; /* Aligns visually with top of title */
 }
 
 /* ------------------------------------------------ scattered layout */
@@ -65,19 +64,18 @@ a { color: inherit; text-decoration: none; }
   min-height: 75vh;
   margin: 2vh auto 0;
   max-width: 1600px;
-  padding: 0 4vw;
+  padding: 0 4vw 8vh; /* Added bottom padding since footer is removed */
 }
 
 .work {
   position: absolute;
   display: block;
   width: clamp(160px, 18vw, 280px);
-  transition: transform 0.3s ease;
   z-index: 1;
 }
 .work:hover { z-index: 10; }
 
-/* individual scattered positions based on the reference image */
+/* individual scattered positions */
 .p1 { top: 2vh;  left: 6%; }
 .p2 { top: 15vh; left: 28%; }
 .p3 { top: 8vh;  left: 52%; }
@@ -86,56 +84,34 @@ a { color: inherit; text-decoration: none; }
 .p6 { top: 50vh; left: 38%; width: clamp(180px, 20vw, 300px); }
 .p7 { top: 62vh; left: 72%; width: clamp(160px, 17vw, 250px); }
 
-.frame { position: relative; isolation: isolate; overflow: hidden; background: #d8d2c4; }
+/* 2px solid black border for every image frame */
+.frame { 
+  position: relative; 
+  isolation: isolate; 
+  overflow: hidden; 
+  background: #e0e0e0; /* Solid light grey placeholder */
+  border: 2px solid #000000; 
+}
 .frame img, .frame video {
   display: block; width: 100%; height: auto;
-  filter: grayscale(1) contrast(1.12);
-  transition: filter .55s ease;
+  filter: none; /* Removed hover filters */
 }
-.frame .ov { position: absolute; inset: 0; pointer-events: none; transition: opacity .55s ease; }
-.tone-bw   .ov-a { background: #efe9da; mix-blend-mode: multiply; }
-.tone-bw   .ov-b { display: none; }
-.tone-blue .ov-a { background: #aeb8ea; mix-blend-mode: multiply; }
-.tone-blue .ov-b { background: #3347a6; mix-blend-mode: lighten; }
-.tone-red  .ov-a { background: #f1b8b0; mix-blend-mode: multiply; }
-.tone-red  .ov-b { background: #c4352e; mix-blend-mode: lighten; }
-/* hover reveals the real colours */
-.work:hover .frame img, .work:hover .frame video { filter: none; }
-.work:hover .ov { opacity: 0; }
 
-/* shown until a first image is found / when a project has none yet */
+/* Solid grey placeholder instead of stripes */
 .frame.empty {
   aspect-ratio: 4 / 3;
-  background:
-    repeating-linear-gradient(115deg, transparent 0 15px, rgba(255,255,255,.6) 15px 17px),
-    var(--red);
+  background: #e0e0e0;
+  border: 2px solid #000000;
 }
-.tone-blue .frame.empty { background:
-    repeating-linear-gradient(115deg, transparent 0 15px, rgba(255,255,255,.6) 15px 17px),
-    var(--blue); }
-.tone-bw .frame.empty { background:
-    repeating-linear-gradient(115deg, transparent 0 15px, rgba(255,255,255,.6) 15px 17px),
-    #9b968b; }
-.frame.empty .ov { display: none; }
 
 .meta { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; }
 .meta-top { display: flex; align-items: baseline; gap: 12px; }
 .no, .yr, .gl, .more {
-  font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--grey);
+  font-family: var(--mono); font-size: 12px; letter-spacing: .14em; color: var(--grey);
 }
 .ttl {
-  font-family: var(--script); font-size: clamp(28px, 3vw, 46px);
-  line-height: 1; color: var(--ink);
-}
-.gl { color: var(--blue); letter-spacing: .4em; }
-.more { opacity: 0; transition: opacity .3s; text-transform: uppercase; }
-.work:hover .more { opacity: 1; color: var(--red); }
-
-.foot {
-  position: relative; z-index: 2;
-  padding: 0 4vw 5vh; display: flex; justify-content: space-between;
-  font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--grey);
+  font-family: var(--script); font-size: 36px; /* Exactly 36px as requested */
+  line-height: 1; color: #000000; /* Pure black */
 }
 
 /* ------------------------------------------------ project page */
@@ -150,20 +126,24 @@ html.open #detail { display: grid; animation: fadein .45s ease; }
 .d-text {
   padding: 4vh 2.6vw 4vh 4vw; overflow-y: auto;
   display: flex; flex-direction: column; gap: 2.2vh; scrollbar-width: thin;
+  background: #ffffff; /* Pure white left side */
+  border-right: 1px solid #000000; /* Vertical black line */
 }
 .back, .d-no, .d-next {
-  font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .14em;
   text-transform: uppercase; color: var(--grey);
 }
 .back:hover, .d-next:hover { color: var(--red); }
 .d-title {
-  font-family: var(--script); font-weight: 400; color: var(--red);
-  font-size: clamp(52px, 5.6vw, 96px); line-height: .95; margin-top: 1vh;
+  font-family: var(--script); font-weight: 400; 
+  color: #000000; /* Pure black as requested */
+  font-size: 64px; /* Exactly 64px */
+  line-height: .95; margin-top: 1vh;
 }
-.d-year { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; color: var(--blue); text-transform: uppercase; }
+.d-year { font-family: var(--mono); font-size: 12px; letter-spacing: .16em; color: var(--blue); text-transform: uppercase; }
 .d-desc p { font-size: 17.5px; line-height: 1.55; margin-bottom: .9em; max-width: 46ch; }
 .d-bar { margin-top: auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-top: 2vh; }
-.d-count { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--ink); min-width: 62px; }
+.d-count { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; color: var(--ink); min-width: 62px; }
 .d-bar button {
   width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
   border: 1px solid var(--grey); background: none; color: var(--ink);
@@ -178,11 +158,11 @@ html.open #detail { display: grid; animation: fadein .45s ease; }
 }
 .d-strip::-webkit-scrollbar { display: none; }
 .fig { flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; }
-.fig .m { width: 40vh; height: 60vh; }          /* placeholder until the file has loaded */
+.fig .m { width: 40vh; height: 60vh; }          
 .fig img, .fig video { display: block; width: 100%; height: 100%; object-fit: contain; }
-.fig figcaption { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--grey); text-transform: uppercase; }
+.fig figcaption { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; color: var(--grey); text-transform: uppercase; }
 .fig.empty .m { width: min(60vw, 70vh); height: auto; aspect-ratio: 4/3;
-  background: repeating-linear-gradient(115deg, transparent 0 15px, rgba(255,255,255,.6) 15px 17px), var(--red); }
+  background: #e0e0e0; border: 2px solid #000000; }
 
 @media (max-width: 900px) {
   .work { width: 30vw; }
@@ -196,6 +176,8 @@ html.open #detail { display: grid; animation: fadein .45s ease; }
 }
 
 @media (max-width: 760px) {
+  .top { padding: 4vw; }
+  .duo { font-size: 12vw; }
   .scatter { min-height: 60vh; }
   .work { width: 40vw; }
   .p1 { top: 0; left: 2%; }
@@ -205,11 +187,10 @@ html.open #detail { display: grid; animation: fadein .45s ease; }
   .p5 { top: 65%; left: 45%; width: 45vw; }
   .p6 { top: 40%; left: 60%; width: 35vw; }
   .p7 { top: 85%; left: 10%; width: 40vw; }
-  .duo { font-size: 38px; }
   
   #detail { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-  .d-text { max-height: 44vh; padding: 3vh 5vw 2vh; gap: 1.4vh; }
-  .d-title { font-size: 54px; }
+  .d-text { max-height: 44vh; padding: 3vh 5vw 2vh; gap: 1.4vh; border-right: none; border-bottom: 1px solid #000000; }
+  .d-title { font-size: 48px; }
   .d-desc p { font-size: 16px; }
   .d-strip { padding: 0 5vw; }
 }
@@ -217,20 +198,12 @@ html.open #detail { display: grid; animation: fadein .45s ease; }
 </head>
 <body>
 
-<svg class="grain" aria-hidden="true">
-  <filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/>
-    <feColorMatrix values="0 0 0 0 .36  0 0 0 0 .33  0 0 0 0 .29  0 0 0 .6 0"/></filter>
-  <rect width="100%" height="100%" filter="url(#n)"/>
-</svg>
-
 <header class="top">
   <h1 class="duo">RaD</h1>
   <p class="micro">previous projects<br><span id="count"></span></p>
 </header>
 
 <main class="scatter" id="wall"></main>
-
-<footer class="foot"><span>RaD</span><span>previous projects</span></footer>
 
 <section id="detail" aria-label="Project">
   <aside class="d-text">
@@ -251,9 +224,7 @@ html.open #detail { display: grid; animation: fadein .45s ease; }
 
 <script>
 /* ============================================================
-   PROJECTS — edit text here. Images are found automatically:
-   put files in /images named  {slug}_1, {slug}_2 ... {slug}_30
-   (.jpg  .png  .mp4, lowercase, consecutive numbering from 1).
+   PROJECTS
    ============================================================ */
 const PROJECTS = [
   { slug:"spiral_spines", title:"Spiral Spines", year:"2026", subtitle:"", tone:"bw",
@@ -285,12 +256,12 @@ const MAX_MEDIA = 30;
 const MEDIA_KINDS = [["jpg","image"],["png","image"],["mp4","video"]];
 
 async function mediaExists(src, kind) {
-  try {                                   // HEAD downloads nothing
+  try {
     const r = await fetch(src, { method:"HEAD" });
     if (!r.ok) return false;
     const ct = (r.headers.get("content-type") || "").toLowerCase();
     return !ct || ct.startsWith(kind + "/");
-  } catch (e) {                           // e.g. opened from disk (file://)
+  } catch (e) {
     return elementProbe(src, kind);
   }
 }
@@ -313,10 +284,8 @@ async function findSlot(slug, n) {
   }
   return null;
 }
-// first image only (landing page) — 3 quick checks for projects with no files
 const firstCache = {};
 function getFirst(p) { return firstCache[p.slug] || (firstCache[p.slug] = findSlot(p.slug, 1)); }
-// every file 1..30 (project page); stops at the first missing number
 const allCache = {};
 function getAll(p) {
   return allCache[p.slug] || (allCache[p.slug] = (async () => {
@@ -339,7 +308,6 @@ function getAll(p) {
 const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2, "0");
 const esc = t => String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-const GLYPHS = ["● ◆","★ ○","◆ ●","○ ★","● ○","◆ ★","★ ●"];
 
 function mediaTag(item, alt, extra) {
   if (item.type === "video")
@@ -351,13 +319,11 @@ function mediaTag(item, alt, extra) {
 function buildWall() {
   $("count").textContent = pad(PROJECTS.length) + " works";
   $("wall").innerHTML = PROJECTS.map((p, i) => `
-    <a class="work p${i+1} tone-${p.tone}" href="#/${p.slug}" data-slug="${p.slug}">
-      <div class="frame empty"><i class="ov ov-a"></i><i class="ov ov-b"></i></div>
+    <a class="work p${i+1}" href="#/${p.slug}" data-slug="${p.slug}">
+      <div class="frame empty"></div>
       <div class="meta">
         <div class="meta-top">
           <span class="no">${pad(i+1)}</span>
-          <span class="gl">${GLYPHS[i % GLYPHS.length]}</span>
-          <span class="more">open &rarr;</span>
         </div>
         <span class="ttl">${esc(p.title)}</span>
         ${p.year ? '<span class="yr">' + esc(p.year) + '</span>' : ''}
@@ -413,7 +379,6 @@ function closeProject() {
   strip.innerHTML = "";
 }
 
-/* size each figure to its own file: true proportions, as large as the strip allows */
 function fit(el) {
   const nw = el.naturalWidth || el.videoWidth, nh = el.naturalHeight || el.videoHeight;
   if (!nw || !nh) return;
@@ -432,7 +397,6 @@ function watchFit(el) {
 }
 window.addEventListener("resize", () => strip.querySelectorAll(".fig:not(.empty) img, .fig:not(.empty) video").forEach(fit));
 
-/* current image = the one nearest the middle of the strip */
 function figs() { return [...strip.querySelectorAll(".fig:not(.empty)")]; }
 function currentIndex() {
   const f = figs(); if (!f.length) return -1;
@@ -451,7 +415,6 @@ function goTo(k) {
 }
 let raf = 0;
 strip.addEventListener("scroll", () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(updateCount); }, { passive: true });
-// mouse wheel / trackpad scrolls the images back and forth
 strip.addEventListener("wheel", e => {
   if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { strip.scrollLeft += e.deltaY; e.preventDefault(); }
 }, { passive: false });
@@ -464,7 +427,6 @@ document.addEventListener("keydown", e => {
   else if (e.key === "Escape") location.hash = "#/";
 });
 
-/* ---------------- routing (#/slug) ---------------- */
 function route() {
   const m = location.hash.match(/^#\/(.+)$/);
   if (m) openProject(decodeURIComponent(m[1])); else closeProject();
