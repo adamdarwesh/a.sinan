@@ -1,0 +1,852 @@
+Here is the HTML code for a simple portfolio page for the artist duo Rania & Adham. It displays their previous projects as large, clickable images, with a detailed view for each project.
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rania & Adham — previous projects</title>
+  <style>
+    /* minimal, paper-like base */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #e7e1d3;
+      color: #2d2b28;
+      font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+      -webkit-font-smoothing: antialiased;
+      padding: 0 1.5rem;
+    }
+
+    /* paper grain (very light) */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      mix-blend-mode: multiply;
+      opacity: 0.3;
+    }
+
+    /* typography */
+    .duo {
+      font-family: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      color: #d8433b;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+    }
+
+    .micro {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #8f8a7e;
+      margin-top: 0.25rem;
+    }
+
+    .project-title {
+      font-family: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      color: #2d2b28;
+      line-height: 1.1;
+      margin-top: 0.5rem;
+    }
+
+    .project-year {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      color: #4a5fc1;
+      margin-left: 0.75rem;
+    }
+
+    /* header / landing */
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 2.5rem 0 1.5rem;
+      border-bottom: 1px solid rgba(45, 43, 40, 0.15);
+    }
+
+    .count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #8f8a7e;
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    /* project grid — large images, minimal */
+    .gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 3.5rem;
+      padding: 3rem 0 5rem;
+    }
+
+    .project-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .project-card:hover {
+      opacity: 0.85;
+    }
+
+    /* image wrapper — natural proportions, upscaled but not cropped */
+    .image-wrap {
+      width: 100%;
+      background: #d8d2c4;
+      border-radius: 2px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+    }
+
+    .image-wrap img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 75vh;
+      object-fit: contain;
+      filter: grayscale(1) contrast(1.1);
+      transition: filter 0.3s ease;
+    }
+
+    .project-card:hover .image-wrap img {
+      filter: grayscale(0.3) contrast(1.05);
+    }
+
+    /* placeholder when no image is found */
+    .placeholder {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: repeating-linear-gradient(115deg, transparent 0 15px, rgba(255, 255, 255, 0.6) 15px 17px), #9b968b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: #fff;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    /* meta line */
+    .meta {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.2rem;
+      margin-top: 0.75rem;
+      padding-left: 0.2rem;
+    }
+
+    .meta .index {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: #8f8a7e;
+    }
+
+    /* detail overlay */
+    #detail {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #e7e1d3;
+      z-index: 100;
+      grid-template-columns: 30% 1fr;
+      padding: 0;
+      animation: fadein 0.3s ease;
+    }
+
+    html.open #detail {
+      display: grid;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* left panel — text */
+    .detail-text {
+      padding: 3rem 2rem 2rem 3rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+      background: #e7e1d3;
+      border-right: 1px solid rgba(45, 43, 40, 0.1);
+    }
+
+    .back-link {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #8f8a7e;
+      text-decoration: none;
+      display: inline-block;
+      width: fit-content;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: #d8433b;
+    }
+
+    .detail-no {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      color: #8f8a7e;
+      text-transform: uppercase;
+    }
+
+    .detail-title {
+      font-family: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
+      font-size: clamp(2.8rem, 4.5vw, 4.2rem);
+      color: #d8433b;
+      line-height: 1;
+      margin-top: 0.2rem;
+    }
+
+    .detail-year {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      color: #4a5fc1;
+      text-transform: uppercase;
+      margin-top: -0.8rem;
+    }
+
+    .detail-desc {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #2d2b28;
+      max-width: 52ch;
+    }
+
+    .detail-desc p {
+      margin-bottom: 0.8rem;
+    }
+
+    .detail-desc p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* right panel — image strip */
+    .image-strip {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0 3rem;
+      scrollbar-width: none;
+      background: #e7e1d3;
+    }
+
+    .image-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .strip-item {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 80vh;
+    }
+
+    .strip-item img,
+    .strip-item video {
+      display: block;
+      max-width: 70vw;
+      max-height: 70vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      filter: grayscale(0.6) contrast(1.05);
+      transition: filter 0.2s;
+      border-radius: 2px;
+    }
+
+    .strip-item img:hover,
+    .strip-item video:hover {
+      filter: grayscale(0) contrast(1);
+    }
+
+    .strip-item figcaption {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #8f8a7e;
+      margin-top: 0.2rem;
+    }
+
+    .strip-empty {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      color: #8f8a7e;
+      text-transform: uppercase;
+      padding: 2rem;
+    }
+
+    /* navigation bar in detail */
+    .detail-nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(45, 43, 40, 0.1);
+    }
+
+    .nav-btn {
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 50%;
+      border: 1px solid #8f8a7e;
+      background: none;
+      color: #2d2b28;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .nav-btn:hover {
+      border-color: #d8433b;
+      color: #d8433b;
+    }
+
+    .nav-counter {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: #2d2b28;
+      min-width: 3.5rem;
+    }
+
+    .nav-next {
+      margin-left: auto;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: #8f8a7e;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+
+    .nav-next:hover {
+      color: #d8433b;
+    }
+
+    /* footer (landing) */
+    .foot {
+      display: flex;
+      justify-content: space-between;
+      padding: 1.5rem 0 2rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #8f8a7e;
+      border-top: 1px solid rgba(45, 43, 40, 0.15);
+    }
+
+    /* responsive */
+    @media (max-width: 760px) {
+      body {
+        padding: 0 1rem;
+      }
+
+      .top {
+        padding: 1.5rem 0 1rem;
+      }
+
+      .gallery {
+        gap: 2.5rem;
+        padding: 2rem 0 3rem;
+      }
+
+      .image-wrap {
+        min-height: 150px;
+      }
+
+      .image-wrap img {
+        max-height: 55vh;
+      }
+
+      #detail {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+      }
+
+      .detail-text {
+        padding: 1.5rem 1.5rem 1rem;
+        max-height: 42vh;
+        gap: 1rem;
+        border-right: none;
+        border-bottom: 1px solid rgba(45, 43, 40, 0.1);
+      }
+
+      .detail-title {
+        font-size: 2.6rem;
+      }
+
+      .detail-desc {
+        font-size: 0.95rem;
+      }
+
+      .image-strip {
+        padding: 0 1.5rem;
+        gap: 1.2rem;
+      }
+
+      .strip-item img,
+      .strip-item video {
+        max-width: 85vw;
+        max-height: 55vh;
+      }
+
+      .nav-next {
+        font-size: 0.55rem;
+      }
+    }
+
+    /* utility */
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+  <!-- fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ============ LANDING ============ -->
+  <header class="top">
+    <div>
+      <h1 class="duo">Rania &amp; Adham</h1>
+      <p class="micro">previous projects</p>
+    </div>
+    <div class="count" id="project-count"></div>
+  </header>
+
+  <main class="gallery" id="gallery"></main>
+
+  <footer class="foot">
+    <span>Rania &amp; Adham</span>
+    <span>previous projects</span>
+  </footer>
+
+  <!-- ============ DETAIL OVERLAY ============ -->
+  <section id="detail" aria-label="Project detail">
+    <aside class="detail-text">
+      <a class="back-link" href="#/">&larr; all projects</a>
+      <p class="detail-no" id="detail-no"></p>
+      <h2 class="detail-title" id="detail-title"></h2>
+      <p class="detail-year" id="detail-year"></p>
+      <div class="detail-desc" id="detail-desc"></div>
+      <div class="detail-nav">
+        <button class="nav-btn" id="nav-prev" aria-label="Previous image">&larr;</button>
+        <span class="nav-counter" id="nav-counter"></span>
+        <button class="nav-btn" id="nav-next" aria-label="Next image">&rarr;</button>
+        <a class="nav-next" id="nav-nextlink" href="#/"></a>
+      </div>
+    </aside>
+    <div class="image-strip" id="strip"></div>
+  </section>
+
+  <script>
+    // ------------------------------------------------------------
+    // PROJECTS — text and metadata, images auto-detected
+    // ------------------------------------------------------------
+    const PROJECTS = [
+      {
+        slug: "spiral_spines",
+        title: "Spiral Spines",
+        year: "2026",
+        subtitle: "",
+        tone: "bw",
+        text: [
+          "A regenerative material practice that transforms uprooted and discarded timber into structural and spatial systems.",
+          "Presented at the Climate Biennale Vienna 2026."
+        ]
+      },
+      {
+        slug: "woven_realities",
+        title: "Woven Realities",
+        year: "2025",
+        subtitle: "Afghan House Pavilion",
+        tone: "blue",
+        text: [
+          "The Woven Realities project understands human memory as an abstract yet fundamental architectural process. The aim is to translate these intimate dimensions of dwelling into a circular, 1:1-scale architectural prototype. Drawing primary inspiration from the traditional clay and mud-brick houses prevalent in Central Asia and globally, the project reinterprets these vernacular typologies for a European context. We achieve this by substituting traditional earth with locally sourced, reusable by-products from the construction, industry, and consumer waste sectors.",
+          "By abstracting destroyed Afghan cultural monuments and reconstructing them using these reclaimed materials, we create a modular spatial structure. This transformation results in a low-tech, highly adaptable construction method that can be easily deployed, modified, and rebuilt virtually anywhere. It demonstrates how regenerative, low-carbon building approaches are not only ecologically necessary but also function as ritualistic techniques of enclosure, transforming mere “being in the world” into a profound sense of “being at home.”",
+          "Material specifications: wood, cement, stone, fabric. Construction techniques: low-tech modular assembly, vernacular adaptation, kinetic base, deliberate omission. Dimensions: 666.5 × 322.5 × 263 cm."
+        ]
+      },
+      {
+        slug: "lifeguard_platform",
+        title: "The Lifeguard Platform",
+        year: "2026",
+        subtitle: "",
+        tone: "bw",
+        text: [
+          "Set design / architectural installation."
+        ]
+      },
+      {
+        slug: "another_sea",
+        title: "another sea behind another wall",
+        year: "",
+        subtitle: "",
+        tone: "blue",
+        text: []
+      },
+      {
+        slug: "soft_unsealing",
+        title: "Soft Unsealing",
+        year: "2024",
+        subtitle: "IABR11 Rotterdam",
+        tone: "bw",
+        text: [
+          "The goal of this project is to bring nature back to the city, revive the history, and fulfill the community wishes. This location, which initially had little function, is given a new purpose and stimulates further developments in the region.",
+          "It began with applied research and experimental interventions by the [A]FA lab team, in dialogue with the community: “The core of the project is unlearning and experimenting with the ways we as architects are used to building. This is crucial to develop innovative spaces that promote socio-ecological transformation, improve local climate conditions, and create meaningful environments.”",
+          "The research led to site-specific environmental interventions, such as relocating trees for natural shade and implementing rainwater harvesting systems to address overheating, water scarcity, and poor urban infrastructure."
+        ]
+      },
+      {
+        slug: "pay_cheque",
+        title: "Pay-Cheque",
+        year: "",
+        subtitle: "",
+        tone: "red",
+        text: []
+      },
+      {
+        slug: "si_demain_je_pars",
+        title: "si demain je pars",
+        year: "",
+        subtitle: "",
+        tone: "blue",
+        text: []
+      }
+    ];
+
+    // ------------------------------------------------------------
+    // media detection — same logic as the original but simplified
+    // ------------------------------------------------------------
+    const MAX_MEDIA = 30;
+    const MEDIA_KINDS = [["jpg", "image"], ["png", "image"], ["mp4", "video"]];
+
+    async function mediaExists(src, kind) {
+      try {
+        const r = await fetch(src, { method: "HEAD" });
+        if (!r.ok) return false;
+        const ct = (r.headers.get("content-type") || "").toLowerCase();
+        return !ct || ct.startsWith(kind + "/");
+      } catch (e) {
+        return elementProbe(src, kind);
+      }
+    }
+
+    function elementProbe(src, kind) {
+      return new Promise(resolve => {
+        let t;
+        const done = ok => { clearTimeout(t); resolve(ok); };
+        t = setTimeout(() => done(false), 5000);
+        if (kind === "video") {
+          const v = document.createElement("video");
+          v.preload = "metadata";
+          v.muted = true;
+          v.onloadedmetadata = () => done(true);
+          v.onerror = () => done(false);
+          v.src = src;
+        } else {
+          const im = new Image();
+          im.onload = () => done(true);
+          im.onerror = () => done(false);
+          im.src = src;
+        }
+      });
+    }
+
+    async function findSlot(slug, n) {
+      for (const [ext, kind] of MEDIA_KINDS) {
+        const src = "images/" + slug + "_" + n + "." + ext;
+        if (await mediaExists(src, kind)) return { src, type: kind };
+      }
+      return null;
+    }
+
+    // cache
+    const firstCache = {};
+    function getFirst(p) {
+      return firstCache[p.slug] || (firstCache[p.slug] = findSlot(p.slug, 1));
+    }
+
+    const allCache = {};
+    function getAll(p) {
+      return allCache[p.slug] || (allCache[p.slug] = (async () => {
+        const first = await getFirst(p);
+        if (!first) return [];
+        const found = [first];
+        let n = 2;
+        while (n <= MAX_MEDIA) {
+          const batch = [];
+          for (let k = 0; k < 4 && n + k <= MAX_MEDIA; k++) batch.push(findSlot(p.slug, n + k));
+          const res = await Promise.all(batch);
+          let stop = false;
+          for (const r of res) {
+            if (!r) { stop = true; break; }
+            found.push(r);
+          }
+          if (stop) break;
+          n += 4;
+        }
+        return found;
+      })());
+    }
+
+    // ------------------------------------------------------------
+    // helpers
+    // ------------------------------------------------------------
+    const $ = id => document.getElementById(id);
+    const pad = n => String(n).padStart(2, "0");
+    const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+    function mediaTag(item, alt, extra = "") {
+      if (item.type === "video")
+        return `<video ${extra} src="${item.src}" autoplay muted loop playsinline></video>`;
+      return `<img ${extra} src="${item.src}" alt="${esc(alt)}" decoding="async">`;
+    }
+
+    // ------------------------------------------------------------
+    // build landing gallery
+    // ------------------------------------------------------------
+    function buildGallery() {
+      $("project-count").textContent = pad(PROJECTS.length) + " works";
+      const gallery = $("gallery");
+      gallery.innerHTML = PROJECTS.map((p, i) => {
+        return `
+          <a class="project-card" href="#/${p.slug}" data-slug="${p.slug}">
+            <div class="image-wrap" id="wrap-${p.slug}">
+              <div class="placeholder">loading…</div>
+            </div>
+            <div class="meta">
+              <span class="index">${pad(i + 1)}</span>
+              <span class="project-title">${esc(p.title)}</span>
+              ${p.year ? `<span class="project-year">${esc(p.year)}</span>` : ''}
+            </div>
+          </a>
+        `;
+      }).join("");
+
+      // load first image for each project
+      PROJECTS.forEach(p => {
+        getFirst(p).then(item => {
+          if (!item) return;
+          const wrap = $(`wrap-${p.slug}`);
+          if (!wrap) return;
+          wrap.innerHTML = mediaTag(item, p.title, 'loading="lazy"');
+        });
+      });
+    }
+
+    // ------------------------------------------------------------
+    // detail overlay
+    // ------------------------------------------------------------
+    const strip = $("strip");
+    let openToken = 0;
+
+    function openProject(slug) {
+      const i = PROJECTS.findIndex(p => p.slug === slug);
+      if (i < 0) { closeProject(); return; }
+      const p = PROJECTS[i];
+      const nxt = PROJECTS[(i + 1) % PROJECTS.length];
+
+      // fill text panel
+      $("detail-no").textContent = pad(i + 1) + " / " + pad(PROJECTS.length);
+      $("detail-title").textContent = p.title;
+      $("detail-year").textContent = [p.subtitle, p.year].filter(Boolean).join("  ·  ");
+      $("detail-desc").innerHTML = p.text.map(t => "<p>" + esc(t) + "</p>").join("");
+      $("nav-nextlink").href = "#/" + nxt.slug;
+      $("nav-nextlink").innerHTML = "next: " + esc(nxt.title) + " &rarr;";
+      $("nav-counter").textContent = "";
+
+      // reset strip
+      strip.innerHTML = "";
+      strip.scrollLeft = 0;
+      document.documentElement.classList.add("open");
+      document.title = p.title + " — Rania & Adham";
+
+      const token = ++openToken;
+      getAll(p).then(items => {
+        if (token !== openToken) return;
+        if (!items.length) {
+          strip.innerHTML = `<p class="strip-empty">images to come</p>`;
+          $("nav-counter").textContent = "";
+          return;
+        }
+        strip.innerHTML = items.map((it, k) =>
+          `<figure class="strip-item">
+            ${mediaTag(it, p.title + " — Fig. " + (k + 1), 'loading="lazy"')}
+            <figcaption>Fig. ${k + 1}</figcaption>
+          </figure>`
+        ).join("");
+        // size figures
+        strip.querySelectorAll(".strip-item img, .strip-item video").forEach(watchFit);
+        updateCounter();
+      });
+    }
+
+    function closeProject() {
+      openToken++;
+      document.documentElement.classList.remove("open");
+      document.title = "Rania & Adham — previous projects";
+      strip.innerHTML = "";
+    }
+
+    // size each figure to its own file
+    function fit(el) {
+      const nw = el.naturalWidth || el.videoWidth;
+      const nh = el.naturalHeight || el.videoHeight;
+      if (!nw || !nh) return;
+      const small = window.innerWidth <= 760;
+      const maxH = strip.clientHeight * (small ? 0.80 : 0.86) - 28;
+      const maxW = strip.clientWidth * (small ? 0.86 : 0.72);
+      const k = Math.min(maxW / nw, maxH / nh);
+      const fig = el.closest(".strip-item");
+      if (!fig) return;
+      // let the image keep natural proportions, but constrain container
+      el.style.maxWidth = (nw * k) + "px";
+      el.style.maxHeight = (nh * k) + "px";
+      el.style.width = "auto";
+      el.style.height = "auto";
+    }
+
+    function watchFit(el) {
+      const ev = el.tagName === "VIDEO" ? "loadedmetadata" : "load";
+      el.addEventListener(ev, () => { fit(el); updateCounter(); });
+      if ((el.complete && el.naturalWidth) || el.readyState >= 1) fit(el);
+    }
+
+    window.addEventListener("resize", () => {
+      strip.querySelectorAll(".strip-item img, .strip-item video").forEach(fit);
+    });
+
+    // counter and navigation
+    function figs() {
+      return [...strip.querySelectorAll(".strip-item")].filter(f => !f.classList.contains("strip-empty"));
+    }
+
+    function currentIndex() {
+      const f = figs();
+      if (!f.length) return -1;
+      const mid = strip.scrollLeft + strip.clientWidth / 2;
+      let best = 0, bd = Infinity;
+      f.forEach((el, k) => {
+        const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - mid);
+        if (d < bd) { bd = d; best = k; }
+      });
+      return best;
+    }
+
+    function updateCounter() {
+      const f = figs();
+      if (!f.length) { $("nav-counter").textContent = ""; return; }
+      $("nav-counter").textContent = (currentIndex() + 1) + " / " + f.length;
+    }
+
+    function goTo(k) {
+      const f = figs();
+      if (!f.length) return;
+      k = Math.max(0, Math.min(f.length - 1, k));
+      strip.scrollTo({
+        left: f[k].offsetLeft - (strip.clientWidth - f[k].offsetWidth) / 2,
+        behavior: "smooth"
+      });
+    }
+
+    let raf = 0;
+    strip.addEventListener("scroll", () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(updateCounter);
+    }, { passive: true });
+
+    // wheel scrolls horizontally
+    strip.addEventListener("wheel", e => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        strip.scrollLeft += e.deltaY;
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    $("nav-prev").addEventListener("click", () => goTo(currentIndex() - 1));
+    $("nav-next").addEventListener("click", () => goTo(currentIndex() + 1));
+
+    document.addEventListener("keydown", e => {
+      if (!document.documentElement.classList.contains("open")) return;
+      if (e.key === "ArrowRight") goTo(currentIndex() + 1);
+      else if (e.key === "ArrowLeft") goTo(currentIndex() - 1);
+      else if (e.key === "Escape") location.hash = "#/";
+    });
+
+    // ------------------------------------------------------------
+    // routing
+    // ------------------------------------------------------------
+    function route() {
+      const m = location.hash.match(/^#\/(.+)$/);
+      if (m) openProject(decodeURIComponent(m[1]));
+      else closeProject();
+    }
+
+    window.addEventListener("hashchange", route);
+
+    // init
+    buildGallery();
+    route();
+  </script>
+</body>
+</html>
+```
