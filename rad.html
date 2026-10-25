@@ -1,852 +1,478 @@
-Here is the HTML code for a simple portfolio page for the artist duo Rania & Adham. It displays their previous projects as large, clickable images, with a detailed view for each project.
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rania & Adham — previous projects</title>
-  <style>
-    /* minimal, paper-like base */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RaD — previous projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #e7e1d3;
+  --ink:   #2d2b28;
+  --grey:  #8f8a7e;
+  --blue:  #4a5fc1;
+  --red:   #d8433b;
+  --script: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
+  --mono:   'IBM Plex Mono', ui-monospace, monospace;
+  --serif:  'Cormorant Garamond', Georgia, serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--paper); }
+html.open { overflow: hidden; }
+body {
+  font-family: var(--serif);
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+a { color: inherit; text-decoration: none; }
 
-    body {
-      background: #e7e1d3;
-      color: #2d2b28;
-      font-family: 'Cormorant Garamond', 'Times New Roman', serif;
-      -webkit-font-smoothing: antialiased;
-      padding: 0 1.5rem;
-    }
+/* paper grain over everything */
+.grain {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 90;
+  opacity: .26; mix-blend-mode: multiply;
+}
 
-    /* paper grain (very light) */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 999;
-      mix-blend-mode: multiply;
-      opacity: 0.3;
-    }
+/* ------------------------------------------------ landing */
+.top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 3.2vh 4vw 0;
+  position: relative; z-index: 2;
+}
+.duo {
+  font-family: var(--script); font-weight: 400;
+  font-size: clamp(46px, 5vw, 78px); line-height: 1;
+  color: var(--red);
+}
+.micro {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--grey); line-height: 1.8;
+  text-align: right;
+}
 
-    /* typography */
-    .duo {
-      font-family: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
-      font-size: clamp(2.8rem, 8vw, 5.5rem);
-      color: #d8433b;
-      line-height: 1.1;
-      letter-spacing: 0.02em;
-    }
+/* ------------------------------------------------ scattered layout */
+.scatter {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 75vh;
+  margin: 2vh auto 0;
+  max-width: 1600px;
+  padding: 0 4vw;
+}
 
-    .micro {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #8f8a7e;
-      margin-top: 0.25rem;
-    }
+.work {
+  position: absolute;
+  display: block;
+  width: clamp(160px, 18vw, 280px);
+  transition: transform 0.3s ease;
+  z-index: 1;
+}
+.work:hover { z-index: 10; }
 
-    .project-title {
-      font-family: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
-      font-size: clamp(2.2rem, 5vw, 3.6rem);
-      color: #2d2b28;
-      line-height: 1.1;
-      margin-top: 0.5rem;
-    }
+/* individual scattered positions based on the reference image */
+.p1 { top: 2vh;  left: 6%; }
+.p2 { top: 15vh; left: 28%; }
+.p3 { top: 8vh;  left: 52%; }
+.p4 { top: 22vh; left: 74%; }
+.p5 { top: 45vh; left: 2%; width: clamp(140px, 15vw, 220px); }
+.p6 { top: 50vh; left: 38%; width: clamp(180px, 20vw, 300px); }
+.p7 { top: 62vh; left: 72%; width: clamp(160px, 17vw, 250px); }
 
-    .project-year {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.16em;
-      color: #4a5fc1;
-      margin-left: 0.75rem;
-    }
+.frame { position: relative; isolation: isolate; overflow: hidden; background: #d8d2c4; }
+.frame img, .frame video {
+  display: block; width: 100%; height: auto;
+  filter: grayscale(1) contrast(1.12);
+  transition: filter .55s ease;
+}
+.frame .ov { position: absolute; inset: 0; pointer-events: none; transition: opacity .55s ease; }
+.tone-bw   .ov-a { background: #efe9da; mix-blend-mode: multiply; }
+.tone-bw   .ov-b { display: none; }
+.tone-blue .ov-a { background: #aeb8ea; mix-blend-mode: multiply; }
+.tone-blue .ov-b { background: #3347a6; mix-blend-mode: lighten; }
+.tone-red  .ov-a { background: #f1b8b0; mix-blend-mode: multiply; }
+.tone-red  .ov-b { background: #c4352e; mix-blend-mode: lighten; }
+/* hover reveals the real colours */
+.work:hover .frame img, .work:hover .frame video { filter: none; }
+.work:hover .ov { opacity: 0; }
 
-    /* header / landing */
-    .top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 2.5rem 0 1.5rem;
-      border-bottom: 1px solid rgba(45, 43, 40, 0.15);
-    }
+/* shown until a first image is found / when a project has none yet */
+.frame.empty {
+  aspect-ratio: 4 / 3;
+  background:
+    repeating-linear-gradient(115deg, transparent 0 15px, rgba(255,255,255,.6) 15px 17px),
+    var(--red);
+}
+.tone-blue .frame.empty { background:
+    repeating-linear-gradient(115deg, transparent 0 15px, rgba(255,255,255,.6) 15px 17px),
+    var(--blue); }
+.tone-bw .frame.empty { background:
+    repeating-linear-gradient(115deg, transparent 0 15px, rgba(255,255,255,.6) 15px 17px),
+    #9b968b; }
+.frame.empty .ov { display: none; }
 
-    .count {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #8f8a7e;
-      text-align: right;
-      line-height: 1.6;
-    }
+.meta { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; }
+.meta-top { display: flex; align-items: baseline; gap: 12px; }
+.no, .yr, .gl, .more {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--grey);
+}
+.ttl {
+  font-family: var(--script); font-size: clamp(28px, 3vw, 46px);
+  line-height: 1; color: var(--ink);
+}
+.gl { color: var(--blue); letter-spacing: .4em; }
+.more { opacity: 0; transition: opacity .3s; text-transform: uppercase; }
+.work:hover .more { opacity: 1; color: var(--red); }
 
-    /* project grid — large images, minimal */
-    .gallery {
-      display: flex;
-      flex-direction: column;
-      gap: 3.5rem;
-      padding: 3rem 0 5rem;
-    }
+.foot {
+  position: relative; z-index: 2;
+  padding: 0 4vw 5vh; display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--grey);
+}
 
-    .project-card {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
+/* ------------------------------------------------ project page */
+#detail {
+  display: none; position: fixed; inset: 0; z-index: 40;
+  background: var(--paper);
+  grid-template-columns: minmax(290px, 31vw) 1fr;
+}
+html.open #detail { display: grid; animation: fadein .45s ease; }
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
 
-    .project-card:hover {
-      opacity: 0.85;
-    }
+.d-text {
+  padding: 4vh 2.6vw 4vh 4vw; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 2.2vh; scrollbar-width: thin;
+}
+.back, .d-no, .d-next {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--grey);
+}
+.back:hover, .d-next:hover { color: var(--red); }
+.d-title {
+  font-family: var(--script); font-weight: 400; color: var(--red);
+  font-size: clamp(52px, 5.6vw, 96px); line-height: .95; margin-top: 1vh;
+}
+.d-year { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; color: var(--blue); text-transform: uppercase; }
+.d-desc p { font-size: 17.5px; line-height: 1.55; margin-bottom: .9em; max-width: 46ch; }
+.d-bar { margin-top: auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-top: 2vh; }
+.d-count { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--ink); min-width: 62px; }
+.d-bar button {
+  width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+  border: 1px solid var(--grey); background: none; color: var(--ink);
+  font-family: var(--mono); font-size: 14px; line-height: 1; transition: .2s;
+}
+.d-bar button:hover { border-color: var(--red); color: var(--red); }
+.d-next { margin-left: auto; }
 
-    /* image wrapper — natural proportions, upscaled but not cropped */
-    .image-wrap {
-      width: 100%;
-      background: #d8d2c4;
-      border-radius: 2px;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 200px;
-    }
+.d-strip {
+  position: relative; display: flex; align-items: center; gap: 2.4vw;
+  overflow-x: auto; overflow-y: hidden; padding: 0 4vw; scrollbar-width: none;
+}
+.d-strip::-webkit-scrollbar { display: none; }
+.fig { flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; }
+.fig .m { width: 40vh; height: 60vh; }          /* placeholder until the file has loaded */
+.fig img, .fig video { display: block; width: 100%; height: 100%; object-fit: contain; }
+.fig figcaption { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--grey); text-transform: uppercase; }
+.fig.empty .m { width: min(60vw, 70vh); height: auto; aspect-ratio: 4/3;
+  background: repeating-linear-gradient(115deg, transparent 0 15px, rgba(255,255,255,.6) 15px 17px), var(--red); }
 
-    .image-wrap img {
-      display: block;
-      width: 100%;
-      height: auto;
-      max-height: 75vh;
-      object-fit: contain;
-      filter: grayscale(1) contrast(1.1);
-      transition: filter 0.3s ease;
-    }
+@media (max-width: 900px) {
+  .work { width: 30vw; }
+  .p1 { top: 5%; left: 5%; }
+  .p2 { top: 20%; left: 40%; }
+  .p3 { top: 10%; left: 65%; }
+  .p4 { top: 45%; left: 10%; }
+  .p5 { top: 55%; left: 45%; width: 35vw; }
+  .p6 { top: 35%; left: 75%; width: 25vw; }
+  .p7 { top: 70%; left: 25%; width: 30vw; }
+}
 
-    .project-card:hover .image-wrap img {
-      filter: grayscale(0.3) contrast(1.05);
-    }
-
-    /* placeholder when no image is found */
-    .placeholder {
-      width: 100%;
-      aspect-ratio: 4 / 3;
-      background: repeating-linear-gradient(115deg, transparent 0 15px, rgba(255, 255, 255, 0.6) 15px 17px), #9b968b;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      color: #fff;
-      text-transform: uppercase;
-      opacity: 0.8;
-    }
-
-    /* meta line */
-    .meta {
-      display: flex;
-      align-items: baseline;
-      flex-wrap: wrap;
-      gap: 0.5rem 1.2rem;
-      margin-top: 0.75rem;
-      padding-left: 0.2rem;
-    }
-
-    .meta .index {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      color: #8f8a7e;
-    }
-
-    /* detail overlay */
-    #detail {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #e7e1d3;
-      z-index: 100;
-      grid-template-columns: 30% 1fr;
-      padding: 0;
-      animation: fadein 0.3s ease;
-    }
-
-    html.open #detail {
-      display: grid;
-    }
-
-    @keyframes fadein {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    /* left panel — text */
-    .detail-text {
-      padding: 3rem 2rem 2rem 3rem;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 1.8rem;
-      background: #e7e1d3;
-      border-right: 1px solid rgba(45, 43, 40, 0.1);
-    }
-
-    .back-link {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: #8f8a7e;
-      text-decoration: none;
-      display: inline-block;
-      width: fit-content;
-      transition: color 0.2s;
-    }
-
-    .back-link:hover {
-      color: #d8433b;
-    }
-
-    .detail-no {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
-      color: #8f8a7e;
-      text-transform: uppercase;
-    }
-
-    .detail-title {
-      font-family: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
-      font-size: clamp(2.8rem, 4.5vw, 4.2rem);
-      color: #d8433b;
-      line-height: 1;
-      margin-top: 0.2rem;
-    }
-
-    .detail-year {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.16em;
-      color: #4a5fc1;
-      text-transform: uppercase;
-      margin-top: -0.8rem;
-    }
-
-    .detail-desc {
-      font-size: 1.05rem;
-      line-height: 1.6;
-      color: #2d2b28;
-      max-width: 52ch;
-    }
-
-    .detail-desc p {
-      margin-bottom: 0.8rem;
-    }
-
-    .detail-desc p:last-child {
-      margin-bottom: 0;
-    }
-
-    /* right panel — image strip */
-    .image-strip {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-      overflow-x: auto;
-      overflow-y: hidden;
-      padding: 0 3rem;
-      scrollbar-width: none;
-      background: #e7e1d3;
-    }
-
-    .image-strip::-webkit-scrollbar {
-      display: none;
-    }
-
-    .strip-item {
-      flex: 0 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      max-height: 80vh;
-    }
-
-    .strip-item img,
-    .strip-item video {
-      display: block;
-      max-width: 70vw;
-      max-height: 70vh;
-      width: auto;
-      height: auto;
-      object-fit: contain;
-      filter: grayscale(0.6) contrast(1.05);
-      transition: filter 0.2s;
-      border-radius: 2px;
-    }
-
-    .strip-item img:hover,
-    .strip-item video:hover {
-      filter: grayscale(0) contrast(1);
-    }
-
-    .strip-item figcaption {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: #8f8a7e;
-      margin-top: 0.2rem;
-    }
-
-    .strip-empty {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.14em;
-      color: #8f8a7e;
-      text-transform: uppercase;
-      padding: 2rem;
-    }
-
-    /* navigation bar in detail */
-    .detail-nav {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-top: auto;
-      padding-top: 1.5rem;
-      border-top: 1px solid rgba(45, 43, 40, 0.1);
-    }
-
-    .nav-btn {
-      width: 2.2rem;
-      height: 2.2rem;
-      border-radius: 50%;
-      border: 1px solid #8f8a7e;
-      background: none;
-      color: #2d2b28;
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.2s;
-      font-family: 'IBM Plex Mono', monospace;
-    }
-
-    .nav-btn:hover {
-      border-color: #d8433b;
-      color: #d8433b;
-    }
-
-    .nav-counter {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      color: #2d2b28;
-      min-width: 3.5rem;
-    }
-
-    .nav-next {
-      margin-left: auto;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      color: #8f8a7e;
-      text-decoration: none;
-      text-transform: uppercase;
-      transition: color 0.2s;
-      white-space: nowrap;
-    }
-
-    .nav-next:hover {
-      color: #d8433b;
-    }
-
-    /* footer (landing) */
-    .foot {
-      display: flex;
-      justify-content: space-between;
-      padding: 1.5rem 0 2rem;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #8f8a7e;
-      border-top: 1px solid rgba(45, 43, 40, 0.15);
-    }
-
-    /* responsive */
-    @media (max-width: 760px) {
-      body {
-        padding: 0 1rem;
-      }
-
-      .top {
-        padding: 1.5rem 0 1rem;
-      }
-
-      .gallery {
-        gap: 2.5rem;
-        padding: 2rem 0 3rem;
-      }
-
-      .image-wrap {
-        min-height: 150px;
-      }
-
-      .image-wrap img {
-        max-height: 55vh;
-      }
-
-      #detail {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
-      }
-
-      .detail-text {
-        padding: 1.5rem 1.5rem 1rem;
-        max-height: 42vh;
-        gap: 1rem;
-        border-right: none;
-        border-bottom: 1px solid rgba(45, 43, 40, 0.1);
-      }
-
-      .detail-title {
-        font-size: 2.6rem;
-      }
-
-      .detail-desc {
-        font-size: 0.95rem;
-      }
-
-      .image-strip {
-        padding: 0 1.5rem;
-        gap: 1.2rem;
-      }
-
-      .strip-item img,
-      .strip-item video {
-        max-width: 85vw;
-        max-height: 55vh;
-      }
-
-      .nav-next {
-        font-size: 0.55rem;
-      }
-    }
-
-    /* utility */
-    .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0 0 0 0);
-      white-space: nowrap;
-      border: 0;
-    }
-  </style>
-  <!-- fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+@media (max-width: 760px) {
+  .scatter { min-height: 60vh; }
+  .work { width: 40vw; }
+  .p1 { top: 0; left: 2%; }
+  .p2 { top: 25%; left: 45%; }
+  .p3 { top: 10%; left: 55%; }
+  .p4 { top: 50%; left: 5%; }
+  .p5 { top: 65%; left: 45%; width: 45vw; }
+  .p6 { top: 40%; left: 60%; width: 35vw; }
+  .p7 { top: 85%; left: 10%; width: 40vw; }
+  .duo { font-size: 38px; }
+  
+  #detail { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .d-text { max-height: 44vh; padding: 3vh 5vw 2vh; gap: 1.4vh; }
+  .d-title { font-size: 54px; }
+  .d-desc p { font-size: 16px; }
+  .d-strip { padding: 0 5vw; }
+}
+</style>
 </head>
 <body>
 
-  <!-- ============ LANDING ============ -->
-  <header class="top">
-    <div>
-      <h1 class="duo">Rania &amp; Adham</h1>
-      <p class="micro">previous projects</p>
+<svg class="grain" aria-hidden="true">
+  <filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/>
+    <feColorMatrix values="0 0 0 0 .36  0 0 0 0 .33  0 0 0 0 .29  0 0 0 .6 0"/></filter>
+  <rect width="100%" height="100%" filter="url(#n)"/>
+</svg>
+
+<header class="top">
+  <h1 class="duo">RaD</h1>
+  <p class="micro">previous projects<br><span id="count"></span></p>
+</header>
+
+<main class="scatter" id="wall"></main>
+
+<footer class="foot"><span>RaD</span><span>previous projects</span></footer>
+
+<section id="detail" aria-label="Project">
+  <aside class="d-text">
+    <a class="back" href="#/">&larr; all projects</a>
+    <p class="d-no" id="d-no"></p>
+    <h2 class="d-title" id="d-title"></h2>
+    <p class="d-year" id="d-year"></p>
+    <div class="d-desc" id="d-desc"></div>
+    <div class="d-bar">
+      <button id="prev" aria-label="Previous image">&larr;</button>
+      <span class="d-count" id="d-count"></span>
+      <button id="next" aria-label="Next image">&rarr;</button>
+      <a class="d-next" id="d-nextlink" href="#/"></a>
     </div>
-    <div class="count" id="project-count"></div>
-  </header>
+  </aside>
+  <div class="d-strip" id="strip"></div>
+</section>
 
-  <main class="gallery" id="gallery"></main>
+<script>
+/* ============================================================
+   PROJECTS — edit text here. Images are found automatically:
+   put files in /images named  {slug}_1, {slug}_2 ... {slug}_30
+   (.jpg  .png  .mp4, lowercase, consecutive numbering from 1).
+   ============================================================ */
+const PROJECTS = [
+  { slug:"spiral_spines", title:"Spiral Spines", year:"2026", subtitle:"", tone:"bw",
+    text:[
+      "A regenerative material practice that transforms uprooted and discarded timber into structural and spatial systems.",
+      "Presented at the Climate Biennale Vienna 2026."
+    ] },
+  { slug:"woven_realities", title:"Woven Realities", year:"2025", subtitle:"Afghan House Pavilion", tone:"blue",
+    text:[
+      "The Woven Realities project understands human memory as an abstract yet fundamental architectural process. The aim is to translate these intimate dimensions of dwelling into a circular, 1:1-scale architectural prototype. Drawing primary inspiration from the traditional clay and mud-brick houses prevalent in Central Asia and globally, the project reinterprets these vernacular typologies for a European context. We achieve this by substituting traditional earth with locally sourced, reusable by-products from the construction, industry, and consumer waste sectors.",
+      "By abstracting destroyed Afghan cultural monuments and reconstructing them using these reclaimed materials, we create a modular spatial structure. This transformation results in a low-tech, highly adaptable construction method that can be easily deployed, modified, and rebuilt virtually anywhere. It demonstrates how regenerative, low-carbon building approaches are not only ecologically necessary but also function as ritualistic techniques of enclosure, transforming mere “being in the world” into a profound sense of “being at home.”",
+      "Material specifications: wood, cement, stone, fabric. Construction techniques: low-tech modular assembly, vernacular adaptation, kinetic base, deliberate omission. Dimensions: 666.5 × 322.5 × 263 cm."
+    ] },
+  { slug:"lifeguard_platform", title:"The Lifeguard Platform", year:"2026", subtitle:"", tone:"bw",
+    text:[ "Set design / architectural installation." ] },
+  { slug:"another_sea", title:"another sea behind another wall", year:"", subtitle:"", tone:"blue", text:[] },
+  { slug:"soft_unsealing", title:"Soft Unsealing", year:"2024", subtitle:"IABR11 Rotterdam", tone:"bw",
+    text:[
+      "The goal of this project is to bring nature back to the city, revive the history, and fulfill the community wishes. This location, which initially had little function, is given a new purpose and stimulates further developments in the region.",
+      "It began with applied research and experimental interventions by the [A]FA lab team, in dialogue with the community: “The core of the project is unlearning and experimenting with the ways we as architects are used to building. This is crucial to develop innovative spaces that promote socio-ecological transformation, improve local climate conditions, and create meaningful environments.”",
+      "The research led to site-specific environmental interventions, such as relocating trees for natural shade and implementing rainwater harvesting systems to address overheating, water scarcity, and poor urban infrastructure."
+    ] },
+  { slug:"pay_cheque", title:"Pay-Cheque", year:"", subtitle:"", tone:"red", text:[] },
+  { slug:"si_demain_je_pars", title:"si demain je pars", year:"", subtitle:"", tone:"blue", text:[] }
+];
 
-  <footer class="foot">
-    <span>Rania &amp; Adham</span>
-    <span>previous projects</span>
-  </footer>
+/* ---------------- automatic file detection ---------------- */
+const MAX_MEDIA = 30;
+const MEDIA_KINDS = [["jpg","image"],["png","image"],["mp4","video"]];
 
-  <!-- ============ DETAIL OVERLAY ============ -->
-  <section id="detail" aria-label="Project detail">
-    <aside class="detail-text">
-      <a class="back-link" href="#/">&larr; all projects</a>
-      <p class="detail-no" id="detail-no"></p>
-      <h2 class="detail-title" id="detail-title"></h2>
-      <p class="detail-year" id="detail-year"></p>
-      <div class="detail-desc" id="detail-desc"></div>
-      <div class="detail-nav">
-        <button class="nav-btn" id="nav-prev" aria-label="Previous image">&larr;</button>
-        <span class="nav-counter" id="nav-counter"></span>
-        <button class="nav-btn" id="nav-next" aria-label="Next image">&rarr;</button>
-        <a class="nav-next" id="nav-nextlink" href="#/"></a>
+async function mediaExists(src, kind) {
+  try {                                   // HEAD downloads nothing
+    const r = await fetch(src, { method:"HEAD" });
+    if (!r.ok) return false;
+    const ct = (r.headers.get("content-type") || "").toLowerCase();
+    return !ct || ct.startsWith(kind + "/");
+  } catch (e) {                           // e.g. opened from disk (file://)
+    return elementProbe(src, kind);
+  }
+}
+function elementProbe(src, kind) {
+  return new Promise(resolve => {
+    let t; const done = ok => { clearTimeout(t); resolve(ok); };
+    t = setTimeout(() => done(false), 6000);
+    if (kind === "video") {
+      const v = document.createElement("video"); v.preload = "metadata"; v.muted = true;
+      v.onloadedmetadata = () => done(true); v.onerror = () => done(false); v.src = src;
+    } else {
+      const im = new Image(); im.onload = () => done(true); im.onerror = () => done(false); im.src = src;
+    }
+  });
+}
+async function findSlot(slug, n) {
+  for (const [ext, kind] of MEDIA_KINDS) {
+    const src = "images/" + slug + "_" + n + "." + ext;
+    if (await mediaExists(src, kind)) return { src, type: kind };
+  }
+  return null;
+}
+// first image only (landing page) — 3 quick checks for projects with no files
+const firstCache = {};
+function getFirst(p) { return firstCache[p.slug] || (firstCache[p.slug] = findSlot(p.slug, 1)); }
+// every file 1..30 (project page); stops at the first missing number
+const allCache = {};
+function getAll(p) {
+  return allCache[p.slug] || (allCache[p.slug] = (async () => {
+    const first = await getFirst(p);
+    if (!first) return [];
+    const found = [first]; let n = 2;
+    while (n <= MAX_MEDIA) {
+      const batch = [];
+      for (let k = 0; k < 4 && n + k <= MAX_MEDIA; k++) batch.push(findSlot(p.slug, n + k));
+      const res = await Promise.all(batch);
+      let stop = false;
+      for (const r of res) { if (!r) { stop = true; break; } found.push(r); }
+      if (stop) break; n += 4;
+    }
+    return found;
+  })());
+}
+
+/* ---------------- helpers ---------------- */
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2, "0");
+const esc = t => String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const GLYPHS = ["● ◆","★ ○","◆ ●","○ ★","● ○","◆ ★","★ ●"];
+
+function mediaTag(item, alt, extra) {
+  if (item.type === "video")
+    return '<video ' + (extra||"") + ' src="' + item.src + '" autoplay muted loop playsinline></video>';
+  return '<img ' + (extra||"") + ' src="' + item.src + '" alt="' + esc(alt) + '" decoding="async">';
+}
+
+/* ---------------- landing ---------------- */
+function buildWall() {
+  $("count").textContent = pad(PROJECTS.length) + " works";
+  $("wall").innerHTML = PROJECTS.map((p, i) => `
+    <a class="work p${i+1} tone-${p.tone}" href="#/${p.slug}" data-slug="${p.slug}">
+      <div class="frame empty"><i class="ov ov-a"></i><i class="ov ov-b"></i></div>
+      <div class="meta">
+        <div class="meta-top">
+          <span class="no">${pad(i+1)}</span>
+          <span class="gl">${GLYPHS[i % GLYPHS.length]}</span>
+          <span class="more">open &rarr;</span>
+        </div>
+        <span class="ttl">${esc(p.title)}</span>
+        ${p.year ? '<span class="yr">' + esc(p.year) + '</span>' : ''}
       </div>
-    </aside>
-    <div class="image-strip" id="strip"></div>
-  </section>
-
-  <script>
-    // ------------------------------------------------------------
-    // PROJECTS — text and metadata, images auto-detected
-    // ------------------------------------------------------------
-    const PROJECTS = [
-      {
-        slug: "spiral_spines",
-        title: "Spiral Spines",
-        year: "2026",
-        subtitle: "",
-        tone: "bw",
-        text: [
-          "A regenerative material practice that transforms uprooted and discarded timber into structural and spatial systems.",
-          "Presented at the Climate Biennale Vienna 2026."
-        ]
-      },
-      {
-        slug: "woven_realities",
-        title: "Woven Realities",
-        year: "2025",
-        subtitle: "Afghan House Pavilion",
-        tone: "blue",
-        text: [
-          "The Woven Realities project understands human memory as an abstract yet fundamental architectural process. The aim is to translate these intimate dimensions of dwelling into a circular, 1:1-scale architectural prototype. Drawing primary inspiration from the traditional clay and mud-brick houses prevalent in Central Asia and globally, the project reinterprets these vernacular typologies for a European context. We achieve this by substituting traditional earth with locally sourced, reusable by-products from the construction, industry, and consumer waste sectors.",
-          "By abstracting destroyed Afghan cultural monuments and reconstructing them using these reclaimed materials, we create a modular spatial structure. This transformation results in a low-tech, highly adaptable construction method that can be easily deployed, modified, and rebuilt virtually anywhere. It demonstrates how regenerative, low-carbon building approaches are not only ecologically necessary but also function as ritualistic techniques of enclosure, transforming mere “being in the world” into a profound sense of “being at home.”",
-          "Material specifications: wood, cement, stone, fabric. Construction techniques: low-tech modular assembly, vernacular adaptation, kinetic base, deliberate omission. Dimensions: 666.5 × 322.5 × 263 cm."
-        ]
-      },
-      {
-        slug: "lifeguard_platform",
-        title: "The Lifeguard Platform",
-        year: "2026",
-        subtitle: "",
-        tone: "bw",
-        text: [
-          "Set design / architectural installation."
-        ]
-      },
-      {
-        slug: "another_sea",
-        title: "another sea behind another wall",
-        year: "",
-        subtitle: "",
-        tone: "blue",
-        text: []
-      },
-      {
-        slug: "soft_unsealing",
-        title: "Soft Unsealing",
-        year: "2024",
-        subtitle: "IABR11 Rotterdam",
-        tone: "bw",
-        text: [
-          "The goal of this project is to bring nature back to the city, revive the history, and fulfill the community wishes. This location, which initially had little function, is given a new purpose and stimulates further developments in the region.",
-          "It began with applied research and experimental interventions by the [A]FA lab team, in dialogue with the community: “The core of the project is unlearning and experimenting with the ways we as architects are used to building. This is crucial to develop innovative spaces that promote socio-ecological transformation, improve local climate conditions, and create meaningful environments.”",
-          "The research led to site-specific environmental interventions, such as relocating trees for natural shade and implementing rainwater harvesting systems to address overheating, water scarcity, and poor urban infrastructure."
-        ]
-      },
-      {
-        slug: "pay_cheque",
-        title: "Pay-Cheque",
-        year: "",
-        subtitle: "",
-        tone: "red",
-        text: []
-      },
-      {
-        slug: "si_demain_je_pars",
-        title: "si demain je pars",
-        year: "",
-        subtitle: "",
-        tone: "blue",
-        text: []
-      }
-    ];
-
-    // ------------------------------------------------------------
-    // media detection — same logic as the original but simplified
-    // ------------------------------------------------------------
-    const MAX_MEDIA = 30;
-    const MEDIA_KINDS = [["jpg", "image"], ["png", "image"], ["mp4", "video"]];
-
-    async function mediaExists(src, kind) {
-      try {
-        const r = await fetch(src, { method: "HEAD" });
-        if (!r.ok) return false;
-        const ct = (r.headers.get("content-type") || "").toLowerCase();
-        return !ct || ct.startsWith(kind + "/");
-      } catch (e) {
-        return elementProbe(src, kind);
-      }
-    }
-
-    function elementProbe(src, kind) {
-      return new Promise(resolve => {
-        let t;
-        const done = ok => { clearTimeout(t); resolve(ok); };
-        t = setTimeout(() => done(false), 5000);
-        if (kind === "video") {
-          const v = document.createElement("video");
-          v.preload = "metadata";
-          v.muted = true;
-          v.onloadedmetadata = () => done(true);
-          v.onerror = () => done(false);
-          v.src = src;
-        } else {
-          const im = new Image();
-          im.onload = () => done(true);
-          im.onerror = () => done(false);
-          im.src = src;
-        }
-      });
-    }
-
-    async function findSlot(slug, n) {
-      for (const [ext, kind] of MEDIA_KINDS) {
-        const src = "images/" + slug + "_" + n + "." + ext;
-        if (await mediaExists(src, kind)) return { src, type: kind };
-      }
-      return null;
-    }
-
-    // cache
-    const firstCache = {};
-    function getFirst(p) {
-      return firstCache[p.slug] || (firstCache[p.slug] = findSlot(p.slug, 1));
-    }
-
-    const allCache = {};
-    function getAll(p) {
-      return allCache[p.slug] || (allCache[p.slug] = (async () => {
-        const first = await getFirst(p);
-        if (!first) return [];
-        const found = [first];
-        let n = 2;
-        while (n <= MAX_MEDIA) {
-          const batch = [];
-          for (let k = 0; k < 4 && n + k <= MAX_MEDIA; k++) batch.push(findSlot(p.slug, n + k));
-          const res = await Promise.all(batch);
-          let stop = false;
-          for (const r of res) {
-            if (!r) { stop = true; break; }
-            found.push(r);
-          }
-          if (stop) break;
-          n += 4;
-        }
-        return found;
-      })());
-    }
-
-    // ------------------------------------------------------------
-    // helpers
-    // ------------------------------------------------------------
-    const $ = id => document.getElementById(id);
-    const pad = n => String(n).padStart(2, "0");
-    const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-
-    function mediaTag(item, alt, extra = "") {
-      if (item.type === "video")
-        return `<video ${extra} src="${item.src}" autoplay muted loop playsinline></video>`;
-      return `<img ${extra} src="${item.src}" alt="${esc(alt)}" decoding="async">`;
-    }
-
-    // ------------------------------------------------------------
-    // build landing gallery
-    // ------------------------------------------------------------
-    function buildGallery() {
-      $("project-count").textContent = pad(PROJECTS.length) + " works";
-      const gallery = $("gallery");
-      gallery.innerHTML = PROJECTS.map((p, i) => {
-        return `
-          <a class="project-card" href="#/${p.slug}" data-slug="${p.slug}">
-            <div class="image-wrap" id="wrap-${p.slug}">
-              <div class="placeholder">loading…</div>
-            </div>
-            <div class="meta">
-              <span class="index">${pad(i + 1)}</span>
-              <span class="project-title">${esc(p.title)}</span>
-              ${p.year ? `<span class="project-year">${esc(p.year)}</span>` : ''}
-            </div>
-          </a>
-        `;
-      }).join("");
-
-      // load first image for each project
-      PROJECTS.forEach(p => {
-        getFirst(p).then(item => {
-          if (!item) return;
-          const wrap = $(`wrap-${p.slug}`);
-          if (!wrap) return;
-          wrap.innerHTML = mediaTag(item, p.title, 'loading="lazy"');
-        });
-      });
-    }
-
-    // ------------------------------------------------------------
-    // detail overlay
-    // ------------------------------------------------------------
-    const strip = $("strip");
-    let openToken = 0;
-
-    function openProject(slug) {
-      const i = PROJECTS.findIndex(p => p.slug === slug);
-      if (i < 0) { closeProject(); return; }
-      const p = PROJECTS[i];
-      const nxt = PROJECTS[(i + 1) % PROJECTS.length];
-
-      // fill text panel
-      $("detail-no").textContent = pad(i + 1) + " / " + pad(PROJECTS.length);
-      $("detail-title").textContent = p.title;
-      $("detail-year").textContent = [p.subtitle, p.year].filter(Boolean).join("  ·  ");
-      $("detail-desc").innerHTML = p.text.map(t => "<p>" + esc(t) + "</p>").join("");
-      $("nav-nextlink").href = "#/" + nxt.slug;
-      $("nav-nextlink").innerHTML = "next: " + esc(nxt.title) + " &rarr;";
-      $("nav-counter").textContent = "";
-
-      // reset strip
-      strip.innerHTML = "";
-      strip.scrollLeft = 0;
-      document.documentElement.classList.add("open");
-      document.title = p.title + " — Rania & Adham";
-
-      const token = ++openToken;
-      getAll(p).then(items => {
-        if (token !== openToken) return;
-        if (!items.length) {
-          strip.innerHTML = `<p class="strip-empty">images to come</p>`;
-          $("nav-counter").textContent = "";
-          return;
-        }
-        strip.innerHTML = items.map((it, k) =>
-          `<figure class="strip-item">
-            ${mediaTag(it, p.title + " — Fig. " + (k + 1), 'loading="lazy"')}
-            <figcaption>Fig. ${k + 1}</figcaption>
-          </figure>`
-        ).join("");
-        // size figures
-        strip.querySelectorAll(".strip-item img, .strip-item video").forEach(watchFit);
-        updateCounter();
-      });
-    }
-
-    function closeProject() {
-      openToken++;
-      document.documentElement.classList.remove("open");
-      document.title = "Rania & Adham — previous projects";
-      strip.innerHTML = "";
-    }
-
-    // size each figure to its own file
-    function fit(el) {
-      const nw = el.naturalWidth || el.videoWidth;
-      const nh = el.naturalHeight || el.videoHeight;
-      if (!nw || !nh) return;
-      const small = window.innerWidth <= 760;
-      const maxH = strip.clientHeight * (small ? 0.80 : 0.86) - 28;
-      const maxW = strip.clientWidth * (small ? 0.86 : 0.72);
-      const k = Math.min(maxW / nw, maxH / nh);
-      const fig = el.closest(".strip-item");
-      if (!fig) return;
-      // let the image keep natural proportions, but constrain container
-      el.style.maxWidth = (nw * k) + "px";
-      el.style.maxHeight = (nh * k) + "px";
-      el.style.width = "auto";
-      el.style.height = "auto";
-    }
-
-    function watchFit(el) {
-      const ev = el.tagName === "VIDEO" ? "loadedmetadata" : "load";
-      el.addEventListener(ev, () => { fit(el); updateCounter(); });
-      if ((el.complete && el.naturalWidth) || el.readyState >= 1) fit(el);
-    }
-
-    window.addEventListener("resize", () => {
-      strip.querySelectorAll(".strip-item img, .strip-item video").forEach(fit);
+    </a>`).join("");
+  PROJECTS.forEach(p => {
+    getFirst(p).then(item => {
+      if (!item) return;
+      const frame = document.querySelector('.work[data-slug="' + p.slug + '"] .frame');
+      frame.classList.remove("empty");
+      frame.insertAdjacentHTML("afterbegin", mediaTag(item, p.title, 'loading="lazy"'));
     });
+  });
+}
 
-    // counter and navigation
-    function figs() {
-      return [...strip.querySelectorAll(".strip-item")].filter(f => !f.classList.contains("strip-empty"));
+/* ---------------- project page ---------------- */
+const strip = $("strip");
+let openToken = 0;
+
+function openProject(slug) {
+  const i = PROJECTS.findIndex(p => p.slug === slug);
+  if (i < 0) { closeProject(); return; }
+  const p = PROJECTS[i], nxt = PROJECTS[(i + 1) % PROJECTS.length];
+  $("d-no").textContent = pad(i+1) + " / " + pad(PROJECTS.length);
+  $("d-title").textContent = p.title;
+  $("d-year").textContent = [p.subtitle, p.year].filter(Boolean).join("  ·  ");
+  $("d-desc").innerHTML = p.text.map(t => "<p>" + esc(t) + "</p>").join("");
+  $("d-nextlink").href = "#/" + nxt.slug;
+  $("d-nextlink").innerHTML = "next: " + esc(nxt.title) + " &rarr;";
+  $("d-count").textContent = "";
+  strip.innerHTML = ""; strip.scrollLeft = 0;
+  document.documentElement.classList.add("open");
+  document.title = p.title + " — RaD";
+  const token = ++openToken;
+  getAll(p).then(items => {
+    if (token !== openToken) return;
+    if (!items.length) {
+      strip.innerHTML = '<figure class="fig empty"><div class="m"></div><figcaption>images to come</figcaption></figure>';
+      $("d-count").textContent = "";
+      return;
     }
+    strip.innerHTML = items.map((it, k) =>
+      '<figure class="fig"><div class="m">' + mediaTag(it, p.title + " — Fig. " + (k+1), 'loading="lazy"') +
+      '</div><figcaption>Fig. ' + (k+1) + '</figcaption></figure>').join("");
+    strip.querySelectorAll(".fig img, .fig video").forEach(watchFit);
+    updateCount();
+  });
+}
+function closeProject() {
+  openToken++;
+  document.documentElement.classList.remove("open");
+  document.title = "RaD — previous projects";
+  strip.innerHTML = "";
+}
 
-    function currentIndex() {
-      const f = figs();
-      if (!f.length) return -1;
-      const mid = strip.scrollLeft + strip.clientWidth / 2;
-      let best = 0, bd = Infinity;
-      f.forEach((el, k) => {
-        const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - mid);
-        if (d < bd) { bd = d; best = k; }
-      });
-      return best;
-    }
+/* size each figure to its own file: true proportions, as large as the strip allows */
+function fit(el) {
+  const nw = el.naturalWidth || el.videoWidth, nh = el.naturalHeight || el.videoHeight;
+  if (!nw || !nh) return;
+  const small = window.innerWidth <= 760;
+  const maxH = strip.clientHeight * (small ? 0.80 : 0.86) - 28;
+  const maxW = strip.clientWidth * (small ? 0.86 : 0.72);
+  const k = Math.min(maxW / nw, maxH / nh);
+  const m = el.parentElement;
+  m.style.width = Math.round(nw * k) + "px";
+  m.style.height = Math.round(nh * k) + "px";
+}
+function watchFit(el) {
+  const ev = el.tagName === "VIDEO" ? "loadedmetadata" : "load";
+  el.addEventListener(ev, () => { fit(el); updateCount(); });
+  if ((el.complete && el.naturalWidth) || el.readyState >= 1) fit(el);
+}
+window.addEventListener("resize", () => strip.querySelectorAll(".fig:not(.empty) img, .fig:not(.empty) video").forEach(fit));
 
-    function updateCounter() {
-      const f = figs();
-      if (!f.length) { $("nav-counter").textContent = ""; return; }
-      $("nav-counter").textContent = (currentIndex() + 1) + " / " + f.length;
-    }
+/* current image = the one nearest the middle of the strip */
+function figs() { return [...strip.querySelectorAll(".fig:not(.empty)")]; }
+function currentIndex() {
+  const f = figs(); if (!f.length) return -1;
+  const mid = strip.scrollLeft + strip.clientWidth / 2; let best = 0, bd = Infinity;
+  f.forEach((el, k) => { const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = k; } });
+  return best;
+}
+function updateCount() {
+  const f = figs(); if (!f.length) { $("d-count").textContent = ""; return; }
+  $("d-count").textContent = (currentIndex() + 1) + " / " + f.length;
+}
+function goTo(k) {
+  const f = figs(); if (!f.length) return;
+  k = Math.max(0, Math.min(f.length - 1, k));
+  strip.scrollTo({ left: f[k].offsetLeft - (strip.clientWidth - f[k].offsetWidth) / 2, behavior: "smooth" });
+}
+let raf = 0;
+strip.addEventListener("scroll", () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(updateCount); }, { passive: true });
+// mouse wheel / trackpad scrolls the images back and forth
+strip.addEventListener("wheel", e => {
+  if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { strip.scrollLeft += e.deltaY; e.preventDefault(); }
+}, { passive: false });
+$("prev").addEventListener("click", () => goTo(currentIndex() - 1));
+$("next").addEventListener("click", () => goTo(currentIndex() + 1));
+document.addEventListener("keydown", e => {
+  if (!document.documentElement.classList.contains("open")) return;
+  if (e.key === "ArrowRight") goTo(currentIndex() + 1);
+  else if (e.key === "ArrowLeft") goTo(currentIndex() - 1);
+  else if (e.key === "Escape") location.hash = "#/";
+});
 
-    function goTo(k) {
-      const f = figs();
-      if (!f.length) return;
-      k = Math.max(0, Math.min(f.length - 1, k));
-      strip.scrollTo({
-        left: f[k].offsetLeft - (strip.clientWidth - f[k].offsetWidth) / 2,
-        behavior: "smooth"
-      });
-    }
-
-    let raf = 0;
-    strip.addEventListener("scroll", () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(updateCounter);
-    }, { passive: true });
-
-    // wheel scrolls horizontally
-    strip.addEventListener("wheel", e => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        strip.scrollLeft += e.deltaY;
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    $("nav-prev").addEventListener("click", () => goTo(currentIndex() - 1));
-    $("nav-next").addEventListener("click", () => goTo(currentIndex() + 1));
-
-    document.addEventListener("keydown", e => {
-      if (!document.documentElement.classList.contains("open")) return;
-      if (e.key === "ArrowRight") goTo(currentIndex() + 1);
-      else if (e.key === "ArrowLeft") goTo(currentIndex() - 1);
-      else if (e.key === "Escape") location.hash = "#/";
-    });
-
-    // ------------------------------------------------------------
-    // routing
-    // ------------------------------------------------------------
-    function route() {
-      const m = location.hash.match(/^#\/(.+)$/);
-      if (m) openProject(decodeURIComponent(m[1]));
-      else closeProject();
-    }
-
-    window.addEventListener("hashchange", route);
-
-    // init
-    buildGallery();
-    route();
-  </script>
+/* ---------------- routing (#/slug) ---------------- */
+function route() {
+  const m = location.hash.match(/^#\/(.+)$/);
+  if (m) openProject(decodeURIComponent(m[1])); else closeProject();
+}
+window.addEventListener("hashchange", route);
+buildWall();
+route();
+</script>
 </body>
 </html>
 ```
