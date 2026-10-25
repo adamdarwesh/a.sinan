@@ -1,8 +1,3 @@
-Here is the complete HTML code for the **RaD** website, updated exactly according to your specifications. 
-
-I have applied all the changes: pure white background, removed grain, exact font sizes and colors, solid black borders on the scattered images, no hover effects, light grey placeholders, the specific title placement, removed footer, and the updated detail page layout with the vertical divider.
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,9 +9,9 @@ I have applied all the changes: pure white background, removed grain, exact font
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
 <style>
 :root {
-  --paper: #ffffff; /* Pure white background */
-  --ink:   #1a1a1a; /* Very dark grey/black text */
-  --grey:  #8f8a7e; /* Medium grey */
+  --paper: #ffffff;
+  --ink:   #1a1a1a;
+  --grey:  #8f8a7e;
   --blue:  #4a5fc1;
   --red:   #d8433b;
   --script: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
@@ -40,12 +35,12 @@ a { color: inherit; text-decoration: none; }
 /* ------------------------------------------------ landing */
 .top {
   display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 4vw 4vw 0; /* 4vw padding top and left/right */
+  padding: 4vw 4vw 0;
   position: relative; z-index: 2;
 }
 .duo {
   font-family: var(--script); font-weight: 400;
-  font-size: 5vw; /* Exactly 5vw as requested */
+  font-size: 5vw;
   line-height: 1;
   color: var(--red);
 }
@@ -53,7 +48,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--mono); font-size: 12px; letter-spacing: .14em;
   text-transform: uppercase; color: var(--grey); line-height: 1.8;
   text-align: right;
-  margin-top: 0.5vh; /* Aligns visually with top of title */
+  margin-top: 0.5vh;
 }
 
 /* ------------------------------------------------ scattered layout */
@@ -64,7 +59,7 @@ a { color: inherit; text-decoration: none; }
   min-height: 75vh;
   margin: 2vh auto 0;
   max-width: 1600px;
-  padding: 0 4vw 8vh; /* Added bottom padding since footer is removed */
+  padding: 0 4vw 8vh;
 }
 
 .work {
@@ -84,20 +79,18 @@ a { color: inherit; text-decoration: none; }
 .p6 { top: 50vh; left: 38%; width: clamp(180px, 20vw, 300px); }
 .p7 { top: 62vh; left: 72%; width: clamp(160px, 17vw, 250px); }
 
-/* 2px solid black border for every image frame */
 .frame { 
   position: relative; 
   isolation: isolate; 
   overflow: hidden; 
-  background: #e0e0e0; /* Solid light grey placeholder */
+  background: #e0e0e0;
   border: 2px solid #000000; 
 }
 .frame img, .frame video {
   display: block; width: 100%; height: auto;
-  filter: none; /* Removed hover filters */
+  filter: none;
 }
 
-/* Solid grey placeholder instead of stripes */
 .frame.empty {
   aspect-ratio: 4 / 3;
   background: #e0e0e0;
@@ -110,8 +103,8 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--mono); font-size: 12px; letter-spacing: .14em; color: var(--grey);
 }
 .ttl {
-  font-family: var(--script); font-size: 36px; /* Exactly 36px as requested */
-  line-height: 1; color: #000000; /* Pure black */
+  font-family: var(--script); font-size: 36px;
+  line-height: 1; color: #000000;
 }
 
 /* ------------------------------------------------ project page */
@@ -126,8 +119,8 @@ html.open #detail { display: grid; animation: fadein .45s ease; }
 .d-text {
   padding: 4vh 2.6vw 4vh 4vw; overflow-y: auto;
   display: flex; flex-direction: column; gap: 2.2vh; scrollbar-width: thin;
-  background: #ffffff; /* Pure white left side */
-  border-right: 1px solid #000000; /* Vertical black line */
+  background: #ffffff;
+  border-right: 1px solid #000000;
 }
 .back, .d-no, .d-next {
   font-family: var(--mono); font-size: 12px; letter-spacing: .14em;
@@ -136,8 +129,8 @@ html.open #detail { display: grid; animation: fadein .45s ease; }
 .back:hover, .d-next:hover { color: var(--red); }
 .d-title {
   font-family: var(--script); font-weight: 400; 
-  color: #000000; /* Pure black as requested */
-  font-size: 64px; /* Exactly 64px */
+  color: #000000;
+  font-size: 64px;
   line-height: .95; margin-top: 1vh;
 }
 .d-year { font-family: var(--mono); font-size: 12px; letter-spacing: .16em; color: var(--blue); text-transform: uppercase; }
@@ -223,9 +216,6 @@ html.open #detail { display: grid; animation: fadein .45s ease; }
 </section>
 
 <script>
-/* ============================================================
-   PROJECTS
-   ============================================================ */
 const PROJECTS = [
   { slug:"spiral_spines", title:"Spiral Spines", year:"2026", subtitle:"", tone:"bw",
     text:[
@@ -251,7 +241,6 @@ const PROJECTS = [
   { slug:"si_demain_je_pars", title:"si demain je pars", year:"", subtitle:"", tone:"blue", text:[] }
 ];
 
-/* ---------------- automatic file detection ---------------- */
 const MAX_MEDIA = 30;
 const MEDIA_KINDS = [["jpg","image"],["png","image"],["mp4","video"]];
 
@@ -304,7 +293,6 @@ function getAll(p) {
   })());
 }
 
-/* ---------------- helpers ---------------- */
 const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2, "0");
 const esc = t => String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
@@ -315,7 +303,6 @@ function mediaTag(item, alt, extra) {
   return '<img ' + (extra||"") + ' src="' + item.src + '" alt="' + esc(alt) + '" decoding="async">';
 }
 
-/* ---------------- landing ---------------- */
 function buildWall() {
   $("count").textContent = pad(PROJECTS.length) + " works";
   $("wall").innerHTML = PROJECTS.map((p, i) => `
@@ -339,7 +326,6 @@ function buildWall() {
   });
 }
 
-/* ---------------- project page ---------------- */
 const strip = $("strip");
 let openToken = 0;
 
@@ -437,4 +423,3 @@ route();
 </script>
 </body>
 </html>
-```
