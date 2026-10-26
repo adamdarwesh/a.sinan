@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RaD</title>
     <style>
         /* Import technical sans-serif font for UI */
@@ -21,6 +21,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -28,6 +29,8 @@
             color: var(--text-color);
             font-family: var(--font-main);
             overflow-x: hidden;
+            width: 100%;
+            height: 100%;
         }
 
         /* --- Landing Page Styles --- */
@@ -232,7 +235,6 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            /* Removed grayscale filter */
         }
 
         .hover-description {
@@ -276,6 +278,18 @@
             font-style: italic;
         }
 
+        /* --- Footer / Copyright --- */
+        .copyright {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            font-size: 10px;
+            color: #999;
+            letter-spacing: 0.5px;
+            z-index: 100;
+            pointer-events: none;
+        }
+
         /* --- Modal / Lightbox Styles --- */
         .modal {
             display: none; 
@@ -285,12 +299,13 @@
             width: 100vw;
             height: 100vh;
             z-index: 1000;
-            background-color: rgba(255, 255, 255, 0.8); 
+            background-color: rgba(255, 255, 255, 0.95); 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             padding: 40px;
             opacity: 0;
             transition: opacity 0.3s ease;
+            overflow-y: auto;
         }
 
         .modal.active {
@@ -303,6 +318,7 @@
             width: 100%;
             height: 100%;
             gap: 60px;
+            margin: auto; /* Center content */
         }
 
         .modal-text-section {
@@ -332,7 +348,7 @@
         }
 
         .close-btn {
-            position: absolute;
+            position: fixed;
             top: 40px;
             right: 40px;
             font-size: 32px;
@@ -341,6 +357,13 @@
             line-height: 1;
             color: var(--text-color);
             z-index: 1001;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-gallery-section {
@@ -366,7 +389,6 @@
             max-height: 100%;
             object-fit: contain;
             transition: opacity 0.2s ease;
-            /* Removed grayscale filter */
         }
 
         .modal-media-container iframe {
@@ -400,10 +422,8 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            height: 100%;
-            justify-content: center;
             max-width: 900px;
-            margin: 0 auto;
+            margin: auto;
         }
 
         .info-modal-title {
@@ -446,7 +466,6 @@
             object-fit: cover;
             background-color: #f0f0f0;
             margin-top: 10px;
-            /* Removed grayscale filter */
         }
 
         .contact-person {
@@ -490,55 +509,128 @@
             opacity: 0.5;
         }
 
-        /* Responsiveness */
+        /* =========================================
+           RESPONSIVENESS FOR TABLET & MOBILE 
+           ========================================= */
+        
+        /* Tablet & Smaller Screens */
         @media (max-width: 1024px) {
+            #main-website {
+                height: 100vh;
+                overflow-y: auto; /* Allow scrolling if list gets too long */
+            }
+
             .content-wrapper {
                 flex-direction: column;
                 height: auto;
+                padding-top: 20px;
+                padding-bottom: 100px;
             }
+
+            /* Hide the hover canvas area entirely on mobile */
             .center-canvas {
                 display: none; 
             }
+
+            /* Bring the list to the center and make it regular stacked format */
             .projects-list {
                 position: relative;
                 width: 100%;
                 padding-right: 0;
-                margin-top: 40px;
                 align-items: center;
+                gap: 32px;
             }
+
             .project-item {
                 text-align: center;
             }
-        }
 
-        @media (max-width: 768px) {
-            .landing-logo { font-size: 60px; }
-            .brand-title { font-size: 24px; letter-spacing: 0.35em; }
-            .plus-icon { font-size: 32px; margin-top: -6px; }
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
+            .project-item .title {
+                font-size: 16px;
+            }
+
+            /* Modal adjustments */
+            .modal {
+                padding: 20px;
+                overflow-y: auto;
             }
             .modal-content {
                 flex-direction: column;
-                gap: 20px;
-                overflow-y: auto;
+                gap: 40px;
+                height: auto;
+                margin-top: 50px;
+                margin-bottom: 50px;
             }
-            .modal-text-section { width: 100%; padding-right: 0; }
-            .modal-gallery-section { width: 100%; min-height: 400px; }
-            .modal { padding: 20px; }
-            .close-btn { top: 20px; right: 20px; }
-            
-            .info-modal-content { justify-content: flex-start; padding-top: 40px; }
-            
+            .modal-text-section {
+                width: 100%;
+                padding-right: 0;
+                text-align: center;
+            }
+            .modal-title {
+                font-size: 24px;
+            }
+            .modal-description {
+                margin: 0 auto 16px auto;
+                font-size: 14px;
+            }
+            .modal-gallery-section {
+                width: 100%;
+                min-height: 300px;
+                height: 50vh;
+            }
+            .close-btn {
+                top: 20px;
+                right: 20px;
+                background: #fff;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            /* About / Contacts Modals */
+            .info-modal-content {
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
             .bio-grid, .contact-grid { 
                 grid-template-columns: 1fr; 
                 gap: 40px; 
             }
+            .info-modal-title { 
+                font-size: 32px; 
+                margin-bottom: 24px; 
+            }
+            .collab-email { 
+                font-size: 24px; 
+            }
+            .bio-headshot {
+                margin: 10px auto 0 auto;
+            }
+        }
+
+        /* Mobile Phones */
+        @media (max-width: 768px) {
+            .landing-logo { font-size: 60px; }
+            .brand-title { font-size: 24px; letter-spacing: 0.35em; }
+            .plus-icon { font-size: 32px; margin-top: -6px; }
             
-            .info-modal-title { font-size: 32px; margin-bottom: 24px; }
-            .collab-email { font-size: 24px; }
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .modal-gallery-section {
+                min-height: 250px;
+                height: 40vh;
+            }
+
+            .nav-btn {
+                font-size: 30px;
+                padding: 10px;
+                background: rgba(255,255,255,0.7);
+                border-radius: 50%;
+            }
+            .nav-btn.prev { left: 5px; }
+            .nav-btn.next { right: 5px; }
         }
     </style>
 </head>
@@ -570,7 +662,7 @@
 
         <div class="content-wrapper">
             
-            <!-- Center Canvas: Description & Hero Image -->
+            <!-- Center Canvas: Description & Hero Image (Desktop Only) -->
             <div class="center-canvas">
                 <div class="hover-content" id="hoverContent">
                     <div class="hero-image-container">
@@ -641,6 +733,9 @@
 
             </div>
         </div>
+
+        <!-- Copyright -->
+        <div class="copyright">© 2026 RaD</div>
 
         <!-- Project Modal / Lightbox -->
         <div class="modal" id="projectModal">
@@ -735,7 +830,12 @@ The project addresses the ecological and emotional impacts of geopolitical confl
                     'images/vortex_columns_1.jpg', 'images/vortex_columns_2.jpg', 'images/vortex_columns_3.jpg',
                     'images/vortex_columns_4.jpg', 'images/vortex_columns_5.jpg', 'images/vortex_columns_6.jpg',
                     'images/vortex_columns_7.jpg', 'images/vortex_columns_8.jpg', 'images/vortex_columns_9.jpg',
-                    'images/vortex_columns_10.jpg'
+                    'images/vortex_columns_10.jpg', 'images/vortex_columns_11.jpg', 'images/vortex_columns_12.jpg',
+                    'images/vortex_columns_13.mp4', 
+                    'images/vortex_columns_14.jpg', 'images/vortex_columns_15.jpg',
+                    'images/vortex_columns_17.jpg', 'images/vortex_columns_18.jpg', 'images/vortex_columns_19.jpg',
+                    'images/vortex_columns_20.jpg', 'images/vortex_columns_21.jpg', 'images/vortex_columns_22.jpg',
+                    'images/vortex_columns_23.jpg'
                 ]
             },
             'woven-realities': {
@@ -748,7 +848,11 @@ This exhibition reflects on the abstract process of memory, centring on the perc
 Traditional construction methods are employed to create a sustainably usable space that offers visitors a profound understanding of the importance of places of remembrance. The central question explores how materiality, objects, and spaces can contribute to renewing existence and resisting the forces of forgetting.`,
                 media: [
                     'images/woven_realities_1.jpg', 'images/woven_realities_2.jpg', 'images/woven_realities_3.jpg', 
-                    'images/woven_realities_4.jpg', 'images/woven_realities_5.jpg', 'images/woven_realities_6.jpg'
+                    'images/woven_realities_4.jpg', 'images/woven_realities_5.jpg', 'images/woven_realities_6.jpg',
+                    'images/woven_realities_8.jpg', 'images/woven_realities_9.jpg', 'images/woven_realities_10.jpg',
+                    'images/woven_realities_11.jpg', 'images/woven_realities_12.jpg', 'images/woven_realities_13.jpg',
+                    'images/woven_realities_14.jpg', 'images/woven_realities_15.jpg', 'images/woven_realities_16.jpg',
+                    'images/woven_realities_17.jpg', 'images/woven_realities_18.jpg'
                 ]
             },
             'si-demain': {
@@ -760,9 +864,10 @@ Soutenu par l'Institut Français D'Algérie.
 Oran, Algérie.
 
 17 - 25 novembre 2023.`,
+                // Video is first so it opens directly to video, image second for the hover effect
                 media: [
-                    'images/si_demain_1.jpg', 'images/si_demain_2.jpg',
-                    { type: 'vimeo', id: '893245468' } 
+                    'images/si_demain_01.mp4',
+                    'images/si_demain_1.jpg'
                 ]
             },
             'regutting': {
@@ -772,7 +877,13 @@ Oran, Algérie.
                     'images/regutting_1.jpg', 'images/regutting_2.jpg', 'images/regutting_3.jpg',
                     'images/regutting_4.jpg', 'images/regutting_5.jpg', 'images/regutting_6.jpg',
                     'images/regutting_7.jpg', 'images/regutting_8.jpg', 'images/regutting_9.jpg',
-                    'images/regutting_10.jpg'
+                    'images/regutting_10.jpg', 'images/regutting_11.jpg', 'images/regutting_12.jpg',
+                    'images/regutting_13.jpg', 'images/regutting_14.jpg', 'images/regutting_15.jpg',
+                    'images/regutting_16.jpg', 'images/regutting_17.jpg', 'images/regutting_18.jpg',
+                    'images/regutting_19.jpg', 'images/regutting_20.jpg', 'images/regutting_21.jpg',
+                    'images/regutting_22.jpg', 'images/regutting_23.jpg', 'images/regutting_24.jpg',
+                    'images/regutting_25.jpg', 'images/regutting_26.jpg', 'images/regutting_27.jpg',
+                    'images/regutting_28.jpg', 'images/regutting_29.jpg'
                 ]
             },
             'another-sea': {
@@ -783,7 +894,8 @@ Local Pals Residency Logline:
 A lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall.`,
                 media: [
                     'images/another_sea_1.jpg', 'images/another_sea_2.jpg', 'images/another_sea_3.jpg',
-                    'images/another_sea_4.jpg', 'images/another_sea_5.jpg'
+                    'images/another_sea_5.jpg', 'images/another_sea_6.jpg', 'images/another_sea_7.jpg',
+                    'images/another_sea_9.jpg', 'images/another_sea_10.jpg'
                 ]
             },
             'lifeguard-platform': {
@@ -797,7 +909,7 @@ Rather than guarding water, the platform becomes an elevated post to watch over 
 Transitioning from a cinematic prop into a permanent installation at Dar Jacir, the tower stands as a physical monument to the "taboo of hope," marking the heights required to preserve a vanishing landscape.`,
                 media: [
                     'images/lifeguard_platform_1.jpg', 'images/lifeguard_platform_2.jpg', 'images/lifeguard_platform_3.jpg',
-                    'images/lifeguard_platform_4.jpg', 'images/lifeguard_platform_5.jpg'
+                    'images/lifeguard_platform_4.jpg', 'images/lifeguard_platform_5.jpg', 'images/lifeguard_platform_6.jpg'
                 ]
             },
             'wax-home': {
@@ -805,7 +917,6 @@ Transitioning from a cinematic prop into a permanent installation at Dar Jacir, 
                 description: `The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project.`,
                 media: [
                     'images/wax_home_1.jpg', 
-                    { type: 'youtube', id: '_XTuUoAtsQ4' },
                     'images/wax_home_2.jpg',
                     'images/wax_home_3.jpg',
                     'images/wax_home_4.jpg' 
@@ -818,7 +929,8 @@ Rania Lardjane
 The Khalid Shoman Foundation Summer Academy, 2025
 Photo Credits: Unknown`,
                 media: [
-                    'images/pay_cheque_1.jpg', 'images/pay_cheque_2.jpg'
+                    'images/pay_cheque_1.jpg', 
+                    'images/pay_cheque_2.jpg'
                 ]
             }
         };
@@ -864,45 +976,44 @@ Photo Credits: Unknown`,
         const heroImage = document.getElementById('heroImage');
 
         function initHoverLogic() {
-            projectItems.forEach(item => {
-                item.addEventListener('mouseenter', () => {
-                    const descText = item.getAttribute('data-desc');
-                    const projectId = item.getAttribute('data-id');
-                    
-                    // 1. Update description text
-                    centerDescription.textContent = descText;
-
-                    // 2. Load hero image
-                    const heroMedia = projectData[projectId].media[0];
-                    
-                    // Reset image source to trigger onerror if needed
-                    heroImage.src = ''; 
-
-                    // Fallback image just in case the local file is missing (prevents blank screen)
-                    heroImage.onerror = function() {
-                        this.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop';
-                    };
-                    
-                    if (typeof heroMedia === 'string') {
-                        const isVideo = heroMedia.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
-                        if (!isVideo) {
-                            heroImage.src = heroMedia;
-                        } else {
-                            // If first item is video, try second
-                            if (projectData[projectId].media.length > 1 && typeof projectData[projectId].media[1] === 'string') {
-                                heroImage.src = projectData[projectId].media[1];
+            // Hover effects only apply to screens wider than 1024px
+            if (window.innerWidth > 1024) {
+                projectItems.forEach(item => {
+                    item.addEventListener('mouseenter', () => {
+                        const descText = item.getAttribute('data-desc');
+                        const projectId = item.getAttribute('data-id');
+                        
+                        centerDescription.textContent = descText;
+                        
+                        // Find the first string (image) in the media array to use as the hero
+                        const projectMedia = projectData[projectId].media;
+                        let heroMedia = null;
+                        
+                        for (let i = 0; i < projectMedia.length; i++) {
+                            if (typeof projectMedia[i] === 'string') {
+                                heroMedia = projectMedia[i];
+                                break; // Stop at the first image found
                             }
                         }
-                    }
+                        
+                        heroImage.src = ''; 
 
-                    // Show the whole container
-                    hoverContent.classList.add('active');
-                });
+                        heroImage.onerror = function() {
+                            this.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop';
+                        };
+                        
+                        if (heroMedia) {
+                            heroImage.src = heroMedia;
+                        }
 
-                item.addEventListener('mouseleave', () => {
-                    hideHover();
+                        hoverContent.classList.add('active');
+                    });
+
+                    item.addEventListener('mouseleave', () => {
+                        hideHover();
+                    });
                 });
-            });
+            }
         }
 
         function hideHover() {
@@ -925,11 +1036,19 @@ Photo Credits: Unknown`,
             document.getElementById('modalTitle').textContent = data.title;
             document.getElementById('modalDescription').textContent = data.description;
             
-            currentProjectMedia = data.media;
+            // Set media array for the modal.
+            if (projectId === 'si-demain') {
+                // For si-demain, we only want the video in the modal, 
+                // but we need the image for the hover. So we filter out the image.
+                currentProjectMedia = data.media.filter(item => typeof item === 'object' || item.endsWith('.mp4'));
+            } else {
+                currentProjectMedia = data.media;
+            }
+            
             currentMediaIndex = 0;
             
             preloadMedia(data.media);
-            updateMediaDisplay();
+            findAndLoadNextMedia(0); // Use robust loader
             
             projectModal.classList.add('active');
             document.body.style.overflow = 'hidden'; 
@@ -948,61 +1067,92 @@ Photo Credits: Unknown`,
             });
         }
 
-        function updateMediaDisplay() {
-            mediaContainer.style.opacity = '0';
+        // Smart Loader: Skips missing files seamlessly
+        function findAndLoadNextMedia(startIndex) {
+            if (currentProjectMedia.length === 0) return;
             
-            setTimeout(() => {
-                mediaContainer.innerHTML = '';
-                
-                const currentItem = currentProjectMedia[currentMediaIndex];
-
-                if (typeof currentItem === 'object' && currentItem !== null) {
-                    if (currentItem.type === 'vimeo') {
-                        const iframe = document.createElement('iframe');
-                        iframe.src = `https://player.vimeo.com/video/${currentItem.id}?autoplay=1`;
-                        iframe.allow = "autoplay; fullscreen; picture-in-picture";
-                        iframe.allowFullscreen = true;
-                        mediaContainer.appendChild(iframe);
-                    } else if (currentItem.type === 'youtube') {
-                        const iframe = document.createElement('iframe');
-                        iframe.src = `https://www.youtube.com/embed/${currentItem.id}?autoplay=1&rel=0`;
-                        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                        iframe.allowFullscreen = true;
-                        mediaContainer.appendChild(iframe);
-                    }
-                    mediaContainer.style.opacity = '1';
+            currentMediaIndex = startIndex;
+            let attempts = 0;
+            
+            function tryLoad() {
+                if (attempts >= currentProjectMedia.length) {
+                    mediaContainer.innerHTML = '<p style="color:#999; font-family:var(--font-main);">No media found in folder.</p>';
                     return;
                 }
 
-                const currentFile = currentItem;
-                const isVideo = currentFile.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
+                const currentItem = currentProjectMedia[currentMediaIndex];
+                mediaContainer.style.opacity = '0';
 
-                if (isVideo) {
-                    const video = document.createElement('video');
-                    video.src = currentFile;
-                    video.autoplay = true;
-                    video.loop = true;
-                    video.muted = true;
-                    video.playsInline = true;
-                    video.controls = true;
-                    mediaContainer.appendChild(video);
-                } else {
-                    if (preloadedMedia[currentMediaIndex]) {
-                        mediaContainer.appendChild(preloadedMedia[currentMediaIndex]);
-                    } else {
-                        const img = document.createElement('img');
-                        img.src = currentFile;
-                        img.alt = "Project Media";
-                        // Add fallback for modal images too
-                        img.onerror = function() {
-                            this.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop';
-                        };
-                        mediaContainer.appendChild(img);
+                setTimeout(() => {
+                    mediaContainer.innerHTML = '';
+                    
+                    if (typeof currentItem === 'object' && currentItem !== null) {
+                        if (currentItem.type === 'vimeo') {
+                            const iframe = document.createElement('iframe');
+                            iframe.src = `https://player.vimeo.com/video/${currentItem.id}?autoplay=1`;
+                            iframe.allow = "autoplay; fullscreen; picture-in-picture";
+                            iframe.allowFullscreen = true;
+                            mediaContainer.appendChild(iframe);
+                        } else if (currentItem.type === 'youtube') {
+                            const iframe = document.createElement('iframe');
+                            iframe.src = `https://www.youtube.com/embed/${currentItem.id}?autoplay=1&rel=0`;
+                            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                            iframe.allowFullscreen = true;
+                            mediaContainer.appendChild(iframe);
+                        }
+                        mediaContainer.style.opacity = '1';
+                        return;
                     }
-                }
-                
-                mediaContainer.style.opacity = '1';
-            }, 150);
+
+                    const currentFile = currentItem;
+                    const isVideo = currentFile.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
+
+                    if (isVideo) {
+                        const video = document.createElement('video');
+                        video.src = currentFile;
+                        video.autoplay = true;
+                        video.loop = true;
+                        video.muted = true;
+                        video.playsInline = true;
+                        video.controls = true;
+                        
+                        // If video fails, skip to next
+                        video.onerror = () => {
+                            currentMediaIndex = (currentMediaIndex + 1) % currentProjectMedia.length;
+                            attempts++;
+                            tryLoad();
+                        };
+                        
+                        mediaContainer.appendChild(video);
+                    } else {
+                        // If preloaded, use cached version, otherwise create new
+                        if (preloadedMedia[currentMediaIndex]) {
+                            const clone = preloadedMedia[currentMediaIndex].cloneNode();
+                            clone.onerror = () => {
+                                currentMediaIndex = (currentMediaIndex + 1) % currentProjectMedia.length;
+                                attempts++;
+                                tryLoad();
+                            };
+                            mediaContainer.appendChild(clone);
+                        } else {
+                            const img = document.createElement('img');
+                            img.src = currentFile;
+                            img.alt = "Project Media";
+                            // If image fails, skip to next
+                            img.onerror = () => {
+                                currentMediaIndex = (currentMediaIndex + 1) % currentProjectMedia.length;
+                                attempts++;
+                                tryLoad();
+                            };
+                            mediaContainer.appendChild(img);
+                        }
+                    }
+                    
+                    mediaContainer.style.opacity = '1';
+                }, 150);
+            }
+            
+            tryLoad();
         }
 
         function changeMedia(direction) {
@@ -1016,7 +1166,7 @@ Photo Credits: Unknown`,
                 currentMediaIndex = currentProjectMedia.length - 1;
             }
             
-            updateMediaDisplay();
+            findAndLoadNextMedia(currentMediaIndex);
         }
 
         // --- Generic Modal Logic (About/Contacts/Collaborate) ---
