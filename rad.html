@@ -719,7 +719,12 @@
 In collaboration with Farila Nashat
 
 The project addresses the ecological and emotional impacts of geopolitical conflicts, particularly in Afghanistan, the Middle East and other affected regions. Through an open, participatory process, people are invited to carve their personal stories, especially those shaped by war, migration or displacement, into wooden columns. These carvings will form a collective archive, giving physical form to memory, resilience, and transformation. A shared visual and symbols will translate these experiences into a universal narrative. Here, art becomes a tool for remembrance, healing and sustainable social change.`,
-                media: ['images/vortex_columns_1.jpg', 'images/vortex_columns_2.jpg']
+                // ADD AS MANY AS YOU WANT HERE
+                media: [
+                    'images/vortex_columns_1.jpg', 
+                    'images/vortex_columns_2.jpg',
+                    'images/vortex_columns_3.png'
+                ]
             },
             'woven-realities': {
                 title: `WOVEN REALITIES`,
@@ -729,7 +734,11 @@ Various locations, Vienna, 2024
 This exhibition reflects on the abstract process of memory, centring on the perception of living spaces through the eyes of a child. The building is presented as a solid structure, resilient to the demands of time. Personal interactions and objects play a significant role, as they accompany individuals throughout life and shape their inner worlds. This perspective invites a deep appreciation for these items.
 
 Traditional construction methods are employed to create a sustainably usable space that offers visitors a profound understanding of the importance of places of remembrance. The central question explores how materiality, objects, and spaces can contribute to renewing existence and resisting the forces of forgetting.`,
-                media: ['images/woven_realities_1.jpg', 'images/woven_realities_2.jpg']
+                media: [
+                    'images/woven_realities_1.jpg', 
+                    'images/woven_realities_2.jpeg',
+                    'images/woven_realities_3.jpg'
+                ]
             },
             'si-demain': {
                 title: `si demain je pars`,
@@ -740,12 +749,20 @@ Soutenu par l'Institut Français D'Algérie.
 Oran, Algérie.
 
 17 - 25 novembre 2023.`,
-                media: ['images/si_demain_1.jpg', 'images/si_demain_2.jpg']
+                media: [
+                    'images/si_demain_1.jpg', 
+                    'images/si_demain_2.jpg',
+                    'images/si_demain_video.mp4' // You can mix videos freely
+                ]
             },
             'regutting': {
                 title: `Regutting`,
                 description: `This work presents a stark, visceral journey into the extractive process at the Bani Na'im quarries. It contrasts the pristine "whiteness" of the finished stone, which is used as a mere decorative veneer, with the violent disfigurement of the landscape, where mountains are carved into misshapen voids. The piece explores how the scarred terrain—the deep pits of waste and awe-inspiring lacerations—embodies greed and land murder inscribed onto the earth by the indigenous population. Crucially, the journey traces the return of the remains: the massive amounts of fine rock powder, toxic slurry, and the residual imperfect that are often thrown into unauthorised landfills in Area C, adjacent to Palestinian localities. These sites, already in a jurisdictional limbo and often used as Israeli dumping grounds, become the final resting place for the land's toxic residue. The installation is a guided exploration that culminates in framing the act of returning this degutted material to one of the violated, abandoned stone quarries, transforming the site from a symbol of extraction into a monument to betrayed and violated memory.`,
-                media: ['images/regutting_1.jpg', 'images/regutting_2.jpg']
+                media: [
+                    'images/regutting_1.jpg', 
+                    'images/regutting_2.jpg',
+                    'images/regutting_3.jpg'
+                ]
             },
             'another-sea': {
                 title: `another sea behind another wall`,
@@ -753,7 +770,11 @@ Oran, Algérie.
 Local Pals Residency Logline:
 
 A lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall.`,
-                media: ['images/another_sea_1.jpg', 'images/another_sea_2.jpg']
+                media: [
+                    'images/another_sea_1.jpg', 
+                    'images/another_sea_2.jpg',
+                    'images/another_sea_3.jpg'
+                ]
             },
             'lifeguard-platform': {
                 title: `The Lifeguard Platform`,
@@ -764,12 +785,20 @@ Originally built as the central set piece for the film, the tower embodies a phy
 Rather than guarding water, the platform becomes an elevated post to watch over a phantom sea, transforming inherited past into an active vigil, and a concrete manifestation of the clutching to hope-as a valid job in its own right-punctuated by a single red lifebuoy acting as a visual lifeline.
 
 Transitioning from a cinematic prop into a permanent installation at Dar Jacir, the tower stands as a physical monument to the "taboo of hope," marking the heights required to preserve a vanishing landscape.`,
-                media: ['images/lifeguard_platform_1.jpg', 'images/lifeguard_platform_2.jpg']
+                media: [
+                    'images/lifeguard_platform_1.jpg', 
+                    'images/lifeguard_platform_2.jpg',
+                    'images/lifeguard_platform_3.jpg'
+                ]
             },
             'wax-home': {
                 title: `The Wax Home`,
                 description: `The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project.`,
-                media: ['images/wax_home_1.jpg', 'images/wax_home_2.jpg']
+                media: [
+                    'images/wax_home_1.jpg', 
+                    'images/wax_home_2.jpg',
+                    'images/wax_home_3.jpg'
+                ]
             },
             'pay-cheque': {
                 title: `Pay-Cheque`,
@@ -777,7 +806,10 @@ Transitioning from a cinematic prop into a permanent installation at Dar Jacir, 
 Rania Lardjane
 The Khalid Shoman Foundation Summer Academy, 2025
 Photo Credits: Unknown`,
-                media: ['images/pay_cheque_1.jpg', 'images/pay_cheque_2.jpg']
+                media: [
+                    'images/pay_cheque_1.jpg', 
+                    'images/pay_cheque_2.jpg'
+                ]
             }
         };
 
@@ -866,10 +898,8 @@ Photo Credits: Unknown`,
         const mediaContainer = document.getElementById('modalMediaContainer');
 
         function openProjectModal(projectId) {
-            // Close dropdown just in case
             document.getElementById('navDropdown').classList.remove('active');
 
-            // Retrieve data from the object
             const data = projectData[projectId];
             if (!data) return;
 
@@ -879,52 +909,90 @@ Photo Credits: Unknown`,
             currentProjectMedia = data.media;
             currentMediaIndex = 0;
             
-            updateMedia();
+            // Load the first available media, skipping broken links
+            findAndLoadNextMedia(0);
             
             projectModal.classList.add('active');
             document.body.style.overflow = 'hidden'; 
         }
 
-        function updateMedia() {
-            mediaContainer.style.opacity = '0';
+        // Smart Loader: Skips missing images/videos automatically
+        function findAndLoadNextMedia(startIndex) {
+            if (currentProjectMedia.length === 0) return;
             
-            setTimeout(() => {
-                mediaContainer.innerHTML = '';
-                
-                const currentFile = currentProjectMedia[currentMediaIndex];
-                const isVideo = currentFile.toLowerCase().endsWith('.mp4') || currentFile.toLowerCase().endsWith('.webm');
-
-                if (isVideo) {
-                    const video = document.createElement('video');
-                    video.src = currentFile;
-                    video.autoplay = true;
-                    video.loop = true;
-                    video.muted = true;
-                    video.playsInline = true;
-                    mediaContainer.appendChild(video);
-                } else {
-                    const img = document.createElement('img');
-                    img.src = currentFile;
-                    img.alt = "Project Media";
-                    mediaContainer.appendChild(img);
+            currentMediaIndex = startIndex;
+            let attempts = 0;
+            
+            function tryLoad() {
+                if (attempts >= currentProjectMedia.length) {
+                    // If it loops through everything and finds nothing, stop.
+                    mediaContainer.innerHTML = '<p style="color:#999; font-family:var(--font-main);">No media found.</p>';
+                    return;
                 }
 
-                mediaContainer.style.opacity = '1';
-            }, 200); 
+                const currentFile = currentProjectMedia[currentMediaIndex];
+                // Check if it's a video
+                const isVideo = currentFile.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
+                
+                mediaContainer.style.opacity = '0';
+
+                setTimeout(() => {
+                    mediaContainer.innerHTML = '';
+                    
+                    if (isVideo) {
+                        const video = document.createElement('video');
+                        video.src = currentFile;
+                        video.autoplay = true;
+                        video.loop = true;
+                        video.muted = true;
+                        video.playsInline = true;
+                        video.controls = true; // Allow manual play if autoplay blocked
+                        
+                        // If video fails to load, skip to next
+                        video.onerror = () => {
+                            currentMediaIndex = (currentMediaIndex + 1) % currentProjectMedia.length;
+                            attempts++;
+                            tryLoad();
+                        };
+                        
+                        mediaContainer.appendChild(video);
+                    } else {
+                        const img = document.createElement('img');
+                        img.src = currentFile;
+                        img.alt = "Project Media";
+                        
+                        // If image fails to load, skip to next
+                        img.onerror = () => {
+                            currentMediaIndex = (currentMediaIndex + 1) % currentProjectMedia.length;
+                            attempts++;
+                            tryLoad();
+                        };
+                        
+                        mediaContainer.appendChild(img);
+                    }
+                    
+                    mediaContainer.style.opacity = '1';
+                }, 200);
+            }
+            
+            tryLoad();
         }
 
         function changeMedia(direction) {
             if (currentProjectMedia.length === 0) return;
             
+            // Move index up or down
             currentMediaIndex += direction;
             
+            // Loop logic
             if (currentMediaIndex >= currentProjectMedia.length) {
                 currentMediaIndex = 0;
             } else if (currentMediaIndex < 0) {
                 currentMediaIndex = currentProjectMedia.length - 1;
             }
             
-            updateMedia();
+            // Use the smart loader starting from the new index
+            findAndLoadNextMedia(currentMediaIndex);
         }
 
         // --- Generic Modal Logic (About/Contacts/Collaborate) ---
