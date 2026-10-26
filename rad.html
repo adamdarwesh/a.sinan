@@ -232,7 +232,7 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            filter: grayscale(1); 
+            /* Removed grayscale filter */
         }
 
         .hover-description {
@@ -366,7 +366,7 @@
             max-height: 100%;
             object-fit: contain;
             transition: opacity 0.2s ease;
-            filter: grayscale(1);
+            /* Removed grayscale filter */
         }
 
         .modal-media-container iframe {
@@ -446,7 +446,7 @@
             object-fit: cover;
             background-color: #f0f0f0;
             margin-top: 10px;
-            filter: grayscale(1);
+            /* Removed grayscale filter */
         }
 
         .contact-person {
@@ -875,6 +875,14 @@ Photo Credits: Unknown`,
                     // 2. Load hero image
                     const heroMedia = projectData[projectId].media[0];
                     
+                    // Reset image source to trigger onerror if needed
+                    heroImage.src = ''; 
+
+                    // Fallback image just in case the local file is missing (prevents blank screen)
+                    heroImage.onerror = function() {
+                        this.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop';
+                    };
+                    
                     if (typeof heroMedia === 'string') {
                         const isVideo = heroMedia.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
                         if (!isVideo) {
@@ -883,8 +891,6 @@ Photo Credits: Unknown`,
                             // If first item is video, try second
                             if (projectData[projectId].media.length > 1 && typeof projectData[projectId].media[1] === 'string') {
                                 heroImage.src = projectData[projectId].media[1];
-                            } else {
-                                heroImage.src = ''; // No valid image found
                             }
                         }
                     }
@@ -987,6 +993,10 @@ Photo Credits: Unknown`,
                         const img = document.createElement('img');
                         img.src = currentFile;
                         img.alt = "Project Media";
+                        // Add fallback for modal images too
+                        img.onerror = function() {
+                            this.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop';
+                        };
                         mediaContainer.appendChild(img);
                     }
                 }
