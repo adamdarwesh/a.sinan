@@ -719,7 +719,7 @@
 In collaboration with Farila Nashat
 
 The project addresses the ecological and emotional impacts of geopolitical conflicts, particularly in Afghanistan, the Middle East and other affected regions. Through an open, participatory process, people are invited to carve their personal stories, especially those shaped by war, migration or displacement, into wooden columns. These carvings will form a collective archive, giving physical form to memory, resilience, and transformation. A shared visual and symbols will translate these experiences into a universal narrative. Here, art becomes a tool for remembrance, healing and sustainable social change.`,
-                media: ['images/vortex_columns_1.jpg', 'images/vortex_columns_2.jpg']
+                media: ['images/vortex_columns_1.jpg', 'images/vortex_columns_2.jpeg', 'images/vortex_columns_3.png'] // Example of mixed formats
             },
             'woven-realities': {
                 title: `WOVEN REALITIES`,
@@ -866,10 +866,8 @@ Photo Credits: Unknown`,
         const mediaContainer = document.getElementById('modalMediaContainer');
 
         function openProjectModal(projectId) {
-            // Close dropdown just in case
             document.getElementById('navDropdown').classList.remove('active');
 
-            // Retrieve data from the object
             const data = projectData[projectId];
             if (!data) return;
 
@@ -892,7 +890,8 @@ Photo Credits: Unknown`,
                 mediaContainer.innerHTML = '';
                 
                 const currentFile = currentProjectMedia[currentMediaIndex];
-                const isVideo = currentFile.toLowerCase().endsWith('.mp4') || currentFile.toLowerCase().endsWith('.webm');
+                // Check specifically for video extensions, otherwise treat as image
+                const isVideo = currentFile.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
 
                 if (isVideo) {
                     const video = document.createElement('video');
