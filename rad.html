@@ -404,7 +404,6 @@
             letter-spacing: 0.05em;
         }
 
-        /* Updated About Grid for Bios + Headshots */
         .bio-grid, .contact-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -434,7 +433,7 @@
         .bio-headshot {
             width: 100%;
             max-width: 200px;
-            aspect-ratio: 3 / 4; /* Portrait orientation */
+            aspect-ratio: 3 / 4;
             object-fit: cover;
             filter: grayscale(1);
             background-color: #f0f0f0;
@@ -530,7 +529,6 @@
             
             .info-modal-content { justify-content: flex-start; padding-top: 40px; }
             
-            /* Stack bio and contacts on mobile */
             .bio-grid, .contact-grid { 
                 grid-template-columns: 1fr; 
                 gap: 40px; 
@@ -569,112 +567,56 @@
 
         <main class="projects-area">
             
-            <!-- Project 1: Vortex Columns -->
-            <div class="project" 
-                 data-desc="Vortex Columns– Stable in Disruption. Brunnenpassage, Vienna Climate Biennale Vienna 2026." 
-                 onclick="openProjectModal(
-                    'Vortex Columns– Stable in Disruption', 
-                    'Brunnenpassage, Vienna Climate Biennale Vienna 2026.\nIn collaboration with Farila Nashat\n\nThe project addresses the ecological and emotional impacts of geopolitical conflicts, particularly in Afghanistan, the Middle East and other affected regions. Through an open, participatory process, people are invited to carve their personal stories, especially those shaped by war, migration or displacement, into wooden columns. These carvings will form a collective archive, giving physical form to memory, resilience, and transformation. A shared visual and symbols will translate these experiences into a universal narrative. Here, art becomes a tool for remembrance, healing and sustainable social change.', 
-                    ['images/vortex_columns_1.jpg', 'images/vortex_columns_2.jpg']
-                 )">
+            <div class="project" data-id="vortex-columns" data-desc="Vortex Columns– Stable in Disruption. Brunnenpassage, Vienna Climate Biennale Vienna 2026." onclick="openProjectModal('vortex-columns')">
                 <div class="image-container">
                     <img src="images/vortex_columns_1.jpg" alt="Vortex Columns">
                 </div>
                 <div class="project-title">Vortex Columns</div>
             </div>
 
-            <!-- Project 2: Woven Realities -->
-            <div class="project" 
-                 data-desc="WOVEN REALITIES: THE MULTILAYEREDNESS OF AFGHAN DWELLINGS AND RITUALS. Various locations, Vienna, 2024." 
-                 onclick="openProjectModal(
-                    'WOVEN REALITIES', 
-                    'THE MULTILAYEREDNESS OF AFGHAN DWELLINGS AND RITUALS\nVarious locations, Vienna, 2024\n\nThis exhibition reflects on the abstract process of memory, centring on the perception of living spaces through the eyes of a child. The building is presented as a solid structure, resilient to the demands of time. Personal interactions and objects play a significant role, as they accompany individuals throughout life and shape their inner worlds. This perspective invites a deep appreciation for these items.\n\nTraditional construction methods are employed to create a sustainably usable space that offers visitors a profound understanding of the importance of places of remembrance. The central question explores how materiality, objects, and spaces can contribute to renewing existence and resisting the forces of forgetting.', 
-                    ['images/woven_realities_1.jpg', 'images/woven_realities_2.jpg']
-                 )">
+            <div class="project" data-id="woven-realities" data-desc="WOVEN REALITIES: THE MULTILAYEREDNESS OF AFGHAN DWELLINGS AND RITUALS. Various locations, Vienna, 2024." onclick="openProjectModal('woven-realities')">
                 <div class="image-container">
                     <img src="images/woven_realities_1.jpg" alt="Woven Realities">
                 </div>
                 <div class="project-title">Woven Realities</div>
             </div>
 
-            <!-- Project 3: Si demain je pars -->
-            <div class="project" 
-                 data-desc="si demain je pars: Produit dans le cadre de la résidence photographique 'Si Demain Je Pars', animée par Michaël Duperrin, Nora Zaïr et Sadek Rahim. Oran, Algérie. 17 - 25 novembre 2023." 
-                 onclick="openProjectModal(
-                    'si demain je pars', 
-                    'Produit dans le cadre de la résidence photographique \"Si Demain Je Pars\", animée par Michaël Duperrin, Nora Zaïr et Sadek Rahim.\n\nSoutenu par l\'Institut Français D\'Algérie.\n\nOran, Algérie.\n\n17 - 25 novembre 2023.', 
-                    ['images/si_demain_1.jpg', 'images/si_demain_2.jpg']
-                 )">
+            <div class="project" data-id="si-demain" data-desc="si demain je pars: Produit dans le cadre de la résidence photographique 'Si Demain Je Pars', animée par Michaël Duperrin, Nora Zaïr et Sadek Rahim. Oran, Algérie. 17 - 25 novembre 2023." onclick="openProjectModal('si-demain')">
                 <div class="image-container">
                     <img src="images/si_demain_1.jpg" alt="si demain je pars">
                 </div>
                 <div class="project-title">si demain je pars</div>
             </div>
 
-            <!-- Project 4: Regutting -->
-            <div class="project" 
-                 data-desc="Regutting: A stark, visceral journey into the extractive process at the Bani Na'im quarries." 
-                 onclick="openProjectModal(
-                    'Regutting', 
-                    'This work presents a stark, visceral journey into the extractive process at the Bani Na\'im quarries. It contrasts the pristine \"whiteness\" of the finished stone, which is used as a mere decorative veneer, with the violent disfigurement of the landscape, where mountains are carved into misshapen voids. The piece explores how the scarred terrain—the deep pits of waste and awe-inspiring lacerations—embodies greed and land murder inscribed onto the earth by the indigenous population. Crucially, the journey traces the return of the remains: the massive amounts of fine rock powder, toxic slurry, and the residual imperfect that are often thrown into unauthorised landfills in Area C, adjacent to Palestinian localities. These sites, already in a jurisdictional limbo and often used as Israeli dumping grounds, become the final resting place for the land\'s toxic residue. The installation is a guided exploration that culminates in framing the act of returning this degutted material to one of the violated, abandoned stone quarries, transforming the site from a symbol of extraction into a monument to betrayed and violated memory.', 
-                    ['images/regutting_1.jpg', 'images/regutting_2.jpg']
-                 )">
+            <div class="project" data-id="regutting" data-desc="Regutting: A stark, visceral journey into the extractive process at the Bani Na'im quarries." onclick="openProjectModal('regutting')">
                 <div class="image-container">
                     <img src="images/regutting_1.jpg" alt="Regutting">
                 </div>
                 <div class="project-title">Regutting</div>
             </div>
 
-            <!-- Project 5: Another Sea Behind Another Wall -->
-            <div class="project" 
-                 data-desc="another sea behind another wall (film). TPFF (Toronto Palestine Film Festival)." 
-                 onclick="openProjectModal(
-                    'another sea behind another wall', 
-                    'TPFF (Toronto Palestine Film Festival)\nLocal Pals Residency Logline:\n\nA lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall.', 
-                    ['images/another_sea_1.jpg', 'images/another_sea_2.jpg']
-                 )">
+            <div class="project" data-id="another-sea" data-desc="another sea behind another wall (film). TPFF (Toronto Palestine Film Festival)." onclick="openProjectModal('another-sea')">
                 <div class="image-container">
                     <img src="images/another_sea_1.jpg" alt="another sea behind another wall">
                 </div>
                 <div class="project-title">another sea behind another wall</div>
             </div>
 
-            <!-- Project 6: The Lifeguard Platform -->
-            <div class="project" 
-                 data-desc="The Lifeguard Platform: Film prop, permanent installation at Dar Jacir-Bethelehem, 2026." 
-                 onclick="openProjectModal(
-                    'The Lifeguard Platform', 
-                    'Film prop, permanent installation at Dar Jacir-Bethelehem, 2026.\n\nOriginally built as the central set piece for the film, the tower embodies a physical \"hope inversion.\" Severed from the coast and constructed from raw metal tubing, the structure confronts the scale of the separation wall by forcing a radical vertical ascent, just to clear the colonial clutter and claim a sightline to a stolen horizon.\n\nRather than guarding water, the platform becomes an elevated post to watch over a phantom sea, transforming inherited past into an active vigil, and a concrete manifestation of the clutching to hope-as a valid job in its own right-punctuated by a single red lifebuoy acting as a visual lifeline.\n\nTransitioning from a cinematic prop into a permanent installation at Dar Jacir, the tower stands as a physical monument to the \"taboo of hope,\" marking the heights required to preserve a vanishing landscape.', 
-                    ['images/lifeguard_platform_1.jpg', 'images/lifeguard_platform_2.jpg']
-                 )">
+            <div class="project" data-id="lifeguard-platform" data-desc="The Lifeguard Platform: Film prop, permanent installation at Dar Jacir-Bethelehem, 2026." onclick="openProjectModal('lifeguard-platform')">
                 <div class="image-container">
                     <img src="images/lifeguard_platform_1.jpg" alt="The Lifeguard Platform">
                 </div>
                 <div class="project-title">The Lifeguard Platform</div>
             </div>
 
-            <!-- Project 7: The Wax Home -->
-            <div class="project" 
-                 data-desc="The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project." 
-                 onclick="openProjectModal(
-                    'The Wax Home', 
-                    'The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project.', 
-                    ['images/wax_home_1.jpg', 'images/wax_home_2.jpg']
-                 )">
+            <div class="project" data-id="wax-home" data-desc="The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project." onclick="openProjectModal('wax-home')">
                 <div class="image-container">
                     <img src="images/wax_home_1.jpg" alt="The Wax Home">
                 </div>
                 <div class="project-title">The Wax Home</div>
             </div>
 
-            <!-- Project 8: Pay-Cheque -->
-            <div class="project" 
-                 data-desc="Pay-Cheque: Graphic on paper. Rania Lardjane. The Khalid Shoman Foundation Summer Academy, 2025." 
-                 onclick="openProjectModal(
-                    'Pay-Cheque', 
-                    'Graphic on paper\nRania Lardjane\nThe Khalid Shoman Foundation Summer Academy, 2025\nPhoto Credits: Unknown', 
-                    ['images/pay_cheque_1.jpg', 'images/pay_cheque_2.jpg']
-                 )">
+            <div class="project" data-id="pay-cheque" data-desc="Pay-Cheque: Graphic on paper. Rania Lardjane. The Khalid Shoman Foundation Summer Academy, 2025." onclick="openProjectModal('pay-cheque')">
                 <div class="image-container">
                     <img src="images/pay_cheque_1.jpg" alt="Pay-Cheque">
                 </div>
@@ -712,17 +654,14 @@
                 <h2 class="info-modal-title">About</h2>
                 <div class="bio-grid">
                     
-                    <!-- Rania Bio -->
                     <div class="bio-person">
                         <div class="bio-text">
                             <strong>Rania Lardjane</strong>
                             Rania Lardjane is a visual and textual storyteller. Born to a Palestinian-Arab father and an Algerian-Amazigh mother, she has a lot to tell. She studied Film Production at Dar Al-Kalima University in Bethlehem and completed a BFA in Film Studies at Concordia University in Canada. She moves between Ramallah, Tiohtiá:ke (MTL), and Algiers, and is currently pursuing an MFA in Studio Arts at Concordia University.
                         </div>
-                        <!-- Headshot slug for Rania -->
                         <img src="images/rania_headshot.jpg" alt="Rania Lardjane" class="bio-headshot">
                     </div>
 
-                    <!-- Adham Bio -->
                     <div class="bio-person">
                         <div class="bio-text">
                             <strong>Adham Sinan</strong>
@@ -730,7 +669,6 @@
                             Sinan has participated in and had his work published in international exhibitions and festivals. Such as the Venice Biennale 2023, the Chicago Biennale 2023 and the Rotterdam Architecture Biennale 2024, amongst others, while highly narrational, His work explores residual matters to craft new spatial and visual possibilities and to redefine redundancy via crafting critical lenses of modernity and what it represents.<br><br>
                             Trained as an architect, Sinan’s work extends beyond traditional architectural boundaries, engaging with various artistic media and toolsets. He combines his architectural expertise with writing, film, music, and photography, investigating the multifaceted nature of space. His works challenge and expand conventional ideas of possible space through experimentation, shifting perspectives and using defamiliarisation to emphasise spatial identity, interaction, and emotional response.
                         </div>
-                        <!-- Headshot slug for Adham -->
                         <img src="images/adham_headshot.jpg" alt="Adham Sinan" class="bio-headshot">
                     </div>
 
@@ -764,15 +702,85 @@
             <div class="info-modal-content">
                 <h2 class="info-modal-title">Collaborate with Us</h2>
                 <p class="collab-text">
-                    We are always open to new commissions, creative partnerships, and spatial research collaborations. Whether you are an architect looking for visual documentation, a publisher, or a gallery, feel free to reach out to discuss potential projects.
+                    We are always open to new commissions, creative partnerships,
                 </p>
-                <a href="mailto:collaborate@radstudio.com" class="collab-email">collaborate@radstudio.com</a>
+                <a href="mailto:a.s.b.a.w.film@gmail.com" class="collab-email">a.s.b.a.w.film@gmail.com</a>
             </div>
         </div>
 
     </div>
 
     <script>
+        // --- Project Data Storage ---
+        const projectData = {
+            'vortex-columns': {
+                title: `Vortex Columns– Stable in Disruption`,
+                description: `Brunnenpassage, Vienna Climate Biennale Vienna 2026.
+In collaboration with Farila Nashat
+
+The project addresses the ecological and emotional impacts of geopolitical conflicts, particularly in Afghanistan, the Middle East and other affected regions. Through an open, participatory process, people are invited to carve their personal stories, especially those shaped by war, migration or displacement, into wooden columns. These carvings will form a collective archive, giving physical form to memory, resilience, and transformation. A shared visual and symbols will translate these experiences into a universal narrative. Here, art becomes a tool for remembrance, healing and sustainable social change.`,
+                media: ['images/vortex_columns_1.jpg', 'images/vortex_columns_2.jpg']
+            },
+            'woven-realities': {
+                title: `WOVEN REALITIES`,
+                description: `THE MULTILAYEREDNESS OF AFGHAN DWELLINGS AND RITUALS
+Various locations, Vienna, 2024
+
+This exhibition reflects on the abstract process of memory, centring on the perception of living spaces through the eyes of a child. The building is presented as a solid structure, resilient to the demands of time. Personal interactions and objects play a significant role, as they accompany individuals throughout life and shape their inner worlds. This perspective invites a deep appreciation for these items.
+
+Traditional construction methods are employed to create a sustainably usable space that offers visitors a profound understanding of the importance of places of remembrance. The central question explores how materiality, objects, and spaces can contribute to renewing existence and resisting the forces of forgetting.`,
+                media: ['images/woven_realities_1.jpg', 'images/woven_realities_2.jpg']
+            },
+            'si-demain': {
+                title: `si demain je pars`,
+                description: `Produit dans le cadre de la résidence photographique "Si Demain Je Pars", animée par Michaël Duperrin, Nora Zaïr et Sadek Rahim.
+
+Soutenu par l'Institut Français D'Algérie.
+
+Oran, Algérie.
+
+17 - 25 novembre 2023.`,
+                media: ['images/si_demain_1.jpg', 'images/si_demain_2.jpg']
+            },
+            'regutting': {
+                title: `Regutting`,
+                description: `This work presents a stark, visceral journey into the extractive process at the Bani Na'im quarries. It contrasts the pristine "whiteness" of the finished stone, which is used as a mere decorative veneer, with the violent disfigurement of the landscape, where mountains are carved into misshapen voids. The piece explores how the scarred terrain—the deep pits of waste and awe-inspiring lacerations—embodies greed and land murder inscribed onto the earth by the indigenous population. Crucially, the journey traces the return of the remains: the massive amounts of fine rock powder, toxic slurry, and the residual imperfect that are often thrown into unauthorised landfills in Area C, adjacent to Palestinian localities. These sites, already in a jurisdictional limbo and often used as Israeli dumping grounds, become the final resting place for the land's toxic residue. The installation is a guided exploration that culminates in framing the act of returning this degutted material to one of the violated, abandoned stone quarries, transforming the site from a symbol of extraction into a monument to betrayed and violated memory.`,
+                media: ['images/regutting_1.jpg', 'images/regutting_2.jpg']
+            },
+            'another-sea': {
+                title: `another sea behind another wall`,
+                description: `TPFF (Toronto Palestine Film Festival)
+Local Pals Residency Logline:
+
+A lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall.`,
+                media: ['images/another_sea_1.jpg', 'images/another_sea_2.jpg']
+            },
+            'lifeguard-platform': {
+                title: `The Lifeguard Platform`,
+                description: `Film prop, permanent installation at Dar Jacir-Bethelehem, 2026.
+
+Originally built as the central set piece for the film, the tower embodies a physical "hope inversion." Severed from the coast and constructed from raw metal tubing, the structure confronts the scale of the separation wall by forcing a radical vertical ascent, just to clear the colonial clutter and claim a sightline to a stolen horizon.
+
+Rather than guarding water, the platform becomes an elevated post to watch over a phantom sea, transforming inherited past into an active vigil, and a concrete manifestation of the clutching to hope-as a valid job in its own right-punctuated by a single red lifebuoy acting as a visual lifeline.
+
+Transitioning from a cinematic prop into a permanent installation at Dar Jacir, the tower stands as a physical monument to the "taboo of hope," marking the heights required to preserve a vanishing landscape.`,
+                media: ['images/lifeguard_platform_1.jpg', 'images/lifeguard_platform_2.jpg']
+            },
+            'wax-home': {
+                title: `The Wax Home`,
+                description: `The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project.`,
+                media: ['images/wax_home_1.jpg', 'images/wax_home_2.jpg']
+            },
+            'pay-cheque': {
+                title: `Pay-Cheque`,
+                description: `Graphic on paper
+Rania Lardjane
+The Khalid Shoman Foundation Summer Academy, 2025
+Photo Credits: Unknown`,
+                media: ['images/pay_cheque_1.jpg', 'images/pay_cheque_2.jpg']
+            }
+        };
+
         // --- Dropdown Menu Logic ---
         function toggleDropdown(event) {
             event.stopPropagation(); 
@@ -780,7 +788,6 @@
             dropdown.classList.toggle('active');
         }
 
-        // Close dropdown when clicking anywhere else on the page
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('navDropdown');
             const plusIcon = document.querySelector('.plus-icon');
@@ -858,13 +865,18 @@
         const projectModal = document.getElementById('projectModal');
         const mediaContainer = document.getElementById('modalMediaContainer');
 
-        function openProjectModal(title, description, mediaArray) {
+        function openProjectModal(projectId) {
+            // Close dropdown just in case
             document.getElementById('navDropdown').classList.remove('active');
 
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalDescription').textContent = description;
+            // Retrieve data from the object
+            const data = projectData[projectId];
+            if (!data) return;
+
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalDescription').textContent = data.description;
             
-            currentProjectMedia = mediaArray;
+            currentProjectMedia = data.media;
             currentMediaIndex = 0;
             
             updateMedia();
