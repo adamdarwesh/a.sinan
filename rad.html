@@ -8,6 +8,17 @@
     <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
     <meta name="google-site-verification" content="GQJM1fZ35QJ1MEUtgQGUEYOrNbs1d_7xh5LiOAWBNGY" />
 
+    <!-- GOOGLE ANALYTICS (Replace G-XXXXXXXXXX with your actual ID) -->
+    <!--
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    -->
+
     <style>
         /* Import technical sans-serif font for UI */
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap');
@@ -994,7 +1005,7 @@ Photo Credits: Unknown`,
                         let heroMedia = null;
                         
                         for (let i = 0; i < projectMedia.length; i++) {
-                            if (typeof projectMedia[i] === 'string') {
+                            if (typeof projectMedia[i] === 'string' && projectMedia[i].toLowerCase().match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
                                 heroMedia = projectMedia[i];
                                 break; // Stop at the first image found
                             }
@@ -1002,9 +1013,14 @@ Photo Credits: Unknown`,
                         
                         heroImage.src = ''; 
 
+                        // If the image fails to load (e.g. file missing), just hide the image container, 
+                        // NO STOCK FALLBACKS as requested.
                         heroImage.onerror = function() {
-                            this.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop';
+                            this.style.display = 'none';
                         };
+                        heroImage.onload = function() {
+                            this.style.display = 'block';
+                        }
                         
                         if (heroMedia) {
                             heroImage.src = heroMedia;
@@ -1042,9 +1058,8 @@ Photo Credits: Unknown`,
             
             // Set media array for the modal.
             if (projectId === 'si-demain') {
-                // For si-demain, we only want the video in the modal, 
-                // but we need the image for the hover. So we filter out the image.
-                currentProjectMedia = data.media.filter(item => typeof item === 'object' || item.endsWith('.mp4'));
+                // For si-demain, we ONLY want the video in the modal
+                currentProjectMedia = data.media.filter(item => typeof item === 'string' && item.endsWith('.mp4'));
             } else {
                 currentProjectMedia = data.media;
             }
