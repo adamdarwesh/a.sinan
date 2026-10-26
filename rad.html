@@ -232,7 +232,6 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            /* Removed grayscale filter */
         }
 
         .hover-description {
@@ -274,6 +273,18 @@
 
         .project-item:hover .title {
             font-style: italic;
+        }
+
+        /* --- Footer / Copyright --- */
+        .copyright {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            font-size: 10px;
+            color: #999;
+            letter-spacing: 0.5px;
+            z-index: 100;
+            pointer-events: none;
         }
 
         /* --- Modal / Lightbox Styles --- */
@@ -366,7 +377,6 @@
             max-height: 100%;
             object-fit: contain;
             transition: opacity 0.2s ease;
-            /* Removed grayscale filter */
         }
 
         .modal-media-container iframe {
@@ -446,7 +456,6 @@
             object-fit: cover;
             background-color: #f0f0f0;
             margin-top: 10px;
-            /* Removed grayscale filter */
         }
 
         .contact-person {
@@ -642,6 +651,9 @@
             </div>
         </div>
 
+        <!-- Copyright -->
+        <div class="copyright">© 2026 RaD</div>
+
         <!-- Project Modal / Lightbox -->
         <div class="modal" id="projectModal">
             <div class="close-btn" onclick="closeModal('projectModal')">×</div>
@@ -748,7 +760,9 @@ This exhibition reflects on the abstract process of memory, centring on the perc
 Traditional construction methods are employed to create a sustainably usable space that offers visitors a profound understanding of the importance of places of remembrance. The central question explores how materiality, objects, and spaces can contribute to renewing existence and resisting the forces of forgetting.`,
                 media: [
                     'images/woven_realities_1.jpg', 'images/woven_realities_2.jpg', 'images/woven_realities_3.jpg', 
-                    'images/woven_realities_4.jpg', 'images/woven_realities_5.jpg', 'images/woven_realities_6.jpg'
+                    'images/woven_realities_4.jpg', 'images/woven_realities_5.jpg', 'images/woven_realities_6.jpg',
+                    'images/woven_realities_7.jpg', 'images/woven_realities_8.jpg', 'images/woven_realities_9.jpg',
+                    'images/woven_realities_10.jpg'
                 ]
             },
             'si-demain': {
@@ -760,9 +774,11 @@ Soutenu par l'Institut Français D'Algérie.
 Oran, Algérie.
 
 17 - 25 novembre 2023.`,
+                // For si-demain, the FIRST item is the video so it opens directly to it.
+                // The second item is the image, which is used for the hero on hover.
                 media: [
-                    'images/si_demain_1.jpg', 'images/si_demain_2.jpg',
-                    { type: 'vimeo', id: '893245468' } 
+                    { type: 'vimeo', id: '893245468' },
+                    'images/si_demain_1.jpg' 
                 ]
             },
             'regutting': {
@@ -783,7 +799,9 @@ Local Pals Residency Logline:
 A lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall.`,
                 media: [
                     'images/another_sea_1.jpg', 'images/another_sea_2.jpg', 'images/another_sea_3.jpg',
-                    'images/another_sea_4.jpg', 'images/another_sea_5.jpg'
+                    'images/another_sea_4.jpg', 'images/another_sea_5.jpg', 'images/another_sea_6.jpg',
+                    'images/another_sea_7.jpg', 'images/another_sea_8.jpg', 'images/another_sea_9.jpg',
+                    'images/another_sea_10.jpg'
                 ]
             },
             'lifeguard-platform': {
@@ -797,7 +815,9 @@ Rather than guarding water, the platform becomes an elevated post to watch over 
 Transitioning from a cinematic prop into a permanent installation at Dar Jacir, the tower stands as a physical monument to the "taboo of hope," marking the heights required to preserve a vanishing landscape.`,
                 media: [
                     'images/lifeguard_platform_1.jpg', 'images/lifeguard_platform_2.jpg', 'images/lifeguard_platform_3.jpg',
-                    'images/lifeguard_platform_4.jpg', 'images/lifeguard_platform_5.jpg'
+                    'images/lifeguard_platform_4.jpg', 'images/lifeguard_platform_5.jpg', 'images/lifeguard_platform_6.jpg',
+                    'images/lifeguard_platform_7.jpg', 'images/lifeguard_platform_8.jpg', 'images/lifeguard_platform_9.jpg',
+                    'images/lifeguard_platform_10.jpg'
                 ]
             },
             'wax-home': {
@@ -808,7 +828,13 @@ Transitioning from a cinematic prop into a permanent installation at Dar Jacir, 
                     { type: 'youtube', id: '_XTuUoAtsQ4' },
                     'images/wax_home_2.jpg',
                     'images/wax_home_3.jpg',
-                    'images/wax_home_4.jpg' 
+                    'images/wax_home_4.jpg',
+                    'images/wax_home_5.jpg',
+                    'images/wax_home_6.jpg',
+                    'images/wax_home_7.jpg',
+                    'images/wax_home_8.jpg',
+                    'images/wax_home_9.jpg',
+                    'images/wax_home_10.jpg'
                 ]
             },
             'pay-cheque': {
@@ -818,7 +844,10 @@ Rania Lardjane
 The Khalid Shoman Foundation Summer Academy, 2025
 Photo Credits: Unknown`,
                 media: [
-                    'images/pay_cheque_1.jpg', 'images/pay_cheque_2.jpg'
+                    'images/pay_cheque_1.jpg', 'images/pay_cheque_2.jpg', 'images/pay_cheque_3.jpg',
+                    'images/pay_cheque_4.jpg', 'images/pay_cheque_5.jpg', 'images/pay_cheque_6.jpg',
+                    'images/pay_cheque_7.jpg', 'images/pay_cheque_8.jpg', 'images/pay_cheque_9.jpg',
+                    'images/pay_cheque_10.jpg'
                 ]
             }
         };
@@ -869,33 +898,29 @@ Photo Credits: Unknown`,
                     const descText = item.getAttribute('data-desc');
                     const projectId = item.getAttribute('data-id');
                     
-                    // 1. Update description text
                     centerDescription.textContent = descText;
-
-                    // 2. Load hero image
-                    const heroMedia = projectData[projectId].media[0];
                     
-                    // Reset image source to trigger onerror if needed
+                    // Find the first string (image) in the media array to use as the hero
+                    const projectMedia = projectData[projectId].media;
+                    let heroMedia = null;
+                    
+                    for (let i = 0; i < projectMedia.length; i++) {
+                        if (typeof projectMedia[i] === 'string') {
+                            heroMedia = projectMedia[i];
+                            break; // Stop at the first image found
+                        }
+                    }
+                    
                     heroImage.src = ''; 
 
-                    // Fallback image just in case the local file is missing (prevents blank screen)
                     heroImage.onerror = function() {
                         this.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop';
                     };
                     
-                    if (typeof heroMedia === 'string') {
-                        const isVideo = heroMedia.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
-                        if (!isVideo) {
-                            heroImage.src = heroMedia;
-                        } else {
-                            // If first item is video, try second
-                            if (projectData[projectId].media.length > 1 && typeof projectData[projectId].media[1] === 'string') {
-                                heroImage.src = projectData[projectId].media[1];
-                            }
-                        }
+                    if (heroMedia) {
+                        heroImage.src = heroMedia;
                     }
 
-                    // Show the whole container
                     hoverContent.classList.add('active');
                 });
 
@@ -925,7 +950,15 @@ Photo Credits: Unknown`,
             document.getElementById('modalTitle').textContent = data.title;
             document.getElementById('modalDescription').textContent = data.description;
             
-            currentProjectMedia = data.media;
+            // Set media array for the modal.
+            if (projectId === 'si-demain') {
+                // For si-demain, we only want the video in the modal, 
+                // but we need the image for the hover. So we filter out the image.
+                currentProjectMedia = data.media.filter(item => typeof item === 'object');
+            } else {
+                currentProjectMedia = data.media;
+            }
+            
             currentMediaIndex = 0;
             
             preloadMedia(data.media);
@@ -993,7 +1026,6 @@ Photo Credits: Unknown`,
                         const img = document.createElement('img');
                         img.src = currentFile;
                         img.alt = "Project Media";
-                        // Add fallback for modal images too
                         img.onerror = function() {
                             this.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop';
                         };
