@@ -73,6 +73,9 @@
             transition: opacity 1s ease;
             pointer-events: none; 
             visibility: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         #main-website.loaded {
@@ -177,100 +180,100 @@
             text-decoration: none;
         }
 
-        /* --- Hover Description Canvas Overlay (Lower Right) --- */
-        .hover-description {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            width: 400px;
-            font-size: 14px;
-            line-height: 1.8;
-            color: #d0d0d0;
-            text-align: right;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: 5;
-        }
-
-        .hover-description.active {
-            opacity: 1;
-        }
-
-        .hover-description p {
-            margin: 0;
-        }
-
-        /* --- Scattered Projects Area --- */
-        .projects-area {
+        /* --- New Layout: Text List & Hero Image --- */
+        .content-wrapper {
+            display: flex;
+            flex: 1;
             position: relative;
             width: 100%;
-            height: 90vh; 
-            margin-top: 20px; 
-            z-index: 10; 
+            height: calc(100vh - 100px);
         }
 
-        .project {
+        /* Center Canvas: Holds Hero Image and Description below it */
+        .center-canvas {
             position: absolute;
-            display: none; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
             flex-direction: column;
-            gap: 8px;
-            cursor: pointer;
-            width: 160px; 
-            transition: opacity 0.3s ease; 
+            justify-content: center;
+            align-items: center;
+            pointer-events: none; 
+            z-index: 1;
+            padding-right: 350px; /* Offset for the text list on the right */
         }
 
-        .project.visible {
-            display: flex; 
+        .hover-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .hover-content.active {
             opacity: 1;
         }
 
-        .image-container {
+        .hero-image-container {
             width: 100%;
-            aspect-ratio: 4 / 3;
-            overflow: hidden;
-            background-color: #f0f0f0; 
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Align image to bottom of container */
+            margin-bottom: 20px;
         }
 
-        .image-container img, .image-container video {
-            width: 100%;
+        .hero-image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: grayscale(1); 
+        }
+
+        .hover-description {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #555;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        /* Right Side: Project List */
+        .projects-list {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 350px;
             height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 24px;
+            z-index: 10;
+            padding-right: 24px;
         }
 
-        .project-title {
-            font-size: 10px; 
+        .project-item {
+            text-align: right;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-item .title {
+            font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-weight: 500;
-            padding-top: 4px;
-            background-color: var(--bg-color);
-            padding-bottom: 4px;
+            transition: font-style 0.1s ease;
         }
 
-        /* Scattered Positions (Aligned) */
-        .project:nth-child(1) { --init-top: 0%; --init-left: 5%; z-index: 1; }
-        .project:nth-child(2) { --init-top: 15%; --init-left: 25%; z-index: 2; }
-        .project:nth-child(3) { --init-top: 5%; --init-left: 45%; z-index: 3; }
-        .project:nth-child(4) { --init-top: 25%; --init-left: 65%; z-index: 2; }
-        .project:nth-child(5) { --init-top: 0%; --init-left: 85%; z-index: 1; }
-        .project:nth-child(6) { --init-top: 45%; --init-left: 15%; z-index: 3; }
-        .project:nth-child(7) { --init-top: 55%; --init-left: 50%; z-index: 2; }
-        .project:nth-child(8) { --init-top: 45%; --init-left: 80%; z-index: 3; } 
-
-        .project.visible {
-            top: var(--init-top);
-            left: var(--init-left);
-        }
-
-        .projects-area:hover .project.visible:not(:hover) {
-            opacity: 0.2;
-        }
-
-        .projects-area .project:hover {
-            opacity: 1;
+        .project-item:hover .title {
+            font-style: italic;
         }
 
         /* --- Modal / Lightbox Styles --- */
@@ -282,7 +285,7 @@
             width: 100vw;
             height: 100vh;
             z-index: 1000;
-            background-color: rgba(255, 255, 255, 0.6); 
+            background-color: rgba(255, 255, 255, 0.8); 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             padding: 40px;
@@ -363,9 +366,9 @@
             max-height: 100%;
             object-fit: contain;
             transition: opacity 0.2s ease;
+            filter: grayscale(1);
         }
 
-        /* Style for Iframe Embeds */
         .modal-media-container iframe {
             width: 100%;
             height: 100%;
@@ -443,6 +446,7 @@
             object-fit: cover;
             background-color: #f0f0f0;
             margin-top: 10px;
+            filter: grayscale(1);
         }
 
         .contact-person {
@@ -488,28 +492,22 @@
 
         /* Responsiveness */
         @media (max-width: 1024px) {
-            .hover-description { display: none; } 
-            
-            .projects-area {
-                height: auto; 
-                display: flex;
+            .content-wrapper {
                 flex-direction: column;
-                gap: 30px;
-                padding-bottom: 100px;
+                height: auto;
             }
-            .project {
-                position: relative; 
+            .center-canvas {
+                display: none; 
+            }
+            .projects-list {
+                position: relative;
                 width: 100%;
-                max-width: 300px;
-                top: auto !important;
-                left: auto !important;
-                margin: 0 auto;
+                padding-right: 0;
+                margin-top: 40px;
+                align-items: center;
             }
-            .project.visible {
-                display: flex;
-            }
-            .projects-area:hover .project.visible:not(:hover) {
-                opacity: 1;
+            .project-item {
+                text-align: center;
             }
         }
 
@@ -570,69 +568,78 @@
             </div>
         </header>
 
-        <main class="projects-area">
+        <div class="content-wrapper">
             
-            <div class="project" data-id="vortex-columns" data-desc="Vortex Columns– Stable in Disruption. Brunnenpassage, Vienna Climate Biennale Vienna 2026." onclick="openProjectModal('vortex-columns')">
-                <div class="image-container">
-                    <img src="images/vortex_columns_1.jpg" alt="Vortex Columns">
+            <!-- Center Canvas: Description & Hero Image -->
+            <div class="center-canvas">
+                <div class="hover-content" id="hoverContent">
+                    <div class="hero-image-container">
+                        <img id="heroImage" src="" alt="Project Hero">
+                    </div>
+                    <div class="hover-description" id="centerDescription"></div>
                 </div>
-                <div class="project-title">Vortex Columns</div>
             </div>
 
-            <div class="project" data-id="woven-realities" data-desc="WOVEN REALITIES: THE MULTILAYEREDNESS OF AFGHAN DWELLINGS AND RITUALS. Various locations, Vienna, 2024." onclick="openProjectModal('woven-realities')">
-                <div class="image-container">
-                    <img src="images/woven_realities_1.jpg" alt="Woven Realities">
+            <!-- Right Side: Text List -->
+            <div class="projects-list">
+                
+                <div class="project-item" 
+                     data-id="vortex-columns" 
+                     data-desc="Brunnenpassage, Vienna Climate Biennale Vienna 2026. In collaboration with Farila Nashat. The project addresses the ecological and emotional impacts of geopolitical conflicts, particularly in Afghanistan, the Middle East and other affected regions."
+                     onclick="openProjectModal('vortex-columns')">
+                    <div class="title">Vortex Columns</div>
                 </div>
-                <div class="project-title">Woven Realities</div>
-            </div>
 
-            <div class="project" data-id="si-demain" data-desc="si demain je pars: Produit dans le cadre de la résidence photographique 'Si Demain Je Pars', animée par Michaël Duperrin, Nora Zaïr et Sadek Rahim. Oran, Algérie. 17 - 25 novembre 2023." onclick="openProjectModal('si-demain')">
-                <div class="image-container">
-                    <img src="images/si_demain_1.jpg" alt="si demain je pars">
+                <div class="project-item" 
+                     data-id="woven-realities" 
+                     data-desc="Various locations, Vienna, 2024. This exhibition reflects on the abstract process of memory, centring on the perception of living spaces through the eyes of a child."
+                     onclick="openProjectModal('woven-realities')">
+                    <div class="title">Woven Realities</div>
                 </div>
-                <div class="project-title">si demain je pars</div>
-            </div>
 
-            <div class="project" data-id="regutting" data-desc="Regutting: A stark, visceral journey into the extractive process at the Bani Na'im quarries." onclick="openProjectModal('regutting')">
-                <div class="image-container">
-                    <img src="images/regutting_1.jpg" alt="Regutting">
+                <div class="project-item" 
+                     data-id="si-demain" 
+                     data-desc="Produit dans le cadre de la résidence photographique 'Si Demain Je Pars', animée par Michaël Duperrin, Nora Zaïr et Sadek Rahim. Oran, Algérie. 17 - 25 novembre 2023."
+                     onclick="openProjectModal('si-demain')">
+                    <div class="title">si demain je pars</div>
                 </div>
-                <div class="project-title">Regutting</div>
-            </div>
 
-            <div class="project" data-id="another-sea" data-desc="another sea behind another wall (film). TPFF (Toronto Palestine Film Festival)." onclick="openProjectModal('another-sea')">
-                <div class="image-container">
-                    <img src="images/another_sea_1.jpg" alt="another sea behind another wall">
+                <div class="project-item" 
+                     data-id="regutting" 
+                     data-desc="A stark, visceral journey into the extractive process at the Bani Na'im quarries. It contrasts the pristine 'whiteness' of the finished stone with the violent disfigurement of the landscape."
+                     onclick="openProjectModal('regutting')">
+                    <div class="title">Regutting</div>
                 </div>
-                <div class="project-title">another sea behind another wall</div>
-            </div>
 
-            <div class="project" data-id="lifeguard-platform" data-desc="The Lifeguard Platform: Film prop, permanent installation at Dar Jacir-Bethelehem, 2026." onclick="openProjectModal('lifeguard-platform')">
-                <div class="image-container">
-                    <img src="images/lifeguard_platform_1.jpg" alt="The Lifeguard Platform">
+                <div class="project-item" 
+                     data-id="another-sea" 
+                     data-desc="TPFF (Toronto Palestine Film Festival). A lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall."
+                     onclick="openProjectModal('another-sea')">
+                    <div class="title">another sea behind another wall</div>
                 </div>
-                <div class="project-title">The Lifeguard Platform</div>
-            </div>
 
-            <div class="project" data-id="wax-home" data-desc="The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project." onclick="openProjectModal('wax-home')">
-                <div class="image-container">
-                    <img src="images/wax_home_1.jpg" alt="The Wax Home">
+                <div class="project-item" 
+                     data-id="lifeguard-platform" 
+                     data-desc="Film prop, permanent installation at Dar Jacir-Bethelehem, 2026. Originally built as the central set piece for the film, the tower embodies a physical 'hope inversion.'"
+                     onclick="openProjectModal('lifeguard-platform')">
+                    <div class="title">The Lifeguard Platform</div>
                 </div>
-                <div class="project-title">The Wax Home</div>
-            </div>
 
-            <div class="project" data-id="pay-cheque" data-desc="Pay-Cheque: Graphic on paper. Rania Lardjane. The Khalid Shoman Foundation Summer Academy, 2025." onclick="openProjectModal('pay-cheque')">
-                <div class="image-container">
-                    <img src="images/pay_cheque_1.jpg" alt="Pay-Cheque">
+                <div class="project-item" 
+                     data-id="wax-home" 
+                     data-desc="The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project."
+                     onclick="openProjectModal('wax-home')">
+                    <div class="title">The Wax Home</div>
                 </div>
-                <div class="project-title">Pay-Cheque</div>
+
+                <div class="project-item" 
+                     data-id="pay-cheque" 
+                     data-desc="Graphic on paper. Rania Lardjane. The Khalid Shoman Foundation Summer Academy, 2025. Photo Credits: Unknown."
+                     onclick="openProjectModal('pay-cheque')">
+                    <div class="title">Pay-Cheque</div>
+                </div>
+
             </div>
-
-        </main>
-
-        <!-- Canvas Hover Description Container -->
-        <div class="hover-description" id="hoverContainer">
-            <p id="hoverText"></p>
         </div>
 
         <!-- Project Modal / Lightbox -->
@@ -728,11 +735,7 @@ The project addresses the ecological and emotional impacts of geopolitical confl
                     'images/vortex_columns_1.jpg', 'images/vortex_columns_2.jpg', 'images/vortex_columns_3.jpg',
                     'images/vortex_columns_4.jpg', 'images/vortex_columns_5.jpg', 'images/vortex_columns_6.jpg',
                     'images/vortex_columns_7.jpg', 'images/vortex_columns_8.jpg', 'images/vortex_columns_9.jpg',
-                    'images/vortex_columns_10.jpg', 'images/vortex_columns_11.jpg', 'images/vortex_columns_12.jpg',
-                    'images/vortex_columns_13.jpg', 'images/vortex_columns_14.jpg', 'images/vortex_columns_15.jpg',
-                    'images/vortex_columns_16.jpg', 'images/vortex_columns_17.jpg', 'images/vortex_columns_18.jpg',
-                    'images/vortex_columns_19.jpg', 'images/vortex_columns_20.jpg', 'images/vortex_columns_21.jpg', 
-                    'images/vortex_columns_22.jpg', 'images/vortex_columns_23.jpg'
+                    'images/vortex_columns_10.jpg'
                 ]
             },
             'woven-realities': {
@@ -745,11 +748,7 @@ This exhibition reflects on the abstract process of memory, centring on the perc
 Traditional construction methods are employed to create a sustainably usable space that offers visitors a profound understanding of the importance of places of remembrance. The central question explores how materiality, objects, and spaces can contribute to renewing existence and resisting the forces of forgetting.`,
                 media: [
                     'images/woven_realities_1.jpg', 'images/woven_realities_2.jpg', 'images/woven_realities_3.jpg', 
-                    'images/woven_realities_4.jpg', 'images/woven_realities_5.jpg', 'images/woven_realities_6.jpg', 
-                    'images/woven_realities_8.jpg', 'images/woven_realities_9.jpg', 'images/woven_realities_10.jpg',
-                    'images/woven_realities_11.jpg', 'images/woven_realities_12.jpg', 'images/woven_realities_13.jpg',
-                    'images/woven_realities_14.jpg', 'images/woven_realities_15.jpg', 'images/woven_realities_16.jpg',
-                    'images/woven_realities_17.jpg'
+                    'images/woven_realities_4.jpg', 'images/woven_realities_5.jpg', 'images/woven_realities_6.jpg'
                 ]
             },
             'si-demain': {
@@ -768,7 +767,7 @@ Oran, Algérie.
             },
             'regutting': {
                 title: `Regutting`,
-                description: `This work presents a stark, visceral journey into the extractive process at the Bani Na'im quarries. It contrasts the pristine "whiteness" of the finished stone, which is used as a mere decorative veneer, with the violent disfigurement of the landscape, where mountains are carved into misshapen voids. The piece explores how the scarred terrain—the deep pits of waste and awe-inspiring lacerations—embodies greed and land murder inscribed onto the earth by the indigenous population. Crucially, the journey traces the return of the remains: the massive amounts of fine rock powder, toxic slurry, and the residual imperfect that are often thrown into unauthorised landfills in Area C, adjacent to Palestinian localities. These sites, already in a jurisdictional limbo and often used as Israeli dumping grounds, become the final resting place for the land's toxic residue. The installation is a guided exploration that culminates in framing the act of returning this degutted material to one of the violated, abandoned stone quarries, transforming the site from a symbol of extraction into a monument to betrayed and violated memory.`,
+                description: `This work presents a stark, visceral journey into the extractive process at the Bani Na'im quarries. It contrasts the pristine "whiteness" of the finished stone, which is used as a mere decorative veneer, with the violent disfigurement of the landscape, where mountains are carved into misshapen voids. The piece explores how the scarred terrain—the deep pits of waste and awe-inspiring lacerations—embodies greed and land murder inscribed onto the earth by the indigenous population. Crucially, the journey traces the return of the remains: the massive amounts of fine rock powder, toxic slurry, and the residual imperfect that are often thrown into unauthorised landfills in Area C, adjacent to Palestinian localities.`,
                 media: [
                     'images/regutting_1.jpg', 'images/regutting_2.jpg', 'images/regutting_3.jpg',
                     'images/regutting_4.jpg', 'images/regutting_5.jpg', 'images/regutting_6.jpg',
@@ -849,62 +848,65 @@ Photo Credits: Unknown`,
             const mainSite = document.getElementById('main-website');
             mainSite.classList.add('loaded');
             
-            setTimeout(() => {
-                initScatterAnimation();
-            }, 1200);
+            initHoverLogic();
         }
 
         function returnToLanding() {
             document.getElementById('main-website').classList.remove('loaded');
             document.getElementById('landing-page').classList.remove('hidden');
-            
-            document.querySelectorAll('.project').forEach(p => p.classList.remove('visible'));
+            hideHover();
         }
 
-        // --- Succession Scatter Animation & Hover Logic ---
-        function initScatterAnimation() {
-            const projects = document.querySelectorAll('.project');
-            const hoverTextElement = document.getElementById('hoverText');
-            const hoverContainer = document.getElementById('hoverContainer');
-            
-            projects.forEach(p => p.classList.remove('visible'));
+        // --- Hover Logic for Text List & Center Canvas ---
+        const projectItems = document.querySelectorAll('.project-item');
+        const hoverContent = document.getElementById('hoverContent');
+        const centerDescription = document.getElementById('centerDescription');
+        const heroImage = document.getElementById('heroImage');
 
-            if (window.innerWidth > 1024) {
-                let cumulativeDelay = 0;
-
-                projects.forEach((project) => {
-                    const randomGap = Math.floor(Math.random() * 1600);
-                    cumulativeDelay += randomGap;
-
-                    setTimeout(() => {
-                        project.classList.add('visible');
-                    }, cumulativeDelay);
-                });
-            } else {
-                projects.forEach(project => project.classList.add('visible'));
-            }
-
-            // Hover Description Logic
-            projects.forEach(project => {
-                if (!project.dataset.hoverAttached) {
-                    project.addEventListener('mouseenter', () => {
-                        const descText = project.getAttribute('data-desc');
-                        hoverTextElement.textContent = descText;
-                        hoverContainer.classList.add('active');
-                    });
-
-                    project.addEventListener('mouseleave', () => {
-                        hoverContainer.classList.remove('active');
-                    });
+        function initHoverLogic() {
+            projectItems.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    const descText = item.getAttribute('data-desc');
+                    const projectId = item.getAttribute('data-id');
                     
-                    project.dataset.hoverAttached = "true";
-                }
+                    // 1. Update description text
+                    centerDescription.textContent = descText;
+
+                    // 2. Load hero image
+                    const heroMedia = projectData[projectId].media[0];
+                    
+                    if (typeof heroMedia === 'string') {
+                        const isVideo = heroMedia.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
+                        if (!isVideo) {
+                            heroImage.src = heroMedia;
+                        } else {
+                            // If first item is video, try second
+                            if (projectData[projectId].media.length > 1 && typeof projectData[projectId].media[1] === 'string') {
+                                heroImage.src = projectData[projectId].media[1];
+                            } else {
+                                heroImage.src = ''; // No valid image found
+                            }
+                        }
+                    }
+
+                    // Show the whole container
+                    hoverContent.classList.add('active');
+                });
+
+                item.addEventListener('mouseleave', () => {
+                    hideHover();
+                });
             });
+        }
+
+        function hideHover() {
+            hoverContent.classList.remove('active');
         }
 
         // --- Project Modal Logic ---
         let currentProjectMedia = [];
         let currentMediaIndex = 0;
+        let preloadedMedia = {}; 
         const projectModal = document.getElementById('projectModal');
         const mediaContainer = document.getElementById('modalMediaContainer');
 
@@ -920,91 +922,77 @@ Photo Credits: Unknown`,
             currentProjectMedia = data.media;
             currentMediaIndex = 0;
             
-            findAndLoadNextMedia(0);
+            preloadMedia(data.media);
+            updateMediaDisplay();
             
             projectModal.classList.add('active');
             document.body.style.overflow = 'hidden'; 
         }
 
-        // Smart Loader: Handles images, direct videos, embeds, and skips missing files
-        function findAndLoadNextMedia(startIndex) {
-            if (currentProjectMedia.length === 0) return;
+        function preloadMedia(mediaArray) {
+            mediaArray.forEach((item, index) => {
+                if (typeof item === 'string') {
+                    const isVideo = item.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
+                    if (!isVideo) {
+                        const img = new Image();
+                        img.src = item;
+                        preloadedMedia[index] = img;
+                    }
+                }
+            });
+        }
+
+        function updateMediaDisplay() {
+            mediaContainer.style.opacity = '0';
             
-            currentMediaIndex = startIndex;
-            let attempts = 0;
-            
-            function tryLoad() {
-                if (attempts >= currentProjectMedia.length) {
-                    mediaContainer.innerHTML = '<p style="color:#999; font-family:var(--font-main); font-size:14px;">No media found in folder.</p>';
+            setTimeout(() => {
+                mediaContainer.innerHTML = '';
+                
+                const currentItem = currentProjectMedia[currentMediaIndex];
+
+                if (typeof currentItem === 'object' && currentItem !== null) {
+                    if (currentItem.type === 'vimeo') {
+                        const iframe = document.createElement('iframe');
+                        iframe.src = `https://player.vimeo.com/video/${currentItem.id}?autoplay=1`;
+                        iframe.allow = "autoplay; fullscreen; picture-in-picture";
+                        iframe.allowFullscreen = true;
+                        mediaContainer.appendChild(iframe);
+                    } else if (currentItem.type === 'youtube') {
+                        const iframe = document.createElement('iframe');
+                        iframe.src = `https://www.youtube.com/embed/${currentItem.id}?autoplay=1&rel=0`;
+                        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                        iframe.allowFullscreen = true;
+                        mediaContainer.appendChild(iframe);
+                    }
+                    mediaContainer.style.opacity = '1';
                     return;
                 }
 
-                const currentItem = currentProjectMedia[currentMediaIndex];
-                mediaContainer.style.opacity = '0';
+                const currentFile = currentItem;
+                const isVideo = currentFile.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
 
-                setTimeout(() => {
-                    mediaContainer.innerHTML = '';
-                    
-                    // 1. Check if it's a Vimeo or YouTube embed object
-                    if (typeof currentItem === 'object' && currentItem !== null) {
-                        if (currentItem.type === 'vimeo') {
-                            const iframe = document.createElement('iframe');
-                            iframe.src = `https://player.vimeo.com/video/${currentItem.id}?autoplay=1`;
-                            iframe.allow = "autoplay; fullscreen; picture-in-picture";
-                            iframe.allowFullscreen = true;
-                            mediaContainer.appendChild(iframe);
-                        } else if (currentItem.type === 'youtube') {
-                            const iframe = document.createElement('iframe');
-                            iframe.src = `https://www.youtube.com/embed/${currentItem.id}?autoplay=1&rel=0`;
-                            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                            iframe.allowFullscreen = true;
-                            mediaContainer.appendChild(iframe);
-                        }
-                        mediaContainer.style.opacity = '1';
-                        return;
-                    }
-
-                    // 2. Check if it's a direct file (string)
-                    const currentFile = currentItem;
-                    const isVideo = currentFile.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
-
-                    if (isVideo) {
-                        const video = document.createElement('video');
-                        video.src = currentFile;
-                        video.autoplay = true;
-                        video.loop = true;
-                        video.muted = true;
-                        video.playsInline = true;
-                        video.controls = true;
-                        
-                        // If video fails, try the next one
-                        video.onerror = () => {
-                            currentMediaIndex = (currentMediaIndex + 1) % currentProjectMedia.length;
-                            attempts++;
-                            tryLoad();
-                        };
-                        
-                        mediaContainer.appendChild(video);
+                if (isVideo) {
+                    const video = document.createElement('video');
+                    video.src = currentFile;
+                    video.autoplay = true;
+                    video.loop = true;
+                    video.muted = true;
+                    video.playsInline = true;
+                    video.controls = true;
+                    mediaContainer.appendChild(video);
+                } else {
+                    if (preloadedMedia[currentMediaIndex]) {
+                        mediaContainer.appendChild(preloadedMedia[currentMediaIndex]);
                     } else {
                         const img = document.createElement('img');
                         img.src = currentFile;
                         img.alt = "Project Media";
-                        
-                        // If image fails, try the next one
-                        img.onerror = () => {
-                            currentMediaIndex = (currentMediaIndex + 1) % currentProjectMedia.length;
-                            attempts++;
-                            tryLoad();
-                        };
-                        
                         mediaContainer.appendChild(img);
                     }
-                    
-                    mediaContainer.style.opacity = '1';
-                }, 200);
-            }
-            
-            tryLoad();
+                }
+                
+                mediaContainer.style.opacity = '1';
+            }, 150);
         }
 
         function changeMedia(direction) {
@@ -1018,12 +1006,13 @@ Photo Credits: Unknown`,
                 currentMediaIndex = currentProjectMedia.length - 1;
             }
             
-            findAndLoadNextMedia(currentMediaIndex);
+            updateMediaDisplay();
         }
 
         // --- Generic Modal Logic (About/Contacts/Collaborate) ---
         function openInfoModal(modalId) {
             document.getElementById('navDropdown').classList.remove('active');
+            hideHover();
             
             document.getElementById(modalId).classList.add('active');
             document.body.style.overflow = 'hidden';
