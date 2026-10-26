@@ -1,425 +1,960 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RaD — previous projects</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
-<style>
-:root {
-  --paper: #ffffff;
-  --ink:   #1a1a1a;
-  --grey:  #8f8a7e;
-  --blue:  #4a5fc1;
-  --red:   #d8433b;
-  --script: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
-  --mono:   'IBM Plex Mono', ui-monospace, monospace;
-  --serif:  'Cormorant Garamond', Georgia, serif;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { background: var(--paper); }
-html.open { overflow: hidden; }
-body {
-  font-family: var(--serif);
-  color: var(--ink);
-  background: var(--paper);
-  -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-a { color: inherit; text-decoration: none; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RaD</title>
+    <style>
+        /* Import technical sans-serif font for UI */
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap');
+        /* Import Garamond Regular and Italic for the logo */
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&display=swap');
 
-/* ------------------------------------------------ landing */
-.top {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 4vw 4vw 0;
-  position: relative; z-index: 2;
-}
-.duo {
-  font-family: var(--script); font-weight: 400;
-  font-size: 5vw;
-  line-height: 1;
-  color: var(--red);
-}
-.micro {
-  font-family: var(--mono); font-size: 12px; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--grey); line-height: 1.8;
-  text-align: right;
-  margin-top: 0.5vh;
-}
+        :root {
+            --bg-color: #FFFFFF;
+            --text-color: #000000;
+            --font-main: 'IBM Plex Mono', monospace;
+            --font-logo: 'EB Garamond', Garamond, serif;
+        }
 
-/* ------------------------------------------------ scattered layout */
-.scatter {
-  position: relative;
-  flex: 1;
-  width: 100%;
-  min-height: 75vh;
-  margin: 2vh auto 0;
-  max-width: 1600px;
-  padding: 0 4vw 8vh;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-.work {
-  position: absolute;
-  display: block;
-  width: clamp(160px, 18vw, 280px);
-  z-index: 1;
-}
-.work:hover { z-index: 10; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+        }
 
-/* individual scattered positions */
-.p1 { top: 2vh;  left: 6%; }
-.p2 { top: 15vh; left: 28%; }
-.p3 { top: 8vh;  left: 52%; }
-.p4 { top: 22vh; left: 74%; }
-.p5 { top: 45vh; left: 2%; width: clamp(140px, 15vw, 220px); }
-.p6 { top: 50vh; left: 38%; width: clamp(180px, 20vw, 300px); }
-.p7 { top: 62vh; left: 72%; width: clamp(160px, 17vw, 250px); }
+        /* --- Landing Page Styles --- */
+        #landing-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
 
-.frame { 
-  position: relative; 
-  isolation: isolate; 
-  overflow: hidden; 
-  background: #e0e0e0;
-  border: 2px solid #000000; 
-}
-.frame img, .frame video {
-  display: block; width: 100%; height: auto;
-  filter: none;
-}
+        #landing-page.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
 
-.frame.empty {
-  aspect-ratio: 4 / 3;
-  background: #e0e0e0;
-  border: 2px solid #000000;
-}
+        .landing-logo {
+            font-family: var(--font-logo);
+            font-size: 80px; 
+            font-weight: 400;
+            letter-spacing: 0.45em;
+            font-style: normal;
+            cursor: pointer;
+            transition: font-style 0.2s ease, transform 0.3s ease;
+            padding-left: 0.45em; 
+        }
 
-.meta { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; }
-.meta-top { display: flex; align-items: baseline; gap: 12px; }
-.no, .yr, .gl, .more {
-  font-family: var(--mono); font-size: 12px; letter-spacing: .14em; color: var(--grey);
-}
-.ttl {
-  font-family: var(--script); font-size: 36px;
-  line-height: 1; color: #000000;
-}
+        .landing-logo:hover {
+            font-style: italic;
+            transform: scale(1.05);
+        }
 
-/* ------------------------------------------------ project page */
-#detail {
-  display: none; position: fixed; inset: 0; z-index: 40;
-  background: var(--paper);
-  grid-template-columns: minmax(290px, 31vw) 1fr;
-}
-html.open #detail { display: grid; animation: fadein .45s ease; }
-@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+        /* --- Main Website Styles --- */
+        #main-website {
+            padding: 24px;
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none; 
+            visibility: hidden;
+        }
 
-.d-text {
-  padding: 4vh 2.6vw 4vh 4vw; overflow-y: auto;
-  display: flex; flex-direction: column; gap: 2.2vh; scrollbar-width: thin;
-  background: #ffffff;
-  border-right: 1px solid #000000;
-}
-.back, .d-no, .d-next {
-  font-family: var(--mono); font-size: 12px; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--grey);
-}
-.back:hover, .d-next:hover { color: var(--red); }
-.d-title {
-  font-family: var(--script); font-weight: 400; 
-  color: #000000;
-  font-size: 64px;
-  line-height: .95; margin-top: 1vh;
-}
-.d-year { font-family: var(--mono); font-size: 12px; letter-spacing: .16em; color: var(--blue); text-transform: uppercase; }
-.d-desc p { font-size: 17.5px; line-height: 1.55; margin-bottom: .9em; max-width: 46ch; }
-.d-bar { margin-top: auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-top: 2vh; }
-.d-count { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; color: var(--ink); min-width: 62px; }
-.d-bar button {
-  width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
-  border: 1px solid var(--grey); background: none; color: var(--ink);
-  font-family: var(--mono); font-size: 14px; line-height: 1; transition: .2s;
-}
-.d-bar button:hover { border-color: var(--red); color: var(--red); }
-.d-next { margin-left: auto; }
+        #main-website.loaded {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
 
-.d-strip {
-  position: relative; display: flex; align-items: center; gap: 2.4vw;
-  overflow-x: auto; overflow-y: hidden; padding: 0 4vw; scrollbar-width: none;
-}
-.d-strip::-webkit-scrollbar { display: none; }
-.fig { flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; }
-.fig .m { width: 40vh; height: 60vh; }          
-.fig img, .fig video { display: block; width: 100%; height: 100%; object-fit: contain; }
-.fig figcaption { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; color: var(--grey); text-transform: uppercase; }
-.fig.empty .m { width: min(60vw, 70vh); height: auto; aspect-ratio: 4/3;
-  background: #e0e0e0; border: 2px solid #000000; }
+        /* Top Header Area */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            position: relative;
+            z-index: 100; 
+        }
 
-@media (max-width: 900px) {
-  .work { width: 30vw; }
-  .p1 { top: 5%; left: 5%; }
-  .p2 { top: 20%; left: 40%; }
-  .p3 { top: 10%; left: 65%; }
-  .p4 { top: 45%; left: 10%; }
-  .p5 { top: 55%; left: 45%; width: 35vw; }
-  .p6 { top: 35%; left: 75%; width: 25vw; }
-  .p7 { top: 70%; left: 25%; width: 30vw; }
-}
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 101; 
+        }
 
-@media (max-width: 760px) {
-  .top { padding: 4vw; }
-  .duo { font-size: 12vw; }
-  .scatter { min-height: 60vh; }
-  .work { width: 40vw; }
-  .p1 { top: 0; left: 2%; }
-  .p2 { top: 25%; left: 45%; }
-  .p3 { top: 10%; left: 55%; }
-  .p4 { top: 50%; left: 5%; }
-  .p5 { top: 65%; left: 45%; width: 45vw; }
-  .p6 { top: 40%; left: 60%; width: 35vw; }
-  .p7 { top: 85%; left: 10%; width: 40vw; }
-  
-  #detail { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-  .d-text { max-height: 44vh; padding: 3vh 5vw 2vh; gap: 1.4vh; border-right: none; border-bottom: 1px solid #000000; }
-  .d-title { font-size: 48px; }
-  .d-desc p { font-size: 16px; }
-  .d-strip { padding: 0 5vw; }
-}
-</style>
+        .brand-title {
+            font-family: var(--font-logo);
+            font-size: 30px; 
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: 0.45em;
+            font-style: normal;
+            transition: font-style 0.1s ease; 
+            cursor: pointer;
+        }
+
+        .brand-title:hover {
+            font-style: italic;
+        }
+
+        /* Dropdown Menu Container */
+        .menu-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .plus-icon {
+            font-size: 40px; 
+            font-weight: 300;
+            line-height: 0.5;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            user-select: none;
+            margin-top: -10px;
+        }
+
+        .plus-icon:hover {
+            transform: rotate(90deg);
+        }
+
+        /* Dropdown Styles */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 15px;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            padding: 20px; 
+            padding-left: 4px;
+            z-index: 999; 
+        }
+
+        .dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .dropdown-menu a:hover {
+            opacity: 0.5;
+            text-decoration: none;
+        }
+
+        /* --- Hover Description Canvas Overlay (Lower Right) --- */
+        .hover-description {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 400px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #d0d0d0;
+            text-align: right;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 5;
+        }
+
+        .hover-description.active {
+            opacity: 1;
+        }
+
+        .hover-description p {
+            margin: 0;
+        }
+
+        /* --- Scattered Projects Area --- */
+        .projects-area {
+            position: relative;
+            width: 100%;
+            height: 90vh; 
+            margin-top: 20px; 
+            z-index: 10; 
+        }
+
+        .project {
+            position: absolute;
+            display: none; 
+            flex-direction: column;
+            gap: 8px;
+            cursor: pointer;
+            width: 160px; 
+            transition: opacity 0.3s ease; 
+        }
+
+        .project.visible {
+            display: flex; 
+            opacity: 1;
+        }
+
+        .image-container {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            background-color: #f0f0f0; 
+        }
+
+        .image-container img, .image-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1);
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .project-title {
+            font-size: 10px; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            padding-top: 4px;
+            background-color: var(--bg-color);
+            padding-bottom: 4px;
+        }
+
+        /* Scattered Positions (Aligned) */
+        .project:nth-child(1) { --init-top: 0%; --init-left: 5%; z-index: 1; }
+        .project:nth-child(2) { --init-top: 15%; --init-left: 25%; z-index: 2; }
+        .project:nth-child(3) { --init-top: 5%; --init-left: 45%; z-index: 3; }
+        .project:nth-child(4) { --init-top: 25%; --init-left: 65%; z-index: 2; }
+        .project:nth-child(5) { --init-top: 0%; --init-left: 85%; z-index: 1; }
+        .project:nth-child(6) { --init-top: 45%; --init-left: 15%; z-index: 3; }
+        .project:nth-child(7) { --init-top: 55%; --init-left: 50%; z-index: 2; }
+        .project:nth-child(8) { --init-top: 45%; --init-left: 80%; z-index: 3; } 
+
+        .project.visible {
+            top: var(--init-top);
+            left: var(--init-left);
+        }
+
+        .projects-area:hover .project.visible:not(:hover) {
+            opacity: 0.2;
+        }
+
+        .projects-area .project:hover {
+            opacity: 1;
+        }
+
+        /* --- Modal / Lightbox Styles --- */
+        .modal {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.6); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 40px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            gap: 60px;
+        }
+
+        .modal-text-section {
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-right: 20px;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .modal-description {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #333;
+            max-width: 400px;
+            margin-bottom: 16px;
+            white-space: pre-line;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            font-size: 32px;
+            cursor: pointer;
+            font-weight: 300;
+            line-height: 1;
+            color: var(--text-color);
+            z-index: 1001;
+        }
+
+        .modal-gallery-section {
+            width: 65%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-media-container {
+            width: 100%;
+            height: 100%;
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .modal-media-container img, .modal-media-container video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: grayscale(1);
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 40px;
+            font-weight: 300;
+            cursor: pointer;
+            padding: 20px;
+            user-select: none;
+            color: var(--text-color);
+            opacity: 0.5;
+            transition: opacity 0.2s ease;
+            z-index: 10;
+        }
+
+        .nav-btn:hover { opacity: 1; }
+        .nav-btn.prev { left: 20px; }
+        .nav-btn.next { right: 20px; }
+
+        /* --- Info Modals (About/Contacts/Collaborate) --- */
+        .info-modal-content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .info-modal-title {
+            font-family: var(--font-logo);
+            font-size: 48px;
+            margin-bottom: 40px;
+            letter-spacing: 0.05em;
+        }
+
+        /* Updated About Grid for Bios + Headshots */
+        .bio-grid, .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .bio-person {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .bio-text {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #222;
+        }
+
+        .bio-text strong {
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .bio-headshot {
+            width: 100%;
+            max-width: 200px;
+            aspect-ratio: 3 / 4; /* Portrait orientation */
+            object-fit: cover;
+            filter: grayscale(1);
+            background-color: #f0f0f0;
+            margin-top: 10px;
+        }
+
+        .contact-person {
+            font-size: 14px;
+            line-height: 2;
+        }
+
+        .contact-person strong {
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .contact-person a {
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .contact-person a:hover { text-decoration: underline; }
+
+        .collab-text {
+            max-width: 600px;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .collab-email {
+            font-family: var(--font-logo);
+            font-size: 32px;
+            text-decoration: none;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--text-color);
+            padding-bottom: 4px;
+            display: inline-block;
+            transition: opacity 0.3s ease;
+        }
+
+        .collab-email:hover {
+            opacity: 0.5;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 1024px) {
+            .hover-description { display: none; } 
+            
+            .projects-area {
+                height: auto; 
+                display: flex;
+                flex-direction: column;
+                gap: 30px;
+                padding-bottom: 100px;
+            }
+            .project {
+                position: relative; 
+                width: 100%;
+                max-width: 300px;
+                top: auto !important;
+                left: auto !important;
+                margin: 0 auto;
+            }
+            .project.visible {
+                display: flex;
+            }
+            .projects-area:hover .project.visible:not(:hover) {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .landing-logo { font-size: 60px; }
+            .brand-title { font-size: 24px; letter-spacing: 0.35em; }
+            .plus-icon { font-size: 32px; margin-top: -6px; }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            .modal-content {
+                flex-direction: column;
+                gap: 20px;
+                overflow-y: auto;
+            }
+            .modal-text-section { width: 100%; padding-right: 0; }
+            .modal-gallery-section { width: 100%; min-height: 400px; }
+            .modal { padding: 20px; }
+            .close-btn { top: 20px; right: 20px; }
+            
+            .info-modal-content { justify-content: flex-start; padding-top: 40px; }
+            
+            /* Stack bio and contacts on mobile */
+            .bio-grid, .contact-grid { 
+                grid-template-columns: 1fr; 
+                gap: 40px; 
+            }
+            
+            .info-modal-title { font-size: 32px; margin-bottom: 24px; }
+            .collab-email { font-size: 24px; }
+        }
+    </style>
 </head>
 <body>
 
-<header class="top">
-  <h1 class="duo">RaD</h1>
-  <p class="micro">previous projects<br><span id="count"></span></p>
-</header>
-
-<main class="scatter" id="wall"></main>
-
-<section id="detail" aria-label="Project">
-  <aside class="d-text">
-    <a class="back" href="#/">&larr; all projects</a>
-    <p class="d-no" id="d-no"></p>
-    <h2 class="d-title" id="d-title"></h2>
-    <p class="d-year" id="d-year"></p>
-    <div class="d-desc" id="d-desc"></div>
-    <div class="d-bar">
-      <button id="prev" aria-label="Previous image">&larr;</button>
-      <span class="d-count" id="d-count"></span>
-      <button id="next" aria-label="Next image">&rarr;</button>
-      <a class="d-next" id="d-nextlink" href="#/"></a>
+    <!-- LANDING PAGE -->
+    <div id="landing-page" onclick="enterSite()">
+        <div class="landing-logo">RaD</div>
     </div>
-  </aside>
-  <div class="d-strip" id="strip"></div>
-</section>
 
-<script>
-const PROJECTS = [
-  { slug:"spiral_spines", title:"Spiral Spines", year:"2026", subtitle:"", tone:"bw",
-    text:[
-      "A regenerative material practice that transforms uprooted and discarded timber into structural and spatial systems.",
-      "Presented at the Climate Biennale Vienna 2026."
-    ] },
-  { slug:"woven_realities", title:"Woven Realities", year:"2025", subtitle:"Afghan House Pavilion", tone:"blue",
-    text:[
-      "The Woven Realities project understands human memory as an abstract yet fundamental architectural process. The aim is to translate these intimate dimensions of dwelling into a circular, 1:1-scale architectural prototype. Drawing primary inspiration from the traditional clay and mud-brick houses prevalent in Central Asia and globally, the project reinterprets these vernacular typologies for a European context. We achieve this by substituting traditional earth with locally sourced, reusable by-products from the construction, industry, and consumer waste sectors.",
-      "By abstracting destroyed Afghan cultural monuments and reconstructing them using these reclaimed materials, we create a modular spatial structure. This transformation results in a low-tech, highly adaptable construction method that can be easily deployed, modified, and rebuilt virtually anywhere. It demonstrates how regenerative, low-carbon building approaches are not only ecologically necessary but also function as ritualistic techniques of enclosure, transforming mere “being in the world” into a profound sense of “being at home.”",
-      "Material specifications: wood, cement, stone, fabric. Construction techniques: low-tech modular assembly, vernacular adaptation, kinetic base, deliberate omission. Dimensions: 666.5 × 322.5 × 263 cm."
-    ] },
-  { slug:"lifeguard_platform", title:"The Lifeguard Platform", year:"2026", subtitle:"", tone:"bw",
-    text:[ "Set design / architectural installation." ] },
-  { slug:"another_sea", title:"another sea behind another wall", year:"", subtitle:"", tone:"blue", text:[] },
-  { slug:"soft_unsealing", title:"Soft Unsealing", year:"2024", subtitle:"IABR11 Rotterdam", tone:"bw",
-    text:[
-      "The goal of this project is to bring nature back to the city, revive the history, and fulfill the community wishes. This location, which initially had little function, is given a new purpose and stimulates further developments in the region.",
-      "It began with applied research and experimental interventions by the [A]FA lab team, in dialogue with the community: “The core of the project is unlearning and experimenting with the ways we as architects are used to building. This is crucial to develop innovative spaces that promote socio-ecological transformation, improve local climate conditions, and create meaningful environments.”",
-      "The research led to site-specific environmental interventions, such as relocating trees for natural shade and implementing rainwater harvesting systems to address overheating, water scarcity, and poor urban infrastructure."
-    ] },
-  { slug:"pay_cheque", title:"Pay-Cheque", year:"", subtitle:"", tone:"red", text:[] },
-  { slug:"si_demain_je_pars", title:"si demain je pars", year:"", subtitle:"", tone:"blue", text:[] }
-];
+    <!-- MAIN WEBSITE -->
+    <div id="main-website">
+        
+        <header>
+            <div class="header-left">
+                <div class="brand-title" onclick="returnToLanding()">RaD</div>
+                
+                <!-- Dropdown Menu Container -->
+                <div class="menu-container">
+                    <div class="plus-icon" onclick="toggleDropdown(event)">+</div>
+                    <div class="dropdown-menu" id="navDropdown">
+                        <a onclick="openInfoModal('aboutModal')">About</a>
+                        <a onclick="openInfoModal('contactsModal')">Contacts</a>
+                        <a onclick="openInfoModal('collaborateModal')">Collaborate</a>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-const MAX_MEDIA = 30;
-const MEDIA_KINDS = [["jpg","image"],["png","image"],["mp4","video"]];
+        <main class="projects-area">
+            
+            <!-- Project 1: Vortex Columns -->
+            <div class="project" 
+                 data-desc="Vortex Columns– Stable in Disruption. Brunnenpassage, Vienna Climate Biennale Vienna 2026." 
+                 onclick="openProjectModal(
+                    'Vortex Columns– Stable in Disruption', 
+                    'Brunnenpassage, Vienna Climate Biennale Vienna 2026.\nIn collaboration with Farila Nashat\n\nThe project addresses the ecological and emotional impacts of geopolitical conflicts, particularly in Afghanistan, the Middle East and other affected regions. Through an open, participatory process, people are invited to carve their personal stories, especially those shaped by war, migration or displacement, into wooden columns. These carvings will form a collective archive, giving physical form to memory, resilience, and transformation. A shared visual and symbols will translate these experiences into a universal narrative. Here, art becomes a tool for remembrance, healing and sustainable social change.', 
+                    ['images/vortex_columns_1.jpg', 'images/vortex_columns_2.jpg']
+                 )">
+                <div class="image-container">
+                    <img src="images/vortex_columns_1.jpg" alt="Vortex Columns">
+                </div>
+                <div class="project-title">Vortex Columns</div>
+            </div>
 
-async function mediaExists(src, kind) {
-  try {
-    const r = await fetch(src, { method:"HEAD" });
-    if (!r.ok) return false;
-    const ct = (r.headers.get("content-type") || "").toLowerCase();
-    return !ct || ct.startsWith(kind + "/");
-  } catch (e) {
-    return elementProbe(src, kind);
-  }
-}
-function elementProbe(src, kind) {
-  return new Promise(resolve => {
-    let t; const done = ok => { clearTimeout(t); resolve(ok); };
-    t = setTimeout(() => done(false), 6000);
-    if (kind === "video") {
-      const v = document.createElement("video"); v.preload = "metadata"; v.muted = true;
-      v.onloadedmetadata = () => done(true); v.onerror = () => done(false); v.src = src;
-    } else {
-      const im = new Image(); im.onload = () => done(true); im.onerror = () => done(false); im.src = src;
-    }
-  });
-}
-async function findSlot(slug, n) {
-  for (const [ext, kind] of MEDIA_KINDS) {
-    const src = "images/" + slug + "_" + n + "." + ext;
-    if (await mediaExists(src, kind)) return { src, type: kind };
-  }
-  return null;
-}
-const firstCache = {};
-function getFirst(p) { return firstCache[p.slug] || (firstCache[p.slug] = findSlot(p.slug, 1)); }
-const allCache = {};
-function getAll(p) {
-  return allCache[p.slug] || (allCache[p.slug] = (async () => {
-    const first = await getFirst(p);
-    if (!first) return [];
-    const found = [first]; let n = 2;
-    while (n <= MAX_MEDIA) {
-      const batch = [];
-      for (let k = 0; k < 4 && n + k <= MAX_MEDIA; k++) batch.push(findSlot(p.slug, n + k));
-      const res = await Promise.all(batch);
-      let stop = false;
-      for (const r of res) { if (!r) { stop = true; break; } found.push(r); }
-      if (stop) break; n += 4;
-    }
-    return found;
-  })());
-}
+            <!-- Project 2: Woven Realities -->
+            <div class="project" 
+                 data-desc="WOVEN REALITIES: THE MULTILAYEREDNESS OF AFGHAN DWELLINGS AND RITUALS. Various locations, Vienna, 2024." 
+                 onclick="openProjectModal(
+                    'WOVEN REALITIES', 
+                    'THE MULTILAYEREDNESS OF AFGHAN DWELLINGS AND RITUALS\nVarious locations, Vienna, 2024\n\nThis exhibition reflects on the abstract process of memory, centring on the perception of living spaces through the eyes of a child. The building is presented as a solid structure, resilient to the demands of time. Personal interactions and objects play a significant role, as they accompany individuals throughout life and shape their inner worlds. This perspective invites a deep appreciation for these items.\n\nTraditional construction methods are employed to create a sustainably usable space that offers visitors a profound understanding of the importance of places of remembrance. The central question explores how materiality, objects, and spaces can contribute to renewing existence and resisting the forces of forgetting.', 
+                    ['images/woven_realities_1.jpg', 'images/woven_realities_2.jpg']
+                 )">
+                <div class="image-container">
+                    <img src="images/woven_realities_1.jpg" alt="Woven Realities">
+                </div>
+                <div class="project-title">Woven Realities</div>
+            </div>
 
-const $ = id => document.getElementById(id);
-const pad = n => String(n).padStart(2, "0");
-const esc = t => String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+            <!-- Project 3: Si demain je pars -->
+            <div class="project" 
+                 data-desc="si demain je pars: Produit dans le cadre de la résidence photographique 'Si Demain Je Pars', animée par Michaël Duperrin, Nora Zaïr et Sadek Rahim. Oran, Algérie. 17 - 25 novembre 2023." 
+                 onclick="openProjectModal(
+                    'si demain je pars', 
+                    'Produit dans le cadre de la résidence photographique \"Si Demain Je Pars\", animée par Michaël Duperrin, Nora Zaïr et Sadek Rahim.\n\nSoutenu par l\'Institut Français D\'Algérie.\n\nOran, Algérie.\n\n17 - 25 novembre 2023.', 
+                    ['images/si_demain_1.jpg', 'images/si_demain_2.jpg']
+                 )">
+                <div class="image-container">
+                    <img src="images/si_demain_1.jpg" alt="si demain je pars">
+                </div>
+                <div class="project-title">si demain je pars</div>
+            </div>
 
-function mediaTag(item, alt, extra) {
-  if (item.type === "video")
-    return '<video ' + (extra||"") + ' src="' + item.src + '" autoplay muted loop playsinline></video>';
-  return '<img ' + (extra||"") + ' src="' + item.src + '" alt="' + esc(alt) + '" decoding="async">';
-}
+            <!-- Project 4: Regutting -->
+            <div class="project" 
+                 data-desc="Regutting: A stark, visceral journey into the extractive process at the Bani Na'im quarries." 
+                 onclick="openProjectModal(
+                    'Regutting', 
+                    'This work presents a stark, visceral journey into the extractive process at the Bani Na\'im quarries. It contrasts the pristine \"whiteness\" of the finished stone, which is used as a mere decorative veneer, with the violent disfigurement of the landscape, where mountains are carved into misshapen voids. The piece explores how the scarred terrain—the deep pits of waste and awe-inspiring lacerations—embodies greed and land murder inscribed onto the earth by the indigenous population. Crucially, the journey traces the return of the remains: the massive amounts of fine rock powder, toxic slurry, and the residual imperfect that are often thrown into unauthorised landfills in Area C, adjacent to Palestinian localities. These sites, already in a jurisdictional limbo and often used as Israeli dumping grounds, become the final resting place for the land\'s toxic residue. The installation is a guided exploration that culminates in framing the act of returning this degutted material to one of the violated, abandoned stone quarries, transforming the site from a symbol of extraction into a monument to betrayed and violated memory.', 
+                    ['images/regutting_1.jpg', 'images/regutting_2.jpg']
+                 )">
+                <div class="image-container">
+                    <img src="images/regutting_1.jpg" alt="Regutting">
+                </div>
+                <div class="project-title">Regutting</div>
+            </div>
 
-function buildWall() {
-  $("count").textContent = pad(PROJECTS.length) + " works";
-  $("wall").innerHTML = PROJECTS.map((p, i) => `
-    <a class="work p${i+1}" href="#/${p.slug}" data-slug="${p.slug}">
-      <div class="frame empty"></div>
-      <div class="meta">
-        <div class="meta-top">
-          <span class="no">${pad(i+1)}</span>
+            <!-- Project 5: Another Sea Behind Another Wall -->
+            <div class="project" 
+                 data-desc="another sea behind another wall (film). TPFF (Toronto Palestine Film Festival)." 
+                 onclick="openProjectModal(
+                    'another sea behind another wall', 
+                    'TPFF (Toronto Palestine Film Festival)\nLocal Pals Residency Logline:\n\nA lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall.', 
+                    ['images/another_sea_1.jpg', 'images/another_sea_2.jpg']
+                 )">
+                <div class="image-container">
+                    <img src="images/another_sea_1.jpg" alt="another sea behind another wall">
+                </div>
+                <div class="project-title">another sea behind another wall</div>
+            </div>
+
+            <!-- Project 6: The Lifeguard Platform -->
+            <div class="project" 
+                 data-desc="The Lifeguard Platform: Film prop, permanent installation at Dar Jacir-Bethelehem, 2026." 
+                 onclick="openProjectModal(
+                    'The Lifeguard Platform', 
+                    'Film prop, permanent installation at Dar Jacir-Bethelehem, 2026.\n\nOriginally built as the central set piece for the film, the tower embodies a physical \"hope inversion.\" Severed from the coast and constructed from raw metal tubing, the structure confronts the scale of the separation wall by forcing a radical vertical ascent, just to clear the colonial clutter and claim a sightline to a stolen horizon.\n\nRather than guarding water, the platform becomes an elevated post to watch over a phantom sea, transforming inherited past into an active vigil, and a concrete manifestation of the clutching to hope-as a valid job in its own right-punctuated by a single red lifebuoy acting as a visual lifeline.\n\nTransitioning from a cinematic prop into a permanent installation at Dar Jacir, the tower stands as a physical monument to the \"taboo of hope,\" marking the heights required to preserve a vanishing landscape.', 
+                    ['images/lifeguard_platform_1.jpg', 'images/lifeguard_platform_2.jpg']
+                 )">
+                <div class="image-container">
+                    <img src="images/lifeguard_platform_1.jpg" alt="The Lifeguard Platform">
+                </div>
+                <div class="project-title">The Lifeguard Platform</div>
+            </div>
+
+            <!-- Project 7: The Wax Home -->
+            <div class="project" 
+                 data-desc="The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project." 
+                 onclick="openProjectModal(
+                    'The Wax Home', 
+                    'The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project.', 
+                    ['images/wax_home_1.jpg', 'images/wax_home_2.jpg']
+                 )">
+                <div class="image-container">
+                    <img src="images/wax_home_1.jpg" alt="The Wax Home">
+                </div>
+                <div class="project-title">The Wax Home</div>
+            </div>
+
+            <!-- Project 8: Pay-Cheque -->
+            <div class="project" 
+                 data-desc="Pay-Cheque: Graphic on paper. Rania Lardjane. The Khalid Shoman Foundation Summer Academy, 2025." 
+                 onclick="openProjectModal(
+                    'Pay-Cheque', 
+                    'Graphic on paper\nRania Lardjane\nThe Khalid Shoman Foundation Summer Academy, 2025\nPhoto Credits: Unknown', 
+                    ['images/pay_cheque_1.jpg', 'images/pay_cheque_2.jpg']
+                 )">
+                <div class="image-container">
+                    <img src="images/pay_cheque_1.jpg" alt="Pay-Cheque">
+                </div>
+                <div class="project-title">Pay-Cheque</div>
+            </div>
+
+        </main>
+
+        <!-- Canvas Hover Description Container -->
+        <div class="hover-description" id="hoverContainer">
+            <p id="hoverText"></p>
         </div>
-        <span class="ttl">${esc(p.title)}</span>
-        ${p.year ? '<span class="yr">' + esc(p.year) + '</span>' : ''}
-      </div>
-    </a>`).join("");
-  PROJECTS.forEach(p => {
-    getFirst(p).then(item => {
-      if (!item) return;
-      const frame = document.querySelector('.work[data-slug="' + p.slug + '"] .frame');
-      frame.classList.remove("empty");
-      frame.insertAdjacentHTML("afterbegin", mediaTag(item, p.title, 'loading="lazy"'));
-    });
-  });
-}
 
-const strip = $("strip");
-let openToken = 0;
+        <!-- Project Modal / Lightbox -->
+        <div class="modal" id="projectModal">
+            <div class="close-btn" onclick="closeModal('projectModal')">×</div>
+            <div class="modal-content">
+                <div class="modal-text-section">
+                    <h2 class="modal-title" id="modalTitle"></h2>
+                    <p class="modal-description" id="modalDescription"></p>
+                </div>
+                <div class="modal-gallery-section">
+                    <div class="nav-btn prev" onclick="changeMedia(-1)">&lt;</div>
+                    <div class="modal-media-container" id="modalMediaContainer">
+                    </div>
+                    <div class="nav-btn next" onclick="changeMedia(1)">&gt;</div>
+                </div>
+            </div>
+        </div>
 
-function openProject(slug) {
-  const i = PROJECTS.findIndex(p => p.slug === slug);
-  if (i < 0) { closeProject(); return; }
-  const p = PROJECTS[i], nxt = PROJECTS[(i + 1) % PROJECTS.length];
-  $("d-no").textContent = pad(i+1) + " / " + pad(PROJECTS.length);
-  $("d-title").textContent = p.title;
-  $("d-year").textContent = [p.subtitle, p.year].filter(Boolean).join("  ·  ");
-  $("d-desc").innerHTML = p.text.map(t => "<p>" + esc(t) + "</p>").join("");
-  $("d-nextlink").href = "#/" + nxt.slug;
-  $("d-nextlink").innerHTML = "next: " + esc(nxt.title) + " &rarr;";
-  $("d-count").textContent = "";
-  strip.innerHTML = ""; strip.scrollLeft = 0;
-  document.documentElement.classList.add("open");
-  document.title = p.title + " — RaD";
-  const token = ++openToken;
-  getAll(p).then(items => {
-    if (token !== openToken) return;
-    if (!items.length) {
-      strip.innerHTML = '<figure class="fig empty"><div class="m"></div><figcaption>images to come</figcaption></figure>';
-      $("d-count").textContent = "";
-      return;
-    }
-    strip.innerHTML = items.map((it, k) =>
-      '<figure class="fig"><div class="m">' + mediaTag(it, p.title + " — Fig. " + (k+1), 'loading="lazy"') +
-      '</div><figcaption>Fig. ' + (k+1) + '</figcaption></figure>').join("");
-    strip.querySelectorAll(".fig img, .fig video").forEach(watchFit);
-    updateCount();
-  });
-}
-function closeProject() {
-  openToken++;
-  document.documentElement.classList.remove("open");
-  document.title = "RaD — previous projects";
-  strip.innerHTML = "";
-}
+        <!-- About Modal -->
+        <div class="modal" id="aboutModal">
+            <div class="close-btn" onclick="closeModal('aboutModal')">×</div>
+            <div class="info-modal-content">
+                <h2 class="info-modal-title">About</h2>
+                <div class="bio-grid">
+                    
+                    <!-- Rania Bio -->
+                    <div class="bio-person">
+                        <div class="bio-text">
+                            <strong>Rania Lardjane</strong>
+                            Rania Lardjane is a visual and textual storyteller. Born to a Palestinian-Arab father and an Algerian-Amazigh mother, she has a lot to tell. She studied Film Production at Dar Al-Kalima University in Bethlehem and completed a BFA in Film Studies at Concordia University in Canada. She moves between Ramallah, Tiohtiá:ke (MTL), and Algiers, and is currently pursuing an MFA in Studio Arts at Concordia University.
+                        </div>
+                        <!-- Headshot slug for Rania -->
+                        <img src="images/rania_headshot.jpg" alt="Rania Lardjane" class="bio-headshot">
+                    </div>
 
-function fit(el) {
-  const nw = el.naturalWidth || el.videoWidth, nh = el.naturalHeight || el.videoHeight;
-  if (!nw || !nh) return;
-  const small = window.innerWidth <= 760;
-  const maxH = strip.clientHeight * (small ? 0.80 : 0.86) - 28;
-  const maxW = strip.clientWidth * (small ? 0.86 : 0.72);
-  const k = Math.min(maxW / nw, maxH / nh);
-  const m = el.parentElement;
-  m.style.width = Math.round(nw * k) + "px";
-  m.style.height = Math.round(nh * k) + "px";
-}
-function watchFit(el) {
-  const ev = el.tagName === "VIDEO" ? "loadedmetadata" : "load";
-  el.addEventListener(ev, () => { fit(el); updateCount(); });
-  if ((el.complete && el.naturalWidth) || el.readyState >= 1) fit(el);
-}
-window.addEventListener("resize", () => strip.querySelectorAll(".fig:not(.empty) img, .fig:not(.empty) video").forEach(fit));
+                    <!-- Adham Bio -->
+                    <div class="bio-person">
+                        <div class="bio-text">
+                            <strong>Adham Sinan</strong>
+                            (b. 1995) is an architect, artist, researcher and educator based in Vienna and Palestine. He is also a PhD candidate at the University of Applied Arts Vienna.<br><br>
+                            Sinan has participated in and had his work published in international exhibitions and festivals. Such as the Venice Biennale 2023, the Chicago Biennale 2023 and the Rotterdam Architecture Biennale 2024, amongst others, while highly narrational, His work explores residual matters to craft new spatial and visual possibilities and to redefine redundancy via crafting critical lenses of modernity and what it represents.<br><br>
+                            Trained as an architect, Sinan’s work extends beyond traditional architectural boundaries, engaging with various artistic media and toolsets. He combines his architectural expertise with writing, film, music, and photography, investigating the multifaceted nature of space. His works challenge and expand conventional ideas of possible space through experimentation, shifting perspectives and using defamiliarisation to emphasise spatial identity, interaction, and emotional response.
+                        </div>
+                        <!-- Headshot slug for Adham -->
+                        <img src="images/adham_headshot.jpg" alt="Adham Sinan" class="bio-headshot">
+                    </div>
 
-function figs() { return [...strip.querySelectorAll(".fig:not(.empty)")]; }
-function currentIndex() {
-  const f = figs(); if (!f.length) return -1;
-  const mid = strip.scrollLeft + strip.clientWidth / 2; let best = 0, bd = Infinity;
-  f.forEach((el, k) => { const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = k; } });
-  return best;
-}
-function updateCount() {
-  const f = figs(); if (!f.length) { $("d-count").textContent = ""; return; }
-  $("d-count").textContent = (currentIndex() + 1) + " / " + f.length;
-}
-function goTo(k) {
-  const f = figs(); if (!f.length) return;
-  k = Math.max(0, Math.min(f.length - 1, k));
-  strip.scrollTo({ left: f[k].offsetLeft - (strip.clientWidth - f[k].offsetWidth) / 2, behavior: "smooth" });
-}
-let raf = 0;
-strip.addEventListener("scroll", () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(updateCount); }, { passive: true });
-strip.addEventListener("wheel", e => {
-  if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { strip.scrollLeft += e.deltaY; e.preventDefault(); }
-}, { passive: false });
-$("prev").addEventListener("click", () => goTo(currentIndex() - 1));
-$("next").addEventListener("click", () => goTo(currentIndex() + 1));
-document.addEventListener("keydown", e => {
-  if (!document.documentElement.classList.contains("open")) return;
-  if (e.key === "ArrowRight") goTo(currentIndex() + 1);
-  else if (e.key === "ArrowLeft") goTo(currentIndex() - 1);
-  else if (e.key === "Escape") location.hash = "#/";
-});
+                </div>
+            </div>
+        </div>
 
-function route() {
-  const m = location.hash.match(/^#\/(.+)$/);
-  if (m) openProject(decodeURIComponent(m[1])); else closeProject();
-}
-window.addEventListener("hashchange", route);
-buildWall();
-route();
-</script>
+        <!-- Contacts Modal -->
+        <div class="modal" id="contactsModal">
+            <div class="close-btn" onclick="closeModal('contactsModal')">×</div>
+            <div class="info-modal-content">
+                <h2 class="info-modal-title">Contacts</h2>
+                <div class="contact-grid">
+                    <div class="contact-person">
+                        <strong>Rania Lardjane</strong>
+                        <a href="mailto:rania.salawdah@gmail.com">rania.salawdah@gmail.com</a><br>
+                        <a href="https://www.instagram.com/rania.lardjane/" target="_blank">Instagram</a>
+                    </div>
+                    <div class="contact-person">
+                        <strong>Adham Sinan</strong>
+                        <a href="mailto:adam95darwesh@gmail.com">adam95darwesh@gmail.com</a><br>
+                        <a href="https://www.instagram.com/al_adhambinsinan/" target="_blank">Instagram</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collaborate Modal -->
+        <div class="modal" id="collaborateModal">
+            <div class="close-btn" onclick="closeModal('collaborateModal')">×</div>
+            <div class="info-modal-content">
+                <h2 class="info-modal-title">Collaborate with Us</h2>
+                <p class="collab-text">
+                    We are always open to new commissions, creative partnerships, and spatial research collaborations. Whether you are an architect looking for visual documentation, a publisher, or a gallery, feel free to reach out to discuss potential projects.
+                </p>
+                <a href="mailto:collaborate@radstudio.com" class="collab-email">collaborate@radstudio.com</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Dropdown Menu Logic ---
+        function toggleDropdown(event) {
+            event.stopPropagation(); 
+            const dropdown = document.getElementById('navDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking anywhere else on the page
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('navDropdown');
+            const plusIcon = document.querySelector('.plus-icon');
+            
+            if (dropdown.classList.contains('active')) {
+                if (!dropdown.contains(event.target) && event.target !== plusIcon) {
+                    dropdown.classList.remove('active');
+                }
+            }
+        });
+
+        // --- Landing Page Logic ---
+        function enterSite() {
+            document.getElementById('landing-page').classList.add('hidden');
+            
+            const mainSite = document.getElementById('main-website');
+            mainSite.classList.add('loaded');
+            
+            setTimeout(() => {
+                initScatterAnimation();
+            }, 1200);
+        }
+
+        function returnToLanding() {
+            document.getElementById('main-website').classList.remove('loaded');
+            document.getElementById('landing-page').classList.remove('hidden');
+            
+            document.querySelectorAll('.project').forEach(p => p.classList.remove('visible'));
+        }
+
+        // --- Succession Scatter Animation & Hover Logic ---
+        function initScatterAnimation() {
+            const projects = document.querySelectorAll('.project');
+            const hoverTextElement = document.getElementById('hoverText');
+            const hoverContainer = document.getElementById('hoverContainer');
+            
+            projects.forEach(p => p.classList.remove('visible'));
+
+            if (window.innerWidth > 1024) {
+                let cumulativeDelay = 0;
+
+                projects.forEach((project) => {
+                    const randomGap = Math.floor(Math.random() * 1600);
+                    cumulativeDelay += randomGap;
+
+                    setTimeout(() => {
+                        project.classList.add('visible');
+                    }, cumulativeDelay);
+                });
+            } else {
+                projects.forEach(project => project.classList.add('visible'));
+            }
+
+            // Hover Description Logic
+            projects.forEach(project => {
+                if (!project.dataset.hoverAttached) {
+                    project.addEventListener('mouseenter', () => {
+                        const descText = project.getAttribute('data-desc');
+                        hoverTextElement.textContent = descText;
+                        hoverContainer.classList.add('active');
+                    });
+
+                    project.addEventListener('mouseleave', () => {
+                        hoverContainer.classList.remove('active');
+                    });
+                    
+                    project.dataset.hoverAttached = "true";
+                }
+            });
+        }
+
+        // --- Project Modal Logic ---
+        let currentProjectMedia = [];
+        let currentMediaIndex = 0;
+        const projectModal = document.getElementById('projectModal');
+        const mediaContainer = document.getElementById('modalMediaContainer');
+
+        function openProjectModal(title, description, mediaArray) {
+            document.getElementById('navDropdown').classList.remove('active');
+
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalDescription').textContent = description;
+            
+            currentProjectMedia = mediaArray;
+            currentMediaIndex = 0;
+            
+            updateMedia();
+            
+            projectModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function updateMedia() {
+            mediaContainer.style.opacity = '0';
+            
+            setTimeout(() => {
+                mediaContainer.innerHTML = '';
+                
+                const currentFile = currentProjectMedia[currentMediaIndex];
+                const isVideo = currentFile.toLowerCase().endsWith('.mp4') || currentFile.toLowerCase().endsWith('.webm');
+
+                if (isVideo) {
+                    const video = document.createElement('video');
+                    video.src = currentFile;
+                    video.autoplay = true;
+                    video.loop = true;
+                    video.muted = true;
+                    video.playsInline = true;
+                    mediaContainer.appendChild(video);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = currentFile;
+                    img.alt = "Project Media";
+                    mediaContainer.appendChild(img);
+                }
+
+                mediaContainer.style.opacity = '1';
+            }, 200); 
+        }
+
+        function changeMedia(direction) {
+            if (currentProjectMedia.length === 0) return;
+            
+            currentMediaIndex += direction;
+            
+            if (currentMediaIndex >= currentProjectMedia.length) {
+                currentMediaIndex = 0;
+            } else if (currentMediaIndex < 0) {
+                currentMediaIndex = currentProjectMedia.length - 1;
+            }
+            
+            updateMedia();
+        }
+
+        // --- Generic Modal Logic (About/Contacts/Collaborate) ---
+        function openInfoModal(modalId) {
+            document.getElementById('navDropdown').classList.remove('active');
+            
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = '';
+            
+            if (modalId === 'projectModal') {
+                mediaContainer.innerHTML = '';
+            }
+        }
+
+        // Keyboard navigation for Project Modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    closeModal(modal.id);
+                });
+                document.getElementById('navDropdown').classList.remove('active');
+            }
+            if (projectModal.classList.contains('active')) {
+                if (e.key === 'ArrowLeft') changeMedia(-1);
+                if (e.key === 'ArrowRight') changeMedia(1);
+            }
+        });
+
+        // Click outside to close all modals
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal(modal.id);
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
