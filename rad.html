@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RaD</title>
     <style>
         /* Import technical sans-serif font for UI */
@@ -21,6 +21,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent; /* Remove blue highlight on mobile tap */
         }
 
         body {
@@ -28,6 +29,8 @@
             color: var(--text-color);
             font-family: var(--font-main);
             overflow-x: hidden;
+            width: 100%;
+            height: 100%;
         }
 
         /* --- Landing Page Styles --- */
@@ -296,12 +299,13 @@
             width: 100vw;
             height: 100vh;
             z-index: 1000;
-            background-color: rgba(255, 255, 255, 0.8); 
+            background-color: rgba(255, 255, 255, 0.95); 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             padding: 40px;
             opacity: 0;
             transition: opacity 0.3s ease;
+            overflow-y: auto;
         }
 
         .modal.active {
@@ -314,6 +318,7 @@
             width: 100%;
             height: 100%;
             gap: 60px;
+            margin: auto; /* Center content */
         }
 
         .modal-text-section {
@@ -343,7 +348,7 @@
         }
 
         .close-btn {
-            position: absolute;
+            position: fixed;
             top: 40px;
             right: 40px;
             font-size: 32px;
@@ -352,6 +357,13 @@
             line-height: 1;
             color: var(--text-color);
             z-index: 1001;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-gallery-section {
@@ -410,10 +422,8 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            height: 100%;
-            justify-content: center;
             max-width: 900px;
-            margin: 0 auto;
+            margin: auto;
         }
 
         .info-modal-title {
@@ -499,55 +509,128 @@
             opacity: 0.5;
         }
 
-        /* Responsiveness */
+        /* =========================================
+           RESPONSIVENESS FOR TABLET & MOBILE 
+           ========================================= */
+        
+        /* Tablet & Smaller Screens */
         @media (max-width: 1024px) {
+            #main-website {
+                height: 100vh;
+                overflow-y: auto; /* Allow scrolling if list gets too long */
+            }
+
             .content-wrapper {
                 flex-direction: column;
                 height: auto;
+                padding-top: 20px;
+                padding-bottom: 100px;
             }
+
+            /* Hide the hover canvas area entirely on mobile */
             .center-canvas {
                 display: none; 
             }
+
+            /* Bring the list to the center and make it regular stacked format */
             .projects-list {
                 position: relative;
                 width: 100%;
                 padding-right: 0;
-                margin-top: 40px;
                 align-items: center;
+                gap: 32px;
             }
+
             .project-item {
                 text-align: center;
             }
-        }
 
-        @media (max-width: 768px) {
-            .landing-logo { font-size: 60px; }
-            .brand-title { font-size: 24px; letter-spacing: 0.35em; }
-            .plus-icon { font-size: 32px; margin-top: -6px; }
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
+            .project-item .title {
+                font-size: 16px;
+            }
+
+            /* Modal adjustments */
+            .modal {
+                padding: 20px;
+                overflow-y: auto;
             }
             .modal-content {
                 flex-direction: column;
-                gap: 20px;
-                overflow-y: auto;
+                gap: 40px;
+                height: auto;
+                margin-top: 50px;
+                margin-bottom: 50px;
             }
-            .modal-text-section { width: 100%; padding-right: 0; }
-            .modal-gallery-section { width: 100%; min-height: 400px; }
-            .modal { padding: 20px; }
-            .close-btn { top: 20px; right: 20px; }
-            
-            .info-modal-content { justify-content: flex-start; padding-top: 40px; }
-            
+            .modal-text-section {
+                width: 100%;
+                padding-right: 0;
+                text-align: center;
+            }
+            .modal-title {
+                font-size: 24px;
+            }
+            .modal-description {
+                margin: 0 auto 16px auto;
+                font-size: 14px;
+            }
+            .modal-gallery-section {
+                width: 100%;
+                min-height: 300px;
+                height: 50vh;
+            }
+            .close-btn {
+                top: 20px;
+                right: 20px;
+                background: #fff;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            /* About / Contacts Modals */
+            .info-modal-content {
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
             .bio-grid, .contact-grid { 
                 grid-template-columns: 1fr; 
                 gap: 40px; 
             }
+            .info-modal-title { 
+                font-size: 32px; 
+                margin-bottom: 24px; 
+            }
+            .collab-email { 
+                font-size: 24px; 
+            }
+            .bio-headshot {
+                margin: 10px auto 0 auto;
+            }
+        }
+
+        /* Mobile Phones */
+        @media (max-width: 768px) {
+            .landing-logo { font-size: 60px; }
+            .brand-title { font-size: 24px; letter-spacing: 0.35em; }
+            .plus-icon { font-size: 32px; margin-top: -6px; }
             
-            .info-modal-title { font-size: 32px; margin-bottom: 24px; }
-            .collab-email { font-size: 24px; }
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .modal-gallery-section {
+                min-height: 250px;
+                height: 40vh;
+            }
+
+            .nav-btn {
+                font-size: 30px;
+                padding: 10px;
+                background: rgba(255,255,255,0.7);
+                border-radius: 50%;
+            }
+            .nav-btn.prev { left: 5px; }
+            .nav-btn.next { right: 5px; }
         }
     </style>
 </head>
@@ -579,7 +662,7 @@
 
         <div class="content-wrapper">
             
-            <!-- Center Canvas: Description & Hero Image -->
+            <!-- Center Canvas: Description & Hero Image (Desktop Only) -->
             <div class="center-canvas">
                 <div class="hover-content" id="hoverContent">
                     <div class="hero-image-container">
@@ -921,41 +1004,44 @@ Photo Credits: Unknown`,
         const heroImage = document.getElementById('heroImage');
 
         function initHoverLogic() {
-            projectItems.forEach(item => {
-                item.addEventListener('mouseenter', () => {
-                    const descText = item.getAttribute('data-desc');
-                    const projectId = item.getAttribute('data-id');
-                    
-                    centerDescription.textContent = descText;
-                    
-                    // Find the first string (image) in the media array to use as the hero
-                    const projectMedia = projectData[projectId].media;
-                    let heroMedia = null;
-                    
-                    for (let i = 0; i < projectMedia.length; i++) {
-                        if (typeof projectMedia[i] === 'string') {
-                            heroMedia = projectMedia[i];
-                            break; // Stop at the first image found
+            // Hover effects only apply to screens wider than 1024px
+            if (window.innerWidth > 1024) {
+                projectItems.forEach(item => {
+                    item.addEventListener('mouseenter', () => {
+                        const descText = item.getAttribute('data-desc');
+                        const projectId = item.getAttribute('data-id');
+                        
+                        centerDescription.textContent = descText;
+                        
+                        // Find the first string (image) in the media array to use as the hero
+                        const projectMedia = projectData[projectId].media;
+                        let heroMedia = null;
+                        
+                        for (let i = 0; i < projectMedia.length; i++) {
+                            if (typeof projectMedia[i] === 'string') {
+                                heroMedia = projectMedia[i];
+                                break; // Stop at the first image found
+                            }
                         }
-                    }
-                    
-                    heroImage.src = ''; 
+                        
+                        heroImage.src = ''; 
 
-                    heroImage.onerror = function() {
-                        this.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop';
-                    };
-                    
-                    if (heroMedia) {
-                        heroImage.src = heroMedia;
-                    }
+                        heroImage.onerror = function() {
+                            this.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop';
+                        };
+                        
+                        if (heroMedia) {
+                            heroImage.src = heroMedia;
+                        }
 
-                    hoverContent.classList.add('active');
+                        hoverContent.classList.add('active');
+                    });
+
+                    item.addEventListener('mouseleave', () => {
+                        hideHover();
+                    });
                 });
-
-                item.addEventListener('mouseleave', () => {
-                    hideHover();
-                });
-            });
+            }
         }
 
         function hideHover() {
@@ -1069,7 +1155,6 @@ Photo Credits: Unknown`,
                     } else {
                         // If preloaded, use cached version, otherwise create new
                         if (preloadedMedia[currentMediaIndex]) {
-                            // Clone the cached image to avoid DOM issues
                             const clone = preloadedMedia[currentMediaIndex].cloneNode();
                             clone.onerror = () => {
                                 currentMediaIndex = (currentMediaIndex + 1) % currentProjectMedia.length;
