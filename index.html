@@ -109,6 +109,22 @@
             transform: scale(1.04);
         }
 
+        /* Loading shimmer while real images are being probed */
+        #landing-status {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #aaa;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        #landing-status.done { opacity: 0; }
+
         /* --- Main Website --- */
         #main-website {
             padding: 24px;
@@ -666,6 +682,7 @@
     <div id="landing-page">
         <div id="landing-constellation"></div>
         <div class="landing-logo" id="landingLogo">Ad(h)am<br>Sinan</div>
+        <div id="landing-status">Loading…</div>
     </div>
 
     <!-- MAIN WEBSITE -->
@@ -781,18 +798,7 @@
     </div>
 
     <script>
-        // --- PLACEHOLDER IMAGE GENERATOR ---
-        function placeholder(num, label) {
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
-                <rect width="1200" height="900" fill="#f2efe9"/>
-                <rect x="0" y="0" width="1200" height="900" fill="none" stroke="#d8d2c8" stroke-width="2"/>
-                <text x="600" y="470" font-family="Georgia, 'Times New Roman', serif" font-size="480" font-style="italic" fill="#c9c2b5" text-anchor="middle" dominant-baseline="middle">${num}</text>
-                <text x="600" y="760" font-family="'Courier New', monospace" font-size="26" letter-spacing="6" fill="#a8a194" text-anchor="middle">${label}</text>
-            </svg>`;
-            return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-        }
-
-        // --- Project Data ---
+        // --- Project Data (no placeholders — real images come from /images) ---
         const GROUPS = [
             { label: 'Professional Architecture', projects: [
                 { id: 'vault', title: 'The Vault', meta: 'LAVA Architecture — 2024–25', description: 'Architectural Design & Computational Integration — LAVA Architecture.', media: [] },
@@ -894,104 +900,16 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
         GROUPS.forEach(g => g.projects.forEach(p => {
             runningNum++;
             p.num = runningNum;
-            p.placeholder = placeholder(runningNum, p.title.toUpperCase());
-            p.media = [{ type: 'image', src: p.placeholder, isPlaceholder: true }];
+            p.media = []; // real media only
             projectData[p.id] = p;
         }));
 
         const ALL_PROJECTS = Object.values(projectData);
 
-        // --- LANDING CONSTELLATION ---
-        // No rotation anywhere: tiles are always axis-aligned. Entrance
-        // uses fade + subtle scale only; drift uses translate + slight
-        // scale only. `transform: none` is explicitly set on the element
-        // and no `rotate` is ever applied.
-        function buildConstellation() {
-            const container = document.getElementById('landing-constellation');
-            if (!container) return;
-
-            container.innerHTML = '';
-
-            const vw = window.innerWidth;
-            const vh = window.innerHeight;
-            const isMobile = vw <= 768;
-
-            const count = isMobile ? 7 : Math.min(16, Math.max(10, Math.floor((vw * vh) / 95000)));
-
-            const pool = [...ALL_PROJECTS];
-            for (let i = pool.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [pool[i], pool[j]] = [pool[j], pool[i]];
-            }
-            const chosen = pool.slice(0, Math.min(count, pool.length));
-
-            const logoRadiusX = isMobile ? vw * 0.35 : vw * 0.22;
-            const logoRadiusY = isMobile ? vh * 0.14 : vh * 0.18;
-
-            chosen.forEach((p, i) => {
-                const img = document.createElement('img');
-                img.className = 'constellation-tile';
-                img.src = p.placeholder;
-                img.alt = '';
-                img.draggable = false;
-
-                const base = Math.min(vw, vh);
-                const sizeRoll = Math.random();
-                let w;
-                if (sizeRoll < 0.35)      w = base * (0.06 + Math.random() * 0.06);
-                else if (sizeRoll < 0.75) w = base * (0.14 + Math.random() * 0.10);
-                else                      w = base * (0.28 + Math.random() * 0.20);
-
-                const aspect = 0.7 + Math.random() * 0.9;
-                const h = w / aspect;
-
-                let x = Math.random() * Math.max(20, vw - w);
-                let y = Math.random() * Math.max(20, vh - h);
-
-                const cx = x + w / 2;
-                const cy = y + h / 2;
-                const distX = Math.abs(cx - vw / 2) / logoRadiusX;
-                const distY = Math.abs(cy - vh / 2) / logoRadiusY;
-                if (distX * distX + distY * distY < 1) {
-                    const pushX = cx < vw / 2 ? -1 : 1;
-                    const pushY = cy < vh / 2 ? -1 : 1;
-                    x = pushX < 0
-                        ? Math.random() * Math.max(20, vw / 2 - w - logoRadiusX * 0.6)
-                        : vw / 2 + logoRadiusX * 0.6 + Math.random() * Math.max(20, vw / 2 - w - logoRadiusX * 0.6);
-                    y = pushY < 0
-                        ? Math.random() * Math.max(20, vh / 2 - h - logoRadiusY * 0.6)
-                        : vh / 2 + logoRadiusY * 0.6 + Math.random() * Math.max(20, vh / 2 - h - logoRadiusY * 0.6);
-                    x = Math.max(8, Math.min(vw - w - 8, x));
-                    y = Math.max(8, Math.min(vh - h - 8, y));
-                }
-
-                const dx = (Math.random() - 0.5) * 26;
-                const dy = (Math.random() - 0.5) * 26;
-                const opacity = 0.72 + Math.random() * 0.22;
-
-                img.style.width  = w.toFixed(1) + 'px';
-                img.style.height = h.toFixed(1) + 'px';
-                img.style.left   = x.toFixed(1) + 'px';
-                img.style.top    = y.toFixed(1) + 'px';
-
-                // Explicitly ensure no rotation and no base transform.
-                img.style.transform = 'none';
-                img.style.rotate = '0deg';
-
-                img.style.setProperty('--dx', dx.toFixed(1) + 'px');
-                img.style.setProperty('--dy', dy.toFixed(1) + 'px');
-                img.style.setProperty('--tile-opacity', opacity.toFixed(2));
-
-                img.style.animationDelay = `${(i * 0.09).toFixed(2)}s, ${(i * 0.13).toFixed(2)}s`;
-                img.style.animationDuration = `1.4s, ${(14 + Math.random() * 10).toFixed(1)}s`;
-
-                container.appendChild(img);
-            });
-        }
-
-        // --- Real media discovery (background) ---
+        // --- Real-media discovery ---
         const MAX_MEDIA = 30;
         const MEDIA_KINDS = [['jpg', 'image'], ['png', 'image'], ['mp4', 'video']];
+
         async function mediaExists(src, kind) {
             try {
                 const r = await fetch(src, { method: 'HEAD' });
@@ -1040,6 +958,121 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             }
             return found;
         }
+
+        // --- LANDING CONSTELLATION (real images only) ---
+        // Sweeps every project in the site, gets its first discovered
+        // image, and uses those as the scattered background tiles. No
+        // placeholders. Axis-aligned (no rotation). Fades in once ready.
+        async function buildConstellation() {
+            const container = document.getElementById('landing-constellation');
+            const status = document.getElementById('landing-status');
+            if (!container) return;
+
+            container.innerHTML = '';
+            if (status) { status.textContent = 'Loading…'; status.classList.remove('done'); }
+
+            // Gather one real image per project, in parallel. Skip projects
+            // that don't have at least one media file.
+            const withImages = await Promise.all(
+                ALL_PROJECTS.map(async p => {
+                    // Reuse cached media from background scan if present
+                    if (!p.media.length) {
+                        const items = await discoverMedia(p);
+                        if (items) p.media = items;
+                    }
+                    const firstImage = p.media.find(it => it.type === 'image');
+                    return firstImage ? firstImage.src : null;
+                })
+            );
+
+            const availableSrcs = withImages.filter(Boolean);
+
+            if (status) {
+                if (availableSrcs.length === 0) {
+                    status.textContent = 'Add images to /images/ to see the constellation';
+                } else {
+                    status.classList.add('done');
+                }
+            }
+
+            if (availableSrcs.length === 0) return;
+
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const isMobile = vw <= 768;
+
+            // How many tiles we WANT vs. how many we HAVE
+            const wanted = isMobile ? 7 : Math.min(16, Math.max(10, Math.floor((vw * vh) / 95000)));
+            const count = Math.min(wanted, availableSrcs.length);
+
+            // Shuffle the pool and take `count`
+            const pool = [...availableSrcs];
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
+            }
+            const chosen = pool.slice(0, count);
+
+            const logoRadiusX = isMobile ? vw * 0.35 : vw * 0.22;
+            const logoRadiusY = isMobile ? vh * 0.14 : vh * 0.18;
+
+            chosen.forEach((src, i) => {
+                const img = document.createElement('img');
+                img.className = 'constellation-tile';
+                img.src = src;
+                img.alt = '';
+                img.draggable = false;
+
+                const base = Math.min(vw, vh);
+                const sizeRoll = Math.random();
+                let w;
+                if (sizeRoll < 0.35)      w = base * (0.06 + Math.random() * 0.06);
+                else if (sizeRoll < 0.75) w = base * (0.14 + Math.random() * 0.10);
+                else                      w = base * (0.28 + Math.random() * 0.20);
+
+                const aspect = 0.7 + Math.random() * 0.9;
+                const h = w / aspect;
+
+                let x = Math.random() * Math.max(20, vw - w);
+                let y = Math.random() * Math.max(20, vh - h);
+
+                const cx = x + w / 2;
+                const cy = y + h / 2;
+                const distX = Math.abs(cx - vw / 2) / logoRadiusX;
+                const distY = Math.abs(cy - vh / 2) / logoRadiusY;
+                if (distX * distX + distY * distY < 1) {
+                    const pushX = cx < vw / 2 ? -1 : 1;
+                    const pushY = cy < vh / 2 ? -1 : 1;
+                    x = pushX < 0
+                        ? Math.random() * Math.max(20, vw / 2 - w - logoRadiusX * 0.6)
+                        : vw / 2 + logoRadiusX * 0.6 + Math.random() * Math.max(20, vw / 2 - w - logoRadiusX * 0.6);
+                    y = pushY < 0
+                        ? Math.random() * Math.max(20, vh / 2 - h - logoRadiusY * 0.6)
+                        : vh / 2 + logoRadiusY * 0.6 + Math.random() * Math.max(20, vh / 2 - h - logoRadiusY * 0.6);
+                    x = Math.max(8, Math.min(vw - w - 8, x));
+                    y = Math.max(8, Math.min(vh - h - 8, y));
+                }
+
+                const dx = (Math.random() - 0.5) * 26;
+                const dy = (Math.random() - 0.5) * 26;
+                const opacity = 0.72 + Math.random() * 0.22;
+
+                img.style.width  = w.toFixed(1) + 'px';
+                img.style.height = h.toFixed(1) + 'px';
+                img.style.left   = x.toFixed(1) + 'px';
+                img.style.top    = y.toFixed(1) + 'px';
+                img.style.transform = 'none';
+                img.style.rotate = '0deg';
+                img.style.setProperty('--dx', dx.toFixed(1) + 'px');
+                img.style.setProperty('--dy', dy.toFixed(1) + 'px');
+                img.style.setProperty('--tile-opacity', opacity.toFixed(2));
+                img.style.animationDelay = `${(i * 0.09).toFixed(2)}s, ${(i * 0.13).toFixed(2)}s`;
+                img.style.animationDuration = `1.4s, ${(14 + Math.random() * 10).toFixed(1)}s`;
+
+                container.appendChild(img);
+            });
+        }
+
         async function backgroundMediaScan() {
             for (const g of GROUPS) {
                 for (const p of g.projects) {
@@ -1111,7 +1144,7 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             if (window.innerWidth <= 1024) return;
             hoverLogicBound = true;
             document.querySelectorAll('.project-item').forEach(item => {
-                item.addEventListener('mouseenter', () => {
+                item.addEventListener('mouseenter', async () => {
                     const p = projectData[item.dataset.id];
                     if (!p) return;
                     centerDescription.textContent = p.description;
@@ -1248,8 +1281,13 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
 
         // --- Init ---
         buildList();
+        // Kick off both in parallel: media scan feeds the constellation's
+        // image sources AND the main list's hover/gallery media.
+        backgroundMediaScan().then(() => buildConstellation());
+        // Also build constellation immediately — it will discover media
+        // itself if the background scan hasn't finished yet, so the
+        // landing page can show tiles as soon as any file is found.
         buildConstellation();
-        backgroundMediaScan();
 
         let resizeTimer;
         window.addEventListener('resize', () => {
@@ -1259,7 +1297,7 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
                 if (!landing.classList.contains('hidden')) {
                     buildConstellation();
                 }
-            }, 300);
+            }, 400);
         });
     </script>
 </body>
