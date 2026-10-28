@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RaD</title>
+    
+    <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
+    <meta name="google-site-verification" content="GQJM1fZ35QJ1MEUtgQGUEYOrNbs1d_7xh5LiOAWBNGY" />
+
+    <!-- GOOGLE ANALYTICS (Replace G-XXXXXXXXXX with your actual ID) -->
+    <!--
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    -->
+
     <style>
         /* Import technical sans-serif font for UI */
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap');
@@ -874,7 +889,9 @@ Oran, Algérie.
                 title: `Regutting`,
                 description: `This work presents a stark, visceral journey into the extractive process at the Bani Na'im quarries. It contrasts the pristine "whiteness" of the finished stone, which is used as a mere decorative veneer, with the violent disfigurement of the landscape, where mountains are carved into misshapen voids. The piece explores how the scarred terrain—the deep pits of waste and awe-inspiring lacerations—embodies greed and land murder inscribed onto the earth by the indigenous population. Crucially, the journey traces the return of the remains: the massive amounts of fine rock powder, toxic slurry, and the residual imperfect that are often thrown into unauthorised landfills in Area C, adjacent to Palestinian localities.`,
                 media: [
-                    'images/regutting_1.jpg', 'images/regutting_2.jpg', 'images/regutting_3.jpg',
+                    'images/regutting_1.jpg', 
+                    { type: 'youtube', id: 'FYU6YqHDCbM' }, // Added YouTube Video
+                    'images/regutting_2.jpg', 'images/regutting_3.jpg',
                     'images/regutting_4.jpg', 'images/regutting_5.jpg', 'images/regutting_6.jpg',
                     'images/regutting_7.jpg', 'images/regutting_8.jpg', 'images/regutting_9.jpg',
                     'images/regutting_10.jpg', 'images/regutting_11.jpg', 'images/regutting_12.jpg',
@@ -917,6 +934,7 @@ Transitioning from a cinematic prop into a permanent installation at Dar Jacir, 
                 description: `The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project.`,
                 media: [
                     'images/wax_home_1.jpg', 
+                    { type: 'youtube', id: '_XTuUoAtsQ4' }, // Added YouTube Video
                     'images/wax_home_2.jpg',
                     'images/wax_home_3.jpg',
                     'images/wax_home_4.jpg' 
@@ -990,7 +1008,7 @@ Photo Credits: Unknown`,
                         let heroMedia = null;
                         
                         for (let i = 0; i < projectMedia.length; i++) {
-                            if (typeof projectMedia[i] === 'string') {
+                            if (typeof projectMedia[i] === 'string' && projectMedia[i].toLowerCase().match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
                                 heroMedia = projectMedia[i];
                                 break; // Stop at the first image found
                             }
@@ -998,9 +1016,14 @@ Photo Credits: Unknown`,
                         
                         heroImage.src = ''; 
 
+                        // If the image fails to load (e.g. file missing), just hide the image container, 
+                        // NO STOCK FALLBACKS as requested.
                         heroImage.onerror = function() {
-                            this.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop';
+                            this.style.display = 'none';
                         };
+                        heroImage.onload = function() {
+                            this.style.display = 'block';
+                        }
                         
                         if (heroMedia) {
                             heroImage.src = heroMedia;
@@ -1038,9 +1061,8 @@ Photo Credits: Unknown`,
             
             // Set media array for the modal.
             if (projectId === 'si-demain') {
-                // For si-demain, we only want the video in the modal, 
-                // but we need the image for the hover. So we filter out the image.
-                currentProjectMedia = data.media.filter(item => typeof item === 'object' || item.endsWith('.mp4'));
+                // For si-demain, we ONLY want the video in the modal
+                currentProjectMedia = data.media.filter(item => typeof item === 'string' && item.endsWith('.mp4'));
             } else {
                 currentProjectMedia = data.media;
             }
