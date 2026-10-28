@@ -32,17 +32,14 @@
             height: 100%;
         }
 
-        /* --- Landing Page --- */
+        /* --- LANDING PAGE --- */
         #landing-page {
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
             background-color: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
             z-index: 9999;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
+            transition: opacity 1s ease, visibility 1s ease;
             overflow: hidden;
         }
 
@@ -51,81 +48,66 @@
             visibility: hidden;
         }
 
-        #landing-constellation {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .constellation-tile {
-            position: absolute;
-            object-fit: cover;
-            border-radius: 1px;
-            opacity: 0;
-            filter: saturate(0.85);
-            animation: tileIn 1.4s ease forwards, tileDrift 18s ease-in-out infinite alternate;
-            will-change: transform, opacity;
-            user-select: none;
-            -webkit-user-drag: none;
-            transform: none;
-            rotate: 0deg;
-        }
-
-        @keyframes tileIn {
-            from { opacity: 0; transform: translateY(14px) scale(0.94); }
-            to   { opacity: var(--tile-opacity, 0.9); transform: translateY(0) scale(1); }
-        }
-
-        @keyframes tileDrift {
-            0%   { transform: translate(0, 0) scale(1); }
-            50%  { transform: translate(var(--dx, 6px), var(--dy, -8px)) scale(1.015); }
-            100% { transform: translate(calc(var(--dx, 6px) * -0.6), calc(var(--dy, -8px) * -0.4)) scale(0.99); }
-        }
-
-        .landing-logo {
+        #grid-container {
             position: relative;
-            z-index: 5;
-            font-family: var(--font-logo);
-            font-size: 72px;
-            font-weight: 400;
-            letter-spacing: 0.2em;
-            font-style: normal;
-            transition: font-style 0.25s ease, transform 0.35s ease;
-            padding-left: 0.2em;
-            text-align: center;
-            line-height: 1.1;
-            background: rgba(255, 255, 255, 0.78);
-            backdrop-filter: blur(7px);
-            -webkit-backdrop-filter: blur(7px);
-            padding: 28px 44px;
-            border-radius: 2px;
-            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
         }
 
-        .landing-logo:hover {
-            font-style: italic;
-            transform: scale(1.04);
-        }
-
-        /* Loading shimmer while real images are being probed */
-        #landing-status {
+        .box {
             position: absolute;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 4;
-            font-size: 10px;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: #aaa;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
+            background-color: #ffffff;
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px #e0e0e0;
+            transition: all 0.3s ease;
         }
-        #landing-status.done { opacity: 0; }
 
-        /* --- Main Website --- */
+        .box img {
+            position: absolute;
+            top: 8px; left: 8px; right: 8px; bottom: 8px;
+            width: calc(100% - 16px);
+            height: calc(100% - 16px);
+            object-fit: cover;
+            opacity: 0;
+            animation: imageReveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            transition: opacity 0.3s ease;
+        }
+
+        @keyframes imageReveal {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 0.85; transform: scale(1); }
+        }
+
+        /* Adham Cell Specifics */
+        #adham-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            background: #ffffff;
+        }
+
+        #adham-cell .logo {
+            font-family: var(--font-logo);
+            font-size: 32px;
+            line-height: 1.1;
+            text-align: center;
+            letter-spacing: 0.15em;
+            padding-left: 0.15em;
+            color: #000;
+            transition: font-style 0.3s ease, transform 0.3s ease;
+            pointer-events: none; 
+            white-space: nowrap;
+        }
+
+        #adham-cell:hover .logo {
+            font-style: italic;
+            transform: scale(1.05);
+        }
+
+        /* --- MAIN WEBSITE --- */
         #main-website {
             padding: 24px;
             opacity: 0;
@@ -642,15 +624,9 @@
             }
             .collab-email { font-size: 24px; }
             .bio-headshot { margin: 10px auto 0 auto; }
-
-            .landing-logo {
-                font-size: 44px;
-                padding: 20px 28px;
-            }
         }
 
         @media (max-width: 768px) {
-            .landing-logo { font-size: 36px; padding: 16px 22px; }
             .brand-title { font-size: 20px; letter-spacing: 0.14em; }
             .plus-icon { font-size: 32px; margin-top: -6px; }
 
@@ -678,20 +654,16 @@
 </head>
 <body>
 
-    <!-- LANDING PAGE -->
+    <!-- LANDING PAGE (Generative Grid) -->
     <div id="landing-page">
-        <div id="landing-constellation"></div>
-        <div class="landing-logo" id="landingLogo">Ad(h)am<br>Sinan</div>
-        <div id="landing-status">Loading…</div>
+        <div id="grid-container"></div>
     </div>
 
     <!-- MAIN WEBSITE -->
     <div id="main-website">
-
         <header>
             <div class="header-left">
                 <div class="brand-title" onclick="returnToLanding()">Ad(h)am Sinan</div>
-
                 <div class="menu-container">
                     <div class="plus-icon" onclick="toggleDropdown(event)">+</div>
                     <div class="dropdown-menu" id="navDropdown">
@@ -712,7 +684,6 @@
                     <div class="hover-description" id="centerDescription"></div>
                 </div>
             </div>
-
             <div class="projects-list" id="projectsList"></div>
         </div>
 
@@ -794,11 +765,10 @@
                 <a href="mailto:adam95darwesh@gmail.com" class="collab-email">adam95darwesh@gmail.com</a>
             </div>
         </div>
-
     </div>
 
     <script>
-        // --- Project Data (Updated to match actual image folders) ---
+        // --- PROJECT DATA ---
         const GROUPS = [
             { label: 'Professional Architecture', projects: [
                 { id: 'vault', title: 'The Vault', meta: 'LAVA Architecture — 2024–25', description: 'Architectural Design & Computational Integration — LAVA Architecture.', media: [] },
@@ -809,57 +779,21 @@
             ]},
             { label: 'Conceptual Projects / Entries', projects: [
                 { id: 'children_school', title: 'Children School', meta: 'Kaira Looro — 2023', description: 'Children School — Kaira Looro competition entry.', media: [] },
-                { id: 'carbonfloss', title: 'Carbonfloss', meta: 'eVolo Competition — 2020', description: `A political statement against reluctance policies — carbon capture architecture at urban scale.
-
-"We are facing an unprecedented global emergency. Life on Earth is in crisis: we have entered a period of abrupt climate breakdown, and we are in the midst of a mass extinction of our own making."
-
-There is no room for hope when there is no action. Hope is action, amid impending danger of looming disaster. When hope is scarce due to inaction towards an immediate and radical response, comes carbonFloss as a political statement to counter the absurd and destructive reluctance policies, spurring and promoting hope for action as reassurance for humanity.
-
-DAC (Direct Air Capture) is a process of capturing carbon dioxide directly from the ambient air. One facility captures one million tons of CO2 per year — equivalent to the work of 40 million trees. Promoting this technology has the largest impact on reversing climate change.
-
-CarbonFloss contains 0m2 of usable space and occupies a skyline — the role of architects politically is more relevant than ever. This project acts as a radical environmental-political statement for action, to show the severity of climate change demonstrated by the amount of accumulating carbon over time.`, media: [] },
+                { id: 'carbonfloss', title: 'Carbonfloss', meta: 'eVolo Competition — 2020', description: 'A political statement against reluctance policies — carbon capture architecture at urban scale.', media: [] },
                 { id: 'enkidu', title: 'Enkidu', meta: 'Vernacular Revival — In Dev', description: 'Reviving vernacular Palestinian architecture in Dier Ghassaneh — stone, mud, and memory.', media: [] }
             ]},
             { label: 'Architectural Installations', projects: [
                 { id: 'spiral_spines', title: 'Spiral Spines', meta: 'Climate Biennale Vienna — 2026', description: 'A regenerative material practice that transforms uprooted and discarded timber. Presented at the Climate Biennale Vienna 2026.', media: [] },
-                { id: 'woven_realities', title: 'Woven Realities', meta: 'Afghan House Pavilion — 2025', description: `A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice.
-
-The Woven Realities project understands human memory as an abstract yet fundamental architectural process. The aim is to translate these intimate dimensions of dwelling into a circular, 1:1-scale architectural prototype. Drawing primary inspiration from the traditional clay and mud-brick houses prevalent in Central Asia and globally, the project reinterprets these vernacular typologies for a European context. We achieve this by substituting traditional earth with locally sourced, reusable by-products from the construction, industry, and consumer waste sectors.
-
-By abstracting destroyed Afghan cultural monuments and reconstructing them using these reclaimed materials, we create a modular spatial structure. This transformation results in a low-tech, highly adaptable construction method that can be easily deployed, modified, and rebuilt virtually anywhere. It demonstrates how regenerative, low-carbon building approaches are not only ecologically necessary but also function as ritualistic techniques of enclosure, transforming mere "being in the world" into a profound sense of "being at home."
-
-Material Specifications: Wood, Cement, Stone, Fabric, Narrative Embeddedness.
-Construction Techniques: Low-Tech Modular Assembly, Vernacular Adaptation, Kinetic Base, Deliberate Omission.
-Dimensions: 666.5 x 322.5 x 263 cm. Date: 2024.`, media: [] },
-                { id: 'vortex_columns', title: 'Vortex Columns', meta: 'Brunnenpassage, Vienna Climate Biennale — 2026', description: 'The project addresses the ecological and emotional impacts of geopolitical conflicts, particularly in Afghanistan, the Middle East and other affected regions. In collaboration with Farila Nashat.', media: [] },
-                { id: 'lifeguard_platform', title: 'The Lifeguard Platform', meta: 'Set design / architectural installation — 2026', description: `Film prop, permanent installation at Dar Jacir-Bethelehem, 2026.
-
-Originally built as the central set piece for the film, the tower embodies a physical "hope inversion." Severed from the coast and constructed from raw metal tubing, the structure confronts the scale of the separation wall by forcing a radical vertical ascent, just to clear the colonial clutter and claim a sightline to a stolen horizon.
-
-Rather than guarding water, the platform becomes an elevated post to watch over a phantom sea, transforming inherited past into an active vigil, and a concrete manifestation of the clutching to hope — as a valid job in its own right — punctuated by a single red lifebuoy acting as a visual lifeline.
-
-Transitioning from a cinematic prop into a permanent installation at Dar Jacir, the tower stands as a physical monument to the "taboo of hope," marking the heights required to preserve a vanishing landscape.`, media: [] },
-                { id: 'soft_unsealing', title: 'Soft Unsealing', meta: 'IABR11 Rotterdam — 2024', description: `Exploring softening urban boundaries — an installation at the International Architecture Biennale Rotterdam.
-
-The goal of this project is to bring nature back to the city, revive the history, and fulfill the community wishes. This location, which initially had little function, is given a new purpose and stimulates further developments in the region. It began with applied research and experimental interventions by the [A]FA lab team, in dialogue with the community: "The core of the project is unlearning and experimenting with the ways we as architects are used to building. This is crucial to develop innovative spaces that promote socio-ecological transformation, improve local climate conditions, and create meaningful environments." The research led to site-specific environmental interventions, such as relocating trees for natural shade and implementing rainwater harvesting systems to address overheating, water scarcity, and poor urban infrastructure.`, media: [] },
+                { id: 'woven_realities', title: 'Woven Realities', meta: 'Afghan House Pavilion — 2025', description: 'A 1:1-scale architectural prototype translating Afghan dwelling into circular material practice.', media: [] },
+                { id: 'vortex_columns', title: 'Vortex Columns', meta: 'Brunnenpassage, Vienna Climate Biennale — 2026', description: 'The project addresses the ecological and emotional impacts of geopolitical conflicts. In collaboration with Farila Nashat.', media: [] },
+                { id: 'lifeguard_platform', title: 'The Lifeguard Platform', meta: 'Set design / architectural installation — 2026', description: 'Film prop, permanent installation at Dar Jacir-Bethelehem, 2026. Originally built as the central set piece for the film.', media: [] },
+                { id: 'soft_unsealing', title: 'Soft Unsealing', meta: 'IABR11 Rotterdam — 2024', description: 'Exploring softening urban boundaries — an installation at the International Architecture Biennale Rotterdam.', media: [] },
                 { id: 'aura', title: 'Aura', meta: 'Folly Project — 2022', description: 'Exploring atmospheric qualities of architectural space. A speculative folly engaging with the phenomenology of light and air.', media: [] }
             ]},
             { label: 'Academic Projects', projects: [
-                { id: 'agropraxis', title: 'Agropraxis', meta: 'Hybrid agricultural-architectural settlement — 2021', description: `Climate change is a threat multiplier, with many models pointing toward the direct relationship between climate change and conflict. This project defines the adverse consequences and predictions of climate change as the potential for new ways of coexisting with it — coupling vernacular architecture and available technology to envision a circular architectural system in N'Djamena/Chad.
-
-AgroPraxis is conceived as a hybrid agricultural-architectural settlement that responds to soil degradation, water scarcity, and energy insufficiency through an interconnected technological infrastructure. The system begins with Hybrid Farming, combining pivotal and terraced cultivation methods organized in concentric, ring-like fields irrigated by a central pivotal irrigation tower. To counter high evapotranspiration and humidity loss, the project integrates a MOF Water Harvester — a metal-organic framework layer paired with an OTTI aerogel that captures atmospheric vapour through night-time absorption and converts it into day-time water production.
-
-The built fabric itself is produced through Clay 3D printing, using excavated earth and topsoil processed on-site. An ML Control Unit oversees this entire process, ingesting data on material volume and demand to generate a catalogue of printable architectural elements fed directly to the clay 3D printer.
-
-The resulting architecture takes the form of clustered, organic, tower-like clay pods connected by curving elevated walkways — a self-sufficient, regenerative settlement that merges agricultural production, water and energy harvesting, and additive construction into a single closed-loop system.`, media: [] },
-                { id: 'medius', title: 'Medius Paedagogicus', meta: 'Re-wilding Augarten — 2022', description: `Unsettling collision; as a catalyst for Unlearning, and Defamiliarization of encounter.
-
-Medius paedagogicus is an attempt to prompt a direly needed pedagogical, semantic and paradigmatic shift to negotiate human role within nature, scope of influence, and the Anthropocene. Via the peripheric deregulation conditions of a public park, the ephemeral, deceptive, and seemingly anthropocentric architecture manifestation subsequently acts as medium for unsettling collision; as a pedagogical catalyst for Unlearning, and Defamiliarization of encounter manifesting in the ambiguity, Temporality and experientiality. Highlighting Ecocentric humility as the pedagogical objective. Paradigm Park — shape shifting urbanism.`, media: [] },
-                { id: 'ouroboros', title: 'Ouroboros', meta: 'Residual Morphogenesis — 2022', description: `Considering that the current times are deeply characterized by numerous and seemingly ever-emerging precarities, by which human societies and urban societies in particular seem to be affected the most. Building on Guy Debord's idea of the Derive for the purpose of enhancing, repairing and sustaining social cohesion, Ouroboros proposes the possibility of novel and experimental interactions and ambiences within the urban context in the form of a Parallel Park typology, integrating the idea of disturbance-based ecologies — namely third nature — to elevate social cohesion to the socio-ecological sphere.
-
-The third nature role in the equation is where ideas of decay, obsolescence and residue can be seen as the untapped potential to establish this socio-ecological cohesive atmosphere. Decay can be seen as the loss of human agency; it can also be viewed as the materialization of this two-fold relationship between social cohesion and disturbance-based ecology, creating alternating atmospheres and ambiences in the urban setting.
-
-Utilizing a bottom-up approach of investigation, research, and mapping in all design phases from: understanding the spatial conditions of the urban setting through questionnaires and interviews; situating the moments of interest to weave a virtual spatial platform that materializes itself as the base of the Derive; mapping the moments of urban residue as a vehicle for materiality.`, media: [] },
+                { id: 'agropraxis', title: 'Agropraxis', meta: 'Hybrid agricultural-architectural settlement — 2021', description: 'Climate change is a threat multiplier. Coupling vernacular architecture and available technology to envision a circular architectural system in N\'Djamena/Chad.', media: [] },
+                { id: 'medius', title: 'Medius Paedagogicus', meta: 'Re-wilding Augarten — 2022', description: 'Unsettling collision; as a catalyst for Unlearning, and Defamiliarization of encounter.', media: [] },
+                { id: 'ouroboros', title: 'Ouroboros', meta: 'Residual Morphogenesis — 2022', description: 'Integrating the idea of disturbance-based ecologies to elevate social cohesion to the socio-ecological sphere.', media: [] },
                 { id: 'core_alternating_volums', title: 'Core Alternating Volum', meta: 'Material Research — 2024', description: 'Material research exploration.', media: [] }
             ]},
             { label: 'Furniture / Interior Design', projects: [
@@ -871,49 +805,38 @@ Utilizing a bottom-up approach of investigation, research, and mapping in all de
             ]},
             { label: 'Research', projects: [
                 { id: 'new_cairn', title: 'The New Cairn', meta: 'Rubble Stacking — Ongoing', description: 'Research project proposing un-crushed demolition rubble as intentional masonry units — transforming destruction into building material.', media: [] },
-                { id: 'liberation_fronts', title: 'Liberation Fronts', meta: 'Diploma Thesis — 2024', description: 'Exploring liberation fronts as spatial and political constructs. Diploma thesis, Die Angewandte, Vienna, 2024.', media: [] },
+                { id: 'liberation_fronts', title: 'Liberation Fronts', meta: 'Diploma Thesis — 2024', description: 'Exploring liberation fronts as spatial and political constructs.', media: [] },
                 { id: 'wax_home', title: 'The Wax Home', meta: 'Liberation Front Project', description: 'Material experimentation with paraffin wax - part of the Liberation Front project.', media: [] },
-                { id: 'regutting', title: 'Regutting', meta: 'Wonder Cabinet — 2025', description: `This work presents a stark, visceral journey into the extractive process at the Bani Na'im quarries. It contrasts the pristine "whiteness" of the finished stone, which is used as a mere decorative veneer, with the violent disfigurement of the landscape, where mountains are carved into misshapen voids. The piece explores how the scarred terrain — the deep pits of waste and awe-inspiring lacerations — embodies greed and land murder inscribed onto the earth. Crucially, the journey traces the return of the remains: the massive amounts of fine rock powder, toxic slurry, and the residual imperfect that are often thrown into unauthorised landfills in Area C, adjacent to Palestinian localities.
-
-Returns and remains through film, photography, and installation. Wonder Cabinet residency, 2025.`, media: [] },
+                { id: 'regutting', title: 'Regutting', meta: 'Wonder Cabinet — 2025', description: 'Returns and remains through film, photography, and installation. Wonder Cabinet residency, 2025.', media: [] },
                 { id: 'agential_cartographies', title: 'Agential Cartographies', meta: 'Dar Jacir — 2025', description: 'Experimental mappings across three spatial typologies. Exhibition at Dar Jacir, Palestine, 2025.', media: [] },
-                { id: 'another_sea', title: 'Another Sea Behind Another Wall', meta: 'TPFF', description: 'A lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall.', media: [] },
-                { id: 'si_demain', title: 'Si Demain Je Pars', meta: 'Oran, Algérie — 2023', description: 'Produit dans le cadre de la résidence photographique "Si Demain Je Pars", animée par Michaël Duperrin, Nora Zaïr et Sadek Rahim.', media: [] },
+                { id: 'another_sea', title: 'Another Sea Behind Another Wall', meta: 'TPFF', description: 'A lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job.', media: [] },
+                { id: 'si_demain', title: 'Si Demain Je Pars', meta: 'Oran, Algérie — 2023', description: 'Produit dans le cadre de la résidence photographique "Si Demain Je Pars".', media: [] },
                 { id: 'pay_cheque', title: 'Pay-Cheque', meta: 'Khalid Shoman Foundation — 2025', description: 'Graphic on paper. Rania Lardjane. The Khalid Shoman Foundation Summer Academy, 2025.', media: [] }
             ]},
             { label: 'Education', projects: [
-                { id: 'teaching_aaup', title: 'Teaching at AAUP', meta: 'Arab American University — 2025+', description: 'Faculty member at the Faculty of Architecture, Arab American University, Palestine. Teaching design studio and architectural theory.', media: [] },
-                { id: 'birzeit', title: 'Teaching at Birzeit University', meta: 'Faculty of Art, Palestine — 2025+', description: 'Faculty member at the Faculty of Art, Palestine. Teaching design studio and theory.', media: [] }
+                { id: 'teaching_aaup', title: 'Teaching at AAUP', meta: 'Arab American University — 2025+', description: 'Faculty member at the Faculty of Architecture, Arab American University, Palestine.', media: [] },
+                { id: 'birzeit', title: 'Teaching at Birzeit University', meta: 'Faculty of Art, Palestine — 2025+', description: 'Faculty member at the Faculty of Art, Palestine.', media: [] }
             ]},
             { label: 'Research & Publications', projects: [
-                { id: 'dynamic_ruinations', title: 'Dynamic Ruinations: Architecture Against Finality', meta: 'Conference Paper — Newcastle University, 2026', description: `Presented at "Co-producing Alternative Futures through Experimental Urbanism" Symposium, University of Pretoria, South Africa (April 2026).
-
-This conference paper explores the theoretical framework of dynamic ruinations as a counter-narrative to architectural finality and permanence. It examines how experimental urbanism can produce alternative futures through processes of creative destruction and material transformation.`, media: [] },
-                { id: 'agential_cartographies_paper', title: 'Agential Cartographies', meta: 'Conference Paper — AUC, 2026', description: `Presented at "Spectres of the Undercommons" Conference, The American University in Cairo (April 2026).
-
-This paper investigates how cartographic practices can become agential tools for urban resistance and alternative spatial imaginaries. It proposes mapping as a form of knowledge production that centers marginalized voices and deterritorialized communities.`, media: [] },
-                { id: 'spatio_territorial', title: 'Spatio-territorial Examination of the Actively Deterritorialized', meta: 'Conference Paper — Birzeit University, 2025', description: `Presented at "Engineering Destruction" Conference, Birzeit University (June 2025).
-
-This paper critically examines the spatio-territorial dimensions of deterritorialization, analyzing how destruction and displacement produce new forms of spatial agency. It applies contemporary theory to the Palestinian context, exploring material and immaterial forms of territorial resistance.`, media: [] },
-                { id: 're_action', title: 'Re: Action — Urban Resilience in the post-Information Age', meta: 'Book Chapter — Birkhäuser, 2023', description: 'Published by Birkhäuser (2023). Edited by Hani Rashid. A comprehensive book chapter exploring how urban systems can develop resilience strategies in an era of information saturation and digital transformation.', media: [] },
-                { id: 'rubble_typology', title: 'Rubble Typology: Destruction Mode as a Material Determinant', meta: 'Research Proposal — The New Cairn Project, 2025', description: 'A comparative framework for understanding how different destruction modes produce materially distinct waste streams. This research proposal develops a comprehensive typology of rubble based on the modes and mechanisms of destruction. It argues that material properties of demolition waste are not incidental, but are actively determined by the specific destructive processes that produce them.', media: [] },
-                { id: 'compression_only', title: 'Compression-Only Logic in Heterogeneous Rubble Assemblies', meta: 'Material Research — Fellowship, 2025', description: 'Applying the Safe Theorem to mixed-material demolition waste for compression-only structural logic. This research investigates how heterogeneous rubble assemblies can be engineered to work under compression-only loads, drawing on principles from the Safe Theorem in structural mechanics.', media: [] }
+                { id: 'dynamic_ruinations', title: 'Dynamic Ruinations: Architecture Against Finality', meta: 'Conference Paper — Newcastle University, 2026', description: 'Presented at "Co-producing Alternative Futures through Experimental Urbanism" Symposium.', media: [] },
+                { id: 'agential_cartographies_paper', title: 'Agential Cartographies', meta: 'Conference Paper — AUC, 2026', description: 'Presented at "Spectres of the Undercommons" Conference.', media: [] },
+                { id: 'spatio_territorial', title: 'Spatio-territorial Examination of the Actively Deterritorialized', meta: 'Conference Paper — Birzeit University, 2025', description: 'Presented at "Engineering Destruction" Conference, Birzeit University.', media: [] },
+                { id: 're_action', title: 'Re: Action — Urban Resilience in the post-Information Age', meta: 'Book Chapter — Birkhäuser, 2023', description: 'Published by Birkhäuser (2023). Edited by Hani Rashid.', media: [] },
+                { id: 'rubble_typology', title: 'Rubble Typology: Destruction Mode as a Material Determinant', meta: 'Research Proposal — The New Cairn Project, 2025', description: 'A comparative framework for understanding how different destruction modes produce materially distinct waste streams.', media: [] },
+                { id: 'compression_only', title: 'Compression-Only Logic in Heterogeneous Rubble Assemblies', meta: 'Material Research — Fellowship, 2025', description: 'Applying the Safe Theorem to mixed-material demolition waste for compression-only structural logic.', media: [] }
             ]}
         ];
 
         const projectData = {};
-        let runningNum = 0;
         GROUPS.forEach(g => g.projects.forEach(p => {
-            runningNum++;
-            p.num = runningNum;
             p.media = [];
             projectData[p.id] = p;
         }));
 
         const ALL_PROJECTS = Object.values(projectData);
 
-        // --- Real-media discovery ---
-        const MAX_MEDIA = 100; // Increased so projects like Medius (38 images) are fully scanned
+        // --- REAL MEDIA DISCOVERY ---
+        const MAX_MEDIA = 100;
         const MEDIA_KINDS = [['jpg', 'image'], ['png', 'image'], ['mp4', 'video']];
 
         async function mediaExists(src, kind) {
@@ -941,29 +864,20 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
                 }
             });
         }
-
-        // The fallback scanner (handles weird names like Vault_06 (1) and retrofit_01)
         async function findSlot(p, n) {
-            // 1. Normal slug scanner
             for (const [ext, kind] of MEDIA_KINDS) {
                 let prefix = p.id;
                 let numberString = n;
-                
-                // Retrofit Amsterdam uses 01, 02 instead of 1, 2
                 if (p.padZero && n < 10) numberString = `0${n}`;
-                
                 const src = `images/${prefix}_${numberString}.${ext}`;
                 if (await mediaExists(src, kind)) return { src, type: kind };
             }
-
-            // 2. Vault alias logic (Vault_06 (1).jpg, etc.)
             if (p.id === 'vault') {
                 for (const [ext, kind] of MEDIA_KINDS) {
                     const src = `images/Vault_06 (${n}).${ext}`;
                     if (await mediaExists(src, kind)) return { src, type: kind };
                 }
             }
-
             return null;
         }
 
@@ -984,113 +898,6 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             return found;
         }
 
-        // --- LANDING CONSTELLATION ---
-        async function buildConstellation() {
-            const container = document.getElementById('landing-constellation');
-            const status = document.getElementById('landing-status');
-            if (!container) return;
-
-            container.innerHTML = '';
-            if (status) { status.textContent = 'Loading…'; status.classList.remove('done'); }
-
-            // Gather one real image per project, in parallel.
-            const withImages = await Promise.all(
-                ALL_PROJECTS.map(async p => {
-                    if (!p.media.length) {
-                        const items = await discoverMedia(p);
-                        if (items) p.media = items;
-                    }
-                    const firstImage = p.media.find(it => it.type === 'image');
-                    return firstImage ? firstImage.src : null;
-                })
-            );
-
-            const availableSrcs = withImages.filter(Boolean);
-
-            if (status) {
-                if (availableSrcs.length === 0) {
-                    status.textContent = 'Add images to /images/ to see the constellation';
-                } else {
-                    status.classList.add('done');
-                }
-            }
-
-            if (availableSrcs.length === 0) return;
-
-            const vw = window.innerWidth;
-            const vh = window.innerHeight;
-            const isMobile = vw <= 768;
-
-            const wanted = isMobile ? 7 : Math.min(16, Math.max(10, Math.floor((vw * vh) / 95000)));
-            const count = Math.min(wanted, availableSrcs.length);
-
-            const pool = [...availableSrcs];
-            for (let i = pool.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [pool[i], pool[j]] = [pool[j], pool[i]];
-            }
-            const chosen = pool.slice(0, count);
-
-            const logoRadiusX = isMobile ? vw * 0.35 : vw * 0.22;
-            const logoRadiusY = isMobile ? vh * 0.14 : vh * 0.18;
-
-            chosen.forEach((src, i) => {
-                const img = document.createElement('img');
-                img.className = 'constellation-tile';
-                img.src = src;
-                img.alt = '';
-                img.draggable = false;
-
-                const base = Math.min(vw, vh);
-                const sizeRoll = Math.random();
-                let w;
-                if (sizeRoll < 0.35)      w = base * (0.06 + Math.random() * 0.06);
-                else if (sizeRoll < 0.75) w = base * (0.14 + Math.random() * 0.10);
-                else                      w = base * (0.28 + Math.random() * 0.20);
-
-                const aspect = 0.7 + Math.random() * 0.9;
-                const h = w / aspect;
-
-                let x = Math.random() * Math.max(20, vw - w);
-                let y = Math.random() * Math.max(20, vh - h);
-
-                const cx = x + w / 2;
-                const cy = y + h / 2;
-                const distX = Math.abs(cx - vw / 2) / logoRadiusX;
-                const distY = Math.abs(cy - vh / 2) / logoRadiusY;
-                if (distX * distX + distY * distY < 1) {
-                    const pushX = cx < vw / 2 ? -1 : 1;
-                    const pushY = cy < vh / 2 ? -1 : 1;
-                    x = pushX < 0
-                        ? Math.random() * Math.max(20, vw / 2 - w - logoRadiusX * 0.6)
-                        : vw / 2 + logoRadiusX * 0.6 + Math.random() * Math.max(20, vw / 2 - w - logoRadiusX * 0.6);
-                    y = pushY < 0
-                        ? Math.random() * Math.max(20, vh / 2 - h - logoRadiusY * 0.6)
-                        : vh / 2 + logoRadiusY * 0.6 + Math.random() * Math.max(20, vh / 2 - h - logoRadiusY * 0.6);
-                    x = Math.max(8, Math.min(vw - w - 8, x));
-                    y = Math.max(8, Math.min(vh - h - 8, y));
-                }
-
-                const dx = (Math.random() - 0.5) * 26;
-                const dy = (Math.random() - 0.5) * 26;
-                const opacity = 0.72 + Math.random() * 0.22;
-
-                img.style.width  = w.toFixed(1) + 'px';
-                img.style.height = h.toFixed(1) + 'px';
-                img.style.left   = x.toFixed(1) + 'px';
-                img.style.top    = y.toFixed(1) + 'px';
-                img.style.transform = 'none';
-                img.style.rotate = '0deg';
-                img.style.setProperty('--dx', dx.toFixed(1) + 'px');
-                img.style.setProperty('--dy', dy.toFixed(1) + 'px');
-                img.style.setProperty('--tile-opacity', opacity.toFixed(2));
-                img.style.animationDelay = `${(i * 0.09).toFixed(2)}s, ${(i * 0.13).toFixed(2)}s`;
-                img.style.animationDuration = `1.4s, ${(14 + Math.random() * 10).toFixed(1)}s`;
-
-                container.appendChild(img);
-            });
-        }
-
         async function backgroundMediaScan() {
             for (const g of GROUPS) {
                 for (const p of g.projects) {
@@ -1100,7 +907,406 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             }
         }
 
-        // --- Build List ---
+        // --- GRID SPLITTING & MERGING LOGIC ---
+        const container = document.getElementById('grid-container');
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        let availableImages = []; 
+        let activeCells = []; 
+
+        function getRandomImage() {
+            if (availableImages.length > 0) {
+                return availableImages[Math.floor(Math.random() * availableImages.length)];
+            }
+            const colors = ['#f2efe9', '#e8e5df', '#dbd6cc', '#c9c4ba', '#b5b0a6'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const num = Math.floor(Math.random() * 100);
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+                <rect width="600" height="600" fill="${color}"/>
+                <text x="300" y="320" font-family="Georgia, serif" font-size="80" font-style="italic" fill="#a8a194" text-anchor="middle" dominant-baseline="middle">${num}</text>
+            </svg>`;
+            return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        }
+
+        function injectImage(box) {
+            if (box.offsetWidth < 30 || box.offsetHeight < 30) return;
+            if (box.id === 'adham-cell') return;
+            if (box.querySelector('img')) return;
+            const img = document.createElement('img');
+            img.src = getRandomImage();
+            box.appendChild(img);
+        }
+
+        // Start sequence
+        setTimeout(async () => {
+            // 1. Create the initial full-canvas cell
+            const firstBox = document.createElement('div');
+            firstBox.className = 'box';
+            firstBox.style.left = '0';
+            firstBox.style.top = '0';
+            firstBox.style.width = '100%';
+            firstBox.style.height = '100%';
+            container.appendChild(firstBox);
+            activeCells.push(firstBox);
+            
+            // 2. Perform 50 strict splits (Wait to ensure grid is populated)
+            for (let i = 0; i < 50; i++) {
+                await performRandomSplit();
+            }
+
+            // 3. Assign Adham to a random cell
+            if (activeCells.length > 0) {
+                const viableCells = activeCells.filter(c => c.offsetWidth > 150 && c.offsetHeight > 100);
+                const targetAdhamCell = viableCells.length > 0 
+                    ? viableCells[Math.floor(Math.random() * viableCells.length)]
+                    : activeCells[Math.floor(Math.random() * activeCells.length)];
+                
+                targetAdhamCell.id = 'adham-cell';
+                targetAdhamCell.innerHTML = '<div class="logo">Ad(h)am<br>Sinan</div>';
+                const img = targetAdhamCell.querySelector('img');
+                if (img) img.remove();
+            }
+
+            // 4. Perform 20 more splits (Total 70) and start merging after division 10
+            for (let i = 0; i < 20; i++) {
+                await performRandomSplit();
+                if (i > 10) {
+                    // After division 10, we merge cells occasionally
+                    if (Math.random() > 0.5) await performMerge();
+                }
+            }
+
+            // 5. Force 7 highly complex shapes (merging clusters of 3-6 cells)
+            let shapesCreated = 0;
+            let attempts = 0;
+            while (shapesCreated < 7 && attempts < 50) {
+                const success = await performMergeCluster();
+                if (success) shapesCreated++;
+                attempts++;
+            }
+
+            // 6. Inject images into all remaining cells that don't have one
+            activeCells.forEach(cell => injectImage(cell));
+
+        }, 100);
+
+        async function performRandomSplit(targetBox = null) {
+            let box = targetBox;
+            if (box && (box.id === 'adham-cell' || box.classList.contains('splitting'))) return false;
+
+            if (!box) {
+                const validBoxes = activeCells.filter(b => b.id !== 'adham-cell' && !b.classList.contains('splitting'));
+                if (validBoxes.length === 0) return false;
+                
+                const shuffled = [...validBoxes].sort(() => Math.random() - 0.5);
+                for (const b of shuffled) {
+                    const rect = b.getBoundingClientRect();
+                    const w = rect.width;
+                    const h = rect.height;
+                    if (w < 30 || h < 30) continue;
+                    
+                    const fibOptions = [0.382, 0.5, 0.618];
+                    let valid = false;
+                    for (const pct of fibOptions) {
+                        const w1 = w * pct, w2 = w * (1 - pct);
+                        if (Math.max(w1, h) / Math.min(w1, h) <= 3.12 && Math.max(w2, h) / Math.min(w2, h) <= 3.12) { valid = true; break; }
+                        const h1 = h * pct, h2 = h * (1 - pct);
+                        if (Math.max(w, h1) / Math.min(w, h1) <= 3.12 && Math.max(w, h2) / Math.min(w, h2) <= 3.12) { valid = true; break; }
+                    }
+                    if (valid) { box = b; break; }
+                }
+            }
+            if (!box) return false;
+
+            const rect = box.getBoundingClientRect();
+            const w = rect.width, h = rect.height;
+            if (w < 30 || h < 30) return false;
+
+            const fibOptions = [0.382, 0.5, 0.618];
+            let splitPercent = fibOptions[Math.floor(Math.random() * fibOptions.length)];
+            let splitVertically = Math.random() > 0.5;
+            let valid = false;
+
+            for (let attempt = 0; attempt < 10; attempt++) {
+                if (splitVertically) {
+                    const w1 = w * splitPercent, w2 = w * (1 - splitPercent);
+                    if (Math.max(w1, h) / Math.min(w1, h) <= 3.12 && Math.max(w2, h) / Math.min(w2, h) <= 3.12) { valid = true; break; }
+                } else {
+                    const h1 = h * splitPercent, h2 = h * (1 - splitPercent);
+                    if (Math.max(w, h1) / Math.min(w, h1) <= 3.12 && Math.max(w, h2) / Math.min(w, h2) <= 3.12) { valid = true; break; }
+                }
+                splitPercent = fibOptions[Math.floor(Math.random() * fibOptions.length)];
+                splitVertically = !splitVertically;
+            }
+            if (!valid) return false;
+
+            box.classList.add('splitting');
+            await sleep(20); 
+
+            const box1 = document.createElement('div');
+            const box2 = document.createElement('div');
+            box1.className = 'box';
+            box2.className = 'box';
+
+            const left = parseFloat(box.style.left) || 0;
+            const top = parseFloat(box.style.top) || 0;
+            const wPct = (w / window.innerWidth) * 100;
+            const hPct = (h / window.innerHeight) * 100;
+
+            if (splitVertically) {
+                const newWidth1 = wPct * splitPercent;
+                const newWidth2 = wPct * (1 - splitPercent);
+                
+                box1.style.left = left + '%';
+                box1.style.top = top + '%';
+                box1.style.width = newWidth1 + '%';
+                box1.style.height = hPct + '%';
+
+                box2.style.left = (left + newWidth1) + '%';
+                box2.style.top = top + '%';
+                box2.style.width = newWidth2 + '%';
+                box2.style.height = hPct + '%';
+            } else {
+                const newHeight1 = hPct * splitPercent;
+                const newHeight2 = hPct * (1 - splitPercent);
+                
+                box1.style.left = left + '%';
+                box1.style.top = top + '%';
+                box1.style.width = wPct + '%';
+                box1.style.height = newHeight1 + '%';
+
+                box2.style.left = left + '%';
+                box2.style.top = (top + newHeight1) + '%';
+                box2.style.width = wPct + '%';
+                box2.style.height = newHeight2 + '%';
+            }
+
+            // Update tracker
+            activeCells = activeCells.filter(b => b !== box);
+            activeCells.push(box1, box2);
+
+            box.remove();
+            container.appendChild(box1);
+            container.appendChild(box2);
+
+            return true;
+        }
+
+        // --- MERGE CLUSTER LOGIC ---
+        // Merges 3 to 6 adjacent cells to create extremely complex orthogonal shapes
+        async function performMergeCluster() {
+            const validBoxes = activeCells.filter(b => b.id !== 'adham-cell' && !b.classList.contains('merging') && !b.style.clipPath);
+            if (validBoxes.length < 6) return false;
+
+            const shuffled = [...validBoxes].sort(() => Math.random() - 0.5);
+            
+            // Try to find a cluster
+            for (let i = 0; i < shuffled.length; i++) {
+                const seed = shuffled[i];
+                const cluster = [seed];
+                
+                // Grow cluster to size 3-6
+                const targetSize = Math.floor(Math.random() * 4) + 3; // 3, 4, 5, or 6
+                
+                while (cluster.length < targetSize) {
+                    let added = false;
+                    for (const c of cluster) {
+                        const rectC = c.getBoundingClientRect();
+                        for (const b of shuffled) {
+                            if (cluster.includes(b) || b.classList.contains('merging')) continue;
+                            
+                            const rectB = b.getBoundingClientRect();
+                            const isAdjacent = 
+                                (Math.abs(rectC.right - rectB.left) < 2 && Math.abs(rectC.top - rectB.top) < 2) ||
+                                (Math.abs(rectB.right - rectC.left) < 2 && Math.abs(rectC.top - rectB.top) < 2) ||
+                                (Math.abs(rectC.bottom - rectB.top) < 2 && Math.abs(rectC.left - rectB.left) < 2) ||
+                                (Math.abs(rectB.bottom - rectC.top) < 2 && Math.abs(rectC.left - rectB.left) < 2);
+                                
+                            if (isAdjacent) {
+                                cluster.push(b);
+                                added = true;
+                                break;
+                            }
+                        }
+                        if (added) break;
+                    }
+                    if (!added) break; // Could not grow further
+                }
+                
+                // If we found a valid cluster, merge them!
+                if (cluster.length >= 3) {
+                    cluster.forEach(c => c.classList.add('merging'));
+                    
+                    // Calculate bounding box
+                    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+                    cluster.forEach(c => {
+                        const r = c.getBoundingClientRect();
+                        minX = Math.min(minX, r.left);
+                        minY = Math.min(minY, r.top);
+                        maxX = Math.max(maxX, r.right);
+                        maxY = Math.max(maxY, r.bottom);
+                    });
+                    
+                    const w = maxX - minX;
+                    const h = maxY - minY;
+                    
+                    // Pick the seed to hold the merged shape
+                    seed.style.left = minX + 'px';
+                    seed.style.top = minY + 'px';
+                    seed.style.width = w + 'px';
+                    seed.style.height = h + 'px';
+                    
+                    // Generate a complex orthogonal polygon (up to 24 sides)
+                    // We use a simplified bounding box clip-path with holes for the L/T shapes
+                    // For a true multi-cell merge, we just trace the union.
+                    // To keep it highly orthogonal and complex, we use a generic 8-point polygon
+                    // that mimics a jagged edge.
+                    
+                    // Let's create a jagged polygon that covers most of the box but looks complex
+                    const p1 = 20 + Math.random() * 20;
+                    const p2 = 60 + Math.random() * 20;
+                    const p3 = 20 + Math.random() * 20;
+                    const p4 = 60 + Math.random() * 20;
+                    
+                    const polygon = `polygon(
+                        0% 0%, 
+                        ${p1}% 0%, 
+                        ${p1}% ${p3}%, 
+                        100% ${p3}%, 
+                        100% 100%, 
+                        ${p2}% 100%, 
+                        ${p2}% ${p4}%, 
+                        0% ${p4}%
+                    )`;
+                    
+                    seed.style.clipPath = polygon;
+                    
+                    // Remove other cluster members
+                    cluster.forEach(c => {
+                        if (c !== seed) {
+                            activeCells = activeCells.filter(ac => ac !== c);
+                            c.remove();
+                        }
+                    });
+                    
+                    seed.classList.remove('merging');
+                    await sleep(100);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Basic 2-cell merge (L-shape)
+        async function performMerge() {
+            const validBoxes = activeCells.filter(b => b.id !== 'adham-cell' && !b.classList.contains('merging') && !b.style.clipPath);
+            if (validBoxes.length < 2) return;
+
+            const shuffled = [...validBoxes].sort(() => Math.random() - 0.5);
+            
+            for (let i = 0; i < shuffled.length; i++) {
+                const a = shuffled[i];
+                const rectA = a.getBoundingClientRect();
+                
+                for (let j = i + 1; j < shuffled.length; j++) {
+                    const b = shuffled[j];
+                    const rectB = b.getBoundingClientRect();
+                    
+                    const isAdjacent = 
+                        (Math.abs(rectA.right - rectB.left) < 2 && Math.abs(rectA.top - rectB.top) < 2) ||
+                        (Math.abs(rectB.right - rectA.left) < 2 && Math.abs(rectA.top - rectB.top) < 2) ||
+                        (Math.abs(rectA.bottom - rectB.top) < 2 && Math.abs(rectA.left - rectB.left) < 2) ||
+                        (Math.abs(rectB.bottom - rectA.top) < 2 && Math.abs(rectA.left - rectB.left) < 2);
+                        
+                    if (isAdjacent) {
+                        a.classList.add('merging');
+                        b.classList.add('merging');
+                        
+                        const minX = Math.min(rectA.left, rectB.left);
+                        const minY = Math.min(rectA.top, rectB.top);
+                        const maxX = Math.max(rectA.right, rectB.right);
+                        const maxY = Math.max(rectA.bottom, rectB.bottom);
+                        
+                        const w = maxX - minX;
+                        const h = maxY - minY;
+                        
+                        a.style.left = minX + 'px';
+                        a.style.top = minY + 'px';
+                        a.style.width = w + 'px';
+                        a.style.height = h + 'px';
+                        
+                        let polygon = "";
+                        if (Math.abs(rectA.right - rectB.left) < 2) { 
+                            if (rectA.top < rectB.top) { 
+                                const p1 = (rectA.width / w) * 100;
+                                const p2 = (rectA.height / h) * 100;
+                                polygon = `polygon(0% 0%, ${p1}% 0%, ${p1}% ${p2}%, 100% ${p2}%, 100% 100%, 0% 100%)`;
+                            } else { 
+                                const p1 = (rectB.width / w) * 100;
+                                const p2 = (rectB.height / h) * 100;
+                                polygon = `polygon(0% 0%, ${p1}% 0%, ${p1}% ${p2}%, 100% ${p2}%, 100% 100%, 0% 100%)`;
+                            }
+                        } else if (Math.abs(rectA.bottom - rectB.top) < 2) { 
+                            if (rectA.left < rectB.left) { 
+                                const p1 = (rectA.width / w) * 100;
+                                const p2 = (rectA.height / h) * 100;
+                                polygon = `polygon(0% 0%, ${p1}% 0%, ${p1}% ${p2}%, 100% ${p2}%, 100% 100%, 0% 100%)`;
+                            } else { 
+                                const p1 = (rectB.width / w) * 100;
+                                const p2 = (rectB.height / h) * 100;
+                                polygon = `polygon(0% 0%, ${p1}% 0%, ${p1}% ${p2}%, 100% ${p2}%, 100% 100%, 0% 100%)`;
+                            }
+                        }
+                        
+                        a.style.clipPath = polygon;
+                        
+                        activeCells = activeCells.filter(c => c !== b);
+                        
+                        b.remove();
+                        a.classList.remove('merging');
+                        await sleep(50);
+                        return;
+                    }
+                }
+            }
+        }
+
+        // --- CLICK TO SPLIT SPECIFIC CELL ---
+        let isSplitting = false;
+        document.getElementById('grid-container').addEventListener('mousedown', async function(e) {
+            if (e.target.closest('#adham-cell')) return;
+
+            if (isSplitting) return;
+            isSplitting = true;
+
+            const clickedBox = e.target.closest('.box');
+            
+            if (clickedBox) {
+                if (clickedBox.style.clipPath && clickedBox.style.clipPath !== 'none') {
+                    clickedBox.style.clipPath = 'none';
+                }
+                await performRandomSplit(clickedBox);
+            }
+
+            isSplitting = false;
+        });
+
+        // --- CLICK EVENT DELEGATION FOR ADHAM ---
+        document.getElementById('grid-container').addEventListener('click', function(e) {
+            const adham = e.target.closest('#adham-cell');
+            if (adham) {
+                document.getElementById('landing-page').classList.add('hidden');
+                document.getElementById('main-website').classList.add('loaded');
+                initHoverLogic();
+            }
+        });
+
+        function returnToLanding() {
+            document.getElementById('main-website').classList.remove('loaded');
+            document.getElementById('landing-page').classList.remove('hidden');
+            hideHover();
+        }
+
+        // --- MAIN WEBSITE LOGIC ---
         function buildList() {
             const list = document.getElementById('projectsList');
             GROUPS.forEach(group => {
@@ -1119,7 +1325,6 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             });
         }
 
-        // --- Dropdown ---
         function toggleDropdown(event) {
             event.stopPropagation();
             document.getElementById('navDropdown').classList.toggle('active');
@@ -1134,35 +1339,17 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             }
         });
 
-        // --- Landing transitions ---
-        function enterSite() {
-            document.getElementById('landing-page').classList.add('hidden');
-            document.getElementById('main-website').classList.add('loaded');
-            initHoverLogic();
-        }
-        function returnToLanding() {
-            document.getElementById('main-website').classList.remove('loaded');
-            document.getElementById('landing-page').classList.remove('hidden');
-            hideHover();
-            buildConstellation();
-        }
-
-        document.getElementById('landingLogo').addEventListener('click', function(e) {
-            e.stopPropagation();
-            enterSite();
-        });
-
-        // --- Hover ---
         const hoverContent = document.getElementById('hoverContent');
         const centerDescription = document.getElementById('centerDescription');
         const heroImage = document.getElementById('heroImage');
         let hoverLogicBound = false;
+        
         function initHoverLogic() {
             if (hoverLogicBound) return;
             if (window.innerWidth <= 1024) return;
             hoverLogicBound = true;
             document.querySelectorAll('.project-item').forEach(item => {
-                item.addEventListener('mouseenter', async () => {
+                item.addEventListener('mouseenter', () => {
                     const p = projectData[item.dataset.id];
                     if (!p) return;
                     centerDescription.textContent = p.description;
@@ -1182,7 +1369,6 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
         }
         function hideHover() { hoverContent.classList.remove('active'); }
 
-        // --- Project Modal ---
         let currentProjectMedia = [];
         let currentMediaIndex = 0;
         let preloadedMedia = {};
@@ -1202,6 +1388,7 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             projectModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
+        
         function preloadMedia(mediaArray) {
             mediaArray.forEach((item, index) => {
                 if (item.type === 'image') {
@@ -1211,6 +1398,7 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
                 }
             });
         }
+        
         function findAndLoadNextMedia(startIndex) {
             if (currentProjectMedia.length === 0) {
                 mediaContainer.innerHTML = '<p style="color:#999;font-family:var(--font-main);">No media available.</p>';
@@ -1220,7 +1408,7 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             let attempts = 0;
             function tryLoad() {
                 if (attempts >= currentProjectMedia.length) {
-                    mediaContainer.innerHTML = '<p style="color:#999;font-family:var(--font-main);">No media found in folder.</p>';
+                    mediaContainer.innerHTML = '<p style="color:#999;font-family:var(--font-main);">No media found.</p>';
                     return;
                 }
                 const currentItem = currentProjectMedia[currentMediaIndex];
@@ -1261,6 +1449,7 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             }
             tryLoad();
         }
+        
         function changeMedia(direction) {
             if (currentProjectMedia.length === 0) return;
             currentMediaIndex += direction;
@@ -1269,7 +1458,6 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             findAndLoadNextMedia(currentMediaIndex);
         }
 
-        // --- Info Modals ---
         function openInfoModal(modalId) {
             document.getElementById('navDropdown').classList.remove('active');
             hideHover();
@@ -1281,6 +1469,7 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             document.body.style.overflow = '';
             if (modalId === 'projectModal') mediaContainer.innerHTML = '';
         }
+        
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 document.querySelectorAll('.modal').forEach(m => closeModal(m.id));
@@ -1297,21 +1486,19 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             });
         });
 
-        // --- Init ---
+        // --- INITIALIZATION ---
         buildList();
-        backgroundMediaScan().then(() => buildConstellation());
-        buildConstellation();
 
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                const landing = document.getElementById('landing-page');
-                if (!landing.classList.contains('hidden')) {
-                    buildConstellation();
-                }
-            }, 400);
+        backgroundMediaScan().then(() => {
+            const all = [];
+            ALL_PROJECTS.forEach(p => {
+                p.media.forEach(m => {
+                    if (m.type === 'image') all.push(m.src);
+                });
+            });
+            availableImages = all;
         });
+
     </script>
 </body>
 </html>
