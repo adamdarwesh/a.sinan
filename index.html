@@ -798,12 +798,12 @@
     </div>
 
     <script>
-        // --- Project Data (no placeholders — real images come from /images) ---
+        // --- Project Data (Updated to match actual image folders) ---
         const GROUPS = [
             { label: 'Professional Architecture', projects: [
                 { id: 'vault', title: 'The Vault', meta: 'LAVA Architecture — 2024–25', description: 'Architectural Design & Computational Integration — LAVA Architecture.', media: [] },
                 { id: 'cct', title: 'Carbon Cost Tracker (CCT)', meta: 'LEVS Architecture — 2023', description: 'Carbon Cost Tracker — LEVS Architecture.', media: [] },
-                { id: 'retrofit_amsterdam', title: 'Retrofitting / Renovation Project', meta: 'Municipality of Amsterdam — 2023', description: 'Retrofitting / Renovation project — Municipality of Amsterdam, freelance work.', media: [] },
+                { id: 'retrofit_amsterdam', title: 'Retrofitting / Renovation Project', meta: 'Municipality of Amsterdam — 2023', description: 'Retrofitting / Renovation project — Municipality of Amsterdam, freelance work.', media: [], padZero: true },
                 { id: 'old_airfield', title: 'Old Airfield', meta: 'Chicago Architecture Biennial — Ongoing', description: 'Acoustic mirror as cultural gateway — exploring sound, spatial memory, and contested sites. Ongoing project for the Chicago Architecture Biennial.', media: [] },
                 { id: 'law_firm_prochaska', title: 'Law Firm', meta: 'Stefan Prochaska — 2022', description: 'Law Firm — Stefan Prochaska | Pr Architects & Designers.', media: [] }
             ]},
@@ -831,6 +831,7 @@ By abstracting destroyed Afghan cultural monuments and reconstructing them using
 Material Specifications: Wood, Cement, Stone, Fabric, Narrative Embeddedness.
 Construction Techniques: Low-Tech Modular Assembly, Vernacular Adaptation, Kinetic Base, Deliberate Omission.
 Dimensions: 666.5 x 322.5 x 263 cm. Date: 2024.`, media: [] },
+                { id: 'vortex_columns', title: 'Vortex Columns', meta: 'Brunnenpassage, Vienna Climate Biennale — 2026', description: 'The project addresses the ecological and emotional impacts of geopolitical conflicts, particularly in Afghanistan, the Middle East and other affected regions. In collaboration with Farila Nashat.', media: [] },
                 { id: 'lifeguard_platform', title: 'The Lifeguard Platform', meta: 'Set design / architectural installation — 2026', description: `Film prop, permanent installation at Dar Jacir-Bethelehem, 2026.
 
 Originally built as the central set piece for the film, the tower embodies a physical "hope inversion." Severed from the coast and constructed from raw metal tubing, the structure confronts the scale of the separation wall by forcing a radical vertical ascent, just to clear the colonial clutter and claim a sightline to a stolen horizon.
@@ -858,7 +859,8 @@ Medius paedagogicus is an attempt to prompt a direly needed pedagogical, semanti
 
 The third nature role in the equation is where ideas of decay, obsolescence and residue can be seen as the untapped potential to establish this socio-ecological cohesive atmosphere. Decay can be seen as the loss of human agency; it can also be viewed as the materialization of this two-fold relationship between social cohesion and disturbance-based ecology, creating alternating atmospheres and ambiences in the urban setting.
 
-Utilizing a bottom-up approach of investigation, research, and mapping in all design phases from: understanding the spatial conditions of the urban setting through questionnaires and interviews; situating the moments of interest to weave a virtual spatial platform that materializes itself as the base of the Derive; mapping the moments of urban residue as a vehicle for materiality.`, media: [] }
+Utilizing a bottom-up approach of investigation, research, and mapping in all design phases from: understanding the spatial conditions of the urban setting through questionnaires and interviews; situating the moments of interest to weave a virtual spatial platform that materializes itself as the base of the Derive; mapping the moments of urban residue as a vehicle for materiality.`, media: [] },
+                { id: 'core_alternating_volums', title: 'Core Alternating Volum', meta: 'Material Research — 2024', description: 'Material research exploration.', media: [] }
             ]},
             { label: 'Furniture / Interior Design', projects: [
                 { id: 'library_rosary', title: 'Library Design', meta: 'Rosary Elementary School — 2021', description: 'Library Design — Rosary Elementary School.', media: [] },
@@ -870,10 +872,14 @@ Utilizing a bottom-up approach of investigation, research, and mapping in all de
             { label: 'Research', projects: [
                 { id: 'new_cairn', title: 'The New Cairn', meta: 'Rubble Stacking — Ongoing', description: 'Research project proposing un-crushed demolition rubble as intentional masonry units — transforming destruction into building material.', media: [] },
                 { id: 'liberation_fronts', title: 'Liberation Fronts', meta: 'Diploma Thesis — 2024', description: 'Exploring liberation fronts as spatial and political constructs. Diploma thesis, Die Angewandte, Vienna, 2024.', media: [] },
+                { id: 'wax_home', title: 'The Wax Home', meta: 'Liberation Front Project', description: 'Material experimentation with paraffin wax - part of the Liberation Front project.', media: [] },
                 { id: 'regutting', title: 'Regutting', meta: 'Wonder Cabinet — 2025', description: `This work presents a stark, visceral journey into the extractive process at the Bani Na'im quarries. It contrasts the pristine "whiteness" of the finished stone, which is used as a mere decorative veneer, with the violent disfigurement of the landscape, where mountains are carved into misshapen voids. The piece explores how the scarred terrain — the deep pits of waste and awe-inspiring lacerations — embodies greed and land murder inscribed onto the earth. Crucially, the journey traces the return of the remains: the massive amounts of fine rock powder, toxic slurry, and the residual imperfect that are often thrown into unauthorised landfills in Area C, adjacent to Palestinian localities.
 
 Returns and remains through film, photography, and installation. Wonder Cabinet residency, 2025.`, media: [] },
-                { id: 'agential_cartographies', title: 'Agential Cartographies', meta: 'Dar Jacir — 2025', description: 'Experimental mappings across three spatial typologies. Exhibition at Dar Jacir, Palestine, 2025.', media: [] }
+                { id: 'agential_cartographies', title: 'Agential Cartographies', meta: 'Dar Jacir — 2025', description: 'Experimental mappings across three spatial typologies. Exhibition at Dar Jacir, Palestine, 2025.', media: [] },
+                { id: 'another_sea', title: 'Another Sea Behind Another Wall', meta: 'TPFF', description: 'A lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall.', media: [] },
+                { id: 'si_demain', title: 'Si Demain Je Pars', meta: 'Oran, Algérie — 2023', description: 'Produit dans le cadre de la résidence photographique "Si Demain Je Pars", animée par Michaël Duperrin, Nora Zaïr et Sadek Rahim.', media: [] },
+                { id: 'pay_cheque', title: 'Pay-Cheque', meta: 'Khalid Shoman Foundation — 2025', description: 'Graphic on paper. Rania Lardjane. The Khalid Shoman Foundation Summer Academy, 2025.', media: [] }
             ]},
             { label: 'Education', projects: [
                 { id: 'teaching_aaup', title: 'Teaching at AAUP', meta: 'Arab American University — 2025+', description: 'Faculty member at the Faculty of Architecture, Arab American University, Palestine. Teaching design studio and architectural theory.', media: [] },
@@ -900,14 +906,14 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
         GROUPS.forEach(g => g.projects.forEach(p => {
             runningNum++;
             p.num = runningNum;
-            p.media = []; // real media only
+            p.media = [];
             projectData[p.id] = p;
         }));
 
         const ALL_PROJECTS = Object.values(projectData);
 
         // --- Real-media discovery ---
-        const MAX_MEDIA = 30;
+        const MAX_MEDIA = 100; // Increased so projects like Medius (38 images) are fully scanned
         const MEDIA_KINDS = [['jpg', 'image'], ['png', 'image'], ['mp4', 'video']];
 
         async function mediaExists(src, kind) {
@@ -935,21 +941,40 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
                 }
             });
         }
-        async function findSlot(slug, n) {
+
+        // The fallback scanner (handles weird names like Vault_06 (1) and retrofit_01)
+        async function findSlot(p, n) {
+            // 1. Normal slug scanner
             for (const [ext, kind] of MEDIA_KINDS) {
-                const src = `images/${slug}_${n}.${ext}`;
+                let prefix = p.id;
+                let numberString = n;
+                
+                // Retrofit Amsterdam uses 01, 02 instead of 1, 2
+                if (p.padZero && n < 10) numberString = `0${n}`;
+                
+                const src = `images/${prefix}_${numberString}.${ext}`;
                 if (await mediaExists(src, kind)) return { src, type: kind };
             }
+
+            // 2. Vault alias logic (Vault_06 (1).jpg, etc.)
+            if (p.id === 'vault') {
+                for (const [ext, kind] of MEDIA_KINDS) {
+                    const src = `images/Vault_06 (${n}).${ext}`;
+                    if (await mediaExists(src, kind)) return { src, type: kind };
+                }
+            }
+
             return null;
         }
+
         async function discoverMedia(p) {
-            const first = await findSlot(p.id, 1);
+            const first = await findSlot(p, 1);
             if (!first) return null;
             const found = [first];
             let n = 2;
             while (n <= MAX_MEDIA) {
                 const batch = [];
-                for (let k = 0; k < 4 && n + k <= MAX_MEDIA; k++) batch.push(findSlot(p.id, n + k));
+                for (let k = 0; k < 4 && n + k <= MAX_MEDIA; k++) batch.push(findSlot(p, n + k));
                 const res = await Promise.all(batch);
                 let stop = false;
                 for (const r of res) { if (!r) { stop = true; break; } found.push(r); }
@@ -959,10 +984,7 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             return found;
         }
 
-        // --- LANDING CONSTELLATION (real images only) ---
-        // Sweeps every project in the site, gets its first discovered
-        // image, and uses those as the scattered background tiles. No
-        // placeholders. Axis-aligned (no rotation). Fades in once ready.
+        // --- LANDING CONSTELLATION ---
         async function buildConstellation() {
             const container = document.getElementById('landing-constellation');
             const status = document.getElementById('landing-status');
@@ -971,11 +993,9 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             container.innerHTML = '';
             if (status) { status.textContent = 'Loading…'; status.classList.remove('done'); }
 
-            // Gather one real image per project, in parallel. Skip projects
-            // that don't have at least one media file.
+            // Gather one real image per project, in parallel.
             const withImages = await Promise.all(
                 ALL_PROJECTS.map(async p => {
-                    // Reuse cached media from background scan if present
                     if (!p.media.length) {
                         const items = await discoverMedia(p);
                         if (items) p.media = items;
@@ -1001,11 +1021,9 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
             const vh = window.innerHeight;
             const isMobile = vw <= 768;
 
-            // How many tiles we WANT vs. how many we HAVE
             const wanted = isMobile ? 7 : Math.min(16, Math.max(10, Math.floor((vw * vh) / 95000)));
             const count = Math.min(wanted, availableSrcs.length);
 
-            // Shuffle the pool and take `count`
             const pool = [...availableSrcs];
             for (let i = pool.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -1281,12 +1299,7 @@ This paper critically examines the spatio-territorial dimensions of deterritoria
 
         // --- Init ---
         buildList();
-        // Kick off both in parallel: media scan feeds the constellation's
-        // image sources AND the main list's hover/gallery media.
         backgroundMediaScan().then(() => buildConstellation());
-        // Also build constellation immediately — it will discover media
-        // itself if the background scan hasn't finished yet, so the
-        // landing page can show tiles as soon as any file is found.
         buildConstellation();
 
         let resizeTimer;
