@@ -55,6 +55,25 @@
             cursor: crosshair;
         }
 
+        /* Loading indicator */
+        #loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-logo);
+            font-size: 14px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #ccc;
+            z-index: 5;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        #loading-indicator.hidden {
+            opacity: 0;
+        }
+
         .box {
             position: absolute;
             background-color: #ffffff;
@@ -656,6 +675,7 @@
 
     <!-- LANDING PAGE (Generative Grid) -->
     <div id="landing-page">
+        <div id="loading-indicator">Loading…</div>
         <div id="grid-container"></div>
     </div>
 
@@ -909,38 +929,52 @@
 
         // --- GRID SPLITTING & MERGING LOGIC ---
         const container = document.getElementById('grid-container');
+        const loadingIndicator = document.getElementById('loading-indicator');
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         let availableImages = []; 
         let activeCells = []; 
 
+        // IMPORTANT: No placeholder fallback. If availableImages is empty, cells stay plain white.
         function getRandomImage() {
-            if (availableImages.length > 0) {
-                // Randomly pick a real image
-                return availableImages[Math.floor(Math.random() * availableImages.length)];
-            }
-            // Fallback if no images exist yet
-            const colors = ['#f2efe9', '#e8e5df', '#dbd6cc', '#c9c4ba', '#b5b0a6'];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            const num = Math.floor(Math.random() * 100);
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
-                <rect width="600" height="600" fill="${color}"/>
-                <text x="300" y="320" font-family="Georgia, serif" font-size="80" font-style="italic" fill="#a8a194" text-anchor="middle" dominant-baseline="middle">${num}</text>
-            </svg>`;
-            return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+            if (availableImages.length === 0) return null;
+            return availableImages[Math.floor(Math.random() * availableImages.length)];
         }
 
         function injectImage(box) {
             if (box.offsetWidth < 30 || box.offsetHeight < 30) return;
             if (box.id === 'adham-cell') return;
             if (box.querySelector('img')) return;
+            const src = getRandomImage();
+            if (!src) return; // No image available — leave the cell plain white
             const img = document.createElement('img');
-            img.src = getRandomImage();
+            img.src = src;
+            img.onerror = function() { this.remove(); }; // If a specific file breaks, remove silently
             box.appendChild(img);
         }
 
-        // Start sequence
-        setTimeout(async () => {
-            // 1. Create the initial full-canvas cell
+        // --- INITIALIZATION: WAIT for images to scan, THEN build the grid ---
+        async function init() {
+            // 1. Scan all projects for real images FIRST
+            await backgroundMediaScan();
+
+            // 2. Collect every verified real image path
+            const all = [];
+            ALL_PROJECTS.forEach(p => {
+                p.media.forEach(m => {
+                    if (m.type === 'image') all.push(m.src);
+                });
+            });
+            availableImages = all;
+
+            // 3. Only now start generating the grid
+            await buildGrid();
+
+            // 4. Hide the loading indicator
+            loadingIndicator.classList.add('hidden');
+        }
+
+        async function buildGrid() {
+            // Initial full-canvas cell
             const firstBox = document.createElement('div');
             firstBox.className = 'box';
             firstBox.style.left = '0';
@@ -950,12 +984,12 @@
             container.appendChild(firstBox);
             activeCells.push(firstBox);
             
-            // 2. Perform 50 strict splits (Wait to ensure grid is populated)
+            // 50 strict splits
             for (let i = 0; i < 50; i++) {
                 await performRandomSplit();
             }
 
-            // 3. Assign Adham to a random cell
+            // Assign Adham to a random viable cell
             if (activeCells.length > 0) {
                 const viableCells = activeCells.filter(c => c.offsetWidth > 150 && c.offsetHeight > 100);
                 const targetAdhamCell = viableCells.length > 0 
@@ -968,7 +1002,7 @@
                 if (img) img.remove();
             }
 
-            // 4. Perform 20 more splits (Total 70) and start merging after division 10
+            // 20 more splits + occasional merges
             for (let i = 0; i < 20; i++) {
                 await performRandomSplit();
                 if (i > 10) {
@@ -976,7 +1010,7 @@
                 }
             }
 
-            // 5. Force 7 highly complex shapes (merging clusters of 3-6 cells)
+            // 7 complex cluster merges
             let shapesCreated = 0;
             let attempts = 0;
             while (shapesCreated < 7 && attempts < 50) {
@@ -985,10 +1019,12 @@
                 attempts++;
             }
 
-            // 6. Inject images into all remaining cells that don't have one
+            // Inject images into ALL remaining cells (real images only)
             activeCells.forEach(cell => injectImage(cell));
+        }
 
-        }, 100);
+        // Kick off the loading
+        init();
 
         async function performRandomSplit(targetBox = null) {
             let box = targetBox;
@@ -1081,7 +1117,6 @@
                 box2.style.height = newHeight2 + '%';
             }
 
-            // Update tracker
             activeCells = activeCells.filter(b => b !== box);
             activeCells.push(box1, box2);
 
@@ -1092,7 +1127,6 @@
             return true;
         }
 
-        // --- MERGE CLUSTER LOGIC ---
         async function performMergeCluster() {
             const validBoxes = activeCells.filter(b => b.id !== 'adham-cell' && !b.classList.contains('merging') && !b.style.clipPath);
             if (validBoxes.length < 6) return false;
@@ -1183,7 +1217,6 @@
             return false;
         }
 
-        // Basic 2-cell merge (L-shape)
         async function performMerge() {
             const validBoxes = activeCells.filter(b => b.id !== 'adham-cell' && !b.classList.contains('merging') && !b.style.clipPath);
             if (validBoxes.length < 2) return;
@@ -1475,16 +1508,6 @@
 
         // --- INITIALIZATION ---
         buildList();
-
-        backgroundMediaScan().then(() => {
-            const all = [];
-            ALL_PROJECTS.forEach(p => {
-                p.media.forEach(m => {
-                    if (m.type === 'image') all.push(m.src);
-                });
-            });
-            availableImages = all;
-        });
 
     </script>
 </body>
