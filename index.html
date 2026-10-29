@@ -915,8 +915,10 @@
 
         function getRandomImage() {
             if (availableImages.length > 0) {
+                // Randomly pick a real image
                 return availableImages[Math.floor(Math.random() * availableImages.length)];
             }
+            // Fallback if no images exist yet
             const colors = ['#f2efe9', '#e8e5df', '#dbd6cc', '#c9c4ba', '#b5b0a6'];
             const color = colors[Math.floor(Math.random() * colors.length)];
             const num = Math.floor(Math.random() * 100);
@@ -970,7 +972,6 @@
             for (let i = 0; i < 20; i++) {
                 await performRandomSplit();
                 if (i > 10) {
-                    // After division 10, we merge cells occasionally
                     if (Math.random() > 0.5) await performMerge();
                 }
             }
@@ -1092,20 +1093,17 @@
         }
 
         // --- MERGE CLUSTER LOGIC ---
-        // Merges 3 to 6 adjacent cells to create extremely complex orthogonal shapes
         async function performMergeCluster() {
             const validBoxes = activeCells.filter(b => b.id !== 'adham-cell' && !b.classList.contains('merging') && !b.style.clipPath);
             if (validBoxes.length < 6) return false;
 
             const shuffled = [...validBoxes].sort(() => Math.random() - 0.5);
             
-            // Try to find a cluster
             for (let i = 0; i < shuffled.length; i++) {
                 const seed = shuffled[i];
                 const cluster = [seed];
                 
-                // Grow cluster to size 3-6
-                const targetSize = Math.floor(Math.random() * 4) + 3; // 3, 4, 5, or 6
+                const targetSize = Math.floor(Math.random() * 4) + 3; 
                 
                 while (cluster.length < targetSize) {
                     let added = false;
@@ -1129,14 +1127,12 @@
                         }
                         if (added) break;
                     }
-                    if (!added) break; // Could not grow further
+                    if (!added) break; 
                 }
                 
-                // If we found a valid cluster, merge them!
                 if (cluster.length >= 3) {
                     cluster.forEach(c => c.classList.add('merging'));
                     
-                    // Calculate bounding box
                     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
                     cluster.forEach(c => {
                         const r = c.getBoundingClientRect();
@@ -1149,19 +1145,11 @@
                     const w = maxX - minX;
                     const h = maxY - minY;
                     
-                    // Pick the seed to hold the merged shape
                     seed.style.left = minX + 'px';
                     seed.style.top = minY + 'px';
                     seed.style.width = w + 'px';
                     seed.style.height = h + 'px';
                     
-                    // Generate a complex orthogonal polygon (up to 24 sides)
-                    // We use a simplified bounding box clip-path with holes for the L/T shapes
-                    // For a true multi-cell merge, we just trace the union.
-                    // To keep it highly orthogonal and complex, we use a generic 8-point polygon
-                    // that mimics a jagged edge.
-                    
-                    // Let's create a jagged polygon that covers most of the box but looks complex
                     const p1 = 20 + Math.random() * 20;
                     const p2 = 60 + Math.random() * 20;
                     const p3 = 20 + Math.random() * 20;
@@ -1180,7 +1168,6 @@
                     
                     seed.style.clipPath = polygon;
                     
-                    // Remove other cluster members
                     cluster.forEach(c => {
                         if (c !== seed) {
                             activeCells = activeCells.filter(ac => ac !== c);
