@@ -8,17 +8,6 @@
     <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
     <meta name="google-site-verification" content="GQJM1fZ35QJ1MEUtgQGUEYOrNbs1d_7xh5LiOAWBNGY" />
 
-    <!-- GOOGLE ANALYTICS (Replace G-XXXXXXXXXX with your actual ID) -->
-    <!--
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
-    </script>
-    -->
-
     <style>
         /* Import technical sans-serif font for UI */
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap');
@@ -293,6 +282,25 @@
             font-style: italic;
         }
 
+        /* Spacer between projects and future */
+        .list-spacer {
+            height: 20px;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        /* Future Projects Header */
+        .future-header {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #999;
+            text-align: right;
+            padding-right: 24px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
         /* --- Footer / Copyright --- */
         .copyright {
             position: fixed;
@@ -342,6 +350,10 @@
             flex-direction: column;
             justify-content: center;
             padding-right: 20px;
+            /* Allow long text to scroll on desktop */
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px 20px 20px 0;
         }
 
         .modal-title {
@@ -564,6 +576,16 @@
                 font-size: 16px;
             }
 
+            /* Future projects mobile */
+            .future-header {
+                text-align: center;
+                padding-right: 0;
+                margin-top: 20px;
+            }
+            .list-spacer {
+                display: none;
+            }
+
             /* Modal adjustments */
             .modal {
                 padding: 20px;
@@ -580,6 +602,8 @@
                 width: 100%;
                 padding-right: 0;
                 text-align: center;
+                max-height: none; /* Let it flow on mobile */
+                overflow-y: visible;
             }
             .modal-title {
                 font-size: 24px;
@@ -746,6 +770,17 @@
                     <div class="title">Pay-Cheque</div>
                 </div>
 
+                <!-- Spacer & Future Projects -->
+                <div class="list-spacer"></div>
+                <div class="future-header">Future Projects</div>
+
+                <div class="project-item" 
+                     data-id="future-project" 
+                     data-desc="هذا من فضل ربي (Hādha min faḍli rabbī) - A future project exploring the concept of home, permanence, and material transformation."
+                     onclick="openProjectModal('future-project')">
+                    <div class="title">هذا من فضل ربي (Hādha min faḍli rabbī)</div>
+                </div>
+
             </div>
         </div>
 
@@ -908,7 +943,9 @@ Oran, Algérie.
                 description: `TPFF (Toronto Palestine Film Festival)
 Local Pals Residency Logline:
 
-A lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall.`,
+A lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall.
+
+Watch: https://youtu.be/wFDMc9hZn-w`,
                 media: [
                     'images/another_sea_1.jpg', 'images/another_sea_2.jpg', 'images/another_sea_3.jpg',
                     'images/another_sea_5.jpg', 'images/another_sea_6.jpg', 'images/another_sea_7.jpg',
@@ -949,6 +986,24 @@ Photo Credits: Unknown`,
                 media: [
                     'images/pay_cheque_1.jpg', 
                     'images/pay_cheque_2.jpg'
+                ]
+            },
+            'future-project': {
+                title: `هذا من فضل ربي (Hādha min faḍli rabbī)`,
+                description: `We are afraid to admit it, but most of us are homeless; we might be housed, but we are no longer home. Globally, homeownership is a luxury, eroding permanence as the foundational value of home. In a rental economy, five years in a space is a milestone. 
+
+Closer to home in Palestine, home building was once a collective practice using natural stone as the structural material; crafting permanent houses built to outlast many generations, commemorated with engraved keystones and commemorative plaques that are engraved with certain religious texts such as (هذا من فضل ربي (Hādha min faḍli rabbī)), which stands for: “this is from the bounty of my Lord’. Traditionally, this phrase signified humility and gratitude, but today it can be seen as a vanity signalling of status, and to protect against envy.
+
+Although the long-lasting nature of traditional Palestinian homes has all but disappeared with more modern concrete structures taking over, the stone engraving tradition still stands, with different writings across many religions and regions.
+
+In this residency, we aim to develop a series of amulets that represent home—packed, moved, dissolved, and reassembled. A process-oriented, material-driven research-creation project that investigates and plays on the contradictions of permanence and stability in an unstable and transient world. With Hādha min faḍli rabbī engraving plaques as the sample embodiment of that.
+
+We aim to use materials with temporal qualities, transient and transformative, as we interrogate this state of erosion and denial.
+
+Building on a previous series of experiments inspired by Wax Home, in which we explored the fragility of the modern home as a material and the constant state of unhoming in Palestine amid periodic demolition.
+Through this project, we aim to expand our material repertoire and experiment with representational possibilities of these amulets, using different materials, techniques, and narrative methods.`,
+                media: [
+                    // Add your future project image names here, e.g. 'images/future_1.jpg'
                 ]
             }
         };
@@ -1016,8 +1071,7 @@ Photo Credits: Unknown`,
                         
                         heroImage.src = ''; 
 
-                        // If the image fails to load (e.g. file missing), just hide the image container, 
-                        // NO STOCK FALLBACKS as requested.
+                        // If the image fails to load (e.g. file missing), just hide the image container
                         heroImage.onerror = function() {
                             this.style.display = 'none';
                         };
@@ -1091,7 +1145,10 @@ Photo Credits: Unknown`,
 
         // Smart Loader: Skips missing files seamlessly
         function findAndLoadNextMedia(startIndex) {
-            if (currentProjectMedia.length === 0) return;
+            if (currentProjectMedia.length === 0) {
+                mediaContainer.innerHTML = '<p style="color:#999; font-family:var(--font-main);">No media added yet.</p>';
+                return;
+            }
             
             currentMediaIndex = startIndex;
             let attempts = 0;
